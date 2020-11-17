@@ -1,0 +1,37 @@
+## Template for parameter description file for Iterated Race.
+##
+## The format is one parameter per line. Each line contains:
+##
+## 1: Name of the parameter. An unquoted alphanumeric string,
+##    example: ants
+
+## 2: Switch to pass the parameter. A quoted (possibly empty) string, 
+##    if the value and the switch must be separated, add a space at
+##    the end of the string. Example : "--version1 --ants "
+
+## 3: Type. An unquoted single letter, among 
+##     i: Integer, c: categorical, o: ordinal, r: real.
+
+## 4: For c and o: All possible values, that is, a variable number of
+##    quoted or unquoted strings separated by commas within
+##    parenthesis. Empty strings and strings containing commas or
+##    spaces must be quoted.
+##    For i,r: a pair of unquoted numbers representing minimum and
+##    maximum values. 
+
+## 5: A conditional parameter can be defined according to the values of
+##    one or several other parameters.  This is done by adding a
+##    character '|' followed by an R expression involving the names of
+##    other parameters. This expression must return TRUE if the 
+##    condition is satisfied, FALSE otherwise.
+
+# 1:            2:                   3: 4:      5:
+no_change_grasp	"-no_change_grasp="	o (0,1)	
+performPathRelinking	"-performPathRelinking="	o (0,1)	
+performPathRelinking_every_sol	"-performPathRelinking_every_sol="	o (0,1)	
+sols_in_pool	"-sols_in_pool="	i (1,100)	
+no_change_ls	"-no_change_ls="	o (0,1)	
+do_twopt	"-do_twopt="	o (0,1)	
+grasp_dl	"-grasp_dl="	r (0,0.5)	
+grasp_dr	"-grasp_dr="	r (0,1)	
+rcl_strategy	"-rcl_strategy="	o 	(1,2)	
