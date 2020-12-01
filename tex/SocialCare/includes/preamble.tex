@@ -1,4 +1,4 @@
-%---- PREAMBLE ----%
+%---- PREAMBLE SOCIAL CARE ----%
 
 % Allows separate files to be used in the main file
 \usepackage{subfiles}
@@ -61,7 +61,7 @@
 %\usepackage{fullpage}
 
 % For easy management of document margins and the document page size
-\usepackage[a4paper]{geometry}
+\usepackage[top=30mm, bottom=30mm, right=25mm, left=25mm]{geometry}
 
 % Allows insertion of graphic files within a document
 \usepackage{graphicx}
@@ -90,15 +90,16 @@
 \colorlet{myPurple}{Orchid} 
 \colorlet{myPink}{Rhodamine!65!Lavender}
 \colorlet{myGray}{Gray!90!White}
+%\colorlet{myYellow}{Goldenrod}
+\definecolor{myYellow}{HTML}{F9E22E} %FFE72F
 
-% The document class `elsarticle` uses the \AtBeginDocument comman to define the colour of all link types as blue, so we use the \AtBeginDocument command again to overwrite the colour settings to the colors we choose. REMEMBER TO REMOVE THIS BEFORE SUBMITTING.
-%\AtBeginDocument{% 
-%	\hypersetup{
-%		linkcolor=myPurple,
-%		citecolor=myAqua,
-%		urlcolor=black
-%	}
-%} %end of \AtBeginDocument
+
+\hypersetup{
+	linkcolor=myPurple,
+	citecolor=myAqua,
+	urlcolor=black
+}
+
 
 \newcommand{\intro}[1]{{\color{myOrange}#1}} % \intro{<text>}, makes <text> orange, use to highlight things to do, urgent, or revisit in introduction section
 
