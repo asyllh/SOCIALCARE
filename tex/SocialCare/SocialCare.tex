@@ -9,7 +9,7 @@
 \maketitle
 
 \section{Constraints}
-\begin{itemize}[leftmargin=*, itemsep=-0.1em]
+\begin{itemize}[label=\textcolor{myRed}{\textbullet},leftmargin=*, itemsep=-0.1em]
 	\item Maximum number of carers per patient
 	\item PEG feed
 	\item Determine the final objective, or allow for multiple objective (e.g. reduce costs, reduce travel time, reduce tardiness etc.)
@@ -30,18 +30,64 @@
 	\item Shadowing carers
 	\item Parking availability at each patient's household, or does walking time also need to be included?
 	\item Are there distinct job types?
+	\item Will there always be enough carers for urgent services, i.e. if there are 10 patients that must be visited at 8am in the morning, are there always 10 carers available at that time?
+	\item Are there other carers ``on call'' that are able to work as-and-when if an emergency occurs, or is it that the carers working that day are the only carers available to do all the services.
+	\item Are there specific jobs that \emph{must} be done on time for the patient's wellbeing? (In contrast, there may be jobs where although tardiness will be penalised, it does not have a detrimental effect on the patient). This could include, for example, services where medication must be administered at a particular time.
+	\item Do schedules change daily or are services fixed daily/weekly?
+	\item In what situations will a new schedule/R\&R need to occur?
+	\item Are skills in levels? I.e. if a carer can do a PEG feed, can they do other tasks too?
 \end{itemize}
 
 \section{Rerouting and Rescheduling}
-\begin{itemize}[leftmargin=*, itemsep=-0.em]
-	\item In what scenarios does and r\&r need to occur?
-	\item Addition of new patient (job) to the schedule (for example, emergency revisit)
-	\item Cancellation of job
-	\item Scenario where a patient that originally only required one carer now requires multiple carers
-	\item Change in skill requirement of a patient, where the originally scheduled carer does not have the required skill level
-	\item Patient emergency that requires the carer to remain with the patient; thus remaining jobs in the carer's route will need to be serviced by one or more other carers
-	\item Carer unwell at the beginning of the day, so all jobs assigned to that carer will need to be reassigned to other carer's working that day	
-\end{itemize}	
+\noindent In what scenarios does an R\&R need to occur?\vspace{3mm}
+
+\noindent \textbf{1. Addition of new job $j$ (either a new patient or an unexpected necessary revisit to a patient that has already been seen earlier in the day) to the schedule}
+\begin{itemize}[label=\textcolor{myRed}{\textbullet},leftmargin=*, itemsep=-0.1em]
+	\item This would involve rescheulding one or more carers' routes to insert the new job $j$ in the correct time frame in a carer's route. 
+	\item If $j$ is a double service, then the job will have to be inserted into two different carers' routes in the same time frame, and the carers must be sufficiently skilled to perform the service.
+\end{itemize}
+
+\noindent \textbf{2. Patient emergency that requires the carer to remain with the patient (stay at job $j$)}
+\begin{itemize}[label=\textcolor{myOrange}{\textbullet},leftmargin=*, itemsep=-0.1em]
+	\item Remaining jobs in the carer's route will need to be serviced by one or more other carers.
+	\item Note that at some point the carer may be able to resume work, and so another schedule may have to be created to reinsert the carer back into the plan.
+	\item If $j$ is a double service with carers $i_1$ and $i_2$, then it may be that only one carer needs to stay with the patient, whilst the other carer can resume their usual route. Then, the problem is to decide which carer should stay with the patient, as that carer's route will be affected by the time delay, and so the remaining jobs on that carer's route will need to be reassigned to other carers. Factors in this decision could include the skill level of the carers (it may be more beneficial for the carer with the higher skill level to resume their work), the locations of the remaining jobs of each carer's routes, whether one or more of the remaining jobs in their routes are double services/synchronised services (it may be easier for the carer assigned to a double service later on to resume their work, as rescheduling a double service is more difficult as it affects other carers), and the preferences of the remaining jobs and the carers.
+	\item However, it may be the case that both carers $i_1$ and $i_2$ must remain with the patient, and so all remaining jobs in both carers' routes will need to be reassigned to other carers.
+	\item Otherwise, if $j$ is a single service, then the remaining jobs in that carer's route will need to be reassigned to other carers.
+	\item If one or more of the remaining jobs in the route is/are double services, then the aim should be to reassign the job to another carer that has the same (or better) skill level as the original carer assigned the job, so that the other carer already assigned to that double service job can remain on the job and does not have to be reassigned because the total skill level between the two carers is insufficient.
+\end{itemize}
+
+\noindent \textbf{3. Cancellation of a job $j$}
+\begin{itemize}[label=\textcolor{myYellow}{\textbullet},leftmargin=*, itemsep=-0.1em]
+	\item Carer $i$ can simply go to the next job $j+1$ on the route, although there will be a significantly longer waiting time for carer $i$ at job $j+1$. 
+	\item The same occurs if $j$ is a double service, carers $i_1$ and $i_2$ can simply skip job $j$ and go to the next job on their respective routes.
+\end{itemize}
+
+\noindent \textbf{4. Scenario where a job $j$ that originally only required one carer $i_1$ now requires multiple carers}
+\begin{itemize}[label=\textcolor{myGreen}{\textbullet},leftmargin=*, itemsep=-0.1em]
+	\item The job $j$ may be able to remain in $i_1$'s route, provided another carer $i_2$ can be found that has the required skills in combination with carer $i_1$ to perform the service $j$ at the requested time. However, this may also delay the services in carer $i_2$'s route. 
+	\item Furthermore, if there are no other carers that can perform the service $j$ with the carer $i_1$ (the original carer assigned $j$), then it may be that the job $j$ is unassigned from carer $i_1$, and $j$ is reassigned to two different carers. 
+	\item In this scenario, carer $i_1$ would then be `free' during the time slot where $j$ was originally scheduled, and so it may be possible that carer $i_1$ is able to take over the job in the corresponding time slot of one of the other two carers that is now attending to $j$ (provided $i_1$ is skilled to do the job). If $i_1$ cannot perform a job for one of the other two carers, then other carers must be assigned those jobs, and so a larger rescheduling and rerouting must occur.
+\end{itemize}
+
+\noindent \textbf{5. Change in skill requirement of a job $j$, where the originally scheduled carer $i_1$ does not have the required skill level}
+\begin{itemize}[label=\textcolor{myBlue}{\textbullet},leftmargin=*, itemsep=-0.1em]
+	\item Ideally in this situation, we would try to find another carer $i_2$ that has the required skill to do job $j$, and is also assigned a job $k$ at the same time as job $j$ with a lower skill requirement such that carer $i_1$ is skilled to perform job $k$. Then, we would be able to simply swap jobs $j$ and $k$ between carers $i_1$ and $i_2$.
+	\item However, this does not take into consideration the distance of the jobs from the carers' previous jobs in their respective routes, i.e. the distance from job $j-1$ to job $k$ and the distance from job $k-1$ to job $j$.
+\end{itemize}
+
+\noindent \textbf{6. Carer unwell at the beginning of the day/during the day/personal emergency}
+\begin{itemize}[label=\textcolor{myPurple}{\textbullet},leftmargin=*, itemsep=-0.1em]
+	\item All (remaining) jobs assigned to that carer will need to be reassigned to other carers working that day.
+\end{itemize}
+
+\noindent \textbf{7. Carer requiring assistance from another carer}
+\begin{itemize}[label=\textcolor{myPink}{\textbullet},leftmargin=*, itemsep=-0.1em]
+	\item Another carer must be rerouted to the service to help the original carer on the job. 
+	\item Need to ensure that the carer chosen has the skill to assist on the job, and also select a carer that is closest to the location of the job.
+	\item This will disrupt the schedule of the rerouted carer, and so this will also have to be addressed.
+\end{itemize}
+
 
 
 
