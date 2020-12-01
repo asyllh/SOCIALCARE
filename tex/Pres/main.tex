@@ -1,0 +1,124 @@
+\documentclass[usenames,dvipsnames]{beamer}
+\input{includes/preamble.tex}
+
+\begin{document}
+
+\title{Increasing Productivity in the Domiciliary Care Sector Through Automated Routing and Scheduling of Carers}
+\date{}
+\author{A. L. Hawa, C. Lamas-Fernandez, A. Martinez-Sykora, C. Currie, T. Monks, T. Chalklen}
+\titlegraphic{\includegraphics[height=1.2cm]{figures/sotonabicare2.png}}
+\maketitle
+
+%\section{Introduction}
+
+\begin{frame}{Task}
+To create an efficient route and schedule for each carer such that all patients (jobs) are visited at the correct times by suitable carers.
+\small
+\begin{multicols}{2}
+	\begin{itemize}
+		\item Assign jobs to sufficiently skilled carer(s)
+		\item Assign jobs to preferred carers(s)
+		\item Assign carers to preferred jobs
+		\item Workload balance %($\overline{B}$)
+		\item Minimise waiting times %($\overline{W}$)
+		\item Minimise tardiness %($\overline{Z}$)
+		\item Minimise overtime %($\overline{O}$)
+		\item Minimise travel time %($\overline{T}$)
+		\item Minimise travel distance*
+		%\item Assign jobs and carers according to preferences ($\overline{P}$)
+	\end{itemize}	
+\end{multicols}	
+\end{frame}	
+
+\begin{frame}{Current Model and Approach}
+%\begin{multicols}{2}
+	\begin{itemize}
+		\item Weighted objective function 
+		\item Produce multiple schedules depending on the desired objective
+		\item Currently implemented in C++ and Python
+	\end{itemize}	
+%\end{multicols}	
+\end{frame}
+
+\begin{frame}{Data}
+This is required from each location:
+\footnotesize
+\begin{multicols}{2}
+	\begin{itemize}
+		\item Total number of patients/carers in each location
+		\item Max travel distance (route/radius)
+		\item Skills of carers
+		\item Time window of each job
+		\item Patient preferences: language, gender of carers, personal
+		\item Carer preferences: gender of patient, allergies, personal
+		\item Length of day for carers (full/half/flexible)
+		\item Number of DS/synchronised services
+		\item Distinct job types?
+		\item Carers ``on call''
+		\item Strength of preferences
+	\end{itemize}	
+\end{multicols}	
+\end{frame}
+
+\begin{frame}{Queries}
+\scriptsize
+%\begin{multicols}{2}
+	\begin{itemize}
+		\item \note{Desired objective(s)}
+		\item Are there skill ``levels'' for carers?
+		\item Distinct job types or customised per job
+		\item Jobs that \emph{cannot} start late
+		\item Lunch breaks
+		\item Parking availability at patient's home
+		\item PPE/COVID-19 conditions
+		\item Frequency of schedule formation
+		\item Database/software currently used
+		\item Hard and soft constraints
+		\item Any additional constraints?
+		\item Who will be using the application?
+		\item Additional carers available?
+	\end{itemize}	
+%\end{multicols}
+\end{frame}
+
+
+\begin{frame}{Rerouting and Rescheduling (R\&R)}
+In the event of an unexpected disruption, the original plan may need to be updated to accommodate any changes that occur.
+
+\note{Which of these do we need to address?}
+\small
+\begin{itemize}
+	\item Cancellation of a service
+	\item Addition of a new service (single or double)
+	\item Modification of a service (single or double)
+	\item Patient emergency, carer remains with patient
+	\item Increase in skill level of service
+	\item Increase in number of carers required for a service
+	\item Carer unwell at beginning/during the day or personal emergency
+	\item Carer requiring urgent assistance from another carer
+\end{itemize}	
+\end{frame}
+
+\begin{frame}{Meeting}
+\small
+\begin{itemize}
+	\item EasyLog only has details of time/length of job
+	\item Preferences/carer skills/client needs are known by staff only
+	\item No jobs between 2-4pm
+	\item Day in two shifts: 7am-2pm, 4pm-10pm
+	\item ``Ideal rotas'' on EasyLog
+	\item Availability of extra carers (e.g. part-time, can help with issues)
+	\item TW 15mins before and after start time
+	\item QR code carer clock in/out, not accurate
+	\item Larger gaps between jobs for new carers, e.g. +10mins travel time
+	\item Continuity of care
+\end{itemize}	
+	
+\end{frame}
+
+\begin{frame}{Literature}
+
+\end{frame}
+
+
+\end{document}
