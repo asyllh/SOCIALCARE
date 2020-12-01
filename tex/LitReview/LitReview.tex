@@ -3,35 +3,95 @@
 \input{includes/preamble.tex}
 
 \begin{document}
-\title{Increasing Productivity in the Domiciliary Care Sector Through Automated Routing and Scheduling of Carers}
+\title{Literature: On Disruption Management and Reactive Algorithms for Routing and Scheduling Problems}
 %\author{Asyl L. Hawa}
 \date{}
 \maketitle
 
-\noindent \citet{yuan2017}: Disruption Management for the Real-Time Home Caregiver Scheduling and Routing Problem
+\section{Disruption Management for the RT-HCSRP}
+\noindent \citet{yuan2017}: Disruption Management for the Real-Time Home Caregiver Scheduling and Routing Problem. The problem involves changing a given schedule of the HCSRP (Home Caregiver Scheduling and Routing Problem) when an unexpected event occurs, which in this paper is when a new service request arises. The RT-HCSRP (Real-Time) consists in creating an updated schedule and route for the carers to the patients based on the original schedule; that is, a feasible solution to the original HCSRP). Thus, the input for the RT-HCSRP is a schedule for the HCSRP with the new additional service added to a carer's route in some arbitrary position. Then, a tabu search procedure is used to optimise the solution. The goal is to minimise the negative effect of unexpected events on patients, carers, and companies. Deviation measurements are formed independently for patients, carers, and companies, which are quantitatively measured and taken as minimisation objectives in a weighted objective function.
 
-\section{Differences}
-\begin{itemize}[leftmargin=*, itemsep=-0.1em]
-	\item Paper covers updating an existing schedule when an disruption occurs. The disruption in this case is when a new service is added to the schedule. However, in our case there could be a variety of reasons why a disruption may occur, such as a delay in a service or carer illness.
-	\item This paper does \emph{not} consider double services or synchronised (dependent) services.
+\subsection{Differences}
+\begin{itemize}[label=\textcolor{myPurple}{\textbullet},leftmargin=*,itemsep=-0.1em]
+	\item The paper covers updating an existing schedule when an disruption occurs. The disruption in this case is when a new service is added to the schedule. However, in our case there could be a variety of reasons why a disruption may occur, such as a delay in a service or carer illness.
+	\item The paper does \emph{not} consider double services or synchronised (dependent) services.
 	\item The paper assumes that all carers start and end their routes at the Home Health Care Centre, rather than their own homes.
-	\item The paper also states that each patient is visited by a carer exactly once, which is not always the case in our problem, as a patient may require multiple visits in a single day.
-	\item 	
+	\item The paper also states that each patient is visited by a carer \emph{exactly once}, which is not always the case in our problem, as a patient may require multiple visits in a single day.	
+	\item The paper assumes that there is an additional carer available at the depot (HHC centre) that has the highest possible skill level (i.e. is able to do any type of job).
+\end{itemize}
+
+\subsection{Model and Solution Approach}
+\begin{itemize}[label=\textcolor{myPurple}{\textbullet},leftmargin=*,itemsep=-0.1em]
+	\item In the paper, a new patient is added to the original plan (i.e. the solution to the original HCSRP) to generate an initial solution for the RT-HCSRP. This is done by assigning the new patient (job/service) to the carer who can do the job with the least increase in the objective function value. This new solution with the additional job is considered the initial input solution, and the tabu search procedure is applied to this solution.
+	\item When an unexpected event occurs (the addition of a new service), at time $T_0$, each of the patients (jobs) are in one of four states: 
+	\begin{enumerate}[label=(\roman*),itemsep=-0.1em]
+		\item The job has been serviced (is completed); 
+		\item The job has not yet been serviced; 
+		\item The job is currently in service (a carer is at the job); and
+		\item A newly occuring job (new job being added to the schedule).
+	\end{enumerate}
+	\item Only (ii)--(iv) are considered because jobs in (i) have already been fulfilled.
+	\item Carers are also in one of three states regarding their locations at time $T_0$:
+	\begin{enumerate}[label=(\roman*),itemsep=-0.1em]
+		\item Carers in transit, travelling to the next job;
+		\item Carers currently at a job; and
+		\item Carers at the HHC centre (depot).
+	\end{enumerate}
+	\item The planning period (for the new schedule) is between time $T_0$ (the time of the disruption) and the end of the day.
+	\item Locations of carers at a job or the first jobs to be serviced after $T_0$ in the original plan are referred to as \emph{critical nodes} ($CN$).
+	\item Critical nodes in the node set $CN$ are the starting nodes (locations) of carers in the updated plan.
+	\item The paper outlines three different \emph{deviation measurements} for patients (jobs), carers, and the companies respectively, and the objective function minimises the weighted sum of the deviation measurements.
+	\item The solution approach is using tabu search (TS). The procedure starts from an initial solution, and in each iteration the neighbour set of a solution is generated using neighbourhood structures: remove a job from a route visited by a carer, and reinsert the job into the route of another carer. 
+	\item The solution in the neighbour set that has best quality (least solution evaluation value) replaces the current solution, and the tabu list is updated.
+	\item The process continues until a stopping criteria is satisfied (time limit).
+	\item Each solution $s$ is characterised by an \emph{attribute set}, $B(s) = \{(i,k) : \text{job $i$ is perfomed by carer $k$}\}$, which is recorded in the tabu list.
+	\item A neighbour of a solution is obtained by replacing some attributes of $B(s)$ with other attributes.
+	\item Then, when a job $i$ is removed from a carer $k$'s route, the attribute $(i,k)$ is assigned a tabu status, as well as a tabu duration $\theta$. 
+	\item Aspiration criterion :the tabu status of an attribute can be revoked if accepting the attribute leads to a solution with better quality (less objective functon value) than the current best solution that contains the attribute. The OF value of the current best solution that contains an attribute is called the \emph{aspiration level} of the attribute.
+	\item To guide the search into less explored solution space, if a solution $s'$ is a non-improving neighbourhood w.r.t. solution $s$, then $s'$ is penalised by a term proportional to the addition frequency of its attributes.
+\end{itemize}	
+
+\subsection{Modifications}
+\begin{itemize}[label=\textcolor{myPurple}{\textbullet},leftmargin=*,itemsep=-0.1em]
+	\item In our problem, we may have many other scenarios where a disruption and rescheduling can occur, not just the addition of a new service, and to create an initial solution for the R\&R we it may involve reassigning multiple services to other carers, not just one new service as with \citep{yuan2017}.
+	\item We also need to consider double services, e.g. if the disruption occurs on a double/synchronised service, as this can affect multiple carers' routes.
 \end{itemize}
 
 
+\section{Disruption Management of the VRP with Breakdown}
+\noindent \citet{mu2011}: Disruption management of the vehicle routing problem with vehicle breakdown. The problem arises when a vehicle breaks down on a route, and a new solution needs to be created quickly such that the remaining customers on the vehicle's route are reassigned to other vehicles, whilst also minimising costs. The paper introduces two tabu search algorithms to solve the problem. The disruption in this problem, when a vehicle breaks down, corresponds to the scenario in our problem where a carer must stay with a patient (stay at a job) due to an emergency, and so all remaining jobs in the carer's route will need to be reassigned to other carers.
+
+\subsection{Differences}
+\begin{itemize}[label=\textcolor{myYellow}{\textbullet},leftmargin=*,itemsep=-0.1em]
+	\item There are no double services or synchronised deliveries (jobs) to customers.
+	\item There are no time windows for vehicle deliveries.
+	\item There is an extra vehicle (EV) available at the depot, however it may not be possible to have an extra carer on stand-by as this will incur extra costs.
+	\item All vehicles start and end at a central depot, whereas in our problem carers start and end their routes at their own homes.
+	\item There are no route distance nor distance radius constraints.
+	\item It is assumed that the goods being delivered by the vehicle are all the same, and each customer is expecting the same goods; thus any vehicle can deliver to any customer. Obviously, this is not the case in our problem, as each job requires a carer with the appropriate skill level.
+	\item This problem also deals with the issue of vehicles being empty (i.e. running out of goods to deliver to customers). As the carers offer a service in our problem, we do not have this constraint.
+	\item Each customer only needs to be visited once by one vehicle; again, it may be that a patient needs to be visited multiple times in a day by different carers at different times (note that these are just considered as individual/separate jobs in our model).
+\end{itemize}
+
+\subsection{Model and Solution Approach}
+\begin{itemize}[label=\textcolor{myYellow}{\textbullet},leftmargin=*,itemsep=-0.1em]
+	\item The initial solution for the new plan is based on the original plan to save computing time.
+	\item There are two ways of creating an initial solution: either with an extra vehicle (EV) or without an EV.
+	\item If an EV must be used, the initial solution is formed as follows: the vehicles that are not broken-down continue on their routes as in the original plan, and are not affected by any changes. Note that the next customer that each of these vehicles is to serve at the time of the disruption is referred to as the `starting point' of these vehicles' routes in the new plan. An EV is sent out from the depot to resume the route of the broken-down vehicle, starting at the customer that the broken vehicle was on the way to serve (the starting point of the EV is the customer that was next in the original vehicle's route before it broke down).
+	\item When an EV is not required, an insertion algorithm is used to find an initial solution: the vehicles that are not broken-down continue on their routes as in the original plan (as above), and then the unserved customers in the disrupted route are inserted into the closest routes, according to their distance to the midpoint between the starting point and the depot. If an insertion violates the capacity constraint, then the customer is inserted into the next closest route. If there is no feasible insertion route, then the customer is simply inserted into the closest route, regardless of infeasibility.
+	\item TS is used, starting from an initial solution (which can be infeasible or feasible), moving to the best neighbouring solution until a time limit is reached.
+	\item Neighbourhood search is based on a relocation process: removing a customer from one route and inserting it into another route (same as \citet{yuan2017}). In each iteration, \emph{all} possible moves are tried for all customers, and the move that gives the least cost (i.e. the best of all neighbouring solutions) is chosen as the next move, provided it is not in the tabu list.
+	\item To explore more of the search space, customers that have been moved frequently are penalised.
+	\item To intensify the search space, each route is improve using two-opt and relocation after every $x$ iterations of TS for $y$ iterations; this is also performed every time a new best feasible solution is found.
+\end{itemize}	
+
+\subsection{Modifications}
+\begin{itemize}[label=\textcolor{myYellow}{\textbullet},leftmargin=*,itemsep=-0.1em]
+	\item 
+\end{itemize}
 
 \bibliographystyle{plainnat}
 \bibliography{includes/bibliography}
-
-
-
-
-
-
-
-
-
 
 
 
