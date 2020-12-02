@@ -1,1 +1,0 @@
-cl.exe ..\src\C\constructive.c ..\src\C\read_instance.c ..\src\C\grasp.c /Ox /LD /I C:\Apps\Anaconda3\include /link /dll /libpath:C:\Apps\Anaconda3\libs /out:.\constructive.dll

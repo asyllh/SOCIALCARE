@@ -1,4 +1,0 @@
-install_version("irace	", version = "3.0", repos = "http://cran.us.r-project.org")
-
-library("devtools")
-install_version("irace	", version = "3.0")
