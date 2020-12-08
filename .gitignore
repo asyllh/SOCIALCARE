@@ -53,6 +53,11 @@ Thumbs.db
 *.exp
 *.lib
 *.obj
+*.vcxproj.filters
+*.vcsproj.user
+*.vcxproj
+*.db
+*.suo
 
 #VSCode
 .vs/
