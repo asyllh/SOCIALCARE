@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import ctypes
@@ -6,13 +7,13 @@ import matplotlib.pyplot as plt
 import datetime
 from datetime import timedelta
 import time
-import osrm
-# import osrm_extend as oe
-import os
 import subprocess
 from math import sqrt
 import pickle
+import osrm
+
 import mankowska_data as Mk
+# import osrm_extend as oe
 
 
 def prepare_instance(file_to_run,
@@ -24,6 +25,7 @@ def prepare_instance(file_to_run,
                      load_from_disk=False,
                      mkVNS=False,
                      options_vector=[]):
+    # This function is called in def worker_task, returns an instance 'i' of the class INSTANCE
 
     if (max_time_seconds < 0 or verbose_level < 0):
         print('Invalid parameters: ')
@@ -34,10 +36,9 @@ def prepare_instance(file_to_run,
     if not os.path.isfile(file_to_run):
         print('Error: File "' + str(file_to_run) + '" does not exist.')
         exit(-1)
-        
+    
+    ############################################# INSTANCE i IS CREATED ######################################################
     i = INSTANCE()
-
-    # i.name = file_to_run.split('.')[-2]
 
     i.full_file_name = file_to_run
     i.name = os.path.basename(file_to_run)
@@ -53,10 +54,10 @@ def prepare_instance(file_to_run,
     # print('max time seconds ' + str(i.MAX_TIME_SECONDS))
     print('Before calling, i: ', i)
     print('i.DSSkillType ', i.DSSkillType)
+
     # Generate the instance from the file:
     if instance_type == 'excel':
         i.read_excel(file_to_run)
-
     elif instance_type == 'pfile':
         i = i.unpickle_instance(file_to_run)
         i.DSSkillType = 'strictly-shared'
@@ -73,24 +74,17 @@ def prepare_instance(file_to_run,
             i = Mk.generate_Mk(i, matfile=file_to_run, filetype='large_vns')
         else:
             i = Mk.generate_Mk(i, file_to_run)
-
     elif instance_type == 'ait_h':
         if quality_measure == 'default':
             quality_measure = 'ait_h'
         i = Mk.ait_h_to_c(file_to_run, i)
-
     elif instance_type == 'tsp':
         i = Mk.generate_Mk(i, matfile=file_to_run, filetype='tsptw')
-        # i = Mk.generate_Mk(tspLib=True)
         print('TSP format implementation needs review')
         return(-1)
 
     elif instance_type == 'braekers':
         i.read_braekers(file_to_run)
-        # i.generate_hampshire_euclidean()
-        # i.generate_hampshire2()
-
-
 
 
     # Set lambdas:
@@ -101,6 +95,7 @@ def prepare_instance(file_to_run,
     i.lambda_5 = 1
     i.lambda_6 = 10
     # print('Skill type still is', i.DSSkillType)
+
     # Initialise the rest:
     # print('BEFORE INIT ', i.MAX_TIME_SECONDS)
     i.init()
@@ -126,6 +121,7 @@ def prepare_instance(file_to_run,
     i.solMatrix = np.zeros((i.nNurses, i.nJobs), dtype=np.int32)
 
     return i
+### --- End def prepare_instance --- ###
 
 def worker_task(options_tuple, rSeed):
 
@@ -149,6 +145,7 @@ def worker_task(options_tuple, rSeed):
     # print('Another quality ' + str(quality))
     # print('i.od[0][0]  ' + str(i.od[0][0]))
     return i
+### --- End def worker_task --- ###
 
 def get_all_files_in_directory(directory, matching_extension='.'):
     file_list = []
@@ -158,12 +155,14 @@ def get_all_files_in_directory(directory, matching_extension='.'):
                 file_list.append(fi)
 
     return file_list
+### --- End def get_all_files_in_directory --- ###
 
 def reverse_list_coords(wrongList):
     rightList = []
     for ii in wrongList:
         rightList.append([ii[1], ii[0]])
     return rightList
+### --- End def reverse_list_coords --- ###
 
 def list_matching(list1, list2, metric, maxMat=50000):
     numberOfSources = len(list1)
@@ -213,6 +212,7 @@ def list_matching(list1, list2, metric, maxMat=50000):
         matchListReturn.append(theMatrix[l2idx:,i])
     
     return [matchListGo, matchListReturn]
+### --- End def list_matching --- ###
 
 
 class geopoint(object):
@@ -223,8 +223,9 @@ class geopoint(object):
         return([self.lat, self.long])
     def longlat(self):
         return([self.long, self.lat])
+### --- End class geopoint  --- ###
 
-def     default_options_vector():
+def default_options_vector():
     ov = np.zeros(100, dtype=np.float64)
     ov[1] = 0.0 # Quality meausre (might be modified automatically for MK, default: Ait H.)
     ov[1] = 1.0 # Two-opt active
@@ -257,6 +258,7 @@ def     default_options_vector():
 
     ov[99] = 0.0 # print all input data
     return ov
+### --- End def default_options_vector --- ###
 
 class JOB(object):
     def __init__(self):
@@ -286,6 +288,7 @@ class JOB(object):
         self.waitingToStart = 0
         self.arrivalTime = 0
         self.departureTime = 0
+### --- End class JOB --- ###        
 
 class NURSE(object):
     def __init__(self):
@@ -310,7 +313,7 @@ class NURSE(object):
         self.overtimeWork = 0
         self.travelTime = 0
         self.route = []
-                        
+### --- End class NURSE --- ###                       
 
 # class OSRM_SERVER(object):
 # 	"""docstring for osrm_server"""
@@ -344,6 +347,7 @@ class NURSE(object):
 
 def reverse_latlong(latlong):
     return [latlong[1], latlong[0]]
+### --- End def reverse_latlong --- ###    
 
 class INSTANCE(object):
     def __init__(self):
@@ -371,9 +375,9 @@ class INSTANCE(object):
         self.Cquality = -1
         self.DSSkillType = 'shared-duplicated' # See overleaf document for details
         self.capabilityOfDoubleServices = []
+
         # Post-processed solution:
         self.nurseRoute = []
-
         self.nurseWaitingTime = []
         self.nurseServiceTime = []
         self.nurseTravelTime = []
@@ -398,7 +402,6 @@ class INSTANCE(object):
         self.lambda_4 = 1
         self.lambda_5 = 1
         self.lambda_6 = 1
-
 
         ### Define call to C ###
         if os.name == "nt":
@@ -445,6 +448,7 @@ class INSTANCE(object):
                         ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),# prefScore
                         ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),# algorithmOptions
                         ctypes.c_int] # Random seed
+    ### --- End def  __init__ --- ###                    
 
     def pickle(self, name):
         # print('Saving instance as ' + str(name) + '...')
@@ -457,6 +461,7 @@ class INSTANCE(object):
         f.close()
         self.lib, self.fun = temp_data
         # print('Done.')
+    ### --- End def pickle --- ###    
 
     def unpickle_instance(self, name):
         print('Reading instance from ' + str(name) + '...')
@@ -491,9 +496,9 @@ class INSTANCE(object):
         # self.init()
         # print('Done.')
         return instance_obj
+    ### --- End def unpickle_instance --- ###
 
     def preference_score(self, job, nurse):
-
         carerOK = 0
         if len(job.preferredCarers) > 0:
             carerOK = -1 # Penalise if there is someone on the list, but it's not met
@@ -532,6 +537,7 @@ class INSTANCE(object):
                 )
 
         return(score)
+    ### --- End def preference_score --- ###    
 
 
     def fill_preferences(self):
@@ -539,6 +545,7 @@ class INSTANCE(object):
         for i,job in enumerate(self.jobObjs):
             for j,nurse in enumerate(self.nurseObjs):
                 self.prefScore[i][j] = self.preference_score(job, nurse)
+    ### --- End def fill_preferences --- ###
 
 
     def init_job_and_nurse_objects(self):
@@ -551,6 +558,7 @@ class INSTANCE(object):
         for ii in range(self.nNurses):
             self.nurseObjs.append(NURSE())
             self.nurseObjs[-1].ID = ii
+    ### --- End def init_job_and_nurse_objects --- ###
 
     def init(self):
         int_type = np.int32
@@ -668,8 +676,7 @@ class INSTANCE(object):
 
         if len(self.prefScore) < 1:
             self.fill_preferences()
-
-
+    ### --- End def init --- ###        
 
     def read_excel(self, excelFile):
         # Open file and check quality:
@@ -898,6 +905,7 @@ class INSTANCE(object):
         # print('Done.')
         self.fill_preferences()
         self.objs_info_to_c_format()
+    ### --- End def read_excel --- ###
 
     def objs_info_to_c_format(self):
         int_type = np.int32
@@ -1049,8 +1057,7 @@ class INSTANCE(object):
 
         # print('\nsolMatrix = ')
         # print(self.solMatrix)
-
-
+    ### --- End def objs_info_to_c_format --- ###
 
     def time_to_string(self, quantity):
         seconds = quantity
@@ -1065,6 +1072,7 @@ class INSTANCE(object):
         # q_in_seconds = self.secondsPerTU*quantity
         # realTime = zeroDate + timedelta(seconds=q_in_seconds)
         # return(realTime.strftime("%H:%M:%S"))
+    ### --- End def time_to_string --- ###
 
     def read_from_csvs(self, patientFile, nurseFile):
         self.nJobs = -1
@@ -1114,7 +1122,7 @@ class INSTANCE(object):
         # 		if count < 1: # Skip header
         # 			continue
         # 		if pitem.Type == row[6]:
-
+    ### --- End def read_from_csvs --- ###
 
     def read_braekers(self, fname):
         [nJobs, nNurses, nSkills, nurseWorkingTimes, nurseSkills, jobTimeInfo, jobSkillsRequired, od, secondsPerTU] = read_braekers(fname)
@@ -1127,6 +1135,8 @@ class INSTANCE(object):
         self.jobSkillsRequired = jobSkillsRequired
         self.od = od
         self.solMatrix = np.ones((nNurses, nJobs), dtype=np.int)
+    ### --- End def read_braekers --- ###
+
     def simple_solution_plot(self, filename='none'):
         # Check if plots are available:
         if (self.nurseObjs[0].startLocation == []):
@@ -1134,7 +1144,6 @@ class INSTANCE(object):
                 no.startLocation = geopoint(self.xy[0][1], self.xy[0][0])
             # print('*** WARNING: Plots not available for this instance. Skipping... ***')
             # return
-
 
         fig, ax = plt.subplots()
         ncount = -1
@@ -1179,11 +1188,7 @@ class INSTANCE(object):
             else:
                 textlabel = 'DEPOT'
             plt.text(pt[0], pt[1], textlabel, rotation=0, verticalalignment='center',color='blue', fontsize=14)
-# for i in range(10):
-# 	x = [0, i, i, 0, 0]
-# 	y = [0, 0, i, i, 0]
-# 	ax.plot(x, y, 'ro', ms=10)
-# 	ax.plot(x, y, '-k')
+
         ax.legend(tuple(nLegends))
         ax.set_title("Routes for " + str(self.nNurses) + " nurses", fontsize=18)
         ax.grid(True, color='gray', alpha=0.5)
@@ -1193,6 +1198,7 @@ class INSTANCE(object):
             plt.show(block=False)
         else:
             plt.savefig(filename + '_route' + '.png', bbox_inches='tight')
+    ### --- End def simple_solution_plot --- ###
 
     def solution_to_website(self, filename='sdfasdfasdfasdfas'):
         # Check if website generation is available:
@@ -1215,9 +1221,9 @@ class INSTANCE(object):
         # folium.TileLayer('cartodbdark_matter').add_to(m)
         # folium.TileLayer('Stamen Toner').add_to(m)
         # m = folium.Map(location=rxy[0],
-   #     zoom_start=12,
-   #     tiles='https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
-   #     attr='Mapbox')
+        # zoom_start=12,
+        # tiles='https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
+        # attr='Mapbox')
         # for i,pt in enumerate(rxy):
         # 	popupVal = 'Depot'
         # 	if i > 0:
@@ -1421,9 +1427,11 @@ class INSTANCE(object):
 
         m.add_child(folium.map.LayerControl())
         m.save(webFilename)
-##################################################
-# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-##################################################
+    ### --- End def solution_to_website --- ###
+
+    ##################################################
+    # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    ##################################################
     def hovering_image(self, imName, altText, idd):
         return('''<img id="myImg''' + str(idd) + '''" src="''' + imName + '''"
                  alt="''' + altText + '''" width="300" height="200">
@@ -1436,6 +1444,7 @@ class INSTANCE(object):
                 #myImg''' + str(idd) + ''':hover {opacity: 0.7;}
                 </style>
                 ''')
+    ### --- End def hovering_image --- ###           
 
 
     def solve(self, randomSeed=0, printAllCallData=False):
@@ -1609,6 +1618,7 @@ class INSTANCE(object):
         # time.sleep(2)
         # print('Done.')
         self.post_process_solution()
+    ### --- End def solve --- ###  
 
     def post_process_solution(self):
         # Generate nurse routes:
@@ -1637,6 +1647,7 @@ class INSTANCE(object):
             for i,sp in enumerate(self.solMatrix[nurse,:]):
                 if sp > -1:
                     self.nurseRoute[nurse][sp] = i
+    ### --- End def post_process_solution --- ###
 
     def pie_chart_how_is_time_spent(self):
         labels = 'Travel', 'Waiting', 'Service'
@@ -1647,9 +1658,9 @@ class INSTANCE(object):
         plt.title('Total time for ' + str(self.nNurses) + ' nurses: ' + self.time_to_string(self.totalTime))
         plt.axis('equal')
         plt.draw()
+    ### --- End def pie_chart_how_is_time_spent --- ###
 
     def bar_stacked_chart_work_times_per_nurse(self):
-
         xpos = np.arange(self.nNurses)
         width = 0.35
 
@@ -1675,6 +1686,9 @@ class INSTANCE(object):
         plt.legend((p1[0], p2[0], p3[0]), ('Service time', 'Travel time', 'Waiting time'))
 
         plt.draw()
+    ### --- End def bar_stacked_chart_work_times_per_nurse --- ###
+
+
 ########################################################
 #### Brought from C #####
     def get_nurse_route(self, ni):
@@ -1811,7 +1825,7 @@ class INSTANCE(object):
             # print("\n")
          # free(nurseRoute)
         if self.qualityMeasure == 'mankowska':
-            quality = (self.totalTravelTime + self.totalTardiness + self.maxTardiness)/3; # Mankowska
+            quality = (self.totalTravelTime + self.totalTardiness + self.maxTardiness)/3 # Mankowska
             print('Quality returned from C DLL: ' + str(self.Cquality))
             print("Mankowska measure (python computed) = " + str(quality))
             print("\ttotalTravelTime = " + str(self.totalTravelTime))
@@ -1891,10 +1905,10 @@ def read_braekers(filename):
         print('// Information is expressed on a 1 minute level.')
         secondsPerTU = 60
 
-# The following lines contain information on the nurses:
-# 1 earliest_working_time latest_working_time regular_working_time maximum_working_time cost_per_unit_of_overtime mode skill_level
-# .
-# N
+    # The following lines contain information on the nurses:
+    # 1 earliest_working_time latest_working_time regular_working_time maximum_working_time cost_per_unit_of_overtime mode skill_level
+    # .
+    # N
     maxSkillLevel = 0
     nurseWorkingTimes = np.zeros((nNurses, 3), dtype=int_type)
     nSkills = []
