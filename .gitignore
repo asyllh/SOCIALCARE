@@ -54,6 +54,9 @@ Thumbs.db
 *.lib
 *.obj
 
+#VSCode
+.vs/
+
 Debug/*
 cmake-build-debug/
 cmake-build-release/
