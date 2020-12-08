@@ -11,12 +11,12 @@ class POSTCODE_FINDER():
     """
     df = []
     filename = []
-    def __init__(self, filename=r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\data\postcode\salisbury_postcode_lookup.csv'):
+    def __init__(self, filename=r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\postcode\salisbury_postcode_lookup.csv'):
         self.filename = filename
         self.df = pd.read_csv(self.filename)
         self.df['post'] = self.df['Postcode 1'].str.replace(' ', '')
         self.df['post'] = self.df['post'].str.lower()
-        self.n_adr_filename = r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\data\postcode\salisbury_full_codepoint.csv'
+        self.n_adr_filename = r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\postcode\salisbury_full_codepoint.csv'
         self.adr_df = pd.read_csv(self.n_adr_filename)
         self.adr_df['post'] = self.adr_df['PC'].str.replace('"', '')
         self.adr_df['post'] = self.adr_df['post'].str.replace(' ', '') # Changed from self.adr_df['PC'].str.replace(' ', '') to self.adr_df['post'].str.replace(' ', '')
@@ -112,6 +112,9 @@ for a_name in u_areas: # For each area in the list of Areas
                 'tasks' : {'client' : [], 'postcode': [], 'num_addresses': [], 'lat': [], 'lon' : [], 'duration' : [], 'tw_start' : [], 'tw_end' : []},
                 'routes' : []
                 }
+                #['rota']['start'] is the start time of the carer IN MINUTES FROM MIDNIGHT (I.E. 12:00AM)
+                #['rota']['end'] is the end time of the carer IN MINUTES FROM MIDNIGHT (I.E. 12:00AM)
+                
         start_of_day = day_df.iloc[0]['start_dt'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first job.
         # print('start_of_day:')
         # print(start_of_day)
@@ -164,7 +167,7 @@ for a_name in u_areas: # For each area in the list of Areas
                 # Task info:
                 inst['tasks']['client'].append(row['Client']) # Add client 'Client #' to tasks list
                 inst['tasks']['postcode'].append(row['Postcode'].lower().replace(' ', '')) # Add postcode of client to tasks list
-                nad = pdfinder.find_postcode_n_addresses(inst['rota']['postcode'][-1]) # nad = number of addresses at client's postcode
+                nad = pdfinder.find_postcode_n_addresses(inst['tasks']['postcode'][-1]) # nad = number of addresses at client's postcode
                 inst['tasks']['num_addresses'].append(nad) # Add nad to tasks list
                 if nad >= min_addresses: # If sufficient # of addresses at postcode, get latitude and longitude, else cannot for privacy reasons
                     lat, lon = pdfinder.find_postcode_latlon(inst['tasks']['postcode'][-1])
