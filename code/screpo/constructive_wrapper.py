@@ -42,16 +42,16 @@ def main():
     # Short irace run:
     # do_twopt no_change_ls no_change_grasp pr_strategy pr_direction    sols_in_pool grasp_dl grasp_dr rcl_strategy
     # 1            1               1           3            2           20           0.50     0.48            2       
+    options_vector[1] = 1.0 # Two-opt active
+    options_vector[3] = 0.0 # Nurse order change active (neighbourhood in local search)
+    options_vector[4] = 0.5 # -   GRASP: Delta low
+    options_vector[5] = 0.48 # -   GRASP: Delta range
     options_vector[6] = 1.0 # Nurse order change active (In GRASP, between calls)
     options_vector[7] = 1.0 # deprecated
+    options_vector[8] = 20.0 # Solutions in pool
     options_vector[9] = 3.0 # PR_STRATEGY
     options_vector[10] = 2.0 # RCL Strategy
     options_vector[11] = 2.0 # PR_DIRECTION
-    options_vector[8] = 20.0 # Solutions in pool
-    options_vector[3] = 0.0 # Nurse order change active (neighbourhood in local search)
-    options_vector[1] = 1.0 # Two-opt active
-    options_vector[4] = 0.5 # -   GRASP: Delta low
-    options_vector[5] = 0.48 # -   GRASP: Delta range
     options_vector[12] = 0 # -   Use gap (1) or precedence (0)
 
 
