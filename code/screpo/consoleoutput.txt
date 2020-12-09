@@ -1,0 +1,53 @@
+**********************************************************************
+** Visual Studio 2019 Developer Command Prompt v16.7.5
+** Copyright (c) 2020 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+
+C:\Users\clf1v16\docs_offline
+λ python
+Python 3.7.4 (default, Aug  9 2019, 18:34:13) [MSC v.1915 64 bit (AMD64)] :: Anaconda, Inc. on win32
+
+Warning:
+This Python interpreter is in a conda environment, but the environment has
+not been activated.  Libraries may fail to load.  To activate this environment
+please see https://conda.io/activation
+
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import curl
+>>> curl('http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219?overview=false')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'module' object is not callable
+>>> curl.get('http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219?overview=false')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'curl' has no attribute 'get'
+>>> curl.curl('http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219?overview=false')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'curl' has no attribute 'curl'
+>>> import requests
+>>> r = requests.get('http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219?overview=false')
+>>> r.json()
+{'code': 'Ok', 'waypoints': [{'hint': 'I2B6kphgepIYAAAAJgAAAAAAAAAAAAAASjFaQU1xpUEAAAAAAAAAAAwAAAATAAAAAAAAAAAAAAAHGAEA_kvMAKlYIQM8TMwArVghAwAA7wrV7nda', 'distance': 4.231666, 'location': [13.388798, 52.517033], 'name': 'Friedrichstraße'}, {'hint': 'TwRIgJ33bJIGAAAACgAAAAAAAAB2AAAAW7-PQOKcyEAAAAAApq6DQgYAAAAKAAAAAAAAAHYAAAAHGAEAf27MABiJIQOCbswA_4ghAwAAXwXV7nda', 'distance': 2.789393, 'location': [13.397631, 52.529432], 'name': 'Torstraße'}, {'hint': 'UgRIgP___38fAAAAUQAAACYAAAAeAAAAsowKQkpQX0Lx6yZCvsQGQh8AAABRAAAAJgAAAB4AAAAHGAEASufMAOdwIQNL58wA03AhAwMAvxDV7nda', 'distance': 2.226595, 'location': [13.428554, 52.523239], 'name': 'Platz der Vereinten Nationen'}], 'routes': [{'legs': [{'steps': [], 'weight': 252.7, 'distance': 1884.8, 'summary': '', 'duration': 251.5}, {'steps': [], 'weight': 372.2, 'distance': 2946.1, 'summary': '', 'duration': 372.2}], 'weight_name': 'routability', 'weight': 624.9, 'distance': 4830.9, 'duration': 623.7}]}
+>>> type(r.json())
+<class 'dict'>
+>>> d = r.json()
+>>> d.keys()
+dict_keys(['code', 'waypoints', 'routes'])
+>>> d['waypoints']
+[{'hint': 'I2B6kphgepIYAAAAJgAAAAAAAAAAAAAASjFaQU1xpUEAAAAAAAAAAAwAAAATAAAAAAAAAAAAAAAHGAEA_kvMAKlYIQM8TMwArVghAwAA7wrV7nda', 'distance': 4.231666, 'location': [13.388798, 52.517033], 'name': 'Friedrichstraße'}, {'hint': 'TwRIgJ33bJIGAAAACgAAAAAAAAB2AAAAW7-PQOKcyEAAAAAApq6DQgYAAAAKAAAAAAAAAHYAAAAHGAEAf27MABiJIQOCbswA_4ghAwAAXwXV7nda', 'distance': 2.789393, 'location': [13.397631, 52.529432], 'name': 'Torstraße'}, {'hint': 'UgRIgP___38fAAAAUQAAACYAAAAeAAAAsowKQkpQX0Lx6yZCvsQGQh8AAABRAAAAJgAAAB4AAAAHGAEASufMAOdwIQNL58wA03AhAwMAvxDV7nda', 'distance': 2.226595, 'location': [13.428554, 52.523239], 'name': 'Platz der Vereinten Nationen'}]
+>>> type(d['waypoints'])
+<class 'list'>
+>>> d['routes']
+[{'legs': [{'steps': [], 'weight': 252.7, 'distance': 1884.8, 'summary': '', 'duration': 251.5}, {'steps': [], 'weight': 372.2, 'distance': 2946.1, 'summary': '', 'duration': 372.2}], 'weight_name': 'routability', 'weight': 624.9, 'distance': 4830.9, 'duration': 623.7}]
+>>> d['routes']['distance']
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: list indices must be integers or slices, not str
+>>> d['routes']
+[{'legs': [{'steps': [], 'weight': 252.7, 'distance': 1884.8, 'summary': '', 'duration': 251.5}, {'steps': [], 'weight': 372.2, 'distance': 2946.1, 'summary': '', 'duration': 372.2}], 'weight_name': 'routability', 'weight': 624.9, 'distance': 4830.9, 'duration': 623.7}]
+>>> len(d['routes'])
+1
+>>>
