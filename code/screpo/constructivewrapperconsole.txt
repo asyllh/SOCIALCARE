@@ -1,0 +1,149 @@
+DEBUG mimic mankowska
+
+=======================================================
+Running file number 0, "saved_InstanzCPLEX_HCSRP_10_1.mat" for a maximum of 5 seconds.
+Before calling, i:  <instance_handler.INSTANCE object at 0x0000021582196BE0>
+i.DSSkillType  strictly-shared
+arg i <instance_handler.INSTANCE object at 0x0000021582196BE0>
+Reading from matfile: ./Instances/literature/all_mk\saved_InstanzCPLEX_HCSRP_10_1.mat...
+Loaded ./Instances/literature/all_mk\saved_InstanzCPLEX_HCSRP_10_1.mat
+Done.
+Duplicating 9 - linked with 10
+Duplicating 8 - linked with 11
+mktc i skilltype  strictly-shared
+Calling C function for a max. of 5 seconds , random seed is 3967756.
+THE MIN PREF OF THIS INSTANCE IS:
+<-< minPref = 0.00 >->
+
+STARTING Nurse order: (0,1,2,)
+It      0       Q -232.88       t    0.0 s
+ > Nurse order: (0,1,2,)
+It      1       Q -218.20       t    0.0 s
+ > Nurse order: (0,2,1,)
+It      7       Q -218.20       t    0.0 s
+ > Nurse order: (1,2,0,)
+SKIP LS, quality: -256.24 (average CR: -1567.51, threshold value: -1567.51 )
+SKIP LS, quality: -5965.83 (average CR: -1568.00, threshold value: -1568.00 )
+
+Time finished! (5.00 seconds)
+GRASP: Performed 8996 iterations.
+Relinking all pairs of solutions in the pool.
+-------- sol_quality(ip, 12345) --------
+
+Nurse 1. Start time: 0.00
+        Job 7 (DS) at 46.00, pref 0.00, [TW 46 - 166] > + 14 ST[ready at: 60.00]
+Finishes: 73.04 Overtime: -926.96 Waiting time: 32.96
+Nurse 2. Start time: 0.00
+        Job 7 (DS) at 46.00, pref 0.00, [TW 46 - 166] > + 14 ST + 99.16 Tr [ready at: 159.16]
+        Job 10 at 159.16, pref 0.00, [TW 148 - 268] (Dep 9 [8 - 16])> + 14 ST + 50.92 Tr [ready at: 224.08]
+        Job 5 at 224.08, pref 0.00, [TW 184 - 304] > + 14 ST + 53.04 Tr [ready at: 291.12]
+        Job 1 at 291.12, pref 0.00, [TW 268 - 388] > + 14 ST + 23.09 Tr [ready at: 328.21]
+        Job 0 at 345.00, pref 0.00, [TW 345 - 465] > + 14 ST + 57.45 Tr [ready at: 416.45]
+        Job 11 at 416.45, pref 0.00, [TW 298 - 418] (Dep 8 [51 - 102])> + 14 ST + 28.43 Tr [ready at: 458.88]
+        Job 3 at 458.88, pref 0.00, [TW 393 - 513] > + 14 ST[ready at: 472.88]
+Finishes: 480.16 Overtime: -519.84 Waiting time: 49.75
+Nurse 0. Start time: 0.00
+        Job 9 at 148.00, pref 0.00, [TW 148 - 268] (Dep 10 [-16 - -8])> + 14 ST + 59.64 Tr [ready at: 221.64]
+        Job 2 at 247.00, pref 0.00, [TW 247 - 367] > + 14 ST + 53.15 Tr [ready at: 314.15]
+        Job 4 at 314.15, pref 0.00, [TW 254 - 374] > + 14 ST + 27.89 Tr [ready at: 356.04]
+        Job 8 at 356.04, pref 0.00, [TW 298 - 418] (Dep 11 [-102 - -51])> + 14 ST + 34.01 Tr [ready at: 404.06]
+        Job 6 at 434.00, pref 0.00, [TW 434 - 554] > + 14 ST[ready at: 448.00]
+Finishes: 480.53 Overtime: -519.47 Waiting time: 114.41
+Used quality: -218
+Mankowska values:
+        totalTravel = 654.60    totPref = 0.0000        mk_allowed_tardiness = 0.00             mk_max_tardiness = 0.00
+totalTardiness: 0.00    totalMKTardiness: 0.00  totalTravel: 654.60     totalOvertime: 0.00
+maxSpareTime: 926.96    minSpareTime: 519.47    totalTime: 1033.73      Mankowska obj: 218.20
+
+------------------------
+shortestDay = 73.04
+longestDay = 480.53
+dayDiff = 166046.88
+minSpareTime = 519.47
+maxSpareTime = 926.96
+
+------------------------
+PAPER EXTRA BIT
+(0.3*totalTravel + ip->totPref) = 196.38
+totalTravel = 654.60
+ip->totPref = 0.00
+quality = -218.20
+totalMKTardiness = 0.00
+mk_allowed_tardiness = 0.00
+totalOvertime = 0.00
+ip->algorithmOptions[50] = 0.00 (if 1, tardiness/overtime are infeasible)
+ip->algorithmOptions[51] = -20.00
+ip->algorithmOptions[51]*travelMinutes = -218.20
+ip->algorithmOptions[52] = 0.00
+ip->algorithmOptions[52]*totalWaitingMinutes = 0.00
+ip->algorithmOptions[53] = -20.00
+ip->algorithmOptions[53]*totalMKTardiness = -0.00
+ip->algorithmOptions[54] = 0.00
+ip->algorithmOptions[54]*totalOvertime = 0.00
+ip->algorithmOptions[55] = 0.00
+ip->algorithmOptions[55]*minSpareTimeMinutes = 0.00
+ip->algorithmOptions[56] = 0.00
+ip->algorithmOptions[56]*ip->totPref = 0.00
+quality = -218.20
+
+-
+-1*travelMinutes = -10.91
+-0*totalWaitingMinutes = 0.00
+-5*totalMKTardiness = -0.00
+-5*totalOvertime = -0.00
+0.0*minSpareTimeMinutes= 0.00
+-1*ip->totPref= -0.00
+----------------------
+IF IT WAS MANKOWSKA
+quality = -1*(totalTravel + mk_allowed_tardiness + mk_max_tardiness)/3 = -218.20
+totalTravel = 654.60
+mk_allowed_tardiness = 0.00
+mk_max_tardiness = 0.00
+------------------------------------
+<- VALUES FOR COMPARISON OF QUALITY ->
+<-< totalTravel = 654.60 >->
+<-< totalWaitingMinutes = 3.29 >->
+<-< ip->totPref = 0.00 >->
+<-< shortestDay = 73.04 >->
+<-< longestDay = 480.53 >->
+<-< dayDifference = 407.49 >->
+<-< totalOvertime = 0.00 >->
+<-< maxSpareTime: 926.96 >->
+<-< minSpareTime: 519.47 >->
+<-< totalTime: 1033.73 >->
+<-< quality: -218.20 >->
+<- END OF COMPARISON OF QUALITY ->
+Nurse order: ( 1,  2,  0,   )
+-------- finished. sol_quality(ip, 12345) --------
+
+        PR all pairs final quality: -218.20
+Iterations performed: 8996
+GRASP Finished.
+Final quality: -218.20
+Theoretical best quality: -218.20
+Iterations performed: 8996
+sols_generated = 8997
+local_searches_performed = 8995
+solutions_relinked = 0
+total path_relinkings_performed = 0
+Elapsed time: 5.12 s (MAX: 5.00)
+Final solution quality is: -218.20
+
+------
+Quality indicators:
+Travel time   (min)     10.91
+Total time    (min)     17.23
+Total tard.   (min)     0.00
+Longest shift (min)     8.01
+Total Overtime(min)     0.00
+
+------
+Finshed.
+Quality: 218.19855033333334
+Those were results for saved_InstanzCPLEX_HCSRP_10_1.mat running for 8.1 seconds.
+About to plot
+
+
+=======================================================
+=======================================================
+=======================================================
