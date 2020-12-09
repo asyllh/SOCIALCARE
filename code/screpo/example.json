@@ -1,0 +1,32 @@
+{
+    "waypoints" : [
+        {
+            "location": [-1.791631, 51.075106], 
+            "name": "Queens Road", 
+            "hint": "uT0YgDY_GIAoAAAALQAAAAAAAAAAAAAAGl3fQWy7-0EAAAAAAAAAACgAAAAtAAAAAAAAAAAAAAAQCgAAcank_yJYCwMzquT_WVgLAwAA_xTf8p37"
+        }, 
+        {
+        "location": [-1.669964, 51.246289], 
+        "name": "Collins Court", 
+        "hint": "2Bk6gD6GUYAQAAAAJwAAAAAAAAAAAAAAmSk8Qcnr0UEAAAAAAAAAABAAAAAnAAAAAAAAAAAAAAAQCgAAtITm_9H0DQNiheb_mfQNAwAAvwHf8p37"
+        }
+    ], 
+    "routes": [
+        {
+            "distance": 24378.6, 
+            "duration": 1729.5, 
+            "weight": 1729.7, 
+            "weight_name": "routability", 
+            "legs": [
+                {
+                    "distance": 24378.6, 
+                    "duration": 1729.5, 
+                    "weight": 1729.7, 
+                    "summary": "", 
+                    "steps": []
+                }
+            ]
+        }
+    ], 
+    "code": "Ok"
+}
