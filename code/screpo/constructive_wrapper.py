@@ -284,7 +284,7 @@ def main():
         # i = prepare_instance(options_list[0], instance_type, quality_measure, ds_skill_type,
         # 				max_time_seconds, verbose_level, load_from_disk, options_list[-1])
 
-        i.post_process_solution()
+        i.post_process_solution() # This is already called in def solve in instane_handler.py, does it need to be called again here?
         i.full_solution_report(report=0, doPlots=create_python_plots)
 
         end_time = time.perf_counter()
