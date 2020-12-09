@@ -214,7 +214,6 @@ def list_matching(list1, list2, metric, maxMat=50000):
     return [matchListGo, matchListReturn]
 ### --- End def list_matching --- ###
 
-
 class geopoint(object):
     def __init__(self, latitude, longitude):
         self.lat = latitude
@@ -315,36 +314,6 @@ class NURSE(object):
         self.route = []
 ### --- End class NURSE --- ###                       
 
-# class OSRM_SERVER(object):
-# 	"""docstring for osrm_server"""
-# 	def __init__(self):
-# 		# Start OSRM server...
-# 		# print('Starting server for distances ' + matrixType + ' matrix...')
-# 		# if matrixType == 'driving':
-# 		serverHost = 'http://localhost:5000/'
-# 		self.carserver = subprocess.Popen('C:\\Users\\clf1u13\\Docs\\01.HHCRSP\\Code\\HHCRSP\\runCarServer.bat', 
-# 			shell=False,stdout=subprocess.PIPE)
-            
-# 		# else:
-# 		serverHost = 'http://localhost:5001/'
-# 		self.walkserver = subprocess.Popen('C:\\Users\\clf1u13\\Docs\\01.HHCRSP\\Code\\HHCRSP\\runWalkServer.bat', 
-# 			shell=False,stdout=subprocess.PIPE)
-
-# 		time.sleep(3) # Give it 3 secs to initialise
-# 		# self.carPID = self.carserver.pid
-# 		# self.walkPID = self.walkserver.pid
-# 		# print('PID: ' + str(popenConnection.pid))
-# 		# print('Done.')
-
-
-# 	def kill_server(self):
-# 		# Close servers:
-# 		# print('Killing server (' + matrixType + ' profile)...')
-# 		self.carserver.kill()
-# 		self.walkserver.kill()
-# 		print('Done.')
-        
-
 def reverse_latlong(latlong):
     return [latlong[1], latlong[0]]
 ### --- End def reverse_latlong --- ###    
@@ -362,7 +331,12 @@ class INSTANCE(object):
         self.algorithmOptions = np.zeros(100, dtype=np.float64)
         self.doubleService = []
         self.dependsOn = []
-        self.od = []
+        self.od = [] # Main od matrix, contains times in minutes - this will be used in C
+        self.odDist = [] #----NOTE- NEW VAR: contains distance matrix in metres
+        self.nurse_travel_from_depot = [] # Main nurse_travel_from_depot matrix, contains times in minutes - this will be used in C
+        self.nurse_travel_to_depot = [] # Main nurse_travel_to_depot matrix, contains times in minutes - this will be used in C
+        self.nurse_travel_from_depot_dist = [] #----NOTE- NEW VAR: contains distance matrix in metres
+        self.nurse_travel_to_depot_dist = [] #----NOTE- NEW VAR: contains distance matrix in metres
         self.xy = [] # x y coordinates for plotting routes on a map LAT-LONG
         self.solMatrix = []
         self.MAX_TIME_SECONDS = 30
@@ -492,43 +466,46 @@ class INSTANCE(object):
         instance_obj.lib = self.lib
         instance_obj.fun = self.fun
         instance_obj.DSSkillType = 'strictly-shared'
-        instance_obj.init()
+        instance_obj.init() # NOTE: CHECK THIS
         # self.init()
         # print('Done.')
         return instance_obj
     ### --- End def unpickle_instance --- ###
 
     def preference_score(self, job, nurse):
+        # Function determines preference score of given job and given nurse, where 'job' is a JOB object and 'nurse' is a NURSE object.
         carerOK = 0
-        if len(job.preferredCarers) > 0:
+        if len(job.preferredCarers) > 0: # If the job does have preferred carers
             carerOK = -1 # Penalise if there is someone on the list, but it's not met
-            for pc in job.preferredCarers:
-                if pc.lower() == nurse.ID.lower():
-                    carerOK = 1
+            for pc in job.preferredCarers: # For each 'value' (string?) pc in preferredCarers list
+                if pc.lower() == nurse.ID.lower(): # If the 'pc' index matched the ID of the nurse (nurse called in as parameter), then it means that this given job would prefer to have this nurse.
+                    carerOK = 1 # nurse is okay for this job!
                     break
 
+        
         matchedPrefsJob = 0
-        unmatchedPrefsJob = 0
-        for pref in job.preferences:
-            if pref in nurse.features:
-                matchedPrefsJob = matchedPrefsJob + 1
+        unmatchedPrefsJob = 0 # NOTE: Always zero??
+        for pref in job.preferences: # For each value (job preference characteristic?) in job.preferences list
+            if pref in nurse.features: # If the preference characteristic is one of the nurse's features, i.e. nurse has the desired characteristic
+                matchedPrefsJob = matchedPrefsJob + 1 # Increase preference score for job
             else:
-                matchedPrefsJob = matchedPrefsJob - 1
+                matchedPrefsJob = matchedPrefsJob - 1 # Decrease preference score for job
 
         matchedPrefsNurse = 0
-        unmatchedPrefsNurse = 0
-        for pref in nurse.preferences:
-            if pref in job.features:
-                matchedPrefsNurse = matchedPrefsNurse + 1
+        unmatchedPrefsNurse = 0 # NOTE: Always zero??
+        for pref in nurse.preferences: # For each value (nurse preference characteristic?) in nurse.preferences list
+            if pref in job.features: # If the preference characteristic is one of the job's features, i.e. job has the desired characteristic
+                matchedPrefsNurse = matchedPrefsNurse + 1 # Increase preference score for nurse
             else:
-                matchedPrefsNurse = matchedPrefsNurse - 1
+                matchedPrefsNurse = matchedPrefsNurse - 1 # Decrease preference score for nurse
 
         jobToAvoid = 0
-        for jta in nurse.jobsToAvoid:
-            if jta.lower() == job.ID.lower():
+        for jta in nurse.jobsToAvoid: # For each value (job ID?) in nurse.jobsToAvoid list
+            if jta.lower() == job.ID.lower(): # If the ID of the current job is in the jobsToAvoid list, then jobToAvoid = -1
                 jobToAvoid = -1
                 break
 
+        # Calculate preference score
         score = (
                 self.lambda_1*carerOK +
                 self.lambda_2*matchedPrefsJob + self.lambda_3*unmatchedPrefsJob + 
@@ -539,25 +516,24 @@ class INSTANCE(object):
         return(score)
     ### --- End def preference_score --- ###    
 
-
     def fill_preferences(self):
-        self.prefScore = np.zeros((self.nJobs, self.nNurses), dtype=np.float64)
-        for i,job in enumerate(self.jobObjs):
-            for j,nurse in enumerate(self.nurseObjs):
-                self.prefScore[i][j] = self.preference_score(job, nurse)
+        self.prefScore = np.zeros((self.nJobs, self.nNurses), dtype=np.float64) # Matrix, nJobs x nNurses (note that this is the only variable with jobxnurse, not nursexjob dimensions).
+        for i,job in enumerate(self.jobObjs): # For each JOB object in the jobObjs list
+            for j,nurse in enumerate(self.nurseObjs): # For each NURSE object in the nurseObjs list
+                self.prefScore[i][j] = self.preference_score(job, nurse) # Set the preference score of job i and nurse j
     ### --- End def fill_preferences --- ###
 
-
     def init_job_and_nurse_objects(self):
+        # Create two lists containing objects of the classes JOBS and NURSES respectively.
         self.jobObjs = []
         for ii in range(self.nJobs):
             self.jobObjs.append(JOB())
-            self.jobObjs[-1].ID = ii
+            self.jobObjs[-1].ID = ii # Set the ID for the object just added to jobObjs to be the index of the object (its position in the jobObjs list).
 
         self.nurseObjs = []
         for ii in range(self.nNurses):
             self.nurseObjs.append(NURSE())
-            self.nurseObjs[-1].ID = ii
+            self.nurseObjs[-1].ID = ii # Set the ID for the object just added to nurseObjs to be the index of the object (its position in the nurseObjs list).
     ### --- End def init_job_and_nurse_objects --- ###
 
     def init(self):
@@ -587,14 +563,17 @@ class INSTANCE(object):
         # self.DSSkillType = 'shared-duplicated' 
         self.capabilityOfDoubleServices = np.zeros((self.nNurses, self.nNurses, nDS), dtype=int_type)
         # print('Matrix size: ' + str((self.nNurses, self.nNurses, nDS)))
-        k = -1
-        for k_all_job,dsjob in enumerate(self.doubleService):
-            if dsjob < 1:
+        # This for loop, for each double service job, goes through each jobSkillRequirement row, finds the indices of the jobs that require skilled nurses for double service,
+        # then checks through each pair of nurses i and j to see if they are skilled enough together to do the double service job together.
+        # If they are, then capabilityOfDoubleServices[i,j,k] = 1, else = 0 (where k = the number of the double service job).
+        k = -1 # Counts through each double service (nDS)
+        for k_all_job, dsjob in enumerate(self.doubleService): # k_all_job = index, dsjob = value at index (e.g. k_all_job = 0, dsjob = self.doubleService[0])
+            if dsjob < 1: # if job is not double service, continue
                 continue
-            k += 1
-            reqSkills = []
-            for s,req in enumerate(self.jobSkillsRequired[k_all_job]):
-                if req > 0:
+            k += 1 
+            reqSkills = [] # Contains indices of jobSkillsRequired of jobs that need skilled nurse, >0
+            for s, req in enumerate(self.jobSkillsRequired[k_all_job]): # s = index, req = value at index s
+                if req > 0: # if jobSkillsRequired > 0 (=1?), add index s to reqSkills
                     reqSkills.append(s)
             # print('* Job ' + str(k_all_job) + '(ds index ' + str(k) + ') required skills: ' + str(reqSkills))
             for i in range(self.nNurses):
@@ -625,21 +604,18 @@ class INSTANCE(object):
                         somethingOnI = False
                         somethingOnJ = False
                         self.capabilityOfDoubleServices[i,j,k] = 1
-                        for s in reqSkills:
-                            if self.nurseSkills[i][s] + self.nurseSkills[j][s] > 0:
-                                if self.nurseSkills[i][s] > 0:
+                        # Go through each JOB s and check if current nurse i and current nurse j can do any of the jobs s in reqSkills
+                        for s in reqSkills: #for each value in reqSkills
+                            if self.nurseSkills[i][s] + self.nurseSkills[j][s] > 0: # If nurse i and nurse j can together do job s
+                                if self.nurseSkills[i][s] > 0: # If nurse i can do job s
                                     somethingOnI = True
-                                if self.nurseSkills[j][s] > 0:
+                                if self.nurseSkills[j][s] > 0: # If nurse j can do job s
                                     somethingOnJ = True
                             else:
-                                self.capabilityOfDoubleServices[i,j,k] = 0
-                                break
-                        if (not (somethingOnJ and somethingOnI)):
+                                self.capabilityOfDoubleServices[i,j,k] = 0 # If nurse i and nurse j cannot do job s together, not capable, so = 0
+                                break # If nursei + nursej = 0, then neither of them have skill = 1, so there's no point in checking all the other jobs s in reqSkills, just break.
+                        if (not (somethingOnJ and somethingOnI)): # If both are false, then nurse i and nurse j cannot do the double service, so set it to 0.
                             self.capabilityOfDoubleServices[i,j,k] = 0
-
-                        # print('\t\tSetting ' + str((i,j,k)) + ' to ' + str(self.capabilityOfDoubleServices[i,j,k]))
-                        # print('\t\tNurse i ' + str(somethingOnI))
-                        # print('\t\tNurse j ' + str(somethingOnJ))
                     else:
                         print('ERROR: Type of skill required for double services "' + self.DSSkillType + '" not understood.')
                         print('Please, use one of the following:')
@@ -648,8 +624,10 @@ class INSTANCE(object):
                         print('\t"duplicated"')
                         print('\t"strictly-shared"')
                         exit(-2000)
+        # This for loop goes through all double services and checks that there exists a pair of nurses that are skilled enough to perform the double service together
+        # This ensures that every job can be fulfilled successfully - otherwise there might be a job that cannot be fulfilled, that patient may have to be removed.
         k = -1
-        for k_all_job,dsjob in enumerate(self.doubleService):
+        for k_all_job, dsjob in enumerate(self.doubleService):
             if dsjob < 1:
                 continue
             k += 1
@@ -673,8 +651,9 @@ class INSTANCE(object):
                 for i in range(self.nNurses):
                     print('\tN' + str(i) + ' skills: ' + str(self.nurseSkills[i]))
                 exit(-123234235346)
-
-        if len(self.prefScore) < 1:
+        # This should not be called if using 'unpickle_instance', as fill_preferences needs JOB and NURSE objects which are only created in init_job_and_nurse_objects function, which
+        # is not called in unpickle_instance.
+        if len(self.prefScore) < 1: 
             self.fill_preferences()
     ### --- End def init --- ###        
 
@@ -687,18 +666,15 @@ class INSTANCE(object):
             print('ERROR: The program expects one sheet from ' + excelFile +
              ' to be called "Jobs" and another "Staff", instead we got:' + str(xl.sheet_names) + '.\nProgram terminated.')
             exit(-1)
-
         dfJobs = xl.parse('Jobs')
         dfStaff = xl.parse('Staff')
 
         self.nJobs = dfJobs.shape[0] - 1
         self.nNurses = dfStaff.shape[0] - 1
         self.nSkills = 0
-
-
         self.init_job_and_nurse_objects()
-
-        print('There are %d jobs and %d nurses in %s' % (self.nJobs, self.nNurses, excelFile))
+        print('There are ', self.nJobs, ' jobs and ', self.nNurses, ' nurses in ', excelFile)
+        # print('There are %d jobs and %d nurses in %s' % (self.nJobs, self.nNurses, excelFile)) # C style?? remove.
         ii = -1
         for lineno,row in dfJobs.iterrows():
             # print(row)
@@ -713,8 +689,7 @@ class INSTANCE(object):
                 print(e)
                 print(ii)
                 print(self.jobObjs[ii])
-                continue
-            
+                continue 
             self.jobObjs[ii].postcode = str(row[1])
             latLong = str(row[2]).split(',')
             # print(latLong)
@@ -780,7 +755,6 @@ class INSTANCE(object):
                 except Exception as e:
                     print('WARNING: ' + str(e))
                     print(sklist[0])
-
                 # for sk in sklist:
                     # self.jobObjs[ii].minimumGap.append(float(sk))
 
@@ -792,19 +766,15 @@ class INSTANCE(object):
                 except Exception as e:
                     print('WARNING: ' + str(e))
                     print(sklist[0])
-
                 # for sk in sklist:
                 # 	self.jobObjs[ii].maximumGap.append(float(sk))
-
         # Read nurses:
         ii = -1
         for lineno,row in dfStaff.iterrows():
             # print(row)
             if lineno == 0:
                 continue
-
             ii = ii + 1
-
             try:
                 self.nurseObjs[ii].ID = str(row[0])
             except Exception as e:
@@ -816,7 +786,6 @@ class INSTANCE(object):
             self.nurseObjs[ii].postcode = str(row[1])
             latLong = str(row[2]).split(',')
             self.nurseObjs[ii].startLocation = geopoint(float(latLong[0]), float(latLong[1]))
-
             self.nurseObjs[ii].transportMode = str(row[3]).lower()
             if self.nurseObjs[ii].transportMode not in ['car', 'bike', 'walk', 'public']:
                 print('WARNING: Unknown transport mode: %s, should be one of the following: "car", "bike", "walk", "public"' % self.nurseObjs[ii].transportMode)
@@ -1446,50 +1415,32 @@ class INSTANCE(object):
                 ''')
     ### --- End def hovering_image --- ###           
 
-
     def solve(self, randomSeed=0, printAllCallData=False):
-        int_type = np.int32
         if self.verbose > 0:
-            print('Calling C function for a max. of ' + str(self.MAX_TIME_SECONDS) + 
-              ' seconds , random seed is ' + str(randomSeed) + '.')
+            print('Calling C function for a max. of ' + str(self.MAX_TIME_SECONDS) + ' seconds , random seed is ' + str(randomSeed) + '.')
 
         # Prepare some data: 
-        self.mk_mind = np.asarray(self.mk_mind, dtype=int_type)
-        self.mk_maxd = np.asarray(self.mk_maxd, dtype=int_type)
+        self.mk_mind = np.asarray(self.mk_mind, dtype=np.int32)
+        self.mk_maxd = np.asarray(self.mk_maxd, dtype=np.int32)
 
         self.nJobs = int(self.nJobs)
         self.nNurses = int(self.nNurses)
         self.nSkills = int(self.nSkills)
-
-        self.capabilityOfDoubleServices = np.ascontiguousarray(self.capabilityOfDoubleServices.reshape(-1))
-        self.prefScore = np.ascontiguousarray(self.prefScore)
-        self.algorithmOptions = np.ascontiguousarray(self.algorithmOptions)
-
         self.od = np.ascontiguousarray(self.od)
         self.nurse_travel_from_depot = np.ascontiguousarray(self.nurse_travel_from_depot)
         self.nurse_travel_to_depot = np.ascontiguousarray(self.nurse_travel_to_depot)
-        self.nurseWorkingTimes = np.ascontiguousarray(self.nurseWorkingTimes, dtype=int_type)
-        self.jobTimeInfo = np.ascontiguousarray(self.jobTimeInfo, dtype=int_type)
-        self.jobSkillsRequired = np.ascontiguousarray(self.jobSkillsRequired, dtype=int_type)
-        self.nurseSkills = np.ascontiguousarray(self.nurseSkills, dtype=int_type)
-        self.solMatrix = np.ascontiguousarray(self.solMatrix, dtype=int_type)
-        # self.solMatrix = np.ascontiguousarray(self.solMatrix, dtype=int_type)
-        self.doubleService = np.ascontiguousarray(self.doubleService, dtype=int_type)		
-        self.dependsOn = np.ascontiguousarray(self.dependsOn, dtype=int_type)
-        self.mk_mind = np.ascontiguousarray(self.mk_mind, dtype=int_type)
-        self.mk_maxd = np.ascontiguousarray(self.mk_maxd, dtype=int_type)
-
-        # print('mk_mind (type ' + str(type(self.mk_mind)) + ')')
-        # print('dtype = ' + str(self.mk_mind.dtype))
-        # print('Shape = ' + str(self.mk_mind.shape))
-
-        # print(self.mk_mind)
-        
-        # print('mk_maxd (type ' + str(type(self.mk_maxd)) + ')')
-        # print('dtype = ' + str(self.mk_maxd.dtype))
-        # print('Shape = ' + str(self.mk_maxd.shape))
-
-        # print(self.mk_maxd)
+        self.nurseWorkingTimes = np.ascontiguousarray(self.nurseWorkingTimes, dtype=np.int32)
+        self.jobTimeInfo = np.ascontiguousarray(self.jobTimeInfo, dtype=np.int32)
+        self.jobSkillsRequired = np.ascontiguousarray(self.jobSkillsRequired, dtype=np.int32)
+        self.nurseSkills = np.ascontiguousarray(self.nurseSkills, dtype=np.int32)
+        self.solMatrix = np.ascontiguousarray(self.solMatrix, dtype=np.int32)
+        self.doubleService = np.ascontiguousarray(self.doubleService, dtype=np.int32)		
+        self.dependsOn = np.ascontiguousarray(self.dependsOn, dtype=np.int32)
+        self.mk_mind = np.ascontiguousarray(self.mk_mind, dtype=np.int32)
+        self.mk_maxd = np.ascontiguousarray(self.mk_maxd, dtype=np.int32)
+        self.capabilityOfDoubleServices = np.ascontiguousarray(self.capabilityOfDoubleServices.reshape(-1))
+        self.prefScore = np.ascontiguousarray(self.prefScore)
+        self.algorithmOptions = np.ascontiguousarray(self.algorithmOptions)
 
         if	(self.verbose > 5 or printAllCallData):
             print('nJobs (type ' + str(type(self.nJobs)) + ')')
@@ -1636,17 +1587,17 @@ class INSTANCE(object):
         for nurse in range(self.nNurses):
             # howMany = 0
             try:
-                howMany = max(self.solMatrix[nurse]) + 1
+                howMany = max(self.solMatrix[nurse]) + 1 # howMany = largest value in self.solMatrix[nurse], which is equivalent to the number of jobs in the nurse's route. Add one because job positions start at 0.
             except Exception as e:
                 print('ERROR in post_process_solution()')
                 print(e)
                 print('Nurse: ' + str(nurse))
                 print('solMatrix: \n' + str(self.solMatrix))
             
-            self.nurseRoute.append(np.zeros(howMany))
-            for i,sp in enumerate(self.solMatrix[nurse,:]):
-                if sp > -1:
-                    self.nurseRoute[nurse][sp] = i
+            self.nurseRoute.append(np.zeros(howMany)) # add array of size 'number of jobs' containing all zeros to the nurseRoute list.
+            for i,sp in enumerate(self.solMatrix[nurse,:]): # For each index, value in solMatrix[nurse], all jobs
+                if sp > -1: # If > -1 then job i is in position sp of nurse's route
+                    self.nurseRoute[nurse][sp] = i # set nurseRoute[nurse][position] = job (like allNurseRoutes)
     ### --- End def post_process_solution --- ###
 
     def pie_chart_how_is_time_spent(self):
@@ -1888,6 +1839,7 @@ def np_array_to_c_format(nparr, arrname='Array', floatVar=False):
     return(astr)
 
 def read_braekers(filename):
+    int_type = np.int32
     f = open(filename, 'r')
     welcome_line = f.readline()
     welcome_line = welcome_line.split()
@@ -2100,4 +2052,32 @@ def clusterColour(clusterNumber):
 
     return(col)
 
+# class OSRM_SERVER(object):
+# 	"""docstring for osrm_server"""
+# 	def __init__(self):
+# 		# Start OSRM server...
+# 		# print('Starting server for distances ' + matrixType + ' matrix...')
+# 		# if matrixType == 'driving':
+# 		serverHost = 'http://localhost:5000/'
+# 		self.carserver = subprocess.Popen('C:\\Users\\clf1u13\\Docs\\01.HHCRSP\\Code\\HHCRSP\\runCarServer.bat', 
+# 			shell=False,stdout=subprocess.PIPE)
+            
+# 		# else:
+# 		serverHost = 'http://localhost:5001/'
+# 		self.walkserver = subprocess.Popen('C:\\Users\\clf1u13\\Docs\\01.HHCRSP\\Code\\HHCRSP\\runWalkServer.bat', 
+# 			shell=False,stdout=subprocess.PIPE)
+
+# 		time.sleep(3) # Give it 3 secs to initialise
+# 		# self.carPID = self.carserver.pid
+# 		# self.walkPID = self.walkserver.pid
+# 		# print('PID: ' + str(popenConnection.pid))
+# 		# print('Done.')
+
+
+# 	def kill_server(self):
+# 		# Close servers:
+# 		# print('Killing server (' + matrixType + ' profile)...')
+# 		self.carserver.kill()
+# 		self.walkserver.kill()
+# 		print('Done.')
 
