@@ -422,7 +422,7 @@ int check_skills_ds_first(struct INSTANCE* ip, int job, int nursei) {
 	// This for loop is to count up the number of double service jobs up to our current one, 'job'. 
 	// This is because the capabilityOfDoubleServices 3d matrix is nNurses x nNurses x nDoubleServices! So we need to find out what number of double service our 'job' is.
 	int jobdsindex = 0;
-	for (int i = 0; i < job; ++i) {
+	for (int i = 0; i < job; ++i) { // Only count up to (but not including) our 'job', this ensures that jobdsindex is correct and not out of bounds.
 		jobdsindex += ip->doubleService[i];
 	}
 

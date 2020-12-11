@@ -142,29 +142,14 @@ struct INSTANCE copy_instance(struct INSTANCE* oi) {
 		printf("Done. (copying)\n");
 	return inst;
 
-}
+} // END OF struct INSTANCE copy_instance function.
 
 
 // // Functions to read instances, and some hardcoded instances too
-struct INSTANCE instance_from_python(int nJobs_data,
-	int nNurses_data,
-	int nSkills_data,
-	int verbose_data,
-	float MAX_TIME_SECONDS,
-	double* od_data,
-	double* nurse_travel_from_depot_data,
-	double* nurse_travel_to_depot_data,
-	int* nurseWorkingTimes_data,
-	int* jobTimeInfo_data,
-	int* jobRequirements_data,
-	int* nurseSkills_data,
-	int* doubleService_data,
-	int* dependsOn_data,
-	int* mk_mind_data,
-	int* mk_maxd_data,
-	int* capabilityOfDoubleServices_data,
-	double* prefScore_data,
-	double* algorithmOptions_data) {
+struct INSTANCE instance_from_python(int nJobs_data, int nNurses_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, double* od_data,
+	double* nurse_travel_from_depot_data, double* nurse_travel_to_depot_data, int* nurseWorkingTimes_data, int* jobTimeInfo_data, int* jobRequirements_data, int* nurseSkills_data,
+	int* doubleService_data, int* dependsOn_data, int* mk_mind_data, int* mk_maxd_data, int* capabilityOfDoubleServices_data, double* prefScore_data, double* algorithmOptions_data) {
+
 	int printAllAllocations = 0;
 
 	// quality_measure = 1 is Mk, 0 is Ait H.
@@ -277,7 +262,7 @@ struct INSTANCE instance_from_python(int nJobs_data,
 	// 	printf("Allocated jobDuration.\n");
 
 
-// nurseWorkingTimes_data
+    // nurseWorkingTimes_data
 	int** nurseWorkingTimes;
 	nRows = nNurses;
 	nCols = 3;
@@ -415,9 +400,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 		// printf("DS %d = %d\n", i, doubleService_data[i]);
 	}
 
-
 	double* violatedTW = malloc(nJobs * sizeof(double));
 	double* violatedTWMK = malloc(nJobs * sizeof(double));
+
 	int** nurseSkilled;
 	nRows = nNurses;
 	nCols = nJobs;
@@ -537,7 +522,7 @@ struct INSTANCE instance_from_python(int nJobs_data,
 	};
 	return inst;
 
-}
+} // END OF struct INSTANCE instance_from_python function.
 
 void free_instance_copy(struct INSTANCE* ip) {
 	for (int i = 0; i < ip->nNurses; ++i)
@@ -585,7 +570,8 @@ void free_instance_copy(struct INSTANCE* ip) {
 
 	if (ip->verbose > 10)
 		printf("Finished freeing memory of instance copy.\n");
-}
+
+} // END OF void free_instance_copy function.
 
 void free_instance_memory(struct INSTANCE* ip) {
 	free(ip->nurseRoute);
@@ -713,10 +699,7 @@ void free_instance_memory(struct INSTANCE* ip) {
 	if (ip->verbose > 10)
 		printf("Finished freeing memory.\n");
 
-}
-
-
-
+} // END OF void free_instance_memory function.
 
 struct INSTANCE generate_instance() {
 	int nRows, nCols;
@@ -1125,7 +1108,7 @@ struct INSTANCE generate_instance() {
 
 	// ip = &inst;
 	return inst;
-}
+} // END OF struct INSTANCE generate_instance function.
 
 void nurse_skilled_from_skills_and_requirements(int** nurseSkills, int** jobRequirements, int** nurseSkilled, int* doubleService, int nJobs, int nNurses, int nSkills) {
 	int canDoIt = 1;
@@ -1139,13 +1122,12 @@ void nurse_skilled_from_skills_and_requirements(int** nurseSkills, int** jobRequ
 					// 	printf("a[%d][%d] = %d, r[%d][%d] = %d\n", i,k,a[i][k], j, k, r[j][k]);
 					// }
 					canDoIt = 0;
-					break;
+					break; // Break - no point in checking all other skills k, the nurse must have all of the skills required for the job, so if nurse is missing even just one skill then the nurse is not suitable.
 				}
 			}
 			nurseSkilled[i][j] = canDoIt;
 		}
 	}
-
 
 	int nursesThatCanDoIt = 0;
 	for (int j = 0; j < nJobs; ++j) {
@@ -1163,15 +1145,5 @@ void nurse_skilled_from_skills_and_requirements(int** nurseSkills, int** jobRequ
 		}
 	}
 
-	// // Debug
-	// for (int i = 0; i < nNurses; ++i)
-	// {
-	// 	for (int j = 0; j < nJobs; ++j)
-	// 	{
-	// 		printf("%d\t", nurseSkilled[i][j]);
-	// 	}
-	// 	printf("\n");
-	// }
 
-
-}
+} // END OF void nurse_skilled_from_skills_and_requirements function.
