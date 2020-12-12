@@ -198,7 +198,8 @@ MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, 
 		printf("WARNING: Solving with AIT H quality measure but with PRECEDENCE rather than GAP.\n");
 
 	return retvalue;
-}
+
+} // END OF MODULE_API int python_entry function
 
 int evaluate_given_solution(struct INSTANCE* ip, int* solMatrixPointer, double* odmat_pointer) {
 	// There is no solving here, only evaluating a given solMatrix
@@ -421,7 +422,7 @@ int check_skills_ds_first(struct INSTANCE* ip, int job, int nursei) {
 	// This for loop is to count up the number of double service jobs up to our current one, 'job'. 
 	// This is because the capabilityOfDoubleServices 3d matrix is nNurses x nNurses x nDoubleServices! So we need to find out what number of double service our 'job' is.
 	int jobdsindex = 0;
-	for (int i = 0; i < job; ++i) {
+	for (int i = 0; i < job; ++i) { // Only count up to (but not including) our 'job', this ensures that jobdsindex is correct and not out of bounds.
 		jobdsindex += ip->doubleService[i];
 	}
 
@@ -1371,6 +1372,10 @@ int route_two_exchange(struct INSTANCE* ip, int firstImprovement) {
 					int secondNurseJ = -1;
 					if (ip->doubleService[job_from_nj]) { //If job_from_nj is a double service, find the other nurse (secondNurseJ) that does the job with nurse nj
 						secondNurseJ = find_second_nurse_ds(ip, job_from_nj, nj);
+					}
+					 // NEW! IF STATEMENT: Without it an error occurs!
+					if(secondNurseJ == ni){ //NEW! If the other nurse (secondNurseJ) that is doing the double service is the nurse ni, then ni is already doing the job, can't use it!
+						continue;
 					}
 
 					// Can ni do job_from_nj?
