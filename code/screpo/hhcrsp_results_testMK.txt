@@ -19,3 +19,69 @@ saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	8.107
 
 Run finished at: 2020-12-09 15:14:41.596291
 ------------------------------------------------------------
+------------------------------------------------------------
+Date: 2020-12-11 12:52:05.399134, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+------------------------------------------------------------
+Date: 2020-12-11 13:00:34.869463, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	9.011639899999999
+
+Run finished at: 2020-12-11 13:00:44.925475
+------------------------------------------------------------
+------------------------------------------------------------
+Date: 2020-12-11 13:01:31.962156, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	7.5744788
+
+Run finished at: 2020-12-11 13:01:40.238670
+------------------------------------------------------------
+------------------------------------------------------------
+Date: 2020-12-11 13:03:18.263414, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	7.4769169
+
+Run finished at: 2020-12-11 13:03:26.436077
+------------------------------------------------------------
+------------------------------------------------------------
+Date: 2020-12-11 13:06:21.769189, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	7.9979326
+
+Run finished at: 2020-12-11 13:06:30.559192
+------------------------------------------------------------
+------------------------------------------------------------
+Date: 2020-12-11 14:31:36.816357, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	9.0522666
+
+Run finished at: 2020-12-11 14:31:46.452257
+------------------------------------------------------------
+------------------------------------------------------------
+Date: 2020-12-11 14:33:10.048990, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	7.762537400000001
+
+Run finished at: 2020-12-11 14:33:18.500768
+------------------------------------------------------------
+------------------------------------------------------------
+Date: 2020-12-11 14:40:42.889492, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	7.4396979000000005
+
+Run finished at: 2020-12-11 14:40:50.932010
+------------------------------------------------------------
+------------------------------------------------------------
+Date: 2020-12-11 14:45:04.901830, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	7.9107078
+
+Run finished at: 2020-12-11 14:45:13.400273
+------------------------------------------------------------
+------------------------------------------------------------
+Date: 2020-12-11 14:46:14.034168, running 1 files.
+Instance	Cquality	totalTravelTime	totalTardiness	maxTardiness	elapsed_time
+saved_InstanzCPLEX_HCSRP_10_1.mat	218.19855033333334	654.5956510000001	0	0	7.3008529
+
+Run finished at: 2020-12-11 14:46:21.854114
+------------------------------------------------------------
