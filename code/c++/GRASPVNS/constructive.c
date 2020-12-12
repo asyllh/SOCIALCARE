@@ -2303,7 +2303,7 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 	double tardiness = 0;
 	double arriveAt = 0;
 	double totalTravel = 0;
-	int lastPoint = -1;
+	int lastPosition = -1;
 	int job = -1;
 	double totalOvertime = 0;
 	double maxSpareTime = -bigM;
@@ -2319,21 +2319,20 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 	double avgSpare = 0;
 	ip->totPref = 0;
 
-	// double* allSpares = malloc(ip->nNurses * sizeof(double));
-	for (int jind = 0; jind < ip->nNurses; ++jind) {
-		int j = ip->nurseOrder[jind];
-		totalTravel += ip->nurseTravelTime[j];
-		totalWaitingTime += ip->nurseWaitingTime[j];
+	for (int i = 0; i < ip->nNurses; ++i) { // For each index i in nurseOrder
+		int ni = ip->nurseOrder[i]; //ni - nurse[i] in nurseOrder
+		totalTravel += ip->nurseTravelTime[ni]; //Add (total) travel time for nurse ni to total travel time (for all nurses).
+		totalWaitingTime += ip->nurseWaitingTime[ni]; // Add (total) waiting time for nurse ni to total waiting time (for all nurses)
 		if (report > 0) {
-			printf("Nurse %d. Start time: %.2f\n", j, (double)(ip->nurseWorkingTimes[j][0]));
+			printf("Nurse %d. Start time: %.2f\n", ni, (double)(ip->nurseWorkingTimes[ni][0]));
 		}
 
 		// If the nurse route is empty:
-		if (ip->allNurseRoutes[j][0] < -0.5) {
+		if (ip->allNurseRoutes[ni][0] < -0.5) { //If there is no job in position 0 (first position) of nurse ni's route (therefore [ni][0] = -1)
 			// Spare time is whole day:
-			sparetime = (double)ip->nurseWorkingTimes[j][1] - (double)ip->nurseWorkingTimes[j][0];
+			sparetime = (double)ip->nurseWorkingTimes[ni][1] - (double)ip->nurseWorkingTimes[ni][0]; // = finish time of nurse ni - start time of nurse ni
 			avgSpare += sparetime;
-			finishTime = (double)ip->nurseWorkingTimes[j][0];
+			finishTime = (double)ip->nurseWorkingTimes[ni][0]; // = start time of nurse ni, since ni doen't have any jobs so finish time is the same as start time
 			if (shortestDay > finishTime) {
 				shortestDay = finishTime;
 			}
@@ -2345,157 +2344,145 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 				minSpareTime = sparetime;
 			}
 			if (report > 0) {
-				printf("\tEmpty route for nurse %d, setting spare time to: %.2f\n", j, sparetime);
+				printf("\tEmpty route for nurse %d, setting spare time to: %.2f\n", ni, sparetime);
 			}
 			continue;
 		}
-		// Go from depot:
-		// totalTime += get_travel_time(ip, -1, ip->allNurseRoutes[j][0]);
 
-		for (int i = 0; i < ip->nJobs + 1; ++i) {
-			if (i >= ip->nJobs) {
+		for (int p = 0; p < ip->nJobs + 1; ++p) { //For each POSITION 0,...,nJobs + 1
+			if (p >= ip->nJobs) { // If position is >= number of jobs, then end of route, can't have more positions than jobs in route
 				job = -1; // We always need to identify a "-1" to understand that's the end of the route
 			}
 			else {
-				job = ip->allNurseRoutes[j][i];
+				job = ip->allNurseRoutes[ni][p]; // job = job # at position p in ni's route
 			}
-			if (job < -0.1) {
-				if (i > 0) {
-					lastPoint = ip->allNurseRoutes[j][i - 1];
+			if (job < -0.1) { // if job = -1 then end of route
+				if (p > 0) { //If p > 0 then not first position in route
+                    lastPosition = ip->allNurseRoutes[ni][p - 1]; //last position = job at the last position of ni's route (p-1 since job = -1 so p is out of bounds, need to go to previous position for last job)
 				}
-				else {
-					lastPoint = -1;
+				else { //position = 0, so there is no job before in the route.
+                    lastPosition = -1;
 				}
-				// printf("\t>> That was the last job for nurse %d (lastPoint = %d).\n", j, lastPoint);
+				// printf("\t>> That was the last job for nurse %d (lastPosition = %d).\n", ni, lastPosition);
 				break;
 			}
 
-			ip->totPref += ip->prefScore[job][j];
-			// printf("\tDealing with nurse %d and job %d\n", j, job);
-			// lastPoint = ip->allNurseRoutes[j][i];
-			arriveAt = ip->timeMatrix[j][job];
-			// tardiness = 0;
-			// if (arriveAt > ip->jobTimeInfo[job][1])
-			// 	tardiness = arriveAt - ip->jobTimeInfo[job][1];
-			// ip->violatedTW[job] = tardiness;
-
+			ip->totPref += ip->prefScore[job][ni];
+			arriveAt = ip->timeMatrix[ni][job];
 			totalMKTardiness += ip->violatedTWMK[job];
-
 
 			if (ip->doubleService[job] < 0.5) {
 				totalTardiness += ip->violatedTW[job];
-
-				if (ip->violatedTW[job] > maxTardiness)
-					maxTardiness = ip->violatedTW[job];
+				if (ip->violatedTW[job] > maxTardiness) {
+                    maxTardiness = ip->violatedTW[job];
+                }
 
 			}
 			else {
-				// Add only half of the time if DS (EACH JOB CONTAINS ALREADY TWICE THE TARDINESS), so in total
-				// we have the tardiness for both of them (as in Mankowska)
+				// Add only half of the time if DS (EACH JOB CONTAINS ALREADY TWICE THE TARDINESS), so in total we have the tardiness for both of them (as in Mankowska)
 				double real_ds_tardiness = ip->violatedTW[job] / 2;
 				totalTardiness += real_ds_tardiness;
-				if (real_ds_tardiness > maxTardiness)
-					maxTardiness = real_ds_tardiness;
+				if (real_ds_tardiness > maxTardiness) {
+                    maxTardiness = real_ds_tardiness;
+                }
 			}
 
-			// debug : error reporting here, can be removed when fixed
-			// if (-1000 > ip->MK_mind[job] || ip->MK_maxd[job] > 1000 || -1000 > ip->MK_maxd[job] || ip->MK_mind[job] > 1000){
-			// 	printf("ERROR: MK_mind or MK_maxd are incorrect.\n");
-			// 	printf("ERRIR: job %d, MK_mind[job] = %d, MK_maxd[job] = %d\n", ip->dependsOn[job], ip->MK_mind[job], ip->MK_maxd[job]);
-			// 	printf("mk_mind_data = \n");
-			// 	print_int_matrix_one(ip->MK_mind, 1, ip->nJobs);
-			// 	printf("mk_maxd_data = \n");
-			// 	print_int_matrix_one(ip->MK_maxd, 1, ip->nJobs);				
-			// 	exit(-23534534);
-			// }
-
 			if (report > 0) {
-				if (ip->doubleService[job] > 0)
-					printf("\tJob %d (DS) at %.2f", job, arriveAt);
-				else
-					printf("\tJob %d at %.2f", job, arriveAt);
-				printf(", pref %.2f, [TW %d - %d] ", ip->prefScore[job][j], ip->jobTimeInfo[job][0], ip->jobTimeInfo[job][1]);
+				if (ip->doubleService[job] > 0) {
+                    printf("\tJob %d (DS) arrives at %.2f, ", job, arriveAt);
+                }
+				else {
+                    printf("\tJob %d arrives at %.2f, ", job, arriveAt);
+                }
+				printf("prefScore: %.2f, [TW %d - %d], ", ip->prefScore[job][ni], ip->jobTimeInfo[job][0], ip->jobTimeInfo[job][1]);
 
 				if (ip->dependsOn[job] > -1) {
-					printf("(Dep %d [%d - %d])", ip->dependsOn[job], ip->MK_mind[job], ip->MK_maxd[job]);
+					printf("(Dep %d [%d - %d]) ", ip->dependsOn[job], ip->MK_mind[job], ip->MK_maxd[job]);
 				}
 
 				double readyToNext = arriveAt + (double)ip->jobTimeInfo[job][2];
-				printf("> + %.d ST", ip->jobTimeInfo[job][2]);
-				if ((i < ip->nJobs - 1) && (ip->allNurseRoutes[j][i + 1] > -1)) {
-					printf(" + %.2f Tr ", get_travel_time(ip, ip->allNurseRoutes[j][i], ip->allNurseRoutes[j][i + 1]));
-					readyToNext += get_travel_time(ip, ip->allNurseRoutes[j][i], ip->allNurseRoutes[j][i + 1]);
+				//printf("> + %.d ST", ip->jobTimeInfo[job][2]);
+				printf("duration(ST): %.d ", ip->jobTimeInfo[job][2]);
+				if ((p < ip->nJobs - 1) && (ip->allNurseRoutes[ni][p + 1] > -1)) {
+					//printf(" + %.2f Tr ", get_travel_time(ip, ip->allNurseRoutes[ni][p], ip->allNurseRoutes[ni][p + 1]));
+					printf("travel(TR): %.2f ", get_travel_time(ip, ip->allNurseRoutes[ni][p], ip->allNurseRoutes[ni][p + 1]));
+					readyToNext += get_travel_time(ip, ip->allNurseRoutes[ni][p], ip->allNurseRoutes[ni][p + 1]);
 				}
 				printf("[ready at: %.2f]", readyToNext);
 
-				printf("\n");
+				//printf("\n");
 				if (ip->violatedTW[job] > 0.1) {
-					printf("\t *** Misses TW by %.2f ***\n", ip->violatedTW[job]);
+					//printf("\t *** Misses TW by %.2f ***\n", ip->violatedTW[job]);
+					printf(" *** Misses TW by %.2f ***", ip->violatedTW[job]);
 				}
 				// else
 				// 	printf("\t TW ok, violated by %.2f\n", ip->violatedTW[job]);
 
 				if (ip->violatedTWMK[job] > 0.1) {
-					printf("\t *** Misses MK TW by %.2f (Mind %d, Maxd %d)***\n", ip->violatedTWMK[job], ip->MK_mind[job], ip->MK_maxd[job]);
+					//printf("\t *** Misses MK TW by %.2f (Mind %d, Maxd %d)***\n", ip->violatedTWMK[job], ip->MK_mind[job], ip->MK_maxd[job]);
+					printf(" *** Misses MK TW by %.2f (Mind %d, Maxd %d)***", ip->violatedTWMK[job], ip->MK_mind[job], ip->MK_maxd[job]);
 				}
+                printf("\n");
 				// else
 				// 	printf("\t MK TW violated by %.2f (Mind %d, Maxd %d) \n", ip->violatedTWMK[job], ip->MK_mind[job], ip->MK_maxd[job]);
 			}
-		} // End analysing route of nurse j
+		} // End analysing route of nurse ni
 
-		if (lastPoint > -0.5){ // If the nurse went somewhere...
-			// // printf("\t>> Adding return to depot from job %d.\n", lastPoint);
+		if (lastPosition > -0.5){ // If the nurse went somewhere...
+			// // printf("\t>> Adding return to depot from job %d.\n", lastPosition);
 
 			// CORRECT:
-			// tTime = ip->jobTimeInfo[lastPoint][2] + get_travel_time(ip, lastPoint, -1);
-			// finishTime = (double)(ip->timeMatrix[j][lastPoint] + tTime);
-			// dayWork = (double)finishTime - (double)ip->nurseWorkingTimes[j][0];
+			// tTime = ip->jobTimeInfo[lastPosition][2] + get_travel_time(ip, lastPosition, -1);
+			// finishTime = (double)(ip->timeMatrix[ni][lastPosition] + tTime);
+			// dayWork = (double)finishTime - (double)ip->nurseWorkingTimes[ni][0];
 
-			// printf("\t>> Adding return to depot from job %d.\n", lastPoint);
-			tTime = (double)get_travel_time_to_depot(ip, j, lastPoint);
-			// tTime = (double) get_travel_time(ip, lastPoint, -1);
-			tTime += (double)ip->jobTimeInfo[lastPoint][2];
+			// printf("\t>> Adding return to depot from job %d.\n", lastPosition);
+			tTime = (double)get_travel_time_to_depot(ip, ni, lastPosition);
+			// tTime = (double) get_travel_time(ip, lastPosition, -1);
+			tTime += (double)ip->jobTimeInfo[lastPosition][2];
 			// printf("Correct tTime: %.2f\n", tTime);
-			// tTime += ip->timeMatrix[j][lastPoint];
+			// tTime += ip->timeMatrix[ni][lastPosition];
 			// printf("Incorrect tTime %.2f\n", tTime);
-			// totalTime -= ip->nurseWorkingTimes[j][0]; // Remove start time
-			finishTime = (double)(ip->timeMatrix[j][lastPoint] + tTime);
-			if (shortestDay > finishTime)
-				shortestDay = finishTime;
-			dayWork = (double)finishTime - (double)ip->nurseWorkingTimes[j][0];
-
+			// totalTime -= ip->nurseWorkingTimes[ni][0]; // Remove start time
+			finishTime = (double)(ip->timeMatrix[ni][lastPosition] + tTime);
+			if (shortestDay > finishTime) {
+                shortestDay = finishTime;
+            }
+			dayWork = (double)finishTime - (double)ip->nurseWorkingTimes[ni][0];
 		}
 		// else{
 		// 	tTime = 0;
 		// }
-		// printf("For nurse %d daywork was %.2f, last point was %d\n", j, dayWork, lastPoint);
+		// printf("For nurse %d daywork was %.2f, last point was %d\n", ni, dayWork, lastPosition);
 
-		overtime = finishTime - (double)ip->nurseWorkingTimes[j][1];
+		overtime = finishTime - (double)ip->nurseWorkingTimes[ni][1];
 		sparetime = max(0.0, -1 * overtime);
 		totalTime += dayWork;
 
-		if (sparetime > maxSpareTime)
-			maxSpareTime = sparetime;
-
-		if (sparetime < minSpareTime)
-			minSpareTime = sparetime;
-
+		if (sparetime > maxSpareTime) {
+            maxSpareTime = sparetime;
+        }
+		if (sparetime < minSpareTime) {
+            minSpareTime = sparetime;
+        }
 		if (overtime < 0) {
 			sparetime = -1 * overtime;
 		}
 		else {
 			totalOvertime += overtime;
-			if (overtime > maxOvertime)
-				maxOvertime = overtime;
+			if (overtime > maxOvertime) {
+                maxOvertime = overtime;
+            }
 			sparetime = 0;
 		}
+		if (longestDay < dayWork) {
+            longestDay = dayWork;
+        }
+		if (report > 0) {
+//            printf("Finishes: %.2f Overtime: %.2f Waiting time: %.2f\n", finishTime, overtime, ip->nurseWaitingTime[ni]);
+            printf("Finish time: %.2f, Overtime: %.2f, Waiting time: %.2f\n", finishTime, overtime, ip->nurseWaitingTime[ni]);
+        }
 
-		if (longestDay < dayWork)
-			longestDay = dayWork;
-
-
-		if (report > 0)
-			printf("Finishes: %.2f Overtime: %.2f Waiting time: %.2f\n", finishTime, overtime, ip->nurseWaitingTime[j]);
 	}
 
 	/*
@@ -2511,8 +2498,9 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 	double mk_allowed_tardiness = totalOvertime + totalTardiness;
 	// double mk_allowed_tardiness = totalTardiness;
 	double mk_max_tardiness = maxTardiness;
-	if (maxOvertime > mk_max_tardiness)
-		mk_max_tardiness = maxOvertime;
+	if (maxOvertime > mk_max_tardiness) {
+        mk_max_tardiness = maxOvertime;
+    }
 
 	int qualityType = ip->quality_measure;
 	// if (qualityType != -1)
@@ -2520,22 +2508,20 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 	// 	printf("QUALITY TYPE: %d\n", qualityType);
 	// }
 	double quality = 0.0;
-	if (qualityType == 1) // Mankowska
-	{
-		if (report > 0)
-			printf("\nUsing Mankowska et al. as quality measure.\n");
+	if (qualityType == 1) { // Mankowska
+		if (report > 0) {
+            printf("\nUsing Mankowska et al. as quality measure.\n");
+        }
 		// Mankowska
 		quality = -1 * (totalTravel + mk_allowed_tardiness + mk_max_tardiness) / 3; // Mankowska
-		if (totalMKTardiness > TOL)
-			quality += -1000 - 10000 * (totalMKTardiness);
+		if (totalMKTardiness > TOL) {
+            quality += -1000-10000*(totalMKTardiness);
+        }
 	}
-	else if (qualityType == 99) // Constructive algorithm
-	{
+	else if (qualityType == 99) { // Constructive algorithm
 		quality = -1 * (totalTime + ip->totPref);
-
 		// Avoid infeasibility: 
 		quality += -10000 * (totalMKTardiness + mk_allowed_tardiness + totalOvertime);
-
 
 		if ((totalMKTardiness > TOL) || (mk_allowed_tardiness > TOL) || (totalOvertime > TOL)) {
 			quality += -10000;
@@ -2543,8 +2529,7 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 		}
 	}
 
-	if (qualityType == 6) // Paper
-	{
+	if (qualityType == 6) { // Paper
 		// To get rid of infeasibilities, assume everybody has a twelve hour shift
 		double infeasibility_M1 = ip->nNurses * 12 * 60; // Multiplier
 		double infeasibility_M2 = ip->nNurses * 12 * 60; // Chunk sum
@@ -2552,7 +2537,6 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 		double travelMinutes = totalTravel / 60.0;
 		double totalWaitingMinutes = totalWaitingTime / 60.0;
 		double minSpareTimeMinutes = minSpareTime / 60.0;
-
 
 		double TWTardinessMinutes = mk_allowed_tardiness / 60.0;
 		double TWMaxTardinessMinutes = mk_max_tardiness / 60.0;
@@ -2592,31 +2576,13 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 				feasible = -1;
 			}
 		}
-
-
-		// if ((ip->algorithmOptions[50] > 0.5) 
-		// {
-		//     if (totalMKTardiness > TOL) || (mk_allowed_tardiness > TOL) || (totalOvertime > TOL))
-		// }
-		// {
-		// 	quality += -infeasibility_M2;
-		// 	feasible = -1;
-		// }
-		// else
-		// {
-
-		// }
 	}
 
-	if (qualityType == 5) // Work_balance
-	{
-
+	if (qualityType == 5) { // Work_balance
 		double dayDiff = (longestDay - shortestDay);
 		quality = -1 * (0.3 * totalTravel + ip->totPref) - 0.1 * dayDiff + 0.1 * minSpareTime; // Real obj
-
 		// Avoid infeasibility: 
 		quality += -10000 * (totalMKTardiness + mk_allowed_tardiness + totalOvertime);
-
 		int feasible = 1;
 		if ((totalMKTardiness > TOL) || (mk_allowed_tardiness > TOL) || (totalOvertime > TOL)) {
 			quality += -10000;
@@ -2624,92 +2590,28 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 		}
 	}
 
-	if (qualityType == 0) {
-		// Ait H.
-
+	if (qualityType == 0) { // Ait H.
 		quality = -1 * (0.3 * totalTravel + ip->totPref); // Real obj
-
 		// Avoid infeasibility: 
 		quality += -10000 * (totalMKTardiness + mk_allowed_tardiness + totalOvertime);
-
 		int feasible = 1;
 		if ((totalMKTardiness > TOL) || (mk_allowed_tardiness > TOL) || (totalOvertime > TOL)) {
 			quality += -10000;
 			feasible = -1;
 		}
-
-		// REMOVE
-		// if (report == 12345)
-		// {
-		// 	printf("AIT H EXTRA BIT\n");
-		// 	printf("(0.3*totalTravel + ip->totPref) = %.2f\n", (0.3*totalTravel + ip->totPref));
-		// 	printf("totalTravel = %.2f\n", totalTravel);
-		// 	printf("ip->totPref = %.2f\n", ip->totPref);
-		// 	printf("quality = %.2f\n", quality);
-		// 	printf("totalMKTardiness = %.2f\n", totalMKTardiness);
-		// 	printf("mk_allowed_tardiness = %.2f\n", mk_allowed_tardiness);
-		// 	printf("totalOvertime = %.2f\n", totalOvertime);
-		// 	printf("----------------------\n");
-		// }
-
-		//////////////////////////////////////////////////////// REMOVE //////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////// REMOVE //////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////// REMOVE //////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////// REMOVE //////////////////////////////////////////////////////
-
-		// double TOLb = 0.01;
-
-		// // double targetTravelValue = 386.1
-
-		// // quality += 1/(abs(targetTravelValue - scdtravel) + TOL);
-		// // if ((scdtravel + TOLb > targetTravelValue) && (scdtravel - TOLb < targetTravelValue))
-		// // {	
-		// // 	// printf("/ %.3f/", scdtravel);
-		// // 	quality += 500000;
-		// // }
-
-		// double targetPrefValue = -603.61;
-
-		// quality += 10000*1/(abs(targetPrefValue - ip->totPref) + TOLb);
-		// if ((ip->totPref + TOLb > targetPrefValue) && (ip->totPref - TOLb < targetPrefValue))
-		// {	
-		// 	// printf("/ %.3f/", ip->totPref);
-		// 	quality += 500000;
-		// }
-
-		// 	if ((report > -99) && (totalMKTardiness + mk_allowed_tardiness + totalOvertime < 20.1))
-		// 	{
-		// 		// printf(" SUPER");
-		// 		quality += 500000;
-		// 		printf(" - Great %.2f!!! %.2f (%.3f | %.6f, %.6f, %.6f [%.6f] - (report %d) -)- ", quality, ip->totPref, 0.3*totalTravel, totalMKTardiness, mk_allowed_tardiness, totalOvertime, totalMKTardiness + mk_allowed_tardiness + totalOvertime, report);
-		// 		if (report < 0)
-		// 		{
-		// 			printf("Calling again because report is %d", report);
-		// 			sol_quality(ip, 100);
-		// 			printf("---dfas--\n");
-		// 			// exit(-232);
-		// 		}
-		// 		// ip->verbose = 1000;
-		// 	}
-		// }
-		//////////////////////////////////////////////////////// ^^^^^^^^^ //////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////// ^^^^^^^^^ //////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////// ^^^^^^^^^ //////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////// ^^^^^^^^^ //////////////////////////////////////////////////////
 
 		if (report > 0) {
 			printf("\nUsing Ait Haddadene et al. as quality measure.");		// GRASP x ILS
-			if (feasible > 0)
-				printf("\n\tFeasible.");
-			else
-				printf("\n\t >< INFEASIBLE ><");
-
-			printf("\n\tTravel %.2f ", totalTravel);		// GRASP x ILS
-			printf("\n\tPref %.2f ", ip->totPref);		// GRASP x ILS
-			printf("\n\tQuality = %.2f + %.2f = %.2f\n\n", totalTravel * 0.3, ip->totPref, -1 * quality);		// GRASP x ILS
+			if (feasible > 0) {
+                printf("\n\tFeasible.");
+            }
+			else {
+                printf("\n\t >< INFEASIBLE ><");
+            }
+			printf("\n\tTravel %.2f ", totalTravel); // GRASP x ILS
+			printf("\n\tPref %.2f ", ip->totPref); // GRASP x ILS
+			printf("\n\tQuality = %.2f + %.2f = %.2f\n\n", totalTravel * 0.3, ip->totPref, -1 * quality); // GRASP x ILS
 		}
-
-
 	}
 
 
@@ -2807,7 +2709,6 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 		printf("<-< quality: %.2f >->\n", quality);
 		printf("<- END OF COMPARISON OF QUALITY ->\n");
 
-
 	}
 
 
@@ -2860,7 +2761,6 @@ double obj_from_times(struct INSTANCE* ip, int report) {
 	ip->objLongestDay = longestDay;
 	ip->objOvertime = totalOvertime;
 	return quality;
-
 
 }
 
