@@ -78,7 +78,7 @@ def main_new():
     f.write("\telapsed_time\n")
     f.close()
 
-    print('\n=======================================================')
+    print('\n-------------------------------------------------------')
     print('Running program for instance[6] in all_inst_salisbury.p, 08-NOV-2020')
     stt_time = time.perf_counter()
 
@@ -114,9 +114,7 @@ def main_new():
         i.solution_to_website()
         print('Done.')
         
-    print('\n\n=======================================================')
-    print('=======================================================')
-    print('=======================================================\n\n')
+    print('\n\n-------------------------------------------------------\n\n')
    
     f = open(results_file_name, 'a')
     f.write('\nRun finished at: ' + str(datetime.now()))
