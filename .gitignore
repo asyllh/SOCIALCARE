@@ -4,6 +4,8 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
 08_Nov_Salisbury_results.txt
+idictexampleconsoleoutput.txt
+originalexampleconsoleoutput.txt
 # Node artifact files
 node_modules/
 dist/
