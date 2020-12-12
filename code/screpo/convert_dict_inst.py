@@ -43,11 +43,12 @@ def convert_dict_inst(inst, idict):
         inst.jobTimeInfo[i][1] = idict['tasks']['tw_end'][i]
         inst.jobTimeInfo[i][2] = idict['tasks']['duration'][i]
 
-    inst.jobRequirements = np.ones((inst.nJobs, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
+    inst.jobSkillsRequired = np.ones((inst.nJobs, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
     inst.prefScore = np.zeros((inst.nJobs, inst.nNurses), dtype=np.float64)
     inst.doubleService = np.zeros(inst.nJobs, dtype=np.int32)
     inst.doubleService[2] = 1 # NOTE: just for testing, make one of the jobs a double service.
-    inst.dependsOn = np.zeros(inst.nJobs, dtype=np.int32)
+    # inst.dependsOn = np.zeros(inst.nJobs, dtype=np.int32) # WRONG! THIS MEANS THAT ALL JOBS ARE DEPENDENT ON JOB 0! NEED TO BE ALL -1
+    inst.dependsOn = np.full(inst.nJobs, -1) # Set all jobs to -1, means no jobs are dependent on one another.
     inst.algorithmOptions = np.zeros(100, dtype=np.float64)
 
     lat_lon_jobs = []
@@ -111,8 +112,8 @@ def convert_dict_inst(inst, idict):
     inst.capabilityOfDoubleServices = np.ones((inst.nNurses, inst.nNurses, nDS), dtype=np.int32) # NOTE: just for testing, setting it to all ones so that every pair of nurses is capable of doing the double service.
     # inst.capabilityOfDoubleServices = np.zeros((inst.nNurses, inst.nNurses, nDS), dtype=np.int32) # This needs to be filled using jobSkillsRequired and nurseSkills
 
-    inst.mk_mind = np.zeros(inst.nJobs, dtype=np.int32)
-    inst.mk_maxd = np.zeros(inst.nJobs, dtype=np.int32)
+    inst.mk_mind = np.zeros(inst.nJobs+1, dtype=np.int32) #nJobs+1 because that's what is taken in by C, mk_mind[i] = mk_mind_data[i+1]
+    inst.mk_maxd = np.zeros(inst.nJobs+1, dtype=np.int32)
 
     inst.lambda_1 = 1
     inst.lambda_2 = 1
@@ -125,7 +126,7 @@ def convert_dict_inst(inst, idict):
 
     # For these variables - do we need to change them?
     inst.solMatrix = np.zeros((inst.nNurses, inst.nJobs), dtype=np.int32)
-    inst.MAX_TIME_SECONDS = 5
+    inst.MAX_TIME_SECONDS = 30
     inst.verbose = 1
     # inst.secondsPerTU = 1 # What is this variable?
     inst.DSSkillType = 'strictly-shared'
