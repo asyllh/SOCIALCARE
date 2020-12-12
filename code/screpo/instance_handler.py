@@ -31,7 +31,7 @@ def worker_task_new(idict, options_vector, random_seed):
     else:
         inst = cdi.convert_dict_inst(inst, idict)
     inst.algorithmOptions = options_vector
-    inst.algorithmOptions[0] = 6.0 # PAPER
+    inst.algorithmOptions[0] = 1.0 # MANKOWSKA
     saved_od_data = inst.od[0][0]
     inst.solve(randomSeed=5, printAllCallData=False)
     inst.solve = []
@@ -51,7 +51,8 @@ def worker_task(options_tuple, rSeed):
 
     saved_od_data = i.od[0][0]
     print_all_call_data_python = options_vector[99] > 0
-    i.solve(randomSeed=rSeed, printAllCallData=print_all_call_data_python)
+    # i.solve(randomSeed=rSeed, printAllCallData=print_all_call_data_python)
+    i.solve(randomSeed=rSeed, printAllCallData=True)
 
     i.solve = []
     i.lib = []
@@ -256,7 +257,7 @@ class INSTANCE(object):
         self.nurseWorkingTimes = []
         self.nurseSkills = []
         self.jobTimeInfo = []
-        self.jobRequirements = []
+        self.jobSkillsRequired = []
         self.prefScore = []
         self.algorithmOptions = np.zeros(100, dtype=np.float64)
         self.doubleService = []
@@ -384,7 +385,7 @@ class INSTANCE(object):
         # self.nurse_travel_to_depot = instance_obj.nurse_travel_to_depot
         # self.nurseWorkingTimes = instance_obj.nurseWorkingTimes
         # self.jobTimeInfo = instance_obj.jobTimeInfo
-        # self.jobRequirements = instance_obj.jobRequirements
+        # self.jobSkillsRequired = instance_obj.jobSkillsRequired
         # self.nurseSkills = instance_obj.nurseSkills
         # self.solMatrix = instance_obj.solMatrix
         # self.doubleService = instance_obj.doubleService
@@ -411,7 +412,7 @@ class INSTANCE(object):
         # Create capabilityOfDoubleServices
         nDS = np.sum(self.doubleService)
         self.capabilityOfDoubleServices = np.zeros((self.nNurses, self.nNurses, nDS), dtype=np.int32)
-        # This for loop, for each double service job, goes through each jobRequirements row, finds the indices of the jobs that require skilled nurses for double service,
+        # This for loop, for each double service job, goes through each jobSkillsRequired row, finds the indices of the jobs that require skilled nurses for double service,
         # then checks through each pair of nurses i and j to see if they are skilled enough together to do the double service job together.
         # If they are, then capabilityOfDoubleServices[i,j,k] = 1, else = 0 (where k = the number of the double service job).
         k = -1 # Counts through each double service (nDS)
@@ -419,9 +420,9 @@ class INSTANCE(object):
             if dsjob < 1: # if job is not double service, continue
                 continue
             k += 1 
-            reqSkills = [] # Contains indices of jobRequirements of jobs that need skilled nurse, >0
-            for s, req in enumerate(self.jobRequirements[k_all_job]): # s = index, req = value at index s
-                if req > 0: # if jobRequirements > 0 (=1?), add index s to reqSkills
+            reqSkills = [] # Contains indices of jobSkillsRequired of jobs that need skilled nurse, >0
+            for s, req in enumerate(self.jobSkillsRequired[k_all_job]): # s = index, req = value at index s
+                if req > 0: # if jobSkillsRequired > 0 (=1?), add index s to reqSkills
                     reqSkills.append(s)
             # print('* Job ' + str(k_all_job) + '(ds index ' + str(k) + ') required skills: ' + str(reqSkills))
             for i in range(self.nNurses):
@@ -491,7 +492,7 @@ class INSTANCE(object):
             # If not self.capabilityOfDoubleServices[:][:][k].any():
             if not jobServed:
                 print('ERROR: There is no qualified pair of nurses for job ' + str(k_all_job))
-                print('Required skills: ' + str(self.jobRequirements[k_all_job]))
+                print('Required skills: ' + str(self.jobSkillsRequired[k_all_job]))
                 print('Available nurses: ')
                 for i in range(self.nNurses):
                     print('\tN' + str(i) + ' skills: ' + str(self.nurseSkills[i]))
@@ -778,7 +779,7 @@ class INSTANCE(object):
         fromNurseDepotMatrixName = self.full_file_name + '_' + 'from_nurse_depot' + '_times.npy'
         toNurseDepotMatrixName = self.full_file_name + '_' + 'to_nurse_depot' + '_times.npy'
         self.nurseWorkingTimes = np.zeros((self.nNurses, 3), dtype=np.int32)
-        # self.jobRequirements = np.zeros((self.nNurses, self.nSkills), dtype=np.int32)
+        # self.jobSkillsRequired = np.zeros((self.nNurses, self.nSkills), dtype=np.int32)
         self.nurseSkills = np.zeros((self.nNurses, self.nSkills), dtype=np.int32)
     
         for n,nurse in enumerate(self.nurseObjs):
@@ -797,7 +798,7 @@ class INSTANCE(object):
         self.mk_mind = np.zeros(self.nJobs, dtype=np.int32)
 
         self.jobPrefTime = np.zeros((self.nJobs, 3), dtype=np.int32) - 1
-        self.jobRequirements = np.zeros((self.nJobs, self.nSkills), dtype=np.int32)
+        self.jobSkillsRequired = np.zeros((self.nJobs, self.nSkills), dtype=np.int32)
         self.doubleService = np.zeros(self.nJobs, dtype=np.int32)
         for i,job in enumerate(self.jobObjs):
             if job.doubleService:
@@ -824,10 +825,10 @@ class INSTANCE(object):
 
             for ss in job.skillsRequired:
                 s = int(ss) - 1
-                self.jobRequirements[i][s] = 1
+                self.jobSkillsRequired[i][s] = 1
             # for s in range(self.nSkills):
             # 	if s in job.skillsRequired:
-            # 		self.jobRequirements[i][s] = 1
+            # 		self.jobSkillsRequired[i][s] = 1
         
         self.solMatrix = np.zeros((self.nNurses, self.nJobs), dtype=np.int32)
 
@@ -899,7 +900,7 @@ class INSTANCE(object):
         self.nurse_travel_to_depot = np.ascontiguousarray(self.nurse_travel_to_depot)
         self.nurseWorkingTimes = np.ascontiguousarray(self.nurseWorkingTimes, dtype=np.int32)
         self.jobTimeInfo = np.ascontiguousarray(self.jobTimeInfo, dtype=np.int32)
-        self.jobRequirements = np.ascontiguousarray(self.jobRequirements, dtype=np.int32)
+        self.jobSkillsRequired = np.ascontiguousarray(self.jobSkillsRequired, dtype=np.int32)
         self.nurseSkills = np.ascontiguousarray(self.nurseSkills, dtype=np.int32)
         self.solMatrix = np.ascontiguousarray(self.solMatrix, dtype=np.int32)
         self.doubleService = np.ascontiguousarray(self.doubleService, dtype=np.int32)		
@@ -948,11 +949,11 @@ class INSTANCE(object):
 
             print(self.jobTimeInfo)
             
-            print('jobRequirements (type ' + str(type(self.jobRequirements)) + ')')
-            print('dtype = ' + str(self.jobRequirements.dtype))
-            print('Shape = ' + str(self.jobRequirements.shape))
+            print('jobSkillsRequired (type ' + str(type(self.jobSkillsRequired)) + ')')
+            print('dtype = ' + str(self.jobSkillsRequired.dtype))
+            print('Shape = ' + str(self.jobSkillsRequired.shape))
 
-            print(self.jobRequirements)
+            print(self.jobSkillsRequired)
             
             print('nurseSkills (type ' + str(type(self.nurseSkills)) + ')')
             print('dtype = ' + str(self.nurseSkills.dtype))
@@ -1009,7 +1010,7 @@ class INSTANCE(object):
 
         # Call:
         self.fun(self.nJobs, self.nNurses, self.nSkills, self.verbose, self.MAX_TIME_SECONDS, self.od, self.nurse_travel_from_depot, self.nurse_travel_to_depot,
-            self.nurseWorkingTimes, self.jobTimeInfo, self.jobRequirements, self.nurseSkills, self.solMatrix, self.doubleService, self.dependsOn,
+            self.nurseWorkingTimes, self.jobTimeInfo, self.jobSkillsRequired, self.nurseSkills, self.solMatrix, self.doubleService, self.dependsOn,
             self.mk_mind, self.mk_maxd, self.capabilityOfDoubleServices, self.prefScore, self.algorithmOptions, randomSeed)
 
         if self.verbose > 10:
@@ -1072,7 +1073,7 @@ class INSTANCE(object):
         self.nurseWorkingTimes = []
         self.nurseSkills = []
         self.jobTimeInfo = []
-        self.jobRequirements = []
+        self.jobSkillsRequired = []
         self.od = []
         self.xy = [] # x y coordinates for plotting routes on a map
 
@@ -1116,14 +1117,14 @@ class INSTANCE(object):
     ### --- End def read_from_csvs --- ###
 
     def read_braekers(self, fname):
-        [nJobs, nNurses, nSkills, nurseWorkingTimes, nurseSkills, jobTimeInfo, jobRequirements, od, secondsPerTU] = read_braekers(fname)
+        [nJobs, nNurses, nSkills, nurseWorkingTimes, nurseSkills, jobTimeInfo, jobSkillsRequired, od, secondsPerTU] = read_braekers(fname)
         self.nJobs = nJobs
         self.nNurses = nNurses
         self.nSkills = nSkills
         self.nurseWorkingTimes = nurseWorkingTimes
         self.nurseSkills = nurseSkills
         self.jobTimeInfo = jobTimeInfo
-        self.jobRequirements = jobRequirements
+        self.jobSkillsRequired = jobSkillsRequired
         self.od = od
         self.solMatrix = np.ones((nNurses, nJobs), dtype=np.int)
     ### --- End def read_braekers --- ###
@@ -1175,7 +1176,7 @@ class INSTANCE(object):
             if ptidx > 0:
                 textlabel = "P(%d) " % (ptidx - 1) #+ str(self.jobTimeInfo[ptidx - 1])
                 if self.doubleService[ptidx - 1]:
-                    textlabel += '\nDS ' + str(self.jobRequirements[ptidx - 1])
+                    textlabel += '\nDS ' + str(self.jobSkillsRequired[ptidx - 1])
             else:
                 textlabel = 'DEPOT'
             plt.text(pt[0], pt[1], textlabel, rotation=0, verticalalignment='center',color='blue', fontsize=14)
@@ -1789,7 +1790,7 @@ def read_braekers(filename):
             skArr[n][skl:] = 0
 
     jobTimeInfo = np.zeros((nJobs, 3), dtype=int_type)
-    jobRequirements = np.ones((nJobs, maxSkillLevel), dtype=int_type)
+    jobSkillsRequired = np.ones((nJobs, maxSkillLevel), dtype=int_type)
 
     # The following lines contain information on the jobs:
     # 1 start_time_window end_time_window service_duration preferred_visit_time required_skill_level
@@ -1802,7 +1803,7 @@ def read_braekers(filename):
         jobTimeInfo[j][2] = int(line[2])
         skl = int(line[4])
         if skl < maxSkillLevel:
-            jobRequirements[j][skl:] = 0
+            jobSkillsRequired[j][skl:] = 0
 
     # Skip some lines regarding preferences (2*nJobs)
     for j in range(2*nJobs):
@@ -1853,7 +1854,7 @@ def read_braekers(filename):
     od[1:,0] = toDepot
     od[0][0] = depotItself
 
-    return([nJobs, nNurses, maxSkillLevel, nurseWorkingTimes, skArr, jobTimeInfo, jobRequirements, od, secondsPerTU])
+    return([nJobs, nNurses, maxSkillLevel, nurseWorkingTimes, skArr, jobTimeInfo, jobSkillsRequired, od, secondsPerTU])
 ### --- End def read_braekers --- ###
 
 def route_these_points(p1, p2, goingThrough=None):
@@ -1947,14 +1948,14 @@ def clusterColour(clusterNumber):
 # fName = 'bihcrsp_14.txt'
 
 # print('/*\n// INSTANCE: ' + fName)
-# [nJobs, nNurses, nSkills, nurseWorkingTimes, skArr, jobTimeInfo, jobRequirements, od] = read_braekers(fLocation + fName)
+# [nJobs, nNurses, nSkills, nurseWorkingTimes, skArr, jobTimeInfo, jobSkillsRequired, od] = read_braekers(fLocation + fName)
 # print('int nJobs = ' + str(nJobs) + ';')
 # print('int nNurses = ' + str(nNurses) + ';')
 # print('int nSkills = ' + str(nSkills) + ';')
 # print(np_array_to_c_format(nurseWorkingTimes, 'nurseWorkingTimes_data'))
 # print(np_array_to_c_format(jobTimeInfo, 'jobTimeWindow_data'))
 # print(np_array_to_c_format(skArr, 'a'))
-# print(np_array_to_c_format(jobRequirements, 'r'))
+# print(np_array_to_c_format(jobSkillsRequired, 'r'))
 
 # print(np_array_to_c_format(od, 'od_data'))
 # print('int nurseSkilled_data[' + str(nNurses) + '][' + str(nJobs) + '];')
