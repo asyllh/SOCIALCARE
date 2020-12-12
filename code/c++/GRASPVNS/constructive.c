@@ -1374,6 +1374,11 @@ int route_two_exchange(struct INSTANCE* ip, int firstImprovement) {
 						secondNurseJ = find_second_nurse_ds(ip, job_from_nj, nj);
 					}
 
+					//NEW: FIXED BUG - need to check that secondNurseJ isn't actually the nurse ni that's already doing the job!
+					if(secondNurseJ == ni){
+					    continue;
+					}
+
 					// Can ni do job_from_nj?
 					if (ip->doubleService[job_from_nj]) { //If job_from_nj is a double service
 						if (check_skills_ds(ip, job_from_nj, secondNurseJ, ni) < 1) { //If ni is not skilled to do job_from_nj with secondNurseJ, go to next job_from_nj
