@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 
 # Import python file in project
-import instance_handler as hhc
+# import instance_handler as hhc
 
 # Display all rows and columns of dataframes in command prompt
 # pd.set_option("display.max_rows", None, "display.max_columns", None)
@@ -65,6 +65,8 @@ def convert_dict_inst(inst, idict):
         coord = [lat, lon]
         lat_lon_nurses.append(coord)
 
+    # NOTE: ERROR! using crow flies distance gives distance in metres BUT C program takes in od as MINUTES! So, a distance of e.g. 1821 metres is over 30 HOURS! 
+    # Instead, for now we shall convert the distance in metres to time by dividing the metres by 13.28, then dividing by 60 to get the time in minutes.
     inst.od = np.zeros((inst.nJobs+1, inst.nJobs+1), dtype=np.float64) # TIME IN MINUTES, THIS WILL BE USED IN C
     for i in range(inst.nJobs):
         coord1 = lat_lon_jobs[i]
@@ -73,7 +75,9 @@ def convert_dict_inst(inst, idict):
                 continue
             coord2 = lat_lon_jobs[j]
             dist = crow_flies_distance(coord1, coord2)
-            inst.od[i+1][j+1] = dist
+            time_mins = dist_metres_to_minutes(dist)
+            inst.od[i+1][j+1] = time_mins
+    
     # inst.od_dist = np.zeros((inst.nJobs+1, inst.nJobs+1), dtype=np.float64)
     # for i in range(inst.nJobs):
     #     for j in range(inst.nJobs):
@@ -83,6 +87,8 @@ def convert_dict_inst(inst, idict):
     #         inst.od[i+1][j+1] = time
     #         inst.od_dist[i+1][j+1] = dist
     
+    # NOTE: ERROR! using crow flies distance gives distance in metres BUT C program takes in nurse_travel_to/from_depot as MINUTES! So, a distance of e.g. 1821 metres is over 30 HOURS! 
+    # Instead, for now we shall convert the distance in metres to time by dividing the metres by 13.28, then dividing by 60 to get the time in minutes.
     inst.nurse_travel_from_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From carer's home to job - TIME IN MINS, THIS WILL BE USED IN C
     inst.nurse_travel_to_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From job to carer's home - TIME IN MINS, THIS WILL BE USED IN C
     for i in range(inst.nNurses):
@@ -90,8 +96,9 @@ def convert_dict_inst(inst, idict):
         for j in range(inst.nJobs):
             coordJob = lat_lon_jobs[j]
             dist = crow_flies_distance(coordNurse, coordJob)
-            inst.nurse_travel_from_depot[i][j] = dist
-            inst.nurse_travel_to_depot[i][j] = dist
+            time_mins = dist_metres_to_minutes(dist)
+            inst.nurse_travel_from_depot[i][j] = time_mins
+            inst.nurse_travel_to_depot[i][j] = time_mins
     # inst.nurse_travel_from_depot_dist = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From carer's home to job
     # inst.nurse_travel_to_depot_dist = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From job to carer's home
     # for i in range(inst.nNurses):
@@ -126,7 +133,7 @@ def convert_dict_inst(inst, idict):
 
     # For these variables - do we need to change them?
     inst.solMatrix = np.zeros((inst.nNurses, inst.nJobs), dtype=np.int32)
-    inst.MAX_TIME_SECONDS = 30
+    inst.MAX_TIME_SECONDS = 60
     inst.verbose = 1
     # inst.secondsPerTU = 1 # What is this variable?
     inst.DSSkillType = 'strictly-shared'
@@ -330,6 +337,14 @@ def crow_flies_distance(coord1, coord2):
     return distance*1000 # In metres.
 ## --- End of def crow_flies_distance function --- #
 
+def dist_metres_to_minutes(dist):
+    # This function takes the distance in metres from crow_flies distance and converts it to time in minutes approximately
+    # The value 11 (was 13.2806) is used as a VERY approximate value to convert the distances to time.
+    time_secs = dist / 11
+    time_mins = time_secs / 60
+
+    return time_mins
+
 # all_instances = pickle.load(open('tools_and_scripts/all_inst_salisbury.p', 'rb'))
 
 # idict = 7th instance in all_instances, which is 08-Nov-2020 in Salisbury. Chose this inst as it is the only one which has all postcodes for carers and clients. ncarers = 12, ntasks = 100.
@@ -337,10 +352,71 @@ def crow_flies_distance(coord1, coord2):
 # Assign different latitudes and longitudes to the carers and clients that do not have them in idict due to privacy reasons (so lat/lon = nan) - this is just so we can use this instance for a test.
 # idict = assign_nan_lon_lat(idict)
 
+# nNurses = idict['stats']['ncarers']
+# nJobs = idict['stats']['ntasks']
+
+# lat_lon_jobs = []
+# for i in range(nJobs):
+#     lat = idict['tasks'].loc[i, 'lat']
+#     lon = idict['tasks'].loc[i, 'lon']
+#     coord = [lat, lon]
+#     lat_lon_jobs.append(coord)
+    
+# lat_lon_nurses = []
+# for i in range(nNurses):
+#     lat = idict['rota'].loc[i, 'lat']
+#     lon = idict['rota'].loc[i, 'lon']
+#     coord = [lat, lon]
+#     lat_lon_nurses.append(coord)
+
+# print('lat_lon_jobs[0]:', lat_lon_jobs[8])
+# print('lat_lon_jobs[1]:', lat_lon_jobs[9])
+# time, dist = osrm_request(lat_lon_jobs[8], lat_lon_jobs[9])
+# print('time1: ', time, '\tdist1: ', dist)
+# # print('\n')
+# dist_crow = crow_flies_distance(lat_lon_jobs[8], lat_lon_jobs[9])
+# timeMins = dist_metres_to_minutes(dist_crow)
+# print('time2:', timeMins, '\tdist2: ', dist_crow)
+# print('timeMins: ', timeMins, 'mins.')
 
 
 
+# distance1 = crow_flies_distance(lat_lon_jobs[0], lat_lon_jobs[1])
+# print('distance1:', distance1, ' metres.')
 
+# od = np.zeros((nJobs+1, nJobs+1), dtype=np.float64) # TIME IN MINUTES, THIS WILL BE USED IN C
+# for i in range(nJobs):
+#     coord1 = lat_lon_jobs[i]
+#     for j in range(nJobs):
+#         if j == i:
+#             continue
+#         coord2 = lat_lon_jobs[j]
+#         dist = crow_flies_distance(coord1, coord2)
+#         od[i+1][j+1] = dist
+
+# NOTE: ERROR! using crow flies distance gives distance in metres BUT C program takes in od as MINUTES! So, a distance of e.g. 1821 metres is over 30 HOURS! 
+# Instead, for now we shall will randomly assign travel minutes between 5 and 30, which should be appropriate for the Salisbury area.
+# inst.od = np.zeros((inst.nJobs+1, inst.nJobs+1), dtype=np.float64) # TIME IN MINUTES, THIS WILL BE USED IN C
+# for i in range(inst.nJobs):
+#     coord1 = lat_lon_jobs[i]
+#     for j in range(inst.nJobs):
+#         if j == i:
+#             continue
+#         coord2 = lat_lon_jobs[j]
+#         dist = crow_flies_distance(coord1, coord2)
+#         inst.od[i+1][j+1] = dist
+
+# NOTE: ERROR! using crow flies distance gives distance in metres BUT C program takes in nurse_travel_to/from_depot as MINUTES! So, a distance of e.g. 1821 metres is over 30 HOURS! 
+# Instead, for now we shall will randomly assign travel minutes between 5 and 30, which should be appropriate for the Salisbury area.
+# inst.nurse_travel_from_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From carer's home to job - TIME IN MINS, THIS WILL BE USED IN C
+# inst.nurse_travel_to_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From job to carer's home - TIME IN MINS, THIS WILL BE USED IN C
+# for i in range(inst.nNurses):
+#     coordNurse = lat_lon_nurses[i]
+#     for j in range(inst.nJobs):
+#         coordJob = lat_lon_jobs[j]
+#         dist = crow_flies_distance(coordNurse, coordJob)
+#         inst.nurse_travel_from_depot[i][j] = dist
+#         inst.nurse_travel_to_depot[i][j] = dist
 
 ###-----------------------------------------------------------------------------------------------------------------------------------------------###
 
