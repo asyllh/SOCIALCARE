@@ -1,0 +1,32 @@
+{
+    "sources": [
+        {
+            "location": [-1.791631, 51.075106], 
+            "name": "Queens Road", "hint": "uT0YgDY_GIAoAAAALQAAAAAAAAAAAAAAGl3fQWy7-0EAAAAAAAAAACgAAAAtAAAAAAAAAAAAAAAQCgAAcank_yJYCwMzquT_WVgLAwAA_xTf8p37"
+        }
+    ], 
+    "destinations": [
+        {
+            "location": [-1.791631, 51.075106], 
+            "name": "Queens Road", 
+            "hint": "uT0YgDY_GIAoAAAALQAAAAAAAAAAAAAAGl3fQWy7-0EAAAAAAAAAACgAAAAtAAAAAAAAAAAAAAAQCgAAcank_yJYCwMzquT_WVgLAwAA_xTf8p37"
+        }, 
+        {
+            "location": [-1.798221, 51.059293], 
+            "name": "Harnham Road", 
+            "hint": "uJwKgI5cHIAdAAAAGQAAADoAAABDAAAAgM6iQSAah0GvPyFCLmo7Qh0AAAAZAAAAOgAAAEMAAAAQCgAAs4_k_10aCwNIj-T_pRoLAwMA7wLf8p37"
+        }, 
+        {
+            "location": [-1.792254, 51.063069], 
+            "name": "Carmelite Way", 
+            "hint": "VFscgFpbHIAkAAAAOgAAAAAAAAAAAAAA-OrNQe8TIEIAAAAAAAAAACQAAAA6AAAAAAAAAAAAAAAQCgAAAqfk_x0pCwMmp-T_oykLAwAAPwbf8p37"
+        }, 
+        {
+            "location": [-1.669964, 51.246289], 
+            "name": "Collins Court", 
+            "hint": "2Bk6gD6GUYAQAAAAJwAAAAAAAAAAAAAAmSk8Qcnr0UEAAAAAAAAAABAAAAAnAAAAAAAAAAAAAAAQCgAAtITm_9H0DQNiheb_mfQNAwAAvwHf8p37"
+        }
+    ], 
+    "code": "Ok", 
+    "durations": [[0, 275.1, 245.2, 1729.5]]
+}
