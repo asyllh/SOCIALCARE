@@ -1,0 +1,148 @@
+Employee,Employee Postcode,Area Code,Client,Postcode,Area,Date,Start Time,End Time,Hours of call,Miles,Estimated Time (Mins)
+Carer 7,SP2 8LU,SA02,Client 5,SP2 8JJ,Salisbury,04-Nov-20,8:00 AM,9:00 AM,1,2.299,7.04
+Carer 7,SP2 8LU,SA01,Client 133,SP3 4UH,Salisbury,04-Nov-20,9:45 AM,10:45 AM,1,9.029,16.57
+Carer 7,SP2 8LU,,Client 57,SP1 1RZ,Salisbury,04-Nov-20,11:00 AM,11:30 AM,0.5,8.408,18.28
+Carer 7,SP2 8LU,SA02,Client 104,SP1 3BL,Salisbury,04-Nov-20,12:00 PM,12:30 PM,0.5,1.725,6.25
+Carer 7,SP2 8LU,SA02,Client 103,SP1 3BL,Salisbury,04-Nov-20,12:30 PM,1:00 PM,0.5,,
+Carer 7,SP2 8LU,,Client 12,SP1 3QT,Salisbury,04-Nov-20,1:00 PM,1:30 PM,0.5,1.077,3.5
+Carer 7,SP2 8LU,,Client 12,SP1 3QT,Salisbury,04-Nov-20,4:00 PM,4:45 PM,0.75,,
+Carer 7,SP2 8LU,SA02,Client 104,SP1 3BL,Salisbury,04-Nov-20,4:45 PM,5:15 PM,0.5,1.066,3.49
+Carer 7,SP2 8LU,SA02,Client 103,SP1 3BL,Salisbury,04-Nov-20,5:15 PM,5:45 PM,0.5,,
+Carer 7,SP2 8LU,,Client 197,SP2 8NB,Salisbury,04-Nov-20,6:00 PM,6:30 PM,0.5,2.906,8.03
+,,,,,,,,,,,
+Carer 16,SP4 8fy,,Client 89,SP1 1NF,Salisbury,04-Nov-20,4:00 PM,4:30 PM,0.5,,
+Carer 16,SP4 8fy,,Client 173,SP2 0LB,Salisbury,04-Nov-20,4:30 PM,5:00 PM,0.5,4.916,14.28
+Carer 16,SP4 8fy,SA02,Client 227,SP2 0JP,Salisbury,04-Nov-20,5:00 PM,6:00 PM,1,0.838,4.4
+Carer 16,SP4 8fy,,Client 176,SP2 7EL,Salisbury,04-Nov-20,6:15 PM,6:45 PM,0.5,2.498,7.11
+Carer 16,SP4 8fy,,Client 173,SP2 0LB,Salisbury,04-Nov-20,7:00 PM,7:30 PM,0.5,3.11,8.58
+Carer 16,SP4 8fy,,Client 46,SP2 0JA,Salisbury,04-Nov-20,7:30 PM,8:00 PM,0.5,0.922,3.34
+Carer 16,SP4 8fy,SA02,Client 227,SP2 0JP,Salisbury,04-Nov-20,8:00 PM,8:30 PM,0.5,0.589,3.39
+Carer 16,SP4 8fy,,Client 45,SP2 7AX,Salisbury,04-Nov-20,8:30 PM,9:00 PM,0.5,3.391,9.01
+,,,,,,,,,,,
+Carer 18,SP4 9DW,,Client 173,SP2 0LB,Salisbury,04-Nov-20,12:00 PM,2:00 PM,2,,
+,,,,,,,,,,,
+Carer 21,,,Client 2,SP1 3NR,Salisbury,04-Nov-20,3:15 PM,4:15 PM,1,,
+,,,,,,,,,,,
+Carer 24,SP4 7XH,,Client 184,SP4 8EQ,Salisbury,04-Nov-20,8:00 AM,8:45 AM,0.75,,
+Carer 24,SP4 7XH,,Client 91,SP4 7JX,Salisbury,04-Nov-20,9:00 AM,9:45 AM,0.75,2.254,6.36
+Carer 24,SP4 7XH,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,10:15 AM,11:45 AM,1.5,1.51,4.55
+Carer 24,SP4 7XH,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,11:45 AM,12:15 PM,0.5,,
+Carer 24,SP4 7XH,,Client 91,SP4 7JX,Salisbury,04-Nov-20,12:30 PM,1:00 PM,0.5,1.286,4.2
+Carer 24,SP4 7XH,,Client 184,SP4 8EQ,Salisbury,04-Nov-20,1:15 PM,1:45 PM,0.5,2.239,6.38
+Carer 24,SP4 7XH,SA01,Client 213,SP3 4HB,Salisbury,04-Nov-20,2:00 PM,2:30 PM,0.5,6.57,13.34
+,,,,,,,,,,,
+Carer 29,SP2 0RH,,Client 89,SP1 1NF,Salisbury,04-Nov-20,7:00 AM,8:00 AM,1,1.42,5.11
+Carer 29,SP2 0RH,,Client 197,SP2 8NB,Salisbury,04-Nov-20,8:00 AM,9:00 AM,1,2.944,8.24
+Carer 29,SP2 0RH,,Client 152,SP1 1NA,Salisbury,04-Nov-20,9:00 AM,10:00 AM,1,2.426,7.55
+Carer 29,SP2 0RH,,Client 57,SP1 1RZ,Salisbury,04-Nov-20,10:00 AM,12:00 PM,2,1.162,4.36
+Carer 29,SP2 0RH,,Client 45,SP2 7AX,Salisbury,04-Nov-20,1:00 PM,1:30 PM,0.5,1.855,6.24
+Carer 29,SP2 0RH,,Client 45,SP2 7AX,Salisbury,04-Nov-20,4:00 PM,5:00 PM,1,,
+Carer 29,SP2 0RH,,Client 78,SP1 3LD,Salisbury,04-Nov-20,5:45 PM,6:00 PM,0.25,1.225,4.58
+Carer 29,SP2 0RH,,Client 192,SP5 1ED,Salisbury,04-Nov-20,6:30 PM,7:15 PM,0.75,6.832,14.57
+Carer 29,SP2 0RH,,Client 116,SP5 3BY,Salisbury,04-Nov-20,7:30 PM,8:00 PM,0.5,6.423,14.59
+Carer 29,SP2 0RH,,Client 34,SP1 3DY,Salisbury,04-Nov-20,8:00 PM,8:30 PM,0.5,2.645,9.03
+Carer 29,SP2 0RH,,Client 45,SP2 7AX,Salisbury,04-Nov-20,8:30 PM,9:00 PM,0.5,1.513,5.24
+,,,,,,,,,,,
+Carer 31,SP1 3HA,SA02,Client 3,SP1 3AG,Salisbury,04-Nov-20,7:00 AM,8:00 AM,1,1.081,4.56
+Carer 31,SP1 3HA,SA02,Client 104,SP1 3BL,Salisbury,04-Nov-20,8:00 AM,8:45 AM,0.75,1.031,4.42
+Carer 31,SP1 3HA,SA02,Client 103,SP1 3BL,Salisbury,04-Nov-20,8:45 AM,9:30 AM,0.75,,
+Carer 31,SP1 3HA,,Client 78,SP1 3LD,Salisbury,04-Nov-20,9:30 AM,10:00 AM,0.5,1.193,4.37
+Carer 31,SP1 3HA,,Client 12,SP1 3QT,Salisbury,04-Nov-20,10:00 AM,10:45 AM,0.75,0.989,4.06
+Carer 31,SP1 3HA,SA02,Client 2,SP5 3AF,Salisbury,04-Nov-20,11:00 AM,12:00 PM,1,5.407,12.55
+Carer 31,SP1 3HA,,Client 34,SP1 3DY,Salisbury,04-Nov-20,12:30 PM,1:00 PM,0.5,4.871,11.46
+Carer 31,SP1 3HA,,Client 89,SP1 1NF,Salisbury,04-Nov-20,1:15 PM,1:45 PM,0.5,1.391,5.42
+Carer 31,SP1 3HA,,Client 12,SP1 3QT,Salisbury,04-Nov-20,4:00 PM,4:45 PM,0.75,2.031,7.19
+Carer 31,SP1 3HA,SA02,Client 104,SP1 3BL,Salisbury,04-Nov-20,4:45 PM,5:15 PM,0.5,1.066,3.49
+Carer 31,SP1 3HA,SA02,Client 103,SP1 3BL,Salisbury,04-Nov-20,5:15 PM,5:45 PM,0.5,,
+Carer 31,SP1 3HA,,Client 152,SP1 1NA,Salisbury,04-Nov-20,6:00 PM,6:30 PM,0.5,1.119,4.25
+Carer 31,SP1 3HA,SA02,Client 3,SP1 3AG,Salisbury,04-Nov-20,6:45 PM,7:15 PM,0.5,1.046,5.05
+Carer 31,SP1 3HA,,Client 89,SP1 1NF,Salisbury,04-Nov-20,7:30 PM,8:00 PM,0.5,1.493,5.59
+Carer 31,SP1 3HA,,Client 34,SP1 3DY,Salisbury,04-Nov-20,8:00 PM,8:30 PM,0.5,1.42,5.34
+Carer 31,SP1 3HA,,Client 12,SP1 3QT,Salisbury,04-Nov-20,8:30 PM,9:00 PM,0.5,2.346,8.41
+Carer 31,SP1 3HA,,Client 14,SP1 3EU,Salisbury,04-Nov-20,9:00 PM,9:30 PM,0.5,0.555,3.09
+,,,,,,,,,,,
+Carer 38,SP4 8PY,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,7:00 AM,7:30 AM,0.5,,
+Carer 38,SP4 8PY,,Client 184,SP4 8EQ,Salisbury,04-Nov-20,8:00 AM,8:45 AM,0.75,2.734,7.32
+Carer 38,SP4 8PY,SA01,Client 213,SP3 4HB,Salisbury,04-Nov-20,9:00 AM,10:00 AM,1,6.57,13.34
+Carer 38,SP4 8PY,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,10:15 AM,11:00 AM,0.75,8.243,13.49
+Carer 38,SP4 8PY,,Client 148,SP3 4JA,Salisbury,04-Nov-20,11:00 AM,11:45 AM,0.75,8.07,14.2
+Carer 38,SP4 8PY,SA01,Client 66,SP4 7QT,Salisbury,04-Nov-20,12:00 PM,1:00 PM,1,8.562,13.42
+Carer 38,SP4 8PY,,Client 184,SP4 8EQ,Salisbury,04-Nov-20,1:15 PM,1:45 PM,0.5,2.83,7.45
+Carer 38,SP4 8PY,SA01,Client 66,SP4 7QT,Salisbury,04-Nov-20,2:00 PM,3:00 PM,1,2.846,7.54
+,,,,,,,,,,,
+Carer 39,SP4 7RB,SA02,Client 3,SP1 3AG,Salisbury,04-Nov-20,7:00 AM,8:00 AM,1,,
+Carer 39,SP4 7RB,,Client 34,SP1 3DY,Salisbury,04-Nov-20,8:00 AM,9:00 AM,1,1.722,6.16
+Carer 39,SP4 7RB,,Client 45,SP2 7AX,Salisbury,04-Nov-20,9:00 AM,10:00 AM,1,1.513,5.24
+Carer 39,SP4 7RB,,Client 174,SP1 2HW,Salisbury,04-Nov-20,11:45 AM,12:15 PM,0.5,1.784,4.43
+Carer 39,SP4 7RB,SA02,Client 3,SP1 3AG,Salisbury,04-Nov-20,12:15 PM,12:45 PM,0.5,1.384,3.52
+Carer 39,SP4 7RB,,Client 45,SP2 7AX,Salisbury,04-Nov-20,1:00 PM,1:30 PM,0.5,0.457,2.04
+,,,,,,,,,,,
+Carer 48,SP54BH,SA02,Client 187,SP2 7PU,Salisbury,04-Nov-20,9:00 AM,2:00 PM,5,,
+,,,,,,,,,,,
+Carer 60,SP10 3RG,SA02,Client 187,SP2 7PU,Salisbury,04-Nov-20,9:00 AM,4:00 PM,7,,
+Carer 60,SP10 3RG,,Client 45,SP2 7AX,Salisbury,04-Nov-20,4:00 PM,5:00 PM,1,1.589,5.35
+,,,,,,,,,,,
+Carer 64,SP1 2LF,SA02,Client 187,SP2 7PU,Salisbury,04-Nov-20,9:00 AM,5:00 PM,8,,
+,,,,,,,,,,,
+Carer 66,SP5 3TE,,Client 45,SP2 7AX,Salisbury,04-Nov-20,9:00 AM,10:00 AM,1,,
+Carer 66,SP5 3TE,,Client 176,SP2 7EL,Salisbury,04-Nov-20,10:45 AM,11:30 AM,0.75,0.717,2.29
+Carer 66,SP5 3TE,,Client 197,SP2 8NB,Salisbury,04-Nov-20,12:15 PM,12:45 PM,0.5,4.197,8.17
+Carer 66,SP5 3TE,,Client 100,SP5 3JR,Salisbury,04-Nov-20,5:30 PM,6:00 PM,0.5,7.293,15.02
+Carer 66,SP5 3TE,,Client 37,SP5 3NS,Salisbury,04-Nov-20,6:00 PM,6:30 PM,0.5,1.253,4.21
+Carer 66,SP5 3TE,SA02,Client 3,SP1 3AG,Salisbury,04-Nov-20,6:45 PM,7:15 PM,0.5,6.865,14.53
+,,,,,,,,,,,
+Carer 70,SP9 7JX,,Client 118,SP4 9HG,Salisbury,04-Nov-20,8:00 AM,9:00 AM,1,,
+Carer 70,SP9 7JX,,Client 32,BA12 7BQ,Salisbury,04-Nov-20,10:00 AM,12:30 PM,2.5,18.916,31.11
+,,,,,,,,,,,
+Carer 81,SP4 7AN,,Client 184,SP4 8EQ,Salisbury,04-Nov-20,4:00 PM,4:30 PM,0.5,,
+Carer 81,SP4 7AN,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,4:30 PM,5:15 PM,0.75,2.723,7.57
+Carer 81,SP4 7AN,SA01,Client 213,SP3 4HB,Salisbury,04-Nov-20,5:45 PM,6:15 PM,0.5,7.752,14.23
+Carer 81,SP4 7AN,,Client 91,SP4 7JX,Salisbury,04-Nov-20,6:30 PM,7:00 PM,0.5,6.699,11.3
+Carer 81,SP4 7AN,,Client 118,SP4 9HG,Salisbury,04-Nov-20,7:15 PM,7:45 PM,0.5,2.35,6.15
+Carer 81,SP4 7AN,,Client 184,SP4 8EQ,Salisbury,04-Nov-20,8:00 PM,8:30 PM,0.5,1.79,5.23
+Carer 81,SP4 7AN,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,8:30 PM,9:00 PM,0.5,2.723,7.57
+Carer 81,SP4 7AN,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,9:00 PM,9:15 PM,0.25,,
+,,,,,,,,,,,
+Carer 90,SP2 0FA,,Client 34,SP1 3DY,Salisbury,04-Nov-20,8:00 AM,9:00 AM,1,,
+Carer 90,SP2 0FA,,Client 106,SP2 7UX,Salisbury,04-Nov-20,9:15 AM,9:45 AM,0.5,2.37,8.52
+Carer 90,SP2 0FA,,Client 192,SP5 1ED,Salisbury,04-Nov-20,10:00 AM,10:30 AM,0.5,6.978,16.29
+Carer 90,SP2 0FA,SA02,Client 104,SP1 3BL,Salisbury,04-Nov-20,12:00 PM,12:30 PM,0.5,5.535,12.06
+Carer 90,SP2 0FA,SA02,Client 103,SP1 3BL,Salisbury,04-Nov-20,12:30 PM,1:00 PM,0.5,,
+Carer 90,SP2 0FA,,Client 12,SP1 3QT,Salisbury,04-Nov-20,1:00 PM,1:30 PM,0.5,1.077,3.5
+,,,,,,,,,,,
+Carer 94,SP4 7NA,,Client 184,SP4 8EQ,Salisbury,04-Nov-20,4:00 PM,4:30 PM,0.5,,
+Carer 94,SP4 7NA,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,4:30 PM,5:00 PM,0.5,2.723,7.57
+Carer 94,SP4 7NA,,Client 118,SP4 9HG,Salisbury,04-Nov-20,5:15 PM,5:45 PM,0.5,2.087,5.32
+Carer 94,SP4 7NA,,Client 120,SP11 0EL,Andover,04-Nov-20,6:15 PM,7:00 PM,0.75,18.355,31.11
+Carer 94,SP4 7NA,,Client 184,SP4 8EQ,Salisbury,04-Nov-20,8:00 PM,8:30 PM,0.5,21.162,34.18
+Carer 94,SP4 7NA,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,8:30 PM,9:00 PM,0.5,2.723,7.57
+Carer 94,SP4 7NA,SA01,Client 237,SP4 7QY,Salisbury,04-Nov-20,9:00 PM,9:15 PM,0.25,,
+,,,,,,,,,,,
+Carer 96,SP4 9HT,SA02,Client 227,SP2 0JP,Salisbury,04-Nov-20,7:00 AM,8:00 AM,1,0.589,3.39
+Carer 96,SP4 9HT,,Client 46,SP2 0JA,Salisbury,04-Nov-20,8:00 AM,8:30 AM,0.5,1.176,5.14
+Carer 96,SP4 9HT,,Client 173,SP2 0LB,Salisbury,04-Nov-20,8:30 AM,9:00 AM,0.5,0.922,3.25
+Carer 96,SP4 9HT,SA02,Client 29,SP2 0JP,Salisbury,04-Nov-20,9:30 AM,10:30 AM,1,0.838,4.4
+Carer 96,SP4 9HT,SA02,Client 227,SP2 0JP,Salisbury,04-Nov-20,11:00 AM,12:00 PM,1,,
+Carer 96,SP4 9HT,,Client 173,SP2 0LB,Salisbury,04-Nov-20,12:00 PM,12:30 PM,0.5,1.425,6.06
+Carer 96,SP4 9HT,,Client 192,SP5 1ED,Salisbury,04-Nov-20,1:15 PM,1:45 PM,0.5,9.793,22.13
+,,,,,,,,,,,
+Carer 104,SP2 7BS,,Client 191,SP2 9HW,Salisbury,04-Nov-20,9:30 AM,11:00 AM,1.5,,
+Carer 104,SP2 7BS,SA01,Client 240,SP4 7QE,Salisbury,04-Nov-20,2:00 PM,3:30 PM,1.5,9.537,20.04
+,,,,,,,,,,,
+Carer 111,,,Client 45,SP2 7AX,Salisbury,04-Nov-20,12:00 AM,7:00 AM,7,,
+Carer 111,,,Client 45,SP2 7AX,Salisbury,04-Nov-20,10:00 PM,11:59 PM,1.98,,
+,,,,,,,,,,,
+Carer 113,SP9 7TY,,Client 120,SP11 0EL,Andover,04-Nov-20,9:00 AM,10:00 AM,1,,
+Carer 113,SP9 7TY,SA04,Client 77,SP11 8BD,Andover,04-Nov-20,10:30 AM,11:00 AM,0.5,11.125,24.12
+Carer 113,SP9 7TY,,Client 120,SP11 0EL,Andover,04-Nov-20,12:30 PM,1:15 PM,0.75,11.094,25.33
+,,,,,,,,,,,
+Carer 115,SP1 3NT,SA02,Client 104,SP1 3BL,Salisbury,04-Nov-20,8:00 AM,8:45 AM,0.75,,
+Carer 115,SP1 3NT,SA02,Client 103,SP1 3BL,Salisbury,04-Nov-20,8:45 AM,9:30 AM,0.75,,
+Carer 115,SP1 3NT,,Client 12,SP1 3QT,Salisbury,04-Nov-20,10:00 AM,10:45 AM,0.75,1.077,3.5
+,,,,,,,,,,,
+Carer 126,SP2 7TQ,,Client 72,SP5 3LF,Salisbury,04-Nov-20,8:00 AM,8:45 AM,0.75,,
+Carer 126,SP2 7TQ,,Client 37,SP5 3NS,Salisbury,04-Nov-20,9:00 AM,9:30 AM,0.5,1.548,5.48
+Carer 126,SP2 7TQ,,Client 100,SP5 3JR,Salisbury,04-Nov-20,9:30 AM,10:15 AM,0.75,1.253,4.46
+Carer 126,SP2 7TQ,SA02,Client 157,SP5 3EB,Salisbury,04-Nov-20,10:30 AM,11:30 AM,1,6.036,12.55
+Carer 126,SP2 7TQ,,Client 37,SP5 3NS,Salisbury,04-Nov-20,12:00 PM,12:30 PM,0.5,6.785,15.42
+Carer 126,SP2 7TQ,,Client 100,SP5 3JR,Salisbury,04-Nov-20,12:30 PM,1:00 PM,0.5,1.253,4.46
