@@ -16,7 +16,7 @@ import mankowska_data as Mk
 import convert_dict_inst as cdi
 # import osrm_extend as oe
 
-def worker_task_new(idict, options_vector, random_seed):
+def create_solve_inst(idict, options_vector, random_seed):
     #New function to call test instance
     # inst = cdi.convert_dict_inst(idict, options_vector)
     mkVNS = False
@@ -30,10 +30,11 @@ def worker_task_new(idict, options_vector, random_seed):
         inst = Mk.generate_Mk(inst, matfile=file_to_run, filetype='large_vns')
     else:
         inst = cdi.convert_dict_inst(inst, idict)
+    # exit(-1)
     inst.algorithmOptions = options_vector
     inst.algorithmOptions[0] = 1.0 # MANKOWSKA
     saved_od_data = inst.od[0][0]
-    inst.solve(randomSeed=5, printAllCallData=False)
+    inst.solve(randomSeed=random_seed, printAllCallData=False)
     inst.solve = []
     inst.lib = []
     inst.fun = []
@@ -41,7 +42,7 @@ def worker_task_new(idict, options_vector, random_seed):
     inst.od[0][0] = saved_od_data
 
     return inst
-### --- End def worker_task_new --- ###
+### --- End def create_solve_inst --- ###
 
 
 def worker_task(options_tuple, rSeed):
