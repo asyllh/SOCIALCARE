@@ -19,9 +19,10 @@ import python_resources as pr
 import instance_handler as hhc
 import convert_dict_inst as cdi
 
-def main_new():
-    # Solving parameters:
+def main():
+    # New main function.
     
+    # Solving parameters:
     # 'default' quality will use the default for the type of instance (if it comes from the literature, for example)
     # quality_measure = 'paper' # 'default', 'paper', 'mankowska', 'ait_h', 'workload_balance'
     # ds_skill_type = 'strictly-shared'
@@ -33,7 +34,7 @@ def main_new():
     # run_in_parallel = False
     # parallel_workers = 1 # Only works if previous is true
     # random_seed = -1 # Only if run_in_parallel = False. -1 is a true random seed, otherwise set to this value
-    random_seed = 5 # NOTE: used for testing only.
+    random_seed = 13826 # NOTE: used for testing only.
 
     options_vector = hhc.default_options_vector() 
     options_vector[1] = 1.0 # Two-opt active
@@ -65,8 +66,8 @@ def main_new():
 
     # idict = 7th instance in all_instances, which is 08-Nov-2020 in Salisbury. Chose this inst as it is the only one which has all postcodes for carers and clients. ncarers = 12, ntasks = 100.
     idict = all_instances[6]
-    # Assign different latitudes and longitudes to the carers and clients that do not have them in idict due to privacy reasons (so lat/lon = nan) - this is just so we can use this instance for a test.
-    idict = cdi.assign_nan_lon_lat(idict)
+    # Assign client 16 a different postcode (sp27tq) as its original postcode (sp27xx) is missing from codepoint open. This is just so we can use this instance for a test.
+    idict = cdi.assign_missing_postcode(idict)
 
     f = open(results_file_name, 'a')
     f.write('------------------------------------------------------------\n')
@@ -82,7 +83,7 @@ def main_new():
     print('Running program for instance[6] in all_inst_salisbury.p, 08-NOV-2020')
     stt_time = time.perf_counter()
 
-    inst = hhc.worker_task_new(idict, options_vector, random_seed)  
+    inst = hhc.create_solve_inst(idict, options_vector, random_seed)  
 
     quality = inst.Cquality
 
@@ -122,7 +123,7 @@ def main_new():
     f.close()
 ### --- End def main --- ###
 
-def main():
+def main_old():
     # Solving parameters:
     
     # 'default' quality will use the default for the type of instance (if it comes from the literature, for example)
@@ -349,11 +350,11 @@ def main():
     f.write('\nRun finished at: ' + str(datetime.now()))
     f.write('\n------------------------------------------------------------\n')
     f.close()
-### --- End def main --- ###
+### --- End def main_old --- ###
 
 if __name__ == '__main__':
     repetitions = 1
     for i in range(repetitions):
-        # main()
-        main_new()
+        # main_old()
+        main()
 ### --- End __name__ ---###
