@@ -1,0 +1,60 @@
+------------------------------------------------------------
+Date: 2021-01-05 13:27:08.159396
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+4	97.99516666666668	5.0	0	-1	-1	612.441564	13027
+
+OUTPUT VARIABLES:
+Total time (totalTime): 1345.28
+
+Total Travel Time (totalTravel) = 108.11
+Total Waiting Time (totalWaitingTime): 322.17
+Total Overtime (totalOvertime) = 0.00
+Total Violated TW (totalTardiness) = 0.00
+Total Violated TWMK (totalMKTardiness) = 0.00
+Total Tardiness MK (mk_allowed_tardiness) = 0.00 (totalOvertime + totalTardiness)
+Max Spare Time (maxSpareTime): 70.00
+Min Spare Time (minSpareTime): 5.76
+Shortest Shift (shortestDay): 63.61
+Longest Shift (longestDay): 725.00
+Shift Difference (dayDiff): 661.39
+Total Preference Score (ip->totPref) = 0.00
+Quality = -98.00
+
+------------------------------
+ALL QUALITIES:
+Ait H: -32.43
+Mankowska: -36.04
+Workload Balance: -98.00
+Paper: -427.39
+Nurse order: ( 0,  3,  1,  2,  4,   )
+-------- finished. sol_quality(ip, 12345) --------
+
+        PR all pairs final quality: -98.00
+Iterations performed: 20125
+GRASP Finished.
+Final quality: -98.00
+Theoretical best quality: -98.00
+Iterations performed: 20125
+sols_generated = 20126
+local_searches_performed = 20124
+solutions_relinked = 0
+total path_relinkings_performed = 0
+Elapsed time: 600.68 s (MAX: 600.00)
+Final solution quality is: -98.00
+
+------
+Quality indicators:
+Travel time   (min)     108.11
+Total time    (min)     1345.28
+Total tard.   (min)     0.00
+Longest shift (min)     725.00
+Total Overtime(min)     0.00
+
+------
+Finshed.
+Quality: 97.99516666666668
+Those were results for instance 4 in Aldershot, 6-Nov-20
+Total running time: 612.4 seconds.
+
+Run finished at: 2021-01-05 13:37:37.499140
+------------------------------------------------------------

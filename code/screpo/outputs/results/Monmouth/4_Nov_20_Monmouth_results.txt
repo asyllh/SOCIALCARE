@@ -1,0 +1,67 @@
+------------------------------------------------------------
+Date: 2021-01-05 11:20:14.764937
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+2	467891.15916667285	5.0	0	-1	-1	686.7397791000001	13027
+
+OUTPUT VARIABLES:                                                                          
+Total time (totalTime): 6044.82                                                                                                                                                       
+Total Travel Time (totalTravel) = 895.18                                                   
+Total Waiting Time (totalWaitingTime): 559.64                                              
+Total Overtime (totalOvertime) = 11.78                                                     
+Total Violated TW (totalTardiness) = 22.20                                                 
+Total Violated TWMK (totalMKTardiness) = 0.00                                              
+Total Tardiness MK (mk_allowed_tardiness) = 33.98 (totalOvertime + totalTardiness)         
+Max Spare Time (maxSpareTime): 45.00                                                       
+Min Spare Time (minSpareTime): -0.00                                                       
+Shortest Shift (shortestDay): 30.00                                                        
+Longest Shift (longestDay): 922.72                                                         
+Shift Difference (dayDiff): 892.72                                                         
+Total Preference Score (ip->totPref) = 0.00                                                
+Quality = -467891.16                                                                       
+                                                                                           
+------------------------------                                                             
+ALL QUALITIES:                                                                             
+Ait H: -467801.89                                                                          
+Mankowska: -313.31                                                                         
+Workload Balance: -467891.16                                                               
+Paper: -1683.58                                                                            
+Nurse order: ( 7,  13,  2,  10,  4,  9,  5,  1,  11,  14,  3,  6,  8,  12,  0,   )         
+-------- finished. sol_quality(ip, 12345) --------                                         
+                                                                                           
+        PR all pairs final quality: -467891.16                                             
+Iterations performed: 46                                                                   
+GRASP Finished.                                                                            
+Final quality: -467891.16                                                                  
+Theoretical best quality: -467891.16                                                       
+Iterations performed: 46                                                                   
+sols_generated = 47                                                                        
+local_searches_performed = 46                                                              
+solutions_relinked = 0                                                                     
+total path_relinkings_performed = 0                                                        
+Elapsed time: 674.30 s (MAX: 600.00)                                                       
+Final solution quality is: -467891.16                                                      
+                                                                                           
+------                                                                                     
+Quality indicators:                                                                        
+Travel time   (min)     895.18                                                             
+Total time    (min)     6044.81                                                            
+Total tard.   (min)     22.20                                                              
+Longest shift (min)     922.72                                                             
+Total Overtime(min)     11.78                                                              
+------
+totaldistance:  1452143.3000000003
+totaldistancekm:  1452.1433000000002
+totaldistancejobs:  822698.5
+totaldistancejobskm:  822.6985
+distNurses
+[48902.6, 86634.2, 145425.5, 148295.1, 19669.5, 116729.5, 128906.3, 49046.8, 177688, 144191.8, 39667.1, 78887.1, 13377.2, 135043.1, 119679.5]
+distNursesJobsOnly
+[0.0, 47025.1, 125924.3, 116498.6, 16194.7, 51553.8, 79913.8, 1834.7000000000044, 108778.20000000001, 99899.79999999999, 0.0, 24587.600000000006, 0.0, 80799.40000000001, 69688.5]                                                                                           
+------                                                                                     
+Finshed.                                                                                   
+Quality: 467891.15916667285                                                                
+Those were results for instance 2 in Monmouth, 4-Nov-20                                    
+Total running time: 686.7 seconds.                                                         
+
+Run finished at: 2021-01-05 11:32:30.865827
+------------------------------------------------------------

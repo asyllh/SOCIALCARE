@@ -1,0 +1,60 @@
+------------------------------------------------------------
+Date: 2021-01-05 12:14:02.197796
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+6	334957.6003333359	5.0	0	-1	-1	648.6141635	13027
+
+OUTPUT VARIABLES:
+Total time (totalTime): 4380.78
+
+Total Travel Time (totalTravel) = 802.96
+Total Waiting Time (totalWaitingTime): 322.82
+Total Overtime (totalOvertime) = 0.89
+Total Violated TW (totalTardiness) = 30.69
+Total Violated TWMK (totalMKTardiness) = 0.00
+Total Tardiness MK (mk_allowed_tardiness) = 31.58 (totalOvertime + totalTardiness)
+Max Spare Time (maxSpareTime): 57.05
+Min Spare Time (minSpareTime): -0.00
+Shortest Shift (shortestDay): 354.55
+Longest Shift (longestDay): 855.00
+Shift Difference (dayDiff): 500.45
+Total Preference Score (ip->totPref) = 0.00
+Quality = -334957.60
+
+------------------------------
+ALL QUALITIES:
+Ait H: -334907.56
+Mankowska: -280.94
+Workload Balance: -334957.60
+Paper: -1288.11
+Nurse order: ( 8,  0,  7,  3,  5,  4,  6,  1,  2,   )
+-------- finished. sol_quality(ip, 12345) --------
+
+        PR all pairs final quality: -334957.60
+Iterations performed: 97
+GRASP Finished.
+Final quality: -334957.60
+Theoretical best quality: -334957.60
+Iterations performed: 97
+sols_generated = 98
+local_searches_performed = 98
+solutions_relinked = 0
+total path_relinkings_performed = 0
+Elapsed time: 636.36 s (MAX: 600.00)
+Final solution quality is: -334957.60
+
+------
+Quality indicators:
+Travel time   (min)     802.96
+Total time    (min)     4380.78
+Total tard.   (min)     30.69
+Longest shift (min)     855.00
+Total Overtime(min)     0.89
+
+------
+Finshed.
+Quality: 334957.6003333359
+Those were results for instance 6 in Monmouth, 8-Nov-20
+Total running time: 648.6 seconds.
+
+Run finished at: 2021-01-05 12:34:29.181938
+------------------------------------------------------------

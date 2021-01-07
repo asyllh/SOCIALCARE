@@ -16,7 +16,7 @@ class POSTCODE_FINDER():
         self.df = pd.read_csv(self.filename)
         self.df['post'] = self.df['Postcode 1'].str.replace(' ', '')
         self.df['post'] = self.df['post'].str.lower()
-        self.n_adr_filename = r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\postcode\salisbury_full_codepoint.csv'
+        self.n_adr_filename = r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\postcode\full_codepoint.csv'
         self.adr_df = pd.read_csv(self.n_adr_filename)
         self.adr_df['post'] = self.adr_df['PC'].str.replace('"', '')
         self.adr_df['post'] = self.adr_df['post'].str.replace(' ', '') # Changed from self.adr_df['PC'].str.replace(' ', '') to self.adr_df['post'].str.replace(' ', '')
@@ -85,7 +85,7 @@ days_in_df.sort() # Sort the dates in chronological order
 all_instances = []
 largeprint = True
 timewindow_interval = datetime.timedelta(minutes = 15) # Timewindow generated as plus-minus these minutes of the start date, change this value 30, 15, etc.
-only_areas = ['Salisbury']
+only_areas = ['Hampshire']
 min_addresses = 10
 largeprintstr = ''
 
@@ -212,7 +212,7 @@ for a_name in u_areas: # For each area in the list of Areas
     
         inst['txtsummary'] = largeprintstr
         all_instances.append(inst_dicts_to_dfs(inst).copy())
-        pickle.dump(all_instances, open('all_inst_salisbury.p', 'wb'))
+        pickle.dump(all_instances, open('all_inst_hampshire.p', 'wb'))
 
 #print('Last instance:')
 #print(print_inst(all_instances[-1]))

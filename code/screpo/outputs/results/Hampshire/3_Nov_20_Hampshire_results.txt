@@ -1,0 +1,69 @@
+------------------------------------------------------------
+Date: 2021-01-04 15:58:53.317069
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+1	125.10749999999999	5.0	0	-1	-1	630.4183512	13027
+
+OUTPUT VARIABLES:
+Total time (totalTime): 5282.68
+
+Total Travel Time (totalTravel) = 227.02
+Total Waiting Time (totalWaitingTime): 1665.65
+Total Overtime (totalOvertime) = 0.00
+Total Violated TW (totalTardiness) = 0.00
+Total Violated TWMK (totalMKTardiness) = 0.00
+Total Tardiness MK (mk_allowed_tardiness) = 0.00 (totalOvertime + totalTardiness)
+Max Spare Time (maxSpareTime): 33.79
+Min Spare Time (minSpareTime): -0.00
+Shortest Shift (shortestDay): 195.00
+Longest Shift (longestDay): 765.00
+Shift Difference (dayDiff): 570.00
+Total Preference Score (ip->totPref) = 0.00
+Quality = -125.11
+
+------------------------------
+ALL QUALITIES:
+Ait H: -68.11
+Mankowska: -75.67
+Workload Balance: -125.11
+Paper: -1892.68
+Nurse order: ( 10,  9,  1,  4,  0,  6,  5,  2,  3,  8,  7,   )
+-------- finished. sol_quality(ip, 12345) --------
+
+        PR all pairs final quality: -125.11
+Iterations performed: 334
+GRASP Finished.
+Final quality: -125.11
+Theoretical best quality: -125.90
+Iterations performed: 334
+sols_generated = 335
+local_searches_performed = 335
+solutions_relinked = 0
+total path_relinkings_performed = 0
+Elapsed time: 618.56 s (MAX: 600.00)
+Final solution quality is: -125.11
+
+------
+Quality indicators:
+Travel time   (min)     227.02
+Total time    (min)     5282.68
+Total tard.   (min)     0.00
+Longest shift (min)     765.00
+Total Overtime(min)     0.00
+
+------
+totaldistance:  347473.3
+totaldistancekm:  347.4733
+totaldistancejobs:  153308.1
+totaldistancejobskm:  153.3081
+distNurses
+[42697.6, 17659.5, 19770.4, 21724.2, 67964.4, 36555.1, 32720.1, 31865.8, 30276.4, 16716.1, 29523.7]
+distNursesJobsOnly
+[34292.2, 10096.599999999999, 10432.5, 13296.100000000002, 0.0, 14988.699999999997, 10403.900000000001, 23651.4, 24307.9, 9797.199999999999, 2041.6000000000022]
+-------
+Finshed.
+Quality: 125.10749999999999
+Those were results for instance 1 in Hampshire, 3-Nov-20
+Total running time: 630.4 seconds.
+
+Run finished at: 2021-01-04 16:09:56.649678
+------------------------------------------------------------

@@ -1,21 +1,25 @@
+#--------------------#
+# class_cpo_df.py
+# 16/12/2020
+# class CPO_DF(): CodepointOpen Dataframe class
+# This class opens all csv files in codepo_gb folder, and goes through all files to find postcodes for the given CC/DC codes.
+# These dataframes are put into a dictionary, which are then put into a list and merged together into a single dataframe, df.
+# As codepoint open only contains eastings and northings, geopandas is used to convert these to longitudes and latitudes, which are added as columns to df.
+# This class is used to obtain the longitudes and latitudes of any postcode in the given CC/DC areas, directly from codepoint open rather than using postcodelookup and fullcodepoint files.
+# Note: codepoint open does not contain the number of addresses per postcode (i.e. 'RP' column).
+# Used in convert_dict_inst.pu and compre_abicare_osrm.py.
+#--------------------#
+
 import os
 import glob
-import pickle
-import datetime
 import numpy as np
 import pandas as pd
 import geopandas
-import matplotlib.pyplot as plt
-from scipy import stats
 
 class CPO_DF(): # Codepoint Open DataFrame
-    """
-    docstring
-    """
-    # df = []
     def __init__(self, foldername=r'data\codepo_gb'):
+    # def __init__(self, foldername=r'..\data\codepo_gb'):
         self.foldername = foldername # CP_Open_Folder = r'..\data\codepo_gb'
-        # self.foldername = r'..\data\codepo_gb'
         all_cpopen_csvs = glob.glob(os.path.join(self.foldername, 'data\\CSV', '*.csv'))
 
         # Get the headers in a list:
@@ -23,9 +27,9 @@ class CPO_DF(): # Codepoint Open DataFrame
             raw_headers = f.readline()
             cp_open_headers = raw_headers.split(',') # cp_open_headers:  ['PC', 'PQ', 'EA', 'NO', 'CY', 'RH', 'LH', 'CC', 'DC', 'WC\n'], it's a list of strings.
         
-        # We are interested in the areas 'Wiltshire', 'Hampshire', and 'Monmouthshire', which we search with the codes below (county code 'CC', district code 'DC')
-        utas = [['DC', 'E06000054'], ['CC', 'E10000014'], ['DC', 'W06000021']]
-        # utas = [['DC', 'E06000054']]
+        # We are interested in the areas 'Wiltshire', 'Hampshire', 'Berkshire/Buckinghamshire', and 'Monmouthshire', which we search with the codes below (CC county code, DC district code).
+        # Wiltshire: DC E06000054, Hampshire: CC E10000014, Berkshire/Buckinghamshire: DC E06000060, Monmouthshire: DC W06000019, W06000020 and W06000021, W06000022
+        utas = [['DC', 'E06000054'], ['CC', 'E10000014'], ['DC', 'E06000060'], ['DC', 'W06000019'], ['DC', 'W06000020'], ['DC', 'W06000021'], ['DC', 'W06000022']]
 
         count = 0
         dict_dfs = {}
@@ -47,12 +51,10 @@ class CPO_DF(): # Codepoint Open DataFrame
         self.df['PC'] = self.df['PC'].str.replace(' ', '')
         self.df['PC'] = self.df['PC'].str.lower()
 
-        gdf = geopandas.GeoDataFrame(self.df, geometry=geopandas.points_from_xy(self.df.EA, self.df.NO))
-        
-        # Our reference coordinate is: EPSG:7405 see: https://spatialreference.org/ref/epsg/7405/ 
+        # Now we convert eastings/northings to longitude/latitude and add these new columns to the datafram df. Our reference coordinate is EPSG:7405: https://spatialreference.org/ref/epsg/7405/ 
+        gdf = geopandas.GeoDataFrame(self.df, geometry=geopandas.points_from_xy(self.df.EA, self.df.NO)) 
         gdf = gdf.set_crs("EPSG:7405") # Set our current reference coordinates (eastings and northings)
-        # Change it to standard lat-long
-        gdf = gdf.to_crs("EPSG:4326")
+        gdf = gdf.to_crs("EPSG:4326") # Change it to standard lat-long
         # Put the data back in our original df DataFrame (swap the rows around if we want lat then lon in the df)
         self.df['LON'] = gdf['geometry'][:].x
         self.df['LAT'] = gdf['geometry'][:].y
@@ -62,14 +64,22 @@ class CPO_DF(): # Codepoint Open DataFrame
         dfview = next(iter(self.df[self.df['PC'] == postcode].index), 'no match')
         return dfview
     # --- End of def find_postcode_index --- #
+
+    def find_postcode_latlon(self, postcode): # Returns Latitude and Longitude of given postcode (PC)
+        dfview = self.df[self.df['PC'] == postcode]
+        if dfview.empty:
+            return [None, None]
+        else:
+            return [dfview.iloc[0]['LAT'], dfview.iloc[0]['LON']]
         
-    def find_postcode_lonlat(self, postcode): # Returns Eastings (EA) and Northings (NO) of given postcode (PC).
+    def find_postcode_lonlat(self, postcode): # Returns Longitude and Latitude of given postcode (PC).
         dfview = self.df[self.df['PC'] == postcode]
         if dfview.empty:
             return [None, None]
         else:
             # return [dfview.iloc[0]['EA'], dfview.iloc[0]['NO']]
             return [dfview.iloc[0]['LON'], dfview.iloc[0]['LAT']]
+    
     # --- End of def find_postcode_lonlat --- #
     
     # def find_postcode_n_addresses(self, postcode): # Returns number of registered properties at a given postcode.
@@ -81,9 +91,8 @@ class CPO_DF(): # Codepoint Open DataFrame
     ## --- End of def find_postcode_n_addresses --- #
 ### --- End of class CPO_DF --- ###
 
-# cpodfinst = CPO_DF()
 
-# coord = cpodfinst.find_postcode_lonlat('so529lp')
-# print(coord)
-# index = cpodfinst.find_postcode_index('so529lp')
-# print(index)
+# cpo_inst = CPO_DF()
+# lon, lat = cpo_inst.find_postcode_lonlat('rg248ex') # -1.0542636173681512 51.29435018372664
+
+# lon, lat = cpo_inst.find_postcode_lonlat('rg226ly') # -1.1265538656195921 51.25167783293762

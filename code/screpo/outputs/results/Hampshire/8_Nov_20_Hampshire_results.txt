@@ -1,0 +1,69 @@
+------------------------------------------------------------
+Date: 2021-01-04 19:54:46.370764
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+6	135.6338333333333	5.0	0	-1	-1	622.5730016	13027
+
+OUTPUT VARIABLES:                                                                             
+Total time (totalTime): 3608.01                                                               
+                                                                                              
+Total Travel Time (totalTravel) = 223.68                                                      
+Total Waiting Time (totalWaitingTime): 1089.32                                                
+Total Overtime (totalOvertime) = 0.00                                                         
+Total Violated TW (totalTardiness) = 0.00                                                     
+Total Violated TWMK (totalMKTardiness) = 0.00                                                 
+Total Tardiness MK (mk_allowed_tardiness) = 0.00 (totalOvertime + totalTardiness)             
+Max Spare Time (maxSpareTime): 30.00                                                          
+Min Spare Time (minSpareTime): -0.00                                                          
+Shortest Shift (shortestDay): 111.52                                                          
+Longest Shift (longestDay): 796.81                                                            
+Shift Difference (dayDiff): 685.29                                                            
+Total Preference Score (ip->totPref) = 0.00                                                   
+Quality = -135.63                                                                             
+                                                                                              
+------------------------------                                                                
+ALL QUALITIES:                                                                                
+Ait H: -67.10                                                                                 
+Mankowska: -74.56                                                                             
+Workload Balance: -135.63                                                                     
+Paper: -1313.00                                                                               
+Nurse order: ( 0,  5,  7,  1,  8,  4,  6,  2,  3,   )                                         
+-------- finished. sol_quality(ip, 12345) --------                                            
+                                                                                              
+        PR all pairs final quality: -135.63                                                   
+Iterations performed: 664                                                                     
+GRASP Finished.                                                                               
+Final quality: -135.63                                                                        
+Theoretical best quality: -135.83                                                             
+Iterations performed: 664                                                                     
+sols_generated = 665                                                                          
+local_searches_performed = 665                                                                
+solutions_relinked = 0                                                                        
+total path_relinkings_performed = 0                                                           
+Elapsed time: 610.63 s (MAX: 600.00)                                                          
+Final solution quality is: -135.63                                                            
+                                                                                              
+------                                                                                        
+Quality indicators:                                                                           
+Travel time   (min)     223.68                                                                
+Total time    (min)     3608.00                                                               
+Total tard.   (min)     0.00                                                                  
+Longest shift (min)     796.80                                                                
+Total Overtime(min)     0.00                                                                  
+
+------
+totaldistance:  356126.7
+totaldistancekm:  356.1267
+totaldistancejobs:  160102.90000000002
+totaldistancejobskm:  160.10290000000003
+distNurses
+[29318.3, 57262, 13417.4, 69753.2, 19331.6, 25280.4, 47891.4, 39035.5, 54836.9]
+distNursesJobsOnly
+[17215.699999999997, 46447.5, 6192.7, 5371.5999999999985, 4622.299999999999, 14321.100000000002, 37712.9, 21960.7, 6258.4000000000015]                                                                                              
+------                                                                                        
+Finshed.                                                                                      
+Quality: 135.6338333333333                                                                    
+Those were results for instance 6 in Hampshire, 8-Nov-20                                      
+Total running time: 622.6 seconds.                                                            
+
+Run finished at: 2021-01-04 21:51:24.302783
+------------------------------------------------------------

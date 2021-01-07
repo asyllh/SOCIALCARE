@@ -1,0 +1,8 @@
+# Issues/Questions: Python
+
+* instance_handler.py: in class JOB, def init, self.dependsOn = [], but then later on it is declared/defined again, self.dependsOn = -1. Which should it be, a list or a value?
+* instance_handler.py: full_solution_report, the function `get_travel_time` is used for the trip from the depot (prevPt = -1) and the trip back to the depot (-1). The function gets the travel times from the od matrix, which doesn't have the travel times for the depot. So when od is being called, one of the arguments is 0, and the od matrix's 0 column and row are not used. Should the nurse_travel_to/from_depot matrices be used instead?
+* instance_handler.py: full_solution_report, it appears that this function considers the nurse's shift to start when they leave their house, and their shift to finish when they arrive back at their house, rather than the start and end time of the first and last job respectively. Need to double check this, as if this is the case, amend accordingly so that nurse's shifts start and end based on job times, not departure/arrival at depot.
+* instance_handler.py: error calling .solve() function unless there is an if statement, `if mkVNS: inst = Mk.generate_Mk(inst, matfile=file_to_run, filetype='large_vns')` (see create_solve_inst function). Why is this?
+* instance_handler.py: in read_excel, `self.nurseObjs[ii].postcode = str(row[1])`, however the NURSE object doesn't have a `postcode` attribute!
+* instance_handler.py: in read_excel, `self.xy.append(jo.location.longlat())`, however the JOB object doesn't have a `location` attribute!

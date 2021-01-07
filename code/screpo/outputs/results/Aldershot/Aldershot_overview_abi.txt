@@ -1,0 +1,59 @@
+Aldershot                        
+Number of tasks:  184            
+Number of carers:  9             
+Number of clients:  19           
+                                 
+Client 114      num_tasks:  28   
+Client 135      num_tasks:  21   
+Client 144      num_tasks:  9    
+Client 151      num_tasks:  14   
+Client 153      num_tasks:  1    
+Client 159      num_tasks:  2    
+Client 163      num_tasks:  7    
+Client 168      num_tasks:  8    
+Client 193      num_tasks:  6    
+Client 196      num_tasks:  3    
+Client 20       num_tasks:  2    
+Client 200      num_tasks:  14   
+Client 228      num_tasks:  3    
+Client 238      num_tasks:  21   
+Client 239      num_tasks:  21   
+Client 26       num_tasks:  2    
+Client 56       num_tasks:  1    
+Client 71       num_tasks:  7    
+Client 8        num_tasks:  14   
+                                 
+2-Nov-20                         
+num_tasks:  26                   
+num_carers:  4                   
+num_clients:  14                 
+                                 
+3-Nov-20                         
+num_tasks:  25                   
+num_carers:  6                   
+num_clients:  13                 
+                                 
+4-Nov-20                         
+num_tasks:  29                   
+num_carers:  6                   
+num_clients:  16                 
+                                 
+5-Nov-20                         
+num_tasks:  30                   
+num_carers:  5                   
+num_clients:  16                 
+                                 
+6-Nov-20                         
+num_tasks:  27                   
+num_carers:  5                   
+num_clients:  15                 
+                                 
+7-Nov-20                         
+num_tasks:  23                   
+num_carers:  3                   
+num_clients:  11                 
+                                 
+8-Nov-20                         
+num_tasks:  24                   
+num_carers:  3                   
+num_clients:  12                 

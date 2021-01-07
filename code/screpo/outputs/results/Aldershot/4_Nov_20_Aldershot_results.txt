@@ -1,0 +1,65 @@
+------------------------------------------------------------
+Date: 2021-01-05 12:59:36.383636
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+2	75.38466666666665	5.0	0	-1	-1	612.8253771	13027
+
+OUTPUT VARIABLES:
+Total time (totalTime): 1321.32
+Total Travel Time (totalTravel) = 119.79
+Total Waiting Time (totalWaitingTime): 61.53
+Total Overtime (totalOvertime) = 0.00
+Total Violated TW (totalTardiness) = 0.00
+Total Violated TWMK (totalMKTardiness) = 0.00
+Total Tardiness MK (mk_allowed_tardiness) = 0.00 (totalOvertime + totalTardiness)
+Max Spare Time (maxSpareTime): 13.13
+Min Spare Time (minSpareTime): -0.00
+Shortest Shift (shortestDay): 48.46
+Longest Shift (longestDay): 442.94
+Shift Difference (dayDiff): 394.48
+Total Preference Score (ip->totPref) = 0.00
+Quality = -75.38
+
+------------------------------
+ALL QUALITIES:
+Ait H: -35.94
+Mankowska: -39.93
+Workload Balance: -75.38
+Paper: -181.32
+Nurse order: ( 4,  0,  3,  2,  5,  1,   )
+-------- finished. sol_quality(ip, 12345) --------
+
+        PR all pairs final quality: -75.38
+Iterations performed: 16121
+GRASP Finished.
+Final quality: -75.38
+Theoretical best quality: -75.38
+Iterations performed: 16121
+sols_generated = 16122
+local_searches_performed = 16122
+solutions_relinked = 0
+total path_relinkings_performed = 0
+Elapsed time: 601.00 s (MAX: 600.00)
+Final solution quality is: -75.38
+
+------
+Quality indicators:
+Travel time   (min)     119.79
+Total time    (min)     1321.32
+Total tard.   (min)     0.00
+Longest shift (min)     442.94
+Total Overtime(min)     0.00
+------
+totaldistance:  183232.5
+totaldistancekm:  183.2325
+totaldistancejobs:  90210.50000000001
+totaldistancejobskm:  90.21050000000001
+distNurses:  [30061.6, 6185.2, 14345.6, 44363.3, 48633.3, 39643.5]
+distNursesJobsOnly:  [13444.099999999999, 1970.3000000000002, 0.0, 26207.700000000004, 26357.100000000006, 22231.3]
+------
+Finshed.
+Quality: 75.38466666666665
+Those were results for instance 2 in Aldershot, 4-Nov-20
+Total running time: 612.8 seconds.
+
+Run finished at: 2021-01-05 13:13:02.865214
+------------------------------------------------------------

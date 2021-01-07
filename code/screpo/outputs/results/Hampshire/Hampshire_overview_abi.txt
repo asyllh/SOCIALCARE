@@ -1,0 +1,75 @@
+Hampshire
+Number of tasks:  480
+Number of carers:  15
+Number of clients:  34
+
+Client 10       num_tasks:  14
+Client 102      num_tasks:  1
+Client 108      num_tasks:  8
+Client 113      num_tasks:  14
+Client 119      num_tasks:  29
+Client 126      num_tasks:  14
+Client 128      num_tasks:  29
+Client 13       num_tasks:  18
+Client 131      num_tasks:  1
+Client 142      num_tasks:  6
+Client 146      num_tasks:  1
+Client 147      num_tasks:  14
+Client 165      num_tasks:  21
+Client 167      num_tasks:  22
+Client 175      num_tasks:  6
+Client 190      num_tasks:  14
+Client 198      num_tasks:  1
+Client 202      num_tasks:  7
+Client 203      num_tasks:  28
+Client 22       num_tasks:  21
+Client 220      num_tasks:  21
+Client 221      num_tasks:  15
+Client 222      num_tasks:  21
+Client 231      num_tasks:  1
+Client 233      num_tasks:  3
+Client 234      num_tasks:  25
+Client 36       num_tasks:  28
+Client 39       num_tasks:  13
+Client 42       num_tasks:  5
+Client 70       num_tasks:  1
+Client 81       num_tasks:  29
+Client 86       num_tasks:  14
+Client 90       num_tasks:  14
+Client 97       num_tasks:  21
+
+
+2-Nov-20
+num_tasks:  69
+num_carers:  10
+num_clients:  28
+
+3-Nov-20
+num_tasks:  70
+num_carers:  11
+num_clients:  28
+
+4-Nov-20
+num_tasks:  72
+num_carers:  10
+num_clients:  27
+
+5-Nov-20
+num_tasks:  73
+num_carers:  10
+num_clients:  29
+
+6-Nov-20
+num_tasks:  71
+num_carers:  11
+num_clients:  27
+
+7-Nov-20
+num_tasks:  63
+num_carers:  8
+num_clients:  24
+
+8-Nov-20
+num_tasks:  62
+num_carers:  9
+num_clients:  24

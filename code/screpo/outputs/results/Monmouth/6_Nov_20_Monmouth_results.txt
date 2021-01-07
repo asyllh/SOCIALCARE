@@ -1,0 +1,68 @@
+------------------------------------------------------------
+Date: 2021-01-05 11:47:47.694298
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+4	137139.0903333334	5.0	0	-1	-1	705.1991403	13027
+
+OUTPUT VARIABLES:
+Total time (totalTime): 7100.96
+
+Total Travel Time (totalTravel) = 920.79
+Total Waiting Time (totalWaitingTime): 1095.16
+Total Overtime (totalOvertime) = 0.00
+Total Violated TW (totalTardiness) = 12.68
+Total Violated TWMK (totalMKTardiness) = 0.00
+Total Tardiness MK (mk_allowed_tardiness) = 12.68 (totalOvertime + totalTardiness)
+Max Spare Time (maxSpareTime): 105.00
+Min Spare Time (minSpareTime): -0.00
+Shortest Shift (shortestDay): 75.00
+Longest Shift (longestDay): 870.18
+Shift Difference (dayDiff): 795.18
+Total Preference Score (ip->totPref) = 0.00
+Quality = -137139.09
+
+------------------------------
+ALL QUALITIES:
+Ait H: -137059.57
+Mankowska: -315.38
+Workload Balance: -137139.09
+Paper: -2079.35
+Nurse order: ( 10,  11,  3,  1,  2,  12,  4,  6,  8,  13,  0,  9,  5,  7,  14,   )
+-------- finished. sol_quality(ip, 12345) --------
+
+        PR all pairs final quality: -137139.09
+Iterations performed: 38
+GRASP Finished.
+Final quality: -137139.09
+Theoretical best quality: -137139.09
+Iterations performed: 38
+sols_generated = 39
+local_searches_performed = 39
+solutions_relinked = 0
+total path_relinkings_performed = 0
+Elapsed time: 692.06 s (MAX: 600.00)
+Final solution quality is: -137139.09
+
+------
+Quality indicators:
+Travel time   (min)     920.79
+Total time    (min)     7100.96
+Total tard.   (min)     12.68
+Longest shift (min)     870.18
+Total Overtime(min)     0.00
+------
+totaldistance:  1444434.7999999998
+totaldistancekm:  1444.4347999999998
+totaldistancejobs:  831142.8
+totaldistancejobskm:  831.1428000000001
+distNurses
+[81480.3, 64072.2, 109117.6, 133962.7, 4478.6, 126954.6, 86619, 57690.2, 125038.7, 66340, 31313.3, 89550.9, 135765.1, 202359.2, 129692.4]
+distNursesJobsOnly
+[30831.700000000004, 18920.300000000003, 38858.0, 63512.40000000001, 1797.5000000000005, 94722.40000000001, 37980.2, 20099.299999999996, 76370.29999999999, 51564.5, 10542.399999999998, 47148.7, 73609.40000000001, 165531.0, 99654.7]
+------
+Finshed.
+Quality: 137139.0903333334
+Those were results for instance 4 in Monmouth, 6-Nov-20
+Total running time: 705.2 seconds.
+
+Run finished at: 2021-01-05 12:00:17.428184
+------------------------------------------------------------

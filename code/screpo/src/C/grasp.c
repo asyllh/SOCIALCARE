@@ -1087,8 +1087,8 @@ void rcl_pick(int** bestIndices, int* RCL_seeds, int rcl_size, int* cNurse, int*
 	// This function randomly picks an element from the RCL, which returns to us the indicies for the job-nurse assignment (cNurse and cJob).
 	// Picks one random element from bestIndices. The index of bestIndices comes from RCL_seeds. The elements considered of RCL_seeds are only the first rcl_size elements. Output is saved in cNurse and cJob.
 
-	// int rd_int = pick_integer(rcl_size);
-	int rd_int = 0; //ISSUE, THIS SHOULD BE SELECTING A RANDOM INTEGER BETWEEN 0 AND rcl_size, SHOULD NOT ALWAYS BE 0 AS THIS MEANS THAT THE ELEMENT PICKED WILL ALWAYS BE THE 0TH ELEMENT OF RCL_seeds!
+	 int rd_int = pick_integer(rcl_size);
+//	int rd_int = 0; //ISSUE, THIS SHOULD BE SELECTING A RANDOM INTEGER BETWEEN 0 AND rcl_size, SHOULD NOT ALWAYS BE 0 AS THIS MEANS THAT THE ELEMENT PICKED WILL ALWAYS BE THE 0TH ELEMENT OF RCL_seeds!
 
 	int el = RCL_seeds[rd_int]; //el = element, (should be) selected at random from RCL_seeds.
 
@@ -1339,8 +1339,9 @@ int find_arc_destination(int source_nurse, int source_job, struct INSTANCE* ip) 
 	// If there is a job after source_job in source_nurse's route, then this function returns that job, otherwise it returns -1 (which means that there are no other jobs in source_nurse's route,
 	// source_job is the last job in source_nurse's route and so the nurse ends up returning to the depot).
 
-	int c_pos = ip->solMatrix[source_nurse][source_job]; //c_pos position of job in nurse's route
-	int n_pos = c_pos++; /// Increment is AFTER, so n_pos = c_pos, and THEN c_pos is increased by one, should this be ++c_pos or just c_pos + 1 instead as we're trying to find the NEXT position in the route?
+	int c_pos = ip->solMatrix[source_nurse][source_job]; //c_pos position of job in nurse's route, 'current position'
+	/*int n_pos = c_pos++;*/ /// 'next position'. Increment is AFTER, so n_pos = c_pos, and THEN c_pos is increased by one, should this be ++c_pos or just c_pos + 1 instead as we're trying to find the NEXT position in the route?
+	int n_pos = c_pos+1; // Changed from c_pos++ to cpos+1, 26/12/2020.
 	int d_pos = -1; // If we don't find the following point, assume it goes back to depot
 	for (int i = 0; i < ip->nJobs; ++i) { //For each job i = 0,...,nJobs
 		if (ip->solMatrix[source_nurse][i] == n_pos) { //If the position of job i in nurse's route is in the NEXT position of nurse's route after position c_pos
@@ -1427,7 +1428,7 @@ double directed_path_relinking(struct INSTANCE* input1, struct INSTANCE* input2,
 		if ((direction == 0 && q1 > q2) || (direction == 1 && q1 < q2)) { //(forward direction AND current soln quality better than ps soln quality) OR (backward direction AND current quality worse than ps quality)
 			source_sol_1 = -1;
 		}
-		if (source_sol_1 > 0) { /// Should this be >-1? This will never occur, as source_sol_1 is only either 0 or -1, so can never be > 0. 
+		if (source_sol_1 > -1) { /// Should this be >-1? This will never occur, as source_sol_1 is only either 0 or -1, so can never be > 0. Changed from 0 to -1, 26/12/2020.
 			overwrite_instance(output, input1); //relinkedSolution = ip solution
 			relinking_quality = path_relinking(output, input2); //PR with relinkedSolution as starting solution and pool[ps] solution as guiding solution.
 		}
@@ -1640,7 +1641,7 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 							best_move_quality = move_quality;
 						}
 						remove_job(ip, mvjob, guiding_nurse); //Revert ip back to before
-						if (insert_job_at_position(ip, mvjob, current_nurse, current_nurse_pos)) { //Insert mvjob back into current_nurse, shouldn't this be < 0?
+						if (insert_job_at_position(ip, mvjob, current_nurse, current_nurse_pos) < 0) { //Insert mvjob back into current_nurse, shouldn't this be < 0? Changed 26/12/2020, added <0 to statement.
 							printf("ERROR: We have messed it up!\nCannot insert job %d back into nurse %d\n", mvjob, current_nurse);
 							exit(-32543543);
 						}

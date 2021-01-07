@@ -1,0 +1,56 @@
+------------------------------------------------------------
+Area: Monmouth	Day: 2-Nov-20	nNurses: 13	nJobs: 102
+travel_time: 722.5500000000002	waiting_time: 1407.45
+shortest_shift: 60.0	longest_shift: 930.0	day_diff: 870.0
+Ait H Quality: -216.76500000000004
+Mankowska Quality: -240.85000000000005
+Workload Balance Quality: -303.76500000000004
+Paper Quality: -2130.0
+------------------------------------------------------------
+Area: Monmouth	Day: 3-Nov-20	nNurses: 14	nJobs: 103
+travel_time: 728.6166666666668	waiting_time: 1026.3833333333334
+shortest_shift: 120.0	longest_shift: 870.0	day_diff: 750.0
+Ait H Quality: -218.58500000000004
+Mankowska Quality: -242.87222222222226
+Workload Balance Quality: -293.58500000000004
+Paper Quality: -1755.0000000000002
+------------------------------------------------------------
+Area: Monmouth	Day: 4-Nov-20	nNurses: 15	nJobs: 105
+travel_time: 769.7833333333333	waiting_time: 775.2166666666668
+shortest_shift: 30.0	longest_shift: 915.0	day_diff: 885.0
+Ait H Quality: -230.93499999999997
+Mankowska Quality: -256.59444444444443
+Workload Balance Quality: -319.43499999999995
+Paper Quality: -1545.0
+------------------------------------------------------------
+Area: Monmouth	Day: 5-Nov-20	nNurses: 16	nJobs: 116
+travel_time: 798.1999999999999	waiting_time: 1661.799999999999
+shortest_shift: 15.0	longest_shift: 900.0	day_diff: 885.0
+Ait H Quality: -239.45999999999998
+Mankowska Quality: -266.06666666666666
+Workload Balance Quality: -327.96
+Paper Quality: -2459.999999999999
+------------------------------------------------------------
+Area: Monmouth	Day: 6-Nov-20	nNurses: 15	nJobs: 114
+travel_time: 864.5166666666667	waiting_time: 1505.483333333333
+shortest_shift: 90.0	longest_shift: 885.0	day_diff: 795.0
+Ait H Quality: -259.35499999999996
+Mankowska Quality: -288.1722222222222
+Workload Balance Quality: -338.85499999999996
+Paper Quality: -2369.9999999999995
+------------------------------------------------------------
+Area: Monmouth	Day: 7-Nov-20	nNurses: 11	nJobs: 99
+travel_time: 694.0666666666666	waiting_time: 790.933333333333
+shortest_shift: 210.0	longest_shift: 870.0	day_diff: 660.0
+Ait H Quality: -208.21999999999997
+Mankowska Quality: -231.35555555555553
+Workload Balance Quality: -274.21999999999997
+Paper Quality: -1484.9999999999995
+------------------------------------------------------------
+Area: Monmouth	Day: 8-Nov-20	nNurses: 9	nJobs: 96
+travel_time: 666.1666666666664	waiting_time: 548.8333333333337
+shortest_shift: 360.0	longest_shift: 855.0	day_diff: 495.0
+Ait H Quality: -199.8499999999999
+Mankowska Quality: -222.05555555555546
+Workload Balance Quality: -249.3499999999999
+Paper Quality: -1215.0

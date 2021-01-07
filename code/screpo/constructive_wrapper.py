@@ -16,8 +16,9 @@ from joblib import Parallel, delayed
 # Own modules:
 import mankowska_data as Mk
 import python_resources as pr
-import instance_handler as hhc
-import convert_dict_inst as cdi
+# import instance_handler as hhc
+import instance_handler_idict as hhc
+# import convert_dict_inst as cdi
 
 def main():
     # New main function.
@@ -29,58 +30,64 @@ def main():
     # max_time_seconds = 5
     # verbose_level = 1
     create_python_plots = True
-    create_html_website = False
-    results_file_name = '08_Nov_Salisbury_results.txt'
+    # create_html_website = False
+    create_html_website = True
+    input_filename = 'all_inst_Aldershot.p'
+    # results_filename = '02_Nov_Hampshire_results.txt'
+    # results_filename = 'test_02_Nov_Hampshire_results.txt'
     # run_in_parallel = False
     # parallel_workers = 1 # Only works if previous is true
     # random_seed = -1 # Only if run_in_parallel = False. -1 is a true random seed, otherwise set to this value
-    random_seed = 13826 # NOTE: used for testing only.
+    random_seed = 13027 # NOTE: used for testing only. #35807 600seconds 13027
 
     options_vector = hhc.default_options_vector() 
-    options_vector[1] = 1.0 # Two-opt active
-    options_vector[3] = 0.0 # Nurse order change active (neighbourhood in local search)
-    options_vector[4] = 0.5 # -   GRASP: Delta low
-    options_vector[5] = 0.48 # -   GRASP: Delta range
-    options_vector[6] = 1.0 # Nurse order change active (In GRASP, between calls)
-    options_vector[7] = 1.0 # deprecated
-    options_vector[8] = 20.0 # Solutions in pool
-    options_vector[9] = 3.0 # PR_STRATEGY
-    options_vector[10] = 2.0 # RCL Strategy
-    options_vector[11] = 2.0 # PR_DIRECTION
-    options_vector[12] = 0 # -   Use gap (1) or precedence (0)
-    options_vector[50] = 0 # 1 if tardiness and overtime are infeasible, 0 if feasible
-    options_vector[51] = -1/3*60 # alpha_1 Travel time
-    options_vector[52] = 0.0 # alpha_2 Waiting time
-    options_vector[53] = -1/3*60 # alpha_3 Tardiness
-    options_vector[54] = 0.0 # alpha_4 Overtime
-    options_vector[55] = 0.00 # alpha_5 Workload balance
-    options_vector[56] = 0 # alpha_6 Preference score
-    options_vector[57] = -1/3*60 # Max tardiness (allowed)
-    options_vector[99] = 0 # -   print all inputs
+    # options_vector[1] = 1.0 # Two-opt active
+    # options_vector[3] = 0.0 # Nurse order change active (neighbourhood in local search)
+    # # options_vector[3] = 1.0 # Nurse order change active (neighbourhood in local search)
+    # options_vector[4] = 0.5 # -   GRASP: Delta low
+    # options_vector[5] = 0.48 # -   GRASP: Delta range
+    # options_vector[6] = 1.0 # Nurse order change active (In GRASP, between calls)
+    # options_vector[7] = 1.0 # deprecated
+    # options_vector[8] = 20.0 # Solutions in pool
+    # options_vector[9] = 3.0 # PR_STRATEGY
+    # options_vector[10] = 2.0 # RCL Strategy
+    # options_vector[11] = 2.0 # PR_DIRECTION
+    # options_vector[12] = 0 # -   Use gap (1) or precedence (0)
+    # options_vector[50] = 0 # 1 if tardiness and overtime are infeasible, 0 if feasible
+    # options_vector[51] = -1/3*60 # alpha_1 Travel time
+    # options_vector[52] = 0.0 # alpha_2 Waiting time
+    # options_vector[53] = -1/3*60 # alpha_3 Tardiness
+    # options_vector[54] = 0.0 # alpha_4 Overtime
+    # options_vector[55] = 0.00 # alpha_5 Workload balance
+    # options_vector[56] = 0 # alpha_6 Preference score
+    # options_vector[57] = -1/3*60 # Max tardiness (allowed)
+    # options_vector[99] = 0 # -   print all inputs
 
     ####-------------------------- START CODE --------------------------####
 
     # big_m = 10000000
 
-    all_instances = pickle.load(open('tools_and_scripts/all_inst_salisbury.p', 'rb'))
-
+    all_instances = pickle.load(open('tools_and_scripts/' + input_filename, 'rb'))
+    idict_index = 7
     # idict = 7th instance in all_instances, which is 08-Nov-2020 in Salisbury. Chose this inst as it is the only one which has all postcodes for carers and clients. ncarers = 12, ntasks = 100.
-    idict = all_instances[6]
+    idict = all_instances[idict_index]
     # Assign client 16 a different postcode (sp27tq) as its original postcode (sp27xx) is missing from codepoint open. This is just so we can use this instance for a test.
-    idict = cdi.assign_missing_postcode(idict)
-
-    f = open(results_file_name, 'a')
+    # idict = cdi.assign_missing_postcode(idict)
+    results_filename = idict['fname'] + '_results_test.txt'
+    f = open(results_filename, 'a')
     f.write('------------------------------------------------------------\n')
-    f.write('Date: ' + str(datetime.now()) + ', running test instance 6 convert_dict_inst.\n')
+    f.write('Date: ' + str(datetime.now()) + '\n')
     f.write("Instance\tCquality")
+    f.write("\tMeasure")
     f.write("\ttotalTravelTime")
     f.write("\ttotalTardiness")
     f.write("\tmaxTardiness")
-    f.write("\telapsed_time\n")
+    f.write("\telapsed_time")
+    f.write("\trandom_seed\n")
     f.close()
 
     print('\n-------------------------------------------------------')
-    print('Running program for instance[6] in all_inst_salisbury.p, 08-NOV-2020')
+    print('Running program for instance ' + str(idict_index) + ' in ' + str(input_filename) + ', ' + str(idict['date']))
     stt_time = time.perf_counter()
 
     inst = hhc.create_solve_inst(idict, options_vector, random_seed)  
@@ -94,14 +101,20 @@ def main():
 
     end_time = time.perf_counter()
     elapsed_time = end_time - stt_time
-    print('Those were results for instance[6] in all_inst_salisbury.p, 08-NOV-2020, running for ' + str(np.round(elapsed_time, 1)) + ' seconds.')
-    f = open(results_file_name, 'a')
-    f.write('idict[6]\t' + str(inst.Cquality))
+    print('Those were results for instance ' + str(idict_index) + ' in ' + str(idict['area']) + ', ' + str(idict['date']))
+    print('Total running time: ' + str(np.round(elapsed_time, 1)) + ' seconds.')
+    f = open(results_filename, 'a')
+    f.write(str(idict_index)+ '\t' + str(inst.Cquality))
+    f.write("\t" + str(inst.algorithmOptions[0]))
     f.write("\t" + str(inst.totalTravelTime))
     f.write("\t" + str(inst.totalTardiness))
     f.write("\t" + str(inst.maxTardiness))
-    f.write("\t" + str(elapsed_time) + "\n")
+    f.write("\t" + str(elapsed_time))
+    f.write("\t" + str(random_seed) + "\n")
     f.close()
+
+    # inst.full_solution_report(report=0)
+
     # if create_python_plots:
     #     print('About to plot')
     #     inst.simple_solution_plot()
@@ -111,13 +124,21 @@ def main():
     # if result == "yes":
     if create_html_website:
         print('Generating website...')
-        i.full_solution_report(report=0)
-        i.solution_to_website()
-        print('Done.')
-        
-    print('\n\n-------------------------------------------------------\n\n')
+        inst.full_solution_report(report=0, doPlots=create_python_plots)
+        # inst.full_solution_report(report=0, doPlots=False)
+        inst.solution_to_website_dst()
+        print('totaldistance: ', inst.totalDistance)
+        print('totaldistancekm: ', inst.totalDistance/1000)
+        print('totaldistancejobs: ', inst.totalDistanceJobsOnly)
+        print('totaldistancejobskm: ', inst.totalDistanceJobsOnly/1000)
+        print('distNurses: ', inst.distNurses)
+        # print(inst.distNurses)
+        print('distNursesJobsOnly: ', inst.distNursesJobsOnly)
+        # print(inst.distNursesJobsOnly)
+    print('Done.')       
+    # print('\n-------------------------------------------------------\n')
    
-    f = open(results_file_name, 'a')
+    f = open(results_filename, 'a')
     f.write('\nRun finished at: ' + str(datetime.now()))
     f.write('\n------------------------------------------------------------\n')
     f.close()
@@ -133,7 +154,7 @@ def main_old():
     verbose_level = 1
     create_python_plots = True
     create_html_website = False
-    results_file_name = 'hhcrsp_results_testMK.txt'
+    results_filename = 'hhcrsp_results_testMK.txt'
     run_in_parallel = False
     parallel_workers = 1 # Only works if previous is true
     random_seed = -1 # Only if run_in_parallel = False. -1 is a true random seed, otherwise set to this value
@@ -260,7 +281,7 @@ def main_old():
     # Pack all options in a list:
     options_list = ['', instance_type, quality_measure, ds_skill_type, max_time_seconds, verbose_level, load_from_disk, False, options_vector]
 
-    f = open(results_file_name, 'a')
+    f = open(results_filename, 'a')
     f.write('------------------------------------------------------------\n')
     f.write('Date: ' + str(datetime.now()) + ', running ' + str(len(file_list)) +  ' files.\n')
     f.write("Instance\tCquality")
@@ -322,7 +343,7 @@ def main_old():
         end_time = time.perf_counter()
         elapsed_time = end_time - stt_time
         print('Those were results for ' + str(current_file) + ' running for ' + str(np.round(elapsed_time, 1)) + ' seconds.')
-        f = open(results_file_name, 'a')
+        f = open(results_filename, 'a')
         f.write(current_file + '\t' + str(i.Cquality))
         f.write("\t" + str(i.totalTravelTime))
         f.write("\t" + str(i.totalTardiness))
@@ -346,7 +367,7 @@ def main_old():
         print('=======================================================')
         print('=======================================================\n\n')
 
-    f = open(results_file_name, 'a')
+    f = open(results_filename, 'a')
     f.write('\nRun finished at: ' + str(datetime.now()))
     f.write('\n------------------------------------------------------------\n')
     f.close()

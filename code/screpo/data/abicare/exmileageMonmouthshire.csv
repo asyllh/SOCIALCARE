@@ -1,0 +1,783 @@
+﻿Employee,Employee No,Employee Postcode,Area Code,Client,Address,Address2,Town,County,Postcode,Area,Funder,Date,Start Time,End Time,Pay Rate,Hours of call,Miles,Estimated Time (Mins)
+Carer 4,,NP23 6LR,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,07-Nov-20,8:30 AM,9:00 AM,Weekend Half Hour,0.5,,
+Carer 4,,NP23 6LR,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,07-Nov-20,9:00 AM,10:00 AM,Weekend Hour,1,,
+Carer 4,,NP23 6LR,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,07-Nov-20,10:15 AM,10:30 AM,Weekday Fifteen Minutes,0.25,2.51,6.44
+Carer 4,,NP23 6LR,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,07-Nov-20,10:45 AM,11:15 AM,Weekend Half Hour,0.5,1.499,5.04
+Carer 4,,NP23 6LR,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,07-Nov-20,11:30 AM,12:00 PM,Weekend Half Hour,0.5,3.27,7.13
+Carer 6,,NP236LR,WA07,Client 223,,,,,NP4 0LS,Monmouth,,02-Nov-20,9:00 AM,5:00 PM,,8,,
+Carer 6,,NP236LR,WA07,Client 223,,,,,NP4 0LS,Monmouth,,03-Nov-20,9:00 AM,5:00 PM,,8,,
+Carer 6,,NP236LR,WA07,Client 223,,,,,NP4 0LS,Monmouth,,04-Nov-20,9:00 AM,5:00 PM,,8,,
+Carer 6,,NP236LR,WA07,Client 223,,,,,NP4 0LS,Monmouth,,05-Nov-20,9:00 AM,5:00 PM,,8,,
+Carer 6,,NP236LR,WA07,Client 223,,,,,NP4 0LS,Monmouth,,06-Nov-20,9:00 AM,5:00 PM,,8,,
+Carer 25,,NP18 3DF,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 25,,NP18 3DF,WA01,Client 4,,,,,NP26 3NA,Monmouth,Social Services,02-Nov-20,9:00 AM,9:45 AM,Weekday Three Quarter Hour,0.75,0.201,1.09
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,02-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,4.422,10.54
+Carer 25,,NP18 3DF,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,02-Nov-20,10:45 AM,11:15 AM,Weekday Half Hour,0.5,0.643,3.19
+Carer 25,,NP18 3DF,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,02-Nov-20,11:15 AM,11:45 AM,Weekday Half Hour,0.5,4.05,10.35
+Carer 25,,NP18 3DF,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,1.245,3.3
+Carer 25,,NP18 3DF,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,02-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,02-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 25,,NP18 3DF,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,02-Nov-20,3:15 PM,3:45 PM,Weekday Half Hour,0.5,5.482,11.45
+Carer 25,,NP18 3DF,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,4:30 PM,5:00 PM,Weekday Half Hour,0.5,10.316,13.11
+Carer 25,,NP18 3DF,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,02-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,3.124,7.1
+Carer 25,,NP18 3DF,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,02-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,3.067,9.07
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,02-Nov-20,6:00 PM,6:30 PM,Weekday Half Hour,0.5,2.707,8.07
+Carer 25,,NP18 3DF,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,02-Nov-20,6:45 PM,7:15 PM,Weekday Half Hour,0.5,0.394,2.02
+Carer 25,,NP18 3DF,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,3.884,7.46
+Carer 25,,NP18 3DF,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,02-Nov-20,8:30 PM,9:00 PM,Weekday Half Hour,0.5,5.86,13.16
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,02-Nov-20,9:00 PM,9:30 PM,Weekday Half Hour,0.5,1.69,6.42
+Carer 25,,NP18 3DF,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,02-Nov-20,9:30 PM,10:00 PM,Weekday Half Hour,0.5,5.482,11.45
+Carer 25,,NP18 3DF,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,04-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,,
+Carer 25,,NP18 3DF,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,04-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,6.912,15.12
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,04-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,1.867,6.46
+Carer 25,,NP18 3DF,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,04-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,0.643,3.19
+Carer 25,,NP18 3DF,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,4.664,11.12
+Carer 25,,NP18 3DF,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,04-Nov-20,8:30 PM,9:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,04-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 25,,NP18 3DF,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,05-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,,
+Carer 25,,NP18 3DF,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,4:45 PM,5:15 PM,Weekday Half Hour,0.5,10.316,13.11
+Carer 25,,NP18 3DF,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,05-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,3.124,7.1
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,05-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,1.867,6.46
+Carer 25,,NP18 3DF,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,05-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,0.643,3.19
+Carer 25,,NP18 3DF,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,4.664,11.12
+Carer 25,,NP18 3DF,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,,
+Carer 25,,NP18 3DF,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,05-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,05-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 25,,NP18 3DF,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,06-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,,
+Carer 25,,NP18 3DF,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,4:45 PM,5:15 PM,Weekday Half Hour,0.5,10.316,13.11
+Carer 25,,NP18 3DF,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,06-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,3.124,7.1
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,06-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,1.867,6.46
+Carer 25,,NP18 3DF,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,06-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,0.643,3.19
+Carer 25,,NP18 3DF,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,7:45 PM,8:15 PM,Weekday Half Hour,0.5,4.664,11.12
+Carer 25,,NP18 3DF,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,06-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 25,,NP18 3DF,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,06-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 26,,NP7 9AT,WA01,Client 164,,,,,NP7 8DW,Monmouth,Aneurin Bevan CP,03-Nov-20,7:00 PM,9:00 PM,Weekday Hour,2,,
+Carer 26,,NP7 9AT,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,04-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,,
+Carer 26,,NP7 9AT,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,04-Nov-20,4:30 PM,5:00 PM,Weekday Half Hour,0.5,0.85,3.18
+Carer 26,,NP7 9AT,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,04-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 26,,NP7 9AT,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,04-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,0.493,2.33
+Carer 26,,NP7 9AT,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,04-Nov-20,6:05 PM,6:35 PM,Weekday Half Hour,0.5,4.361,9.22
+Carer 26,,NP7 9AT,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,04-Nov-20,7:15 PM,7:30 PM,Weekday Fifteen Minutes,0.25,7.723,13.4
+Carer 26,,NP7 9AT,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,04-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,6.251,13.49
+Carer 26,,NP7 9AT,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,04-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,,
+Carer 26,,NP7 9AT,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,04-Nov-20,8:30 PM,8:45 PM,Weekday Fifteen Minutes,0.25,0.664,3.09
+Carer 26,,NP7 9AT,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,04-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,0.85,3.18
+Carer 26,,NP7 9AT,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,05-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,,
+Carer 26,,NP7 9AT,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,05-Nov-20,4:45 PM,5:15 PM,Weekday Half Hour,0.5,0.85,3.18
+Carer 26,,NP7 9AT,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,05-Nov-20,5:15 PM,5:45 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 26,,NP7 9AT,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,05-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,0.493,2.33
+Carer 26,,NP7 9AT,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,05-Nov-20,6:45 PM,7:15 PM,Weekday Half Hour,0.5,4.361,9.22
+Carer 26,,NP7 9AT,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,05-Nov-20,7:45 PM,8:00 PM,Weekday Fifteen Minutes,0.25,7.723,13.4
+Carer 26,,NP7 9AT,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,05-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,6.251,13.49
+Carer 26,,NP7 9AT,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,05-Nov-20,8:45 PM,9:00 PM,Weekday Fifteen Minutes,0.25,0.664,3.09
+Carer 26,,NP7 9AT,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,05-Nov-20,9:00 PM,9:30 PM,Weekday Half Hour,0.5,0.694,3.12
+Carer 26,,NP7 9AT,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,05-Nov-20,9:45 PM,10:15 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 26,,NP7 9AT,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,06-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,,
+Carer 26,,NP7 9AT,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,06-Nov-20,4:45 PM,5:15 PM,Weekday Half Hour,0.5,0.85,3.18
+Carer 26,,NP7 9AT,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,06-Nov-20,5:15 PM,5:45 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 26,,NP7 9AT,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,06-Nov-20,5:45 PM,6:15 PM,Weekday Half Hour,0.5,0.493,2.33
+Carer 26,,NP7 9AT,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,06-Nov-20,6:45 PM,7:15 PM,Weekday Half Hour,0.5,4.361,9.22
+Carer 26,,NP7 9AT,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,06-Nov-20,7:30 PM,7:45 PM,Weekday Fifteen Minutes,0.25,7.723,13.4
+Carer 26,,NP7 9AT,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,06-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,6.251,13.49
+Carer 26,,NP7 9AT,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,06-Nov-20,8:30 PM,8:45 PM,Weekday Fifteen Minutes,0.25,0.664,3.09
+Carer 26,,NP7 9AT,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,06-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,0.694,3.12
+Carer 26,,NP7 9AT,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,06-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 28,,NP23 4WB,WA01,Client 88,,,,,NP7 0PA,Monmouth,Social Services,06-Nov-20,7:00 AM,8:00 AM,Weekday Hour,1,,
+Carer 28,,NP23 4WB,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,06-Nov-20,8:15 AM,9:00 AM,Weekday Three Quarter Hour,0.75,8.041,18.07
+Carer 28,,NP23 4WB,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,06-Nov-20,9:30 AM,10:30 AM,Weekday Hour,1,5.403,10.26
+Carer 28,,NP23 4WB,WA01,Client 217,,,,,NP7 9PZ,Monmouth,Social Services,06-Nov-20,10:30 AM,11:15 AM,Weekday Three Quarter Hour,0.75,2.936,6.27
+Carer 28,,NP23 4WB,WA01,Client 224,,,,,NP7 8PB,Monmouth,Social Services,06-Nov-20,11:30 AM,1:00 PM,Weekday Hour,1.5,10.018,15.58
+Carer 28,,NP23 4WB,WA01,Client 129,,,,,NP4 0AW,Monmouth,Social Services,06-Nov-20,1:30 PM,2:30 PM,Weekday Hour,1,14.689,23.08
+Carer 28,,NP23 4WB,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,06-Nov-20,2:45 PM,4:15 PM,Weekday Hour,1.5,7.613,15.03
+Carer 28,,NP23 4WB,WA01,Client 88,,,,,NP7 0PA,Monmouth,Social Services,07-Nov-20,6:30 AM,7:30 AM,Weekend Hour,1,,
+Carer 28,,NP23 4WB,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,07-Nov-20,7:30 AM,8:00 AM,Weekend Half Hour,0.5,8.041,18.07
+Carer 28,,NP23 4WB,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,07-Nov-20,8:00 AM,8:30 AM,Weekend Half Hour,0.5,0.414,1.16
+Carer 28,,NP23 4WB,WA01,Client 217,,,,,NP7 9PZ,Monmouth,Social Services,07-Nov-20,8:30 AM,9:15 AM,Weekend Three Quarter Hour,0.75,1.619,5.42
+Carer 28,,NP23 4WB,WA01,Client 205,,,,,NP7 5TA,Monmouth,Social Services,07-Nov-20,9:15 AM,9:45 AM,Weekend Half Hour,0.5,1.561,6.21
+Carer 28,,NP23 4WB,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,07-Nov-20,9:45 AM,10:15 AM,Weekend Half Hour,0.5,4.314,9.36
+Carer 28,,NP23 4WB,WA01,Client 224,,,,,NP7 8PB,Monmouth,Social Services,07-Nov-20,10:30 AM,12:00 PM,Weekend Hour,1.5,12.154,18.53
+Carer 28,,NP23 4WB,WA01,Client 224,,,,,NP7 8PB,Monmouth,Social Services,07-Nov-20,12:00 PM,2:00 PM,Weekend Hour,2,,
+Carer 28,,NP23 4WB,WA01,Client 88,,,,,NP7 0PA,Monmouth,Social Services,08-Nov-20,7:00 AM,8:00 AM,Weekend Hour,1,,
+Carer 28,,NP23 4WB,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,08-Nov-20,8:15 AM,8:45 AM,Weekend Half Hour,0.5,8.041,18.07
+Carer 28,,NP23 4WB,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,08-Nov-20,8:45 AM,9:15 AM,Weekend Half Hour,0.5,0.414,1.16
+Carer 28,,NP23 4WB,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,08-Nov-20,9:30 AM,10:00 AM,Weekend Half Hour,0.5,0.758,2.5
+Carer 28,,NP23 4WB,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,08-Nov-20,10:00 AM,10:30 AM,Weekend Half Hour,0.5,0.17,0.36
+Carer 28,,NP23 4WB,WA01,Client 224,,,,,NP7 8PB,Monmouth,Social Services,08-Nov-20,10:45 AM,12:15 PM,Weekend Hour,1.5,8.154,14.25
+Carer 28,,NP23 4WB,WA01,Client 224,,,,,NP7 8PB,Monmouth,Social Services,08-Nov-20,12:15 PM,2:15 PM,Weekend Hour,2,,
+Carer 35,,NP26 4LQ,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,02-Nov-20,8:00 AM,8:45 AM,Weekday Three Quarter Hour,0.75,,
+Carer 35,,NP26 4LQ,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,02-Nov-20,9:45 AM,10:00 AM,Weekday Fifteen Minutes,0.25,0.863,3.15
+Carer 35,,NP26 4LQ,WA01,Client 156,,,,,NP26 3HT,Monmouth,Social Services,02-Nov-20,10:15 AM,11:00 AM,Weekday Three Quarter Hour,0.75,3.492,9.56
+Carer 35,,NP26 4LQ,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,02-Nov-20,4:15 PM,4:45 PM,Weekday Half Hour,0.5,9.428,22.35
+Carer 35,,NP26 4LQ,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,02-Nov-20,4:45 PM,5:15 PM,Weekday Half Hour,0.5,2.352,5.15
+Carer 35,,NP26 4LQ,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,02-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,3.485,8.09
+Carer 35,,NP26 4LQ,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,02-Nov-20,6:00 PM,6:15 PM,Weekday Fifteen Minutes,0.25,0.72,3.09
+Carer 35,,NP26 4LQ,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,02-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,5.118,9.52
+Carer 35,,NP26 4LQ,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,02-Nov-20,7:45 PM,8:15 PM,Weekday Half Hour,0.5,9.488,23.05
+Carer 35,,NP26 4LQ,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,02-Nov-20,8:15 PM,8:45 PM,Weekday Half Hour,0.5,3.216,11.1
+Carer 35,,NP26 4LQ,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,02-Nov-20,9:00 PM,9:30 PM,Weekday Half Hour,0.5,4.254,12.28
+Carer 35,,NP26 4LQ,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,03-Nov-20,7:30 AM,8:00 AM,Weekday Half Hour,0.5,17.813,25.37
+Carer 35,,NP26 4LQ,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,03-Nov-20,8:30 AM,9:00 AM,Weekday Half Hour,0.5,13.063,28.35
+Carer 35,,NP26 4LQ,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,03-Nov-20,9:00 AM,9:30 AM,Weekday Half Hour,0.5,0.72,3.09
+Carer 35,,NP26 4LQ,WA01,Client 87,,,,,NP15 2HJ,Monmouth,Private 2016,03-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,5.528,11.05
+Carer 35,,NP26 4LQ,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,03-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,9.028,21.14
+Carer 35,,NP26 4LQ,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,03-Nov-20,12:45 PM,1:15 PM,Weekday Half Hour,0.5,4.254,12.28
+Carer 35,,NP26 4LQ,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,04-Nov-20,7:00 AM,8:00 AM,Weekday Hour,1,,
+Carer 35,,NP26 4LQ,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,04-Nov-20,8:00 AM,8:45 AM,Weekday Three Quarter Hour,0.75,3.216,10.47
+Carer 35,,NP26 4LQ,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,04-Nov-20,9:00 AM,9:45 AM,Weekday Three Quarter Hour,0.75,7.136,15.23
+Carer 35,,NP26 4LQ,WA01,Client 87,,,,,NP15 2HJ,Monmouth,Private 2016,04-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,8.292,15.45
+Carer 35,,NP26 4LQ,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,04-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,10.671,21.36
+Carer 35,,NP26 4LQ,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,04-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,2.352,5.15
+Carer 35,,NP26 4LQ,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,04-Nov-20,12:40 PM,1:10 PM,Weekday Half Hour,0.5,3.365,8.49
+Carer 35,,NP26 4LQ,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,04-Nov-20,1:15 PM,1:45 PM,Weekday Half Hour,0.5,4.254,12.28
+Carer 35,,NP26 4LQ,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,04-Nov-20,4:30 PM,5:00 PM,Weekday Half Hour,0.5,11.918,26.19
+Carer 35,,NP26 4LQ,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,04-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,2.085,5.22
+Carer 35,,NP26 4LQ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,04-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,1.606,4.41
+Carer 35,,NP26 4LQ,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,04-Nov-20,6:00 PM,6:30 PM,Weekday Half Hour,0.5,2.916,8.43
+Carer 35,,NP26 4LQ,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,04-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,1.979,5.46
+Carer 35,,NP26 4LQ,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,04-Nov-20,7:45 PM,8:00 PM,Weekday Fifteen Minutes,0.25,1.022,4.25
+Carer 35,,NP26 4LQ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,04-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,1.411,6.04
+Carer 35,,NP26 4LQ,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,04-Nov-20,8:30 PM,9:00 PM,Weekday Half Hour,0.5,2.916,8.43
+Carer 35,,NP26 4LQ,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,04-Nov-20,9:00 PM,9:15 PM,Weekday Fifteen Minutes,0.25,2.207,6.27
+Carer 35,,NP26 4LQ,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,04-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,0.991,3.11
+Carer 35,,NP26 4LQ,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,04-Nov-20,9:45 PM,10:15 PM,Weekday Half Hour,0.5,,
+Carer 35,,NP26 4LQ,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,05-Nov-20,7:00 AM,7:30 AM,Weekday Half Hour,0.5,1.117,4.19
+Carer 35,,NP26 4LQ,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,05-Nov-20,8:00 AM,8:45 AM,Weekday Three Quarter Hour,0.75,2.123,6.02
+Carer 35,,NP26 4LQ,WA01,Client 54,,,,,NP26 3SA,Monmouth,Social Services,05-Nov-20,9:15 AM,9:45 AM,Weekday Half Hour,0.5,2.908,7.52
+Carer 35,,NP26 4LQ,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,05-Nov-20,10:00 AM,10:15 AM,Weekday Fifteen Minutes,0.25,0.465,3.06
+Carer 35,,NP26 4LQ,WA01,Client 156,,,,,NP26 3HT,Monmouth,Social Services,05-Nov-20,10:30 AM,11:15 AM,Weekday Three Quarter Hour,0.75,3.492,9.56
+Carer 35,,NP26 4LQ,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,05-Nov-20,3:00 PM,3:45 PM,Weekday Three Quarter Hour,0.75,3.992,9.22
+Carer 35,,NP26 4LQ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,05-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,5.998,12.12
+Carer 35,,NP26 4LQ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,4:45 PM,5:15 PM,Weekday Half Hour,0.5,10.316,13.11
+Carer 35,,NP26 4LQ,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,05-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,3.124,7.1
+Carer 35,,NP26 4LQ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,05-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,1.867,6.46
+Carer 35,,NP26 4LQ,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,05-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,0.643,3.19
+Carer 35,,NP26 4LQ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,4.664,11.12
+Carer 35,,NP26 4LQ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,05-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 35,,NP26 4LQ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,05-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 35,,NP26 4LQ,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,08-Nov-20,8:00 AM,8:45 AM,Weekend Three Quarter Hour,0.75,,
+Carer 35,,NP26 4LQ,WA01,Client 217,,,,,NP7 9PZ,Monmouth,Social Services,08-Nov-20,9:00 AM,9:45 AM,Weekend Three Quarter Hour,0.75,5.75,11.34
+Carer 35,,NP26 4LQ,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,08-Nov-20,10:30 AM,11:00 AM,Weekend Half Hour,0.5,3.124,6.09
+Carer 35,,NP26 4LQ,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,08-Nov-20,11:15 AM,11:45 AM,Weekend Half Hour,0.5,4.428,10.12
+Carer 35,,NP26 4LQ,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,08-Nov-20,12:00 PM,12:30 PM,Weekend Half Hour,0.5,0.414,1.16
+Carer 35,,NP26 4LQ,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,08-Nov-20,12:30 PM,1:00 PM,Weekend Half Hour,0.5,0.414,1.16
+Carer 35,,NP26 4LQ,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,08-Nov-20,1:00 PM,1:30 PM,Weekend Half Hour,0.5,0.493,2.33
+Carer 35,,NP26 4LQ,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,08-Nov-20,4:30 PM,5:00 PM,Weekend Half Hour,0.5,0.17,0.36
+Carer 35,,NP26 4LQ,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,08-Nov-20,5:00 PM,5:30 PM,Weekend Half Hour,0.5,0.85,3.18
+Carer 35,,NP26 4LQ,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,08-Nov-20,5:30 PM,6:00 PM,Weekend Half Hour,0.5,0.414,1.16
+Carer 35,,NP26 4LQ,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,08-Nov-20,6:15 PM,6:45 PM,Weekend Half Hour,0.5,5.403,10.26
+Carer 35,,NP26 4LQ,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,08-Nov-20,6:45 PM,7:15 PM,Weekend Half Hour,0.5,4.003,8.55
+Carer 35,,NP26 4LQ,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,08-Nov-20,7:30 PM,7:45 PM,Weekday Fifteen Minutes,0.25,6.024,14.55
+Carer 35,,NP26 4LQ,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,08-Nov-20,7:45 PM,8:15 PM,Weekend Half Hour,0.5,6.251,13.49
+Carer 35,,NP26 4LQ,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,08-Nov-20,8:30 PM,8:45 PM,Weekday Fifteen Minutes,0.25,0.664,3.09
+Carer 35,,NP26 4LQ,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,08-Nov-20,8:45 PM,9:15 PM,Weekend Half Hour,0.5,0.694,3.12
+Carer 35,,NP26 4LQ,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,08-Nov-20,9:30 PM,10:00 PM,Weekend Half Hour,0.5,0.414,1.16
+Carer 41,,NP7 6BY,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,02-Nov-20,9:15 AM,9:45 AM,Weekday Half Hour,0.5,,
+Carer 41,,NP7 6BY,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,02-Nov-20,9:45 AM,10:15 AM,Weekday Half Hour,0.5,0.17,0.33
+Carer 41,,NP7 6BY,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,02-Nov-20,11:15 AM,11:45 AM,Weekday Half Hour,0.5,0.524,2.41
+Carer 41,,NP7 6BY,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,03-Nov-20,9:15 AM,9:45 AM,Weekday Half Hour,0.5,,
+Carer 41,,NP7 6BY,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,03-Nov-20,10:00 AM,10:30 AM,Weekday Half Hour,0.5,0.17,0.33
+Carer 41,,NP7 6BY,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,03-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,0.817,3.31
+Carer 41,,NP7 6BY,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,03-Nov-20,12:45 PM,1:15 PM,Weekday Half Hour,0.5,0.758,2.5
+Carer 41,,NP7 6BY,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,03-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,0.524,2.41
+Carer 41,,NP7 6BY,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,06-Nov-20,9:15 AM,9:45 AM,Weekday Half Hour,0.5,,
+Carer 41,,NP7 6BY,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,06-Nov-20,9:45 AM,10:15 AM,Weekday Half Hour,0.5,0.17,0.33
+Carer 41,,NP7 6BY,WA01,Client 139,,,,,NP7 7AN,Monmouth,Social Services,06-Nov-20,10:15 AM,10:45 AM,Weekday Half Hour,0.5,1.202,4.19
+Carer 45,,NP26 3DL,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,03-Nov-20,7:30 AM,8:15 AM,Weekday Three Quarter Hour,0.75,,
+Carer 45,,NP26 3DL,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,03-Nov-20,8:30 AM,9:00 AM,Weekday Half Hour,0.5,2.085,5.37
+Carer 45,,NP26 3DL,WA01,Client 156,,,,,NP26 3HT,Monmouth,Social Services,03-Nov-20,9:15 AM,10:00 AM,Weekday Three Quarter Hour,0.75,3.992,9.1
+Carer 45,,NP26 3DL,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,03-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,4.717,13.15
+Carer 45,,NP26 3DL,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,03-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,0.935,5.08
+Carer 45,,NP26 3DL,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,03-Nov-20,12:15 PM,12:30 PM,Weekday Fifteen Minutes,0.25,1.335,5.15
+Carer 45,,NP26 3DL,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,03-Nov-20,4:15 PM,4:45 PM,Weekday Half Hour,0.5,0.301,1.09
+Carer 45,,NP26 3DL,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,03-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,2.085,5.22
+Carer 45,,NP26 3DL,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,03-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,1.606,4.41
+Carer 45,,NP26 3DL,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,03-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,2.916,8.43
+Carer 45,,NP26 3DL,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,03-Nov-20,7:00 PM,7:15 PM,Weekday Fifteen Minutes,0.25,2.906,10.06
+Carer 45,,NP26 3DL,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,03-Nov-20,7:15 PM,7:45 PM,Weekday Half Hour,0.5,1.03,4.5
+Carer 45,,NP26 3DL,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,03-Nov-20,7:45 PM,8:15 PM,Weekday Half Hour,0.5,1.012,3.08
+Carer 45,,NP26 3DL,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,03-Nov-20,8:15 PM,8:45 PM,Weekday Half Hour,0.5,2.916,8.43
+Carer 45,,NP26 3DL,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,03-Nov-20,9:00 PM,9:30 PM,Weekday Half Hour,0.5,3.198,9.25
+Carer 45,,NP26 3DL,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,03-Nov-20,9:30 PM,10:00 PM,Weekday Half Hour,0.5,,
+Carer 45,,NP26 3DL,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,04-Nov-20,7:30 AM,8:15 AM,Weekday Three Quarter Hour,0.75,3.067,9.07
+Carer 45,,NP26 3DL,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,04-Nov-20,8:45 AM,9:15 AM,Weekday Half Hour,0.5,2.122,6.03
+Carer 45,,NP26 3DL,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,04-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,1.027,4.57
+Carer 45,,NP26 3DL,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,04-Nov-20,11:00 AM,11:30 AM,Weekday Half Hour,0.5,0.935,5.08
+Carer 45,,NP26 3DL,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,04-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,4.05,10.35
+Carer 45,,NP26 3DL,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,04-Nov-20,12:15 PM,12:30 PM,Weekday Fifteen Minutes,0.25,2.888,6.24
+Carer 45,,NP26 3DL,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,06-Nov-20,7:00 AM,7:45 AM,Weekday Three Quarter Hour,0.75,,
+Carer 45,,NP26 3DL,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,06-Nov-20,7:45 AM,8:15 AM,Weekday Half Hour,0.5,2.122,6.03
+Carer 45,,NP26 3DL,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,06-Nov-20,8:15 AM,8:45 AM,Weekday Half Hour,0.5,0.301,1.09
+Carer 45,,NP26 3DL,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,06-Nov-20,10:30 AM,11:00 AM,Weekday Half Hour,0.5,0.253,0.46
+Carer 45,,NP26 3DL,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,06-Nov-20,12:30 PM,12:45 PM,Weekday Fifteen Minutes,0.25,0.555,1.55
+Carer 45,,NP26 3DL,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,06-Nov-20,4:15 PM,4:45 PM,Weekday Half Hour,0.5,0.301,1.09
+Carer 45,,NP26 3DL,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,06-Nov-20,5:15 PM,5:45 PM,Weekday Half Hour,0.5,0.758,2.13
+Carer 45,,NP26 3DL,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,06-Nov-20,6:30 PM,7:00 PM,Weekday Half Hour,0.5,0.939,3.15
+Carer 45,,NP26 3DL,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,06-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,1.012,3.08
+Carer 45,,NP26 3DL,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,06-Nov-20,9:00 PM,9:30 PM,Weekday Half Hour,0.5,1.413,5.15
+Carer 45,,NP26 3DL,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,07-Nov-20,4:00 PM,4:30 PM,Weekend Half Hour,0.5,,
+Carer 45,,NP26 3DL,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,07-Nov-20,5:15 PM,5:45 PM,Weekend Half Hour,0.5,0.991,3.11
+Carer 45,,NP26 3DL,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,07-Nov-20,5:45 PM,6:15 PM,Weekend Half Hour,0.5,,
+Carer 45,,NP26 3DL,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,07-Nov-20,7:00 PM,7:30 PM,Weekend Half Hour,0.5,2.279,8.2
+Carer 45,,NP26 3DL,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,07-Nov-20,7:30 PM,8:00 PM,Weekend Half Hour,0.5,,
+Carer 45,,NP26 3DL,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,07-Nov-20,8:45 PM,9:15 PM,Weekend Half Hour,0.5,2.025,7.46
+Carer 45,,NP26 3DL,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,07-Nov-20,9:15 PM,9:45 PM,Weekend Half Hour,0.5,,
+Carer 45,,NP26 3DL,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,08-Nov-20,4:00 PM,4:30 PM,Weekend Half Hour,0.5,,
+Carer 45,,NP26 3DL,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,08-Nov-20,4:45 PM,5:15 PM,Weekend Half Hour,0.5,2.085,5.22
+Carer 45,,NP26 3DL,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,08-Nov-20,5:15 PM,5:45 PM,Weekend Half Hour,0.5,1.606,4.41
+Carer 45,,NP26 3DL,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,08-Nov-20,6:00 PM,6:30 PM,Weekend Half Hour,0.5,2.916,8.43
+Carer 45,,NP26 3DL,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,08-Nov-20,6:45 PM,7:15 PM,Weekend Half Hour,0.5,1.586,5.21
+Carer 45,,NP26 3DL,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,08-Nov-20,7:15 PM,7:45 PM,Weekend Half Hour,0.5,,
+Carer 45,,NP26 3DL,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,08-Nov-20,7:45 PM,8:00 PM,Weekday Fifteen Minutes,0.25,0.941,5.2
+Carer 45,,NP26 3DL,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,08-Nov-20,8:00 PM,8:30 PM,Weekend Half Hour,0.5,2.208,8.06
+Carer 45,,NP26 3DL,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,08-Nov-20,8:30 PM,8:45 PM,Weekday Fifteen Minutes,0.25,2.207,6.27
+Carer 45,,NP26 3DL,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,08-Nov-20,9:00 PM,9:30 PM,Weekend Half Hour,0.5,0.991,3.11
+Carer 45,,NP26 3DL,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,08-Nov-20,9:30 PM,10:00 PM,Weekend Half Hour,0.5,,
+Carer 51,,NP4 9PB,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,02-Nov-20,8:30 AM,9:00 AM,Weekday Half Hour,0.5,,
+Carer 51,,NP4 9PB,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,02-Nov-20,9:00 AM,9:30 AM,Weekday Half Hour,0.5,0.72,3.09
+Carer 51,,NP4 9PB,WA01,Client 88,,,,,NP7 0PA,Monmouth,Social Services,05-Nov-20,7:00 AM,8:00 AM,Weekday Hour,1,,
+Carer 51,,NP4 9PB,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,05-Nov-20,4:30 PM,5:00 PM,Weekday Half Hour,0.5,17.996,36.42
+Carer 51,,NP4 9PB,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,05-Nov-20,5:15 PM,5:45 PM,Weekday Half Hour,0.5,2.352,5.15
+Carer 51,,NP4 9PB,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,05-Nov-20,6:00 PM,6:30 PM,Weekday Half Hour,0.5,3.485,8.09
+Carer 51,,NP4 9PB,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,05-Nov-20,6:45 PM,7:00 PM,Weekday Fifteen Minutes,0.25,0.72,3.09
+Carer 51,,NP4 9PB,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,05-Nov-20,7:15 PM,7:45 PM,Weekday Half Hour,0.5,5.118,9.52
+Carer 51,,NP4 9PB,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,05-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,9.488,23.05
+Carer 51,,NP4 9PB,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,05-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,3.216,11.1
+Carer 51,,NP4 9PB,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,05-Nov-20,9:30 PM,10:00 PM,Weekday Half Hour,0.5,4.254,12.28
+Carer 58,,NP44 4NP,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,02-Nov-20,4:45 PM,5:15 PM,Weekday Half Hour,0.5,,
+Carer 58,,NP44 4NP,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,02-Nov-20,5:15 PM,5:45 PM,Weekday Half Hour,0.5,0.85,3.18
+Carer 58,,NP44 4NP,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,02-Nov-20,5:45 PM,6:15 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 58,,NP44 4NP,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,02-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,0.493,2.33
+Carer 58,,NP44 4NP,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,02-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,4.361,9.22
+Carer 58,,NP44 4NP,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,02-Nov-20,7:30 PM,7:45 PM,Weekday Fifteen Minutes,0.25,7.723,13.4
+Carer 58,,NP44 4NP,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,02-Nov-20,7:45 PM,8:15 PM,Weekday Half Hour,0.5,6.251,13.49
+Carer 58,,NP44 4NP,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,02-Nov-20,8:30 PM,8:45 PM,Weekday Fifteen Minutes,0.25,0.664,3.09
+Carer 58,,NP44 4NP,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,02-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,0.694,3.12
+Carer 58,,NP44 4NP,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,02-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 58,,NP44 4NP,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,03-Nov-20,4:30 PM,5:00 PM,Weekday Half Hour,0.5,,
+Carer 58,,NP44 4NP,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,03-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,0.85,3.18
+Carer 58,,NP44 4NP,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,03-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 58,,NP44 4NP,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,03-Nov-20,6:00 PM,6:30 PM,Weekday Half Hour,0.5,0.493,2.33
+Carer 58,,NP44 4NP,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,03-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,4.361,9.22
+Carer 58,,NP44 4NP,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,03-Nov-20,7:30 PM,7:45 PM,Weekday Fifteen Minutes,0.25,7.723,13.4
+Carer 58,,NP44 4NP,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,03-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,6.251,13.49
+Carer 58,,NP44 4NP,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,03-Nov-20,8:30 PM,8:45 PM,Weekday Fifteen Minutes,0.25,0.664,3.09
+Carer 58,,NP44 4NP,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,03-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,0.694,3.12
+Carer 58,,NP44 4NP,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,03-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 68,,NP16 5LN,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,03-Nov-20,8:15 AM,8:45 AM,Weekday Half Hour,0.5,,
+Carer 68,,NP16 5LN,WA01,Client 4,,,,,NP26 3NA,Monmouth,Social Services,03-Nov-20,9:00 AM,9:45 AM,Weekday Three Quarter Hour,0.75,6.007,14.35
+Carer 68,,NP16 5LN,WA01,Client 235,,,,,NP26 4EH,Monmouth,Private 2016,03-Nov-20,10:15 AM,10:45 AM,Weekday Half Hour,0.5,3.863,8.41
+Carer 68,,NP16 5LN,WA01,Client 54,,,,,NP26 3SA,Monmouth,Social Services,03-Nov-20,10:45 AM,11:15 AM,Weekday Half Hour,0.5,1.15,3.13
+Carer 68,,NP16 5LN,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,03-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,2.104,6.52
+Carer 68,,NP16 5LN,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,03-Nov-20,12:15 PM,12:30 PM,Weekday Fifteen Minutes,0.25,1.792,6.26
+Carer 68,,NP16 5LN,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,03-Nov-20,3:45 PM,4:15 PM,Weekday Half Hour,0.5,6.065,13.03
+Carer 68,,NP16 5LN,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,4:30 PM,5:00 PM,Weekday Half Hour,0.5,10.316,13.11
+Carer 68,,NP16 5LN,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,03-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,3.124,7.1
+Carer 68,,NP16 5LN,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,03-Nov-20,6:00 PM,6:30 PM,Weekday Half Hour,0.5,1.867,6.46
+Carer 68,,NP16 5LN,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,03-Nov-20,6:45 PM,7:15 PM,Weekday Half Hour,0.5,0.643,3.19
+Carer 68,,NP16 5LN,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,4.664,11.12
+Carer 68,,NP16 5LN,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,03-Nov-20,8:30 PM,9:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 68,,NP16 5LN,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,03-Nov-20,9:00 PM,9:30 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 68,,NP16 5LN,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,03-Nov-20,9:30 PM,9:45 PM,Weekday Fifteen Minutes,0.25,0.622,2.47
+Carer 68,,NP16 5LN,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,04-Nov-20,8:15 AM,8:45 AM,Weekday Half Hour,0.5,2.23,6.2
+Carer 68,,NP16 5LN,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,04-Nov-20,9:00 AM,9:30 AM,Weekday Half Hour,0.5,2.207,6.27
+Carer 68,,NP16 5LN,WA01,Client 4,,,,,NP26 3NA,Monmouth,Social Services,04-Nov-20,9:45 AM,10:30 AM,Weekday Three Quarter Hour,0.75,3.8,8.1
+Carer 68,,NP16 5LN,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,04-Nov-20,10:30 AM,10:45 AM,Weekday Fifteen Minutes,0.25,3.295,8.31
+Carer 68,,NP16 5LN,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,04-Nov-20,11:00 AM,11:30 AM,Weekday Half Hour,0.5,2.279,8.2
+Carer 68,,NP16 5LN,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,04-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,4.05,10.35
+Carer 68,,NP16 5LN,WA01,Client 15,,,,,NP16 5BP,Monmouth,Chepstow Block,04-Nov-20,1:00 PM,3:00 PM,Weekday Hour,2,11.48,17.21
+Carer 68,,NP16 5LN,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,05-Nov-20,8:00 AM,8:30 AM,Weekday Half Hour,0.5,,
+Carer 68,,NP16 5LN,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,05-Nov-20,9:00 AM,9:30 AM,Weekday Half Hour,0.5,2.207,6.27
+Carer 68,,NP16 5LN,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,05-Nov-20,10:15 AM,10:45 AM,Weekday Half Hour,0.5,0.253,0.46
+Carer 68,,NP16 5LN,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Private 2016,05-Nov-20,10:45 AM,11:45 AM,Weekday Hour,1,,
+Carer 68,,NP16 5LN,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,06-Nov-20,8:00 AM,8:30 AM,Weekday Half Hour,0.5,,
+Carer 68,,NP16 5LN,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,06-Nov-20,10:15 AM,10:30 AM,Weekday Fifteen Minutes,0.25,3.198,9.25
+Carer 68,,NP16 5LN,WA01,Client 156,,,,,NP26 3HT,Monmouth,Social Services,06-Nov-20,10:45 AM,11:30 AM,Weekday Three Quarter Hour,0.75,3.492,9.56
+Carer 68,,NP16 5LN,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,06-Nov-20,5:15 PM,5:45 PM,Weekday Half Hour,0.5,5.813,14.03
+Carer 68,,NP16 5LN,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,06-Nov-20,6:00 PM,6:30 PM,Weekday Half Hour,0.5,2.725,7.23
+Carer 68,,NP16 5LN,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,06-Nov-20,7:00 PM,7:15 PM,Weekday Fifteen Minutes,0.25,2.906,10.06
+Carer 68,,NP16 5LN,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,06-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,2.208,8.06
+Carer 68,,NP16 5LN,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,06-Nov-20,8:30 PM,8:45 PM,Weekday Fifteen Minutes,0.25,2.207,6.27
+Carer 68,,NP16 5LN,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,06-Nov-20,9:00 PM,9:30 PM,Weekday Half Hour,0.5,0.991,3.11
+Carer 68,,NP16 5LN,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,08-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,,
+Carer 68,,NP16 5LN,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,4:45 PM,5:15 PM,Weekend Half Hour,0.5,10.316,13.11
+Carer 68,,NP16 5LN,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,08-Nov-20,5:15 PM,5:45 PM,Weekend Half Hour,0.5,3.124,7.1
+Carer 68,,NP16 5LN,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,08-Nov-20,6:00 PM,6:30 PM,Weekend Half Hour,0.5,1.867,6.46
+Carer 68,,NP16 5LN,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,7:15 PM,7:45 PM,Weekend Half Hour,0.5,4.252,9.24
+Carer 68,,NP16 5LN,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,7:45 PM,8:15 PM,Weekend Half Hour,0.5,,
+Carer 68,,NP16 5LN,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,08-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 68,,NP16 5LN,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,08-Nov-20,9:30 PM,10:00 PM,Weekend Half Hour,0.5,5.405,11.42
+Carer 69,,NP19 7HR,WA01,Client 88,,,,,NP7 0PA,Monmouth,Social Services,02-Nov-20,7:00 AM,8:00 AM,Weekday Hour,1,,
+Carer 69,,NP19 7HR,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,02-Nov-20,8:15 AM,9:00 AM,Weekday Three Quarter Hour,0.75,14.695,26.21
+Carer 69,,NP19 7HR,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,02-Nov-20,6:00 PM,6:30 PM,Weekday Half Hour,0.5,28.241,39.26
+Carer 69,,NP19 7HR,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,4.252,9.24
+Carer 69,,NP19 7HR,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,,
+Carer 69,,NP19 7HR,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,02-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,4.252,9.31
+Carer 69,,NP19 7HR,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,02-Nov-20,9:30 PM,10:00 PM,Weekday Half Hour,0.5,5.482,11.45
+Carer 69,,NP19 7HR,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,03-Nov-20,3:45 PM,4:15 PM,Weekday Half Hour,0.5,,
+Carer 69,,NP19 7HR,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,4:30 PM,5:00 PM,Weekday Half Hour,0.5,10.316,13.11
+Carer 69,,NP19 7HR,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,03-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,3.124,7.1
+Carer 69,,NP19 7HR,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,03-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,1.867,6.46
+Carer 69,,NP19 7HR,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,03-Nov-20,6:45 PM,7:15 PM,Weekday Half Hour,0.5,0.643,3.19
+Carer 69,,NP19 7HR,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,4.664,11.12
+Carer 69,,NP19 7HR,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,,
+Carer 69,,NP19 7HR,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,03-Nov-20,8:30 PM,9:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 69,,NP19 7HR,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,03-Nov-20,9:00 PM,9:30 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 69,,NP19 7HR,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,04-Nov-20,4:15 PM,4:45 PM,Weekday Half Hour,0.5,,
+Carer 69,,NP19 7HR,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,04-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,2.352,5.15
+Carer 69,,NP19 7HR,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,04-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,3.485,8.09
+Carer 69,,NP19 7HR,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,04-Nov-20,6:15 PM,6:30 PM,Weekday Fifteen Minutes,0.25,0.72,3.09
+Carer 69,,NP19 7HR,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,04-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,5.118,9.52
+Carer 69,,NP19 7HR,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,04-Nov-20,8:15 PM,8:45 PM,Weekday Half Hour,0.5,9.488,23.05
+Carer 69,,NP19 7HR,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,04-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,3.216,11.1
+Carer 69,,NP19 7HR,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,04-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,4.254,12.28
+Carer 69,,NP19 7HR,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,07-Nov-20,8:15 AM,9:00 AM,Weekend Three Quarter Hour,0.75,,
+Carer 69,,NP19 7HR,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,07-Nov-20,9:15 AM,9:45 AM,Weekend Half Hour,0.5,6.263,14.33
+Carer 69,,NP19 7HR,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,07-Nov-20,9:45 AM,10:15 AM,Weekend Half Hour,0.5,0.17,0.33
+Carer 69,,NP19 7HR,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,07-Nov-20,10:45 AM,11:15 AM,Weekend Half Hour,0.5,0.524,2.41
+Carer 69,,NP19 7HR,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,07-Nov-20,11:45 AM,12:15 PM,Weekend Half Hour,0.5,0.414,1.16
+Carer 69,,NP19 7HR,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,07-Nov-20,12:30 PM,1:00 PM,Weekend Half Hour,0.5,0.414,1.16
+Carer 69,,NP19 7HR,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,07-Nov-20,1:00 PM,1:30 PM,Weekend Half Hour,0.5,0.493,2.33
+Carer 73,,NP7 6DP,WA01,Client 112,,,,,NP7 6EL,Monmouth,,05-Nov-20,4:00 PM,4:30 PM,,0.5,,
+Carer 73,,NP7 6DP,WA01,Client 69,,,,,NP7 5SP,Monmouth,,05-Nov-20,4:30 PM,5:00 PM,,0.5,0.85,3.18
+Carer 73,,NP7 6DP,WA01,Client 232,,,,,NP7 6EY,Monmouth,,05-Nov-20,5:15 PM,5:45 PM,,0.5,0.414,1.16
+Carer 73,,NP7 6DP,WA01,Client 185,,,,,NP7 6EE,Monmouth,,05-Nov-20,6:00 PM,6:30 PM,,0.5,0.493,2.33
+Carer 73,,NP7 6DP,WA01,Client 212,,,,,NP7 0AE,Monmouth,,05-Nov-20,7:00 PM,7:30 PM,,0.5,4.361,9.22
+Carer 73,,NP7 6DP,WA01,Client 219,,,,,NP7 9UR,Monmouth,,05-Nov-20,7:30 PM,7:45 PM,,0.25,7.723,13.4
+Carer 73,,NP7 6DP,WA01,Client 230,,,,,NP7 6EY,Monmouth,,05-Nov-20,7:45 PM,8:15 PM,,0.5,6.251,13.49
+Carer 73,,NP7 6DP,WA01,Client 232,,,,,NP7 6EY,Monmouth,,05-Nov-20,8:15 PM,8:45 PM,,0.5,,
+Carer 73,,NP7 6DP,WA01,Client 112,,,,,NP7 6EL,Monmouth,,05-Nov-20,8:45 PM,9:00 PM,,0.25,0.664,3.09
+Carer 73,,NP7 6DP,WA01,Client 69,,,,,NP7 5SP,Monmouth,,05-Nov-20,9:15 PM,9:45 PM,,0.5,0.85,3.18
+Carer 73,,NP7 6DP,WA01,Client 88,,,,,NP7 0PA,Monmouth,,06-Nov-20,7:00 AM,8:00 AM,,1,7.898,18.52
+Carer 73,,NP7 6DP,WA01,Client 232,,,,,NP7 6EY,Monmouth,,06-Nov-20,8:00 AM,8:30 AM,,0.5,8.041,18.07
+Carer 73,,NP7 6DP,WA01,Client 217,,,,,NP7 9PZ,Monmouth,,06-Nov-20,8:45 AM,9:30 AM,,0.75,2.034,6.58
+Carer 73,,NP7 6DP,WA01,Client 212,,,,,NP7 0AE,Monmouth,,06-Nov-20,9:30 AM,10:30 AM,,1,3.124,6.09
+Carer 73,,NP7 6DP,WA01,Client 224,,,,,NP7 8PB,Monmouth,,06-Nov-20,10:30 AM,12:00 PM,,1.5,12.154,18.53
+Carer 73,,NP7 6DP,WA01,Client 129,,,,,NP4 0AW,Monmouth,,06-Nov-20,12:30 PM,1:00 PM,,0.5,14.689,23.08
+Carer 73,,NP7 6DP,WA01,Client 230,,,,,NP7 6EY,Monmouth,,06-Nov-20,2:00 PM,3:30 PM,,1.5,7.613,15.03
+Carer 73,,NP7 6DP,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,07-Nov-20,4:00 PM,4:30 PM,Weekend Half Hour,0.5,,
+Carer 73,,NP7 6DP,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,07-Nov-20,4:45 PM,5:15 PM,Weekend Half Hour,0.5,0.85,3.18
+Carer 73,,NP7 6DP,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,07-Nov-20,5:30 PM,6:00 PM,Weekend Half Hour,0.5,0.414,1.16
+Carer 73,,NP7 6DP,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,07-Nov-20,6:15 PM,6:45 PM,Weekend Half Hour,0.5,0.493,2.33
+Carer 73,,NP7 6DP,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,07-Nov-20,6:45 PM,7:15 PM,Weekend Half Hour,0.5,4.361,9.22
+Carer 73,,NP7 6DP,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,07-Nov-20,7:30 PM,7:45 PM,Weekday Fifteen Minutes,0.25,7.723,13.4
+Carer 73,,NP7 6DP,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,07-Nov-20,8:00 PM,8:30 PM,Weekend Half Hour,0.5,6.251,13.49
+Carer 73,,NP7 6DP,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,07-Nov-20,8:30 PM,9:00 PM,Weekend Half Hour,0.5,,
+Carer 73,,NP7 6DP,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,07-Nov-20,9:15 PM,9:30 PM,Weekday Fifteen Minutes,0.25,0.664,3.09
+Carer 73,,NP7 6DP,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,07-Nov-20,9:30 PM,10:00 PM,Weekend Half Hour,0.5,0.85,3.18
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,05-Nov-20,9:00 AM,9:30 AM,Weekday Half Hour,0.5,,
+Carer 74,,NP16 5AF,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,05-Nov-20,9:45 AM,10:15 AM,Weekday Half Hour,0.5,0.72,3.09
+Carer 74,,NP16 5AF,WA01,Client 87,,,,,NP15 2HJ,Monmouth,Private 2016,05-Nov-20,10:30 AM,11:15 AM,Weekday Three Quarter Hour,0.75,5.528,11.05
+Carer 74,,NP16 5AF,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,05-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,10.671,21.36
+Carer 74,,NP16 5AF,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,05-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,2.352,5.15
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,05-Nov-20,12:45 PM,1:15 PM,Weekday Half Hour,0.5,3.365,8.49
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,05-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,4.254,12.28
+Carer 74,,NP16 5AF,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,05-Nov-20,2:30 PM,3:00 PM,Weekday Half Hour,0.5,4.599,12
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,05-Nov-20,3:15 PM,3:45 PM,Weekday Half Hour,0.5,3.216,11.1
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,06-Nov-20,9:00 AM,9:30 AM,Weekday Half Hour,0.5,,
+Carer 74,,NP16 5AF,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,06-Nov-20,9:30 AM,10:00 AM,Weekday Half Hour,0.5,0.72,3.09
+Carer 74,,NP16 5AF,WA01,Client 50,,,,,NP15 1BB,Monmouth,Social Services,06-Nov-20,10:15 AM,11:15 AM,Weekday Hour,1,0.72,3.31
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,06-Nov-20,11:30 AM,3:30 PM,Weekday Hour,4,,
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,06-Nov-20,3:45 PM,4:15 PM,Weekday Half Hour,0.5,4.196,12.21
+Carer 74,,NP16 5AF,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,06-Nov-20,4:30 PM,5:00 PM,Weekday Half Hour,0.5,6.172,14.3
+Carer 74,,NP16 5AF,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,06-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,2.352,5.15
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,06-Nov-20,5:45 PM,6:15 PM,Weekday Half Hour,0.5,3.485,8.09
+Carer 74,,NP16 5AF,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,06-Nov-20,6:15 PM,6:30 PM,Weekday Fifteen Minutes,0.25,0.72,3.09
+Carer 74,,NP16 5AF,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,06-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,5.118,9.52
+Carer 74,,NP16 5AF,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,06-Nov-20,7:45 PM,8:15 PM,Weekday Half Hour,0.5,9.488,23.05
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,06-Nov-20,8:30 PM,9:00 PM,Weekday Half Hour,0.5,3.216,11.1
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,06-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,4.254,12.28
+Carer 74,,NP16 5AF,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,07-Nov-20,7:15 AM,7:45 AM,Weekend Half Hour,0.5,5.081,11.09
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,07-Nov-20,8:00 AM,9:00 AM,Weekend Hour,1,6.172,14.29
+Carer 74,,NP16 5AF,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,07-Nov-20,9:00 AM,9:45 AM,Weekend Three Quarter Hour,0.75,3.216,10.47
+Carer 74,,NP16 5AF,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,07-Nov-20,10:00 AM,10:30 AM,Weekend Half Hour,0.5,4.371,9.59
+Carer 74,,NP16 5AF,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,07-Nov-20,11:15 AM,11:45 AM,Weekend Half Hour,0.5,5.118,9.52
+Carer 74,,NP16 5AF,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,07-Nov-20,11:45 AM,12:15 PM,Weekend Half Hour,0.5,2.352,5.15
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,07-Nov-20,12:30 PM,1:00 PM,Weekend Half Hour,0.5,3.365,8.49
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,07-Nov-20,3:30 PM,4:00 PM,Weekend Half Hour,0.5,,
+Carer 74,,NP16 5AF,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,07-Nov-20,4:15 PM,4:45 PM,Weekend Half Hour,0.5,6.172,14.3
+Carer 74,,NP16 5AF,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,07-Nov-20,4:45 PM,5:15 PM,Weekend Half Hour,0.5,2.352,5.15
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,07-Nov-20,6:00 PM,6:30 PM,Weekend Half Hour,0.5,3.485,8.09
+Carer 74,,NP16 5AF,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,07-Nov-20,6:30 PM,6:45 PM,Weekday Fifteen Minutes,0.25,0.72,3.09
+Carer 74,,NP16 5AF,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,07-Nov-20,7:45 PM,8:15 PM,Weekend Half Hour,0.5,5.118,9.52
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,07-Nov-20,8:30 PM,9:00 PM,Weekend Half Hour,0.5,6.172,14.29
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,07-Nov-20,9:15 PM,9:45 PM,Weekend Half Hour,0.5,4.254,12.28
+Carer 74,,NP16 5AF,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,08-Nov-20,6:45 AM,7:15 AM,Weekend Half Hour,0.5,5.081,11.09
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,08-Nov-20,7:15 AM,8:15 AM,Weekend Hour,1,6.172,14.29
+Carer 74,,NP16 5AF,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,08-Nov-20,8:30 AM,9:15 AM,Weekend Three Quarter Hour,0.75,3.365,9.34
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,08-Nov-20,9:15 AM,9:45 AM,Weekend Half Hour,0.5,3.485,8.09
+Carer 74,,NP16 5AF,WA01,Client 87,,,,,NP15 2HJ,Monmouth,Private 2016,08-Nov-20,10:00 AM,10:45 AM,Weekend Three Quarter Hour,0.75,5.397,11.11
+Carer 74,,NP16 5AF,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,08-Nov-20,10:45 AM,11:15 AM,Weekend Half Hour,0.5,5.553,11.34
+Carer 74,,NP16 5AF,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,08-Nov-20,11:30 AM,12:00 PM,Weekend Half Hour,0.5,5.118,9.52
+Carer 74,,NP16 5AF,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,08-Nov-20,12:15 PM,12:45 PM,Weekend Half Hour,0.5,6.172,14.29
+Carer 74,,NP16 5AF,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,08-Nov-20,12:45 PM,1:15 PM,Weekend Half Hour,0.5,3.365,9.34
+Carer 74,,NP16 5AF,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,08-Nov-20,1:15 PM,1:45 PM,Weekend Half Hour,0.5,3.485,8.09
+Carer 75,,NP15 1AJ,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,02-Nov-20,6:45 AM,7:30 AM,Weekday Three Quarter Hour,0.75,,
+Carer 75,,NP15 1AJ,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,02-Nov-20,7:45 AM,8:15 AM,Weekday Half Hour,0.5,2.725,7.23
+Carer 75,,NP15 1AJ,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,02-Nov-20,8:15 AM,8:45 AM,Weekday Half Hour,0.5,2.207,6.27
+Carer 75,,NP15 1AJ,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,02-Nov-20,8:45 AM,9:15 AM,Weekday Half Hour,0.5,3.016,6.1
+Carer 75,,NP15 1AJ,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,02-Nov-20,9:15 AM,10:15 AM,Weekday Hour,1,,
+Carer 75,,NP15 1AJ,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,02-Nov-20,10:30 AM,11:15 AM,Weekday Three Quarter Hour,0.75,3.742,10.03
+Carer 75,,NP15 1AJ,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,02-Nov-20,11:15 AM,11:45 AM,Weekday Half Hour,0.5,1.03,4.5
+Carer 75,,NP15 1AJ,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,02-Nov-20,12:00 PM,12:15 PM,Weekday Fifteen Minutes,0.25,0.555,1.55
+Carer 75,,NP15 1AJ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,02-Nov-20,12:30 PM,12:45 PM,Weekday Fifteen Minutes,0.25,0.723,3.1
+Carer 75,,NP15 1AJ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,02-Nov-20,3:15 PM,3:45 PM,Weekday Half Hour,0.5,6.065,13.03
+Carer 75,,NP15 1AJ,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,02-Nov-20,3:45 PM,4:30 PM,Weekday Three Quarter Hour,0.75,5.921,12
+Carer 75,,NP15 1AJ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,4:30 PM,5:00 PM,Weekday Half Hour,0.5,3.63,6.52
+Carer 75,,NP15 1AJ,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,02-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,3.124,7.1
+Carer 75,,NP15 1AJ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,02-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,1.667,5.57
+Carer 75,,NP15 1AJ,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,02-Nov-20,6:00 PM,6:30 PM,Weekday Half Hour,0.5,2.916,8.43
+Carer 75,,NP15 1AJ,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,02-Nov-20,7:15 PM,7:45 PM,Weekday Half Hour,0.5,1.586,5.21
+Carer 75,,NP15 1AJ,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,02-Nov-20,7:45 PM,8:15 PM,Weekday Half Hour,0.5,,
+Carer 75,,NP15 1AJ,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,02-Nov-20,8:15 PM,8:30 PM,Weekday Fifteen Minutes,0.25,0.941,5.2
+Carer 75,,NP15 1AJ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,02-Nov-20,8:30 PM,9:00 PM,Weekday Half Hour,0.5,1.411,6.04
+Carer 75,,NP15 1AJ,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,02-Nov-20,9:00 PM,9:15 PM,Weekday Fifteen Minutes,0.25,0.686,2.16
+Carer 75,,NP15 1AJ,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,02-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,0.991,3.11
+Carer 75,,NP15 1AJ,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,02-Nov-20,9:45 PM,10:15 PM,Weekday Half Hour,0.5,,
+Carer 75,,NP15 1AJ,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,03-Nov-20,7:15 AM,7:45 AM,Weekday Half Hour,0.5,11.812,27.09
+Carer 75,,NP15 1AJ,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,03-Nov-20,8:00 AM,9:00 AM,Weekday Hour,1,6.172,14.29
+Carer 75,,NP15 1AJ,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,03-Nov-20,9:00 AM,9:45 AM,Weekday Three Quarter Hour,0.75,3.216,10.47
+Carer 75,,NP15 1AJ,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,03-Nov-20,9:45 AM,10:30 AM,Weekday Three Quarter Hour,0.75,7.136,15.23
+Carer 75,,NP15 1AJ,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,03-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,2.352,5.14
+Carer 75,,NP15 1AJ,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,03-Nov-20,12:15 PM,12:45 PM,Weekday Half Hour,0.5,2.352,5.15
+Carer 75,,NP15 1AJ,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,03-Nov-20,2:45 PM,3:15 PM,Weekday Half Hour,0.5,7.135,14.58
+Carer 75,,NP15 1AJ,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,03-Nov-20,3:30 PM,4:00 PM,Weekday Half Hour,0.5,3.216,11.1
+Carer 75,,NP15 1AJ,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,03-Nov-20,4:45 PM,5:15 PM,Weekday Half Hour,0.5,6.172,14.3
+Carer 75,,NP15 1AJ,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,03-Nov-20,5:15 PM,5:45 PM,Weekday Half Hour,0.5,2.352,5.15
+Carer 75,,NP15 1AJ,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,03-Nov-20,6:00 PM,6:30 PM,Weekday Half Hour,0.5,3.485,8.09
+Carer 75,,NP15 1AJ,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,03-Nov-20,6:30 PM,6:45 PM,Weekday Fifteen Minutes,0.25,0.72,3.09
+Carer 75,,NP15 1AJ,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,03-Nov-20,7:15 PM,7:45 PM,Weekday Half Hour,0.5,5.118,9.52
+Carer 75,,NP15 1AJ,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,03-Nov-20,7:45 PM,8:15 PM,Weekday Half Hour,0.5,9.488,23.05
+Carer 75,,NP15 1AJ,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,03-Nov-20,8:15 PM,8:45 PM,Weekday Half Hour,0.5,3.216,11.1
+Carer 75,,NP15 1AJ,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,03-Nov-20,9:00 PM,9:30 PM,Weekday Half Hour,0.5,4.254,12.28
+Carer 75,,NP15 1AJ,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,04-Nov-20,7:00 AM,7:30 AM,Weekday Half Hour,0.5,5.081,11.09
+Carer 75,,NP15 1AJ,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,04-Nov-20,8:00 AM,9:30 AM,Weekday Hour,1.5,5.08,11.49
+Carer 75,,NP15 1AJ,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,04-Nov-20,9:30 AM,10:00 AM,Weekday Half Hour,0.5,0.72,3.09
+Carer 75,,NP15 1AJ,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,05-Nov-20,7:00 AM,7:30 AM,Weekday Half Hour,0.5,,
+Carer 75,,NP15 1AJ,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,05-Nov-20,7:45 AM,8:45 AM,Weekday Hour,1,6.172,14.29
+Carer 75,,NP15 1AJ,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,05-Nov-20,9:00 AM,9:45 AM,Weekday Three Quarter Hour,0.75,3.365,9.34
+Carer 75,,NP15 1AJ,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,05-Nov-20,9:45 AM,10:30 AM,Weekday Three Quarter Hour,0.75,7.135,14.58
+Carer 93,,NP7 5DN,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,02-Nov-20,8:00 AM,9:00 AM,Weekday Half Hour,1,,
+Carer 93,,NP7 5DN,WA01,Client 139,,,,,NP7 7AN,Monmouth,Social Services,02-Nov-20,9:30 AM,10:00 AM,Weekday Half Hour,0.5,1.244,4.17
+Carer 93,,NP7 5DN,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,03-Nov-20,8:00 AM,8:45 AM,Weekday Three Quarter Hour,0.75,,
+Carer 93,,NP7 5DN,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,03-Nov-20,8:45 AM,9:15 AM,Weekday Half Hour,0.5,6.251,13.49
+Carer 93,,NP7 5DN,WA01,Client 217,,,,,NP7 9PZ,Monmouth,Social Services,03-Nov-20,9:30 AM,10:15 AM,Weekday Three Quarter Hour,0.75,2.034,6.58
+Carer 93,,NP7 5DN,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,04-Nov-20,8:00 AM,8:45 AM,Weekday Three Quarter Hour,0.75,,
+Carer 93,,NP7 5DN,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,04-Nov-20,9:00 AM,9:45 AM,Weekday Three Quarter Hour,0.75,6.251,13.49
+Carer 93,,NP7 5DN,WA01,Client 139,,,,,NP7 7AN,Monmouth,Social Services,04-Nov-20,9:45 AM,10:15 AM,Weekday Half Hour,0.5,1.659,5.21
+Carer 93,,NP7 5DN,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,04-Nov-20,10:30 AM,11:00 AM,Weekday Half Hour,0.5,1.623,5.24
+Carer 93,,NP7 5DN,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,04-Nov-20,11:15 AM,12:15 PM,Weekday Hour,1,5.403,10.26
+Carer 93,,NP7 5DN,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,04-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,4.044,9.32
+Carer 93,,NP7 5DN,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,04-Nov-20,1:00 PM,1:30 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 93,,NP7 5DN,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,04-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,0.493,2.33
+Carer 93,,NP7 5DN,WA01,Client 85,,,,,NP7 0EA,Monmouth,Social Services,04-Nov-20,2:15 PM,5:15 PM,Weekday Hour,3,5.22,12.08
+Carer 93,,NP7 5DN,WA01,Client 164,,,,,NP7 8DW,Monmouth,Aneurin Bevan CP,04-Nov-20,7:00 PM,9:00 PM,Weekday Hour,2,10.692,16.24
+Carer 93,,NP7 5DN,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,05-Nov-20,8:00 AM,8:45 AM,Weekday Three Quarter Hour,0.75,10.314,16.03
+Carer 93,,NP7 5DN,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,05-Nov-20,9:00 AM,9:30 AM,Weekday Half Hour,0.5,5.949,12.45
+Carer 93,,NP7 5DN,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,05-Nov-20,9:45 AM,10:15 AM,Weekday Half Hour,0.5,0.758,2.5
+Carer 93,,NP7 5DN,WA01,Client 224,,,,,NP7 8PB,Monmouth,Social Services,05-Nov-20,10:30 AM,12:00 PM,Weekday Hour,1.5,7.997,14.57
+Carer 93,,NP7 5DN,WA01,Client 68,,,,,NP7 9EU,Monmouth,Private 2016,05-Nov-20,12:45 PM,2:45 PM,Weekday Hour,2,12.108,19.16
+Carer 93,,NP7 5DN,WA01,Client 164,,,,,NP7 8DW,Monmouth,Aneurin Bevan CP,05-Nov-20,7:00 PM,9:00 PM,Weekday Hour,2,9.75,14.53
+Carer 93,,NP7 5DN,WA01,Client 219,,,,,NP7 9UR,Monmouth,Social Services,06-Nov-20,8:00 AM,8:45 AM,Weekday Three Quarter Hour,0.75,10.314,16.03
+Carer 93,,NP7 5DN,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,06-Nov-20,9:00 AM,10:00 AM,Weekday Half Hour,1,5.949,12.45
+Carer 93,,NP7 5DN,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,06-Nov-20,12:15 PM,12:45 PM,Weekday Half Hour,0.5,,
+Carer 93,,NP7 5DN,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,06-Nov-20,1:00 PM,1:30 PM,Weekday Half Hour,0.5,0.758,2.5
+Carer 93,,NP7 5DN,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,06-Nov-20,1:45 PM,2:15 PM,Weekday Half Hour,0.5,0.524,2.41
+Carer 95,,NP19 9DZ,WA01,Client 4,,,,,NP26 3NA,Monmouth,Social Services,05-Nov-20,9:00 AM,9:45 AM,Weekday Three Quarter Hour,0.75,,
+Carer 95,,NP19 9DZ,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,05-Nov-20,9:45 AM,10:30 AM,Weekday Three Quarter Hour,0.75,4.525,12.1
+Carer 95,,NP19 9DZ,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,05-Nov-20,11:00 AM,11:30 AM,Weekday Half Hour,0.5,0.935,5.08
+Carer 95,,NP19 9DZ,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,05-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,,
+Carer 95,,NP19 9DZ,WA01,Client 28,,,,,NP26 4LQ,Monmouth,Social Services,05-Nov-20,12:30 PM,12:45 PM,Weekday Fifteen Minutes,0.25,1.335,5.15
+Carer 95,,NP19 9DZ,WA01,Client 4,,,,,NP26 3NA,Monmouth,Social Services,06-Nov-20,9:00 AM,9:45 AM,Weekday Three Quarter Hour,0.75,,
+Carer 95,,NP19 9DZ,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,06-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,4.525,12.1
+Carer 95,,NP19 9DZ,WA01,Client 235,,,,,NP26 4EH,Monmouth,Private 2016,06-Nov-20,11:00 AM,11:30 AM,Weekday Half Hour,0.5,0.747,3.48
+Carer 95,,NP19 9DZ,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,06-Nov-20,11:45 AM,12:15 PM,Weekday Half Hour,0.5,0.947,4.35
+Carer 95,,NP19 9DZ,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,06-Nov-20,12:15 PM,12:45 PM,Weekday Half Hour,0.5,,
+Carer 95,,NP19 9DZ,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,07-Nov-20,7:00 AM,7:45 AM,Weekend Three Quarter Hour,0.75,,
+Carer 95,,NP19 9DZ,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,07-Nov-20,8:00 AM,8:30 AM,Weekend Half Hour,0.5,2.725,7.23
+Carer 95,,NP19 9DZ,WA01,Client 4,,,,,NP26 3NA,Monmouth,Social Services,07-Nov-20,9:00 AM,9:45 AM,Weekend Three Quarter Hour,0.75,6.007,14.35
+Carer 95,,NP19 9DZ,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,07-Nov-20,10:00 AM,10:45 AM,Weekend Three Quarter Hour,0.75,4.525,12.1
+Carer 95,,NP19 9DZ,WA01,Client 156,,,,,NP26 3HT,Monmouth,Social Services,07-Nov-20,11:00 AM,11:45 AM,Weekend Three Quarter Hour,0.75,4.717,12.48
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,02-Nov-20,7:00 AM,8:00 AM,Weekday Hour,1,,
+Carer 96,,SP4 9HT,,Client 46,,,,,SP2 0JA,Salisbury,Social Services Zone 3,02-Nov-20,8:00 AM,8:30 AM,Weekday Half Hour,0.5,1.176,5.14
+Carer 96,,SP4 9HT,,Client 45,,,,,SP2 7AX,Salisbury,Social Services Zone 3,02-Nov-20,9:00 AM,10:00 AM,Weekday Hour,1,3.774,9.48
+Carer 96,,SP4 9HT,SA02,Client 29,,,,,SP2 0JP,Salisbury,Private,02-Nov-20,10:00 AM,11:00 AM,Weekday Hour,1,3.051,7.26
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,02-Nov-20,11:00 AM,12:00 PM,Weekday Hour,1,,
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,02-Nov-20,12:15 PM,12:45 PM,Weekday Half Hour,0.5,1.425,6.06
+Carer 96,,SP4 9HT,,Client 45,,,,,SP2 7AX,Salisbury,Social Services Zone 3,02-Nov-20,1:15 PM,1:45 PM,Weekday Half Hour,0.5,4.046,11.42
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,03-Nov-20,7:00 AM,8:00 AM,Weekday Hour,1,,
+Carer 96,,SP4 9HT,,Client 46,,,,,SP2 0JA,Salisbury,Social Services Zone 3,03-Nov-20,8:00 AM,8:30 AM,Weekday Half Hour,0.5,1.176,5.14
+Carer 96,,SP4 9HT,,Client 145,,,,,SP2 0NT,Salisbury,Social Services Zone 2,03-Nov-20,9:00 AM,9:45 AM,Weekday Three Quarter Hour,0.75,2.482,6.43
+Carer 96,,SP4 9HT,SA02,Client 29,,,,,SP2 0JP,Salisbury,Private,03-Nov-20,10:00 AM,11:00 AM,Weekday Hour,1,3.072,9.47
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,03-Nov-20,11:00 AM,12:00 PM,Weekday Hour,1,,
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,03-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,1.425,6.06
+Carer 96,,SP4 9HT,,Client 174,,,,,SP1 2HW,Salisbury,Social Services Zone 3,03-Nov-20,12:45 PM,1:15 PM,Weekday Half Hour,0.5,5.297,14
+Carer 96,,SP4 9HT,,Client 192,,,,,SP5 1ED,Salisbury,Private 2016,03-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,6.761,13.5
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,03-Nov-20,4:15 PM,4:45 PM,Weekday Half Hour,0.5,14.074,26.42
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,03-Nov-20,5:00 PM,6:00 PM,Weekday Hour,1,0.838,4.4
+Carer 96,,SP4 9HT,,Client 176,,,,,SP2 7EL,Salisbury,Social Services Zone 3,03-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,2.498,7.11
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,03-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour Night,0.5,3.11,8.58
+Carer 96,,SP4 9HT,,Client 46,,,,,SP2 0JA,Salisbury,Social Services Zone 3,03-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,0.922,3.34
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,04-Nov-20,7:00 AM,8:00 AM,Weekday Hour,1,0.589,3.39
+Carer 96,,SP4 9HT,,Client 46,,,,,SP2 0JA,Salisbury,Social Services Zone 3,04-Nov-20,8:00 AM,8:30 AM,Weekday Half Hour,0.5,1.176,5.14
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,04-Nov-20,8:30 AM,9:00 AM,Weekday Half Hour,0.5,0.922,3.25
+Carer 96,,SP4 9HT,SA02,Client 29,,,,,SP2 0JP,Salisbury,Private,04-Nov-20,9:30 AM,10:30 AM,Weekday Hour,1,0.838,4.4
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,04-Nov-20,11:00 AM,12:00 PM,Weekday Hour,1,,
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,04-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,1.425,6.06
+Carer 96,,SP4 9HT,,Client 192,,,,,SP5 1ED,Salisbury,Private 2016,04-Nov-20,1:15 PM,1:45 PM,Weekday Half Hour,0.5,9.793,22.13
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,05-Nov-20,7:00 AM,8:00 AM,Weekday Hour,1,,
+Carer 96,,SP4 9HT,,Client 46,,,,,SP2 0JA,Salisbury,Social Services Zone 3,05-Nov-20,8:00 AM,8:30 AM,Weekday Half Hour,0.5,1.176,5.14
+Carer 96,,SP4 9HT,,Client 45,,,,,SP2 7AX,Salisbury,Social Services Zone 3,05-Nov-20,9:00 AM,10:00 AM,Weekday Hour,1,3.774,9.48
+Carer 96,,SP4 9HT,SA02,Client 29,,,,,SP2 0JP,Salisbury,Private,05-Nov-20,10:15 AM,11:15 AM,Weekday Hour,1,3.051,7.26
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,05-Nov-20,11:15 AM,12:15 PM,Weekday Hour,1,,
+Carer 96,,SP4 9HT,,Client 45,,,,,SP2 7AX,Salisbury,Social Services Zone 3,05-Nov-20,12:45 PM,1:15 PM,Weekday Half Hour,0.5,3.391,9.01
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,05-Nov-20,4:15 PM,4:45 PM,Weekday Half Hour,0.5,3.719,9.46
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,05-Nov-20,5:00 PM,6:00 PM,Weekday Hour,1,0.838,4.4
+Carer 96,,SP4 9HT,,Client 176,,,,,SP2 7EL,Salisbury,Social Services Zone 3,05-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,2.498,7.11
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,05-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour Night,0.5,3.11,8.58
+Carer 96,,SP4 9HT,,Client 46,,,,,SP2 0JA,Salisbury,Social Services Zone 3,05-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,0.922,3.34
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,05-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,0.589,3.39
+Carer 96,,SP4 9HT,,Client 45,,,,,SP2 7AX,Salisbury,Social Services Zone 3,05-Nov-20,8:30 PM,9:00 PM,Weekday Half Hour,0.5,3.391,9.01
+Carer 96,,SP4 9HT,SA02,Client 227,,,,,SP2 0JP,Salisbury,Social Services Zone 3,06-Nov-20,7:00 AM,8:00 AM,Weekday Hour,1,3.051,7.26
+Carer 96,,SP4 9HT,,Client 46,,,,,SP2 0JA,Salisbury,Social Services Zone 3,06-Nov-20,8:00 AM,8:30 AM,Weekday Half Hour,0.5,1.176,5.14
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,06-Nov-20,8:30 AM,9:00 AM,Weekday Half Hour,0.5,0.922,3.25
+Carer 96,,SP4 9HT,,Client 145,,,,,SP2 0NT,Salisbury,Social Services Zone 2,06-Nov-20,9:15 AM,10:00 AM,Weekday Three Quarter Hour,0.75,3.404,9.5
+Carer 96,,SP4 9HT,SA02,Client 29,,,,,SP2 0JP,Salisbury,Private,06-Nov-20,10:30 AM,11:30 AM,Weekday Hour,1,3.072,9.47
+Carer 96,,SP4 9HT,,Client 173,,,,,SP2 0LB,Salisbury,Private 2016,06-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,1.425,6.06
+Carer 96,,SP4 9HT,,Client 192,,,,,SP5 1ED,Salisbury,Private 2016,06-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,9.793,22.13
+Carer 97,,NP44 2EZ,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,7:00 AM,7:30 AM,Weekday Half Hour,0.5,,
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,03-Nov-20,9:00 AM,10:00 AM,Weekday Hour,1,4.124,9.21
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,03-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,1.308,4.43
+Carer 97,,NP44 2EZ,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,03-Nov-20,10:45 AM,11:00 AM,Weekday Fifteen Minutes,0.25,1.613,5.45
+Carer 97,,NP44 2EZ,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,03-Nov-20,11:15 AM,11:45 AM,Weekday Half Hour,0.5,2.516,7.02
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,1.245,3.3
+Carer 97,,NP44 2EZ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,03-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,03-Nov-20,1:45 PM,2:15 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 97,,NP44 2EZ,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,7:00 AM,7:30 AM,Weekday Half Hour,0.5,,
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,04-Nov-20,9:00 AM,10:00 AM,Weekday Hour,1,4.124,9.21
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,04-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,1.308,4.43
+Carer 97,,NP44 2EZ,WA01,Client 156,,,,,NP26 3HT,Monmouth,Social Services,04-Nov-20,11:00 AM,11:45 AM,Weekday Three Quarter Hour,0.75,4.614,11.53
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,0.745,3.07
+Carer 97,,NP44 2EZ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,04-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,04-Nov-20,1:00 PM,1:15 PM,Weekday Fifteen Minutes,0.25,6.026,12.05
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,04-Nov-20,1:45 PM,2:15 PM,Weekday Half Hour,0.5,1.308,4.43
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,4.252,9.24
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,05-Nov-20,9:00 AM,10:00 AM,Weekday Hour,1,4.124,9.21
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,05-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,1.308,4.43
+Carer 97,,NP44 2EZ,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,05-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,3.639,8.51
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,1.245,3.3
+Carer 97,,NP44 2EZ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,05-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,05-Nov-20,1:45 PM,2:15 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,06-Nov-20,9:00 AM,10:00 AM,Weekday Hour,1,4.124,9.21
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,06-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,1.308,4.43
+Carer 97,,NP44 2EZ,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,06-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,3.639,8.51
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,1.245,3.3
+Carer 97,,NP44 2EZ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,06-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,06-Nov-20,1:00 PM,1:15 PM,Weekday Fifteen Minutes,0.25,6.026,12.05
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,06-Nov-20,1:45 PM,2:15 PM,Weekday Half Hour,0.5,1.308,4.43
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,7:30 AM,8:30 AM,Weekend Hour,1,,
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,07-Nov-20,8:45 AM,9:45 AM,Weekend Hour,1,4.124,9.21
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,07-Nov-20,10:00 AM,10:45 AM,Weekend Three Quarter Hour,0.75,1.308,4.43
+Carer 97,,NP44 2EZ,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,07-Nov-20,10:45 AM,11:15 AM,Weekend Half Hour,0.5,0.643,3.19
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,12:00 PM,12:30 PM,Weekend Half Hour,0.5,4.664,11.12
+Carer 97,,NP44 2EZ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,07-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,07-Nov-20,1:00 PM,1:15 PM,Weekday Fifteen Minutes,0.25,6.026,12.05
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,07-Nov-20,1:45 PM,2:15 PM,Weekend Half Hour,0.5,1.308,4.43
+Carer 97,,NP44 2EZ,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,7:00 AM,7:30 AM,Weekend Half Hour,0.5,,
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,7:30 AM,8:30 AM,Weekend Hour,1,,
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,08-Nov-20,9:00 AM,10:00 AM,Weekend Hour,1,4.124,9.21
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,08-Nov-20,10:00 AM,10:45 AM,Weekend Three Quarter Hour,0.75,1.308,4.43
+Carer 97,,NP44 2EZ,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,08-Nov-20,10:45 AM,11:00 AM,Weekday Fifteen Minutes,0.25,1.613,5.45
+Carer 97,,NP44 2EZ,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,08-Nov-20,11:30 AM,12:00 PM,Weekend Half Hour,0.5,2.516,7.02
+Carer 97,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,12:00 PM,12:30 PM,Weekend Half Hour,0.5,1.245,3.3
+Carer 97,,NP44 2EZ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,08-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 97,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,08-Nov-20,1:00 PM,1:15 PM,Weekday Fifteen Minutes,0.25,6.026,12.05
+Carer 97,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,08-Nov-20,1:45 PM,2:15 PM,Weekend Half Hour,0.5,1.308,4.43
+Carer 98,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,,
+Carer 98,,NP44 2EZ,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,05-Nov-20,12:30 PM,12:45 PM,Weekday Fifteen Minutes,0.25,,
+Carer 98,,NP44 2EZ,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,7:00 AM,7:30 AM,Weekend Half Hour,0.5,,
+Carer 98,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,7:30 AM,8:30 AM,Weekend Hour,1,,
+Carer 98,,NP44 2EZ,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,07-Nov-20,8:45 AM,9:15 AM,Weekend Half Hour,0.5,3.63,6.57
+Carer 98,,NP44 2EZ,WA01,Client 54,,,,,NP26 3SA,Monmouth,Social Services,07-Nov-20,9:15 AM,9:45 AM,Weekend Half Hour,0.5,1.087,3.03
+Carer 98,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,07-Nov-20,10:00 AM,10:45 AM,Weekend Three Quarter Hour,0.75,1.692,5.19
+Carer 98,,NP44 2EZ,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,07-Nov-20,10:45 AM,11:15 AM,Weekend Half Hour,0.5,0.643,3.19
+Carer 98,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,12:00 PM,12:30 PM,Weekend Half Hour,0.5,4.664,11.12
+Carer 98,,NP44 2EZ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,07-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 98,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,07-Nov-20,1:45 PM,2:15 PM,Weekend Half Hour,0.5,5.405,11.42
+Carer 98,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,7:30 AM,8:30 AM,Weekend Hour,1,,
+Carer 98,,NP44 2EZ,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,08-Nov-20,8:30 AM,9:00 AM,Weekend Half Hour,0.5,1.245,3.23
+Carer 98,,NP44 2EZ,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,08-Nov-20,9:00 AM,10:00 AM,Weekend Hour,1,,
+Carer 98,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,08-Nov-20,10:00 AM,10:45 AM,Weekend Three Quarter Hour,0.75,3.639,9.11
+Carer 98,,NP44 2EZ,WA01,Client 156,,,,,NP26 3HT,Monmouth,Social Services,08-Nov-20,11:00 AM,11:45 AM,Weekend Three Quarter Hour,0.75,4.614,11.53
+Carer 98,,NP44 2EZ,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,12:00 PM,12:30 PM,Weekend Half Hour,0.5,0.745,3.07
+Carer 98,,NP44 2EZ,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,08-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 98,,NP44 2EZ,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,08-Nov-20,1:45 PM,2:15 PM,Weekend Half Hour,0.5,5.405,11.42
+Carer 102,,NP7 0PN,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,02-Nov-20,8:00 AM,8:45 AM,Weekday Three Quarter Hour,0.75,,
+Carer 102,,NP7 0PN,WA01,Client 217,,,,,NP7 9PZ,Monmouth,Social Services,02-Nov-20,9:15 AM,10:00 AM,Weekday Three Quarter Hour,0.75,2.034,6.58
+Carer 102,,NP7 0PN,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,02-Nov-20,10:45 AM,11:45 AM,Weekday Hour,1,3.124,6.09
+Carer 102,,NP7 0PN,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,02-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,4.044,9.32
+Carer 102,,NP7 0PN,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,02-Nov-20,12:45 PM,1:15 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 102,,NP7 0PN,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,02-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,0.493,2.33
+Carer 102,,NP7 0PN,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,03-Nov-20,9:15 AM,9:45 AM,Weekday Half Hour,0.5,,
+Carer 102,,NP7 0PN,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,03-Nov-20,10:30 AM,11:00 AM,Weekday Half Hour,0.5,4.402,9.31
+Carer 102,,NP7 0PN,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,03-Nov-20,11:15 AM,1:45 PM,Weekday Hour,2.5,4.428,10.12
+Carer 102,,NP7 0PN,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,04-Nov-20,8:00 AM,9:00 AM,Weekday Half Hour,1,,
+Carer 102,,NP7 0PN,WA01,Client 217,,,,,NP7 9PZ,Monmouth,Social Services,04-Nov-20,9:15 AM,10:00 AM,Weekday Three Quarter Hour,0.75,1.619,5.42
+Carer 102,,NP7 0PN,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,04-Nov-20,10:15 AM,10:45 AM,Weekday Half Hour,0.5,1.434,5.19
+Carer 102,,NP7 0PN,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,04-Nov-20,10:45 AM,11:15 AM,Weekday Half Hour,0.5,0.17,0.33
+Carer 102,,NP7 0PN,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,05-Nov-20,8:00 AM,8:30 AM,Weekday Half Hour,0.5,,
+Carer 102,,NP7 0PN,WA01,Client 217,,,,,NP7 9PZ,Monmouth,Social Services,05-Nov-20,8:45 AM,9:30 AM,Weekday Three Quarter Hour,0.75,2.034,6.58
+Carer 102,,NP7 0PN,WA01,Client 212,,,,,NP7 0AE,Monmouth,Social Services,05-Nov-20,9:45 AM,10:15 AM,Weekday Half Hour,0.5,3.124,6.09
+Carer 102,,NP7 0PN,WA01,Client 112,,,,,NP7 6EL,Monmouth,Social Services,05-Nov-20,10:15 AM,10:45 AM,Weekday Half Hour,0.5,3.829,8.38
+Carer 102,,NP7 0PN,WA01,Client 230,,,,,NP7 6EY,Monmouth,Social Services,05-Nov-20,11:15 AM,11:45 AM,Weekday Half Hour,0.5,0.694,3.12
+Carer 102,,NP7 0PN,WA01,Client 69,,,,,NP7 5SP,Monmouth,Social Services,05-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 102,,NP7 0PN,WA01,Client 232,,,,,NP7 6EY,Monmouth,Social Services,05-Nov-20,12:45 PM,1:15 PM,Weekday Half Hour,0.5,0.414,1.16
+Carer 102,,NP7 0PN,WA01,Client 185,,,,,NP7 6EE,Monmouth,Social Services,05-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,0.493,2.33
+Carer 112,,NP44 4NP,WA07,Client 223,,,,,NP4 0LS,Monmouth,,02-Nov-20,8:30 AM,2:30 PM,,6,,
+Carer 112,,NP44 4NP,WA07,Client 223,,,,,NP4 0LS,Monmouth,,03-Nov-20,8:30 AM,2:30 PM,,6,,
+Carer 112,,NP44 4NP,WA07,Client 223,,,,,NP4 0LS,Monmouth,,04-Nov-20,8:30 AM,2:30 PM,,6,,
+Carer 112,,NP44 4NP,WA07,Client 223,,,,,NP4 0LS,Monmouth,,05-Nov-20,8:30 AM,2:30 PM,,6,,
+Carer 112,,NP44 4NP,WA07,Client 223,,,,,NP4 0LS,Monmouth,,06-Nov-20,8:30 AM,2:30 PM,,6,,
+Carer 120,,NP44 1NE,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,02-Nov-20,7:15 AM,7:45 AM,Weekday Half Hour,0.5,,
+Carer 120,,NP44 1NE,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,02-Nov-20,8:00 AM,9:00 AM,Weekday Hour,1,6.172,14.29
+Carer 120,,NP44 1NE,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,02-Nov-20,9:30 AM,10:15 AM,Weekday Three Quarter Hour,0.75,3.365,9.34
+Carer 120,,NP44 1NE,WA01,Client 87,,,,,NP15 2HJ,Monmouth,Private 2016,02-Nov-20,10:30 AM,11:15 AM,Weekday Three Quarter Hour,0.75,8.292,15.45
+Carer 120,,NP44 1NE,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,02-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,10.671,21.36
+Carer 120,,NP44 1NE,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,02-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,2.352,5.15
+Carer 120,,NP44 1NE,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,02-Nov-20,12:45 PM,1:15 PM,Weekday Half Hour,0.5,3.365,8.49
+Carer 120,,NP44 1NE,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,02-Nov-20,2:00 PM,2:30 PM,Weekday Half Hour,0.5,4.254,12.28
+Carer 120,,NP44 1NE,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,02-Nov-20,2:45 PM,3:15 PM,Weekday Half Hour,0.5,4.599,12
+Carer 120,,NP44 1NE,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,02-Nov-20,3:30 PM,4:00 PM,Weekday Half Hour,0.5,3.216,11.1
+Carer 120,,NP44 1NE,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,04-Nov-20,2:30 PM,3:00 PM,Weekday Half Hour,0.5,,
+Carer 120,,NP44 1NE,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,04-Nov-20,3:00 PM,3:30 PM,Weekday Half Hour,0.5,3.216,11.1
+Carer 120,,NP44 1NE,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,04-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,23.473,31.06
+Carer 120,,NP44 1NE,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,04-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,6.912,15.12
+Carer 120,,NP44 1NE,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,04-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,1.867,6.46
+Carer 120,,NP44 1NE,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,04-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,0.643,3.19
+Carer 120,,NP44 1NE,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,4.664,11.12
+Carer 120,,NP44 1NE,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,,
+Carer 120,,NP44 1NE,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,04-Nov-20,8:30 PM,9:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 120,,NP44 1NE,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,04-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 120,,NP44 1NE,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,06-Nov-20,7:00 AM,7:30 AM,Weekday Half Hour,0.5,,
+Carer 120,,NP44 1NE,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,06-Nov-20,7:45 AM,8:45 AM,Weekday Hour,1,6.172,14.29
+Carer 120,,NP44 1NE,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,06-Nov-20,8:45 AM,9:30 AM,Weekday Three Quarter Hour,0.75,3.216,10.47
+Carer 120,,NP44 1NE,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,06-Nov-20,9:45 AM,10:30 AM,Weekday Three Quarter Hour,0.75,7.136,15.23
+Carer 120,,NP44 1NE,WA01,Client 87,,,,,NP15 2HJ,Monmouth,Private 2016,06-Nov-20,10:30 AM,11:15 AM,Weekday Three Quarter Hour,0.75,8.292,15.45
+Carer 120,,NP44 1NE,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,06-Nov-20,11:45 AM,12:15 PM,Weekday Half Hour,0.5,10.671,21.36
+Carer 120,,NP44 1NE,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,06-Nov-20,12:15 PM,12:45 PM,Weekday Half Hour,0.5,6.172,14.29
+Carer 120,,NP44 1NE,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,06-Nov-20,1:00 PM,1:30 PM,Weekday Half Hour,0.5,3.365,9.34
+Carer 120,,NP44 1NE,WA01,Client 186,,,,,NP4 0TG,Monmouth,Social Services,06-Nov-20,1:45 PM,2:15 PM,Weekday Half Hour,0.5,7.135,14.58
+Carer 120,,NP44 1NE,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,06-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,18.712,35.32
+Carer 120,,NP44 1NE,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,4:45 PM,5:15 PM,Weekday Half Hour,0.5,10.316,13.11
+Carer 120,,NP44 1NE,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,06-Nov-20,5:30 PM,6:00 PM,Weekday Half Hour,0.5,3.124,7.1
+Carer 120,,NP44 1NE,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,06-Nov-20,6:15 PM,6:45 PM,Weekday Half Hour,0.5,1.867,6.46
+Carer 120,,NP44 1NE,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,06-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,0.643,3.19
+Carer 120,,NP44 1NE,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,7:45 PM,8:15 PM,Weekday Half Hour,0.5,4.664,11.12
+Carer 120,,NP44 1NE,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,8:15 PM,8:45 PM,Weekday Half Hour,0.5,,
+Carer 120,,NP44 1NE,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,06-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 120,,NP44 1NE,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,06-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 120,,NP44 1NE,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,07-Nov-20,8:30 AM,9:00 AM,Weekend Half Hour,0.5,18.335,28.03
+Carer 120,,NP44 1NE,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,07-Nov-20,9:15 AM,10:00 AM,Weekend Three Quarter Hour,0.75,3.485,7.44
+Carer 120,,NP44 1NE,WA01,Client 87,,,,,NP15 2HJ,Monmouth,Private 2016,07-Nov-20,10:15 AM,11:00 AM,Weekend Three Quarter Hour,0.75,8.292,15.45
+Carer 120,,NP44 1NE,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,07-Nov-20,12:00 PM,12:30 PM,Weekend Half Hour,0.5,5.396,12.03
+Carer 120,,NP44 1NE,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,07-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,14.703,27.04
+Carer 120,,NP44 1NE,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,4:45 PM,5:15 PM,Weekend Half Hour,0.5,10.316,13.11
+Carer 120,,NP44 1NE,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,07-Nov-20,5:15 PM,5:45 PM,Weekend Half Hour,0.5,5.451,11.45
+Carer 120,,NP44 1NE,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,07-Nov-20,6:00 PM,6:30 PM,Weekend Half Hour,0.5,2.707,8.07
+Carer 120,,NP44 1NE,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,07-Nov-20,6:30 PM,7:00 PM,Weekend Half Hour,0.5,1.713,6.07
+Carer 120,,NP44 1NE,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,7:00 PM,7:30 PM,Weekend Half Hour,0.5,5.837,13.19
+Carer 120,,NP44 1NE,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,07-Nov-20,7:30 PM,7:45 PM,Weekday Fifteen Minutes,0.25,4.355,10.41
+Carer 120,,NP44 1NE,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,07-Nov-20,8:00 PM,8:30 PM,Weekend Half Hour,0.5,2.208,8.06
+Carer 120,,NP44 1NE,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,07-Nov-20,8:30 PM,8:45 PM,Weekday Fifteen Minutes,0.25,2.207,6.27
+Carer 120,,NP44 1NE,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,07-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,5.998,12.12
+Carer 120,,NP44 1NE,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,07-Nov-20,9:30 PM,10:00 PM,Weekend Half Hour,0.5,5.405,11.42
+Carer 120,,NP44 1NE,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,08-Nov-20,6:45 AM,7:30 AM,Weekend Three Quarter Hour,0.75,2.708,7.58
+Carer 120,,NP44 1NE,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,08-Nov-20,7:45 AM,8:15 AM,Weekend Half Hour,0.5,2.725,7.23
+Carer 120,,NP44 1NE,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,08-Nov-20,8:30 AM,9:00 AM,Weekend Half Hour,0.5,2.207,6.27
+Carer 120,,NP44 1NE,WA01,Client 4,,,,,NP26 3NA,Monmouth,Social Services,08-Nov-20,9:15 AM,10:00 AM,Weekend Three Quarter Hour,0.75,3.8,8.1
+Carer 120,,NP44 1NE,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,08-Nov-20,10:00 AM,10:45 AM,Weekend Three Quarter Hour,0.75,4.525,12.1
+Carer 120,,NP44 1NE,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,08-Nov-20,11:00 AM,11:30 AM,Weekend Half Hour,0.5,1.03,4.5
+Carer 120,,NP44 1NE,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,08-Nov-20,11:30 AM,12:00 PM,Weekend Half Hour,0.5,0.806,3.24
+Carer 120,,NP44 1NE,WA01,Client 208,,,,,NP26 4PL,Monmouth,Social Services,08-Nov-20,12:00 PM,12:30 PM,Weekend Half Hour,0.5,,
+Carer 120,,NP44 1NE,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,08-Nov-20,3:30 PM,4:00 PM,Weekend Half Hour,0.5,18.659,35.3
+Carer 120,,NP44 1NE,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,08-Nov-20,4:15 PM,4:45 PM,Weekend Half Hour,0.5,6.172,14.3
+Carer 120,,NP44 1NE,WA01,Client 182,,,,,NP15 1PZ,Monmouth,Social Services,08-Nov-20,4:45 PM,5:15 PM,Weekend Half Hour,0.5,2.352,5.15
+Carer 120,,NP44 1NE,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,08-Nov-20,5:30 PM,6:00 PM,Weekend Half Hour,0.5,3.485,8.09
+Carer 120,,NP44 1NE,WA01,Client 215,,,,,NP15 1DQ,Monmouth,Social Services,08-Nov-20,6:15 PM,6:30 PM,Weekday Fifteen Minutes,0.25,0.72,3.09
+Carer 120,,NP44 1NE,WA01,Client 21,,,,,NP15 1LZ,Monmouth,Social Services,08-Nov-20,7:00 PM,7:30 PM,Weekend Half Hour,0.5,5.118,9.52
+Carer 120,,NP44 1NE,WA01,Client 170,,,,,NP4 0SZ,Monmouth,Social Services,08-Nov-20,7:45 PM,8:15 PM,Weekend Half Hour,0.5,6.172,14.29
+Carer 120,,NP44 1NE,WA01,Client 55,,,,,NP15 1BB,Monmouth,Social Services,08-Nov-20,8:30 PM,9:00 PM,Weekend Half Hour,0.5,4.254,12.28
+Carer 125,,NP44 1BY,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,7:00 AM,7:30 AM,Weekday Half Hour,0.5,,
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 125,,NP44 1BY,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,02-Nov-20,8:45 AM,9:45 AM,Weekday Hour,1,4.124,9.21
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,02-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,1.308,4.43
+Carer 125,,NP44 1BY,WA01,Client 209,,,,,NP26 4PL,Monmouth,Social Services,02-Nov-20,10:45 AM,11:15 AM,Weekday Half Hour,0.5,0.643,3.19
+Carer 125,,NP44 1BY,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,02-Nov-20,11:15 AM,11:45 AM,Weekday Half Hour,0.5,4.05,10.35
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,02-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,1.245,3.3
+Carer 125,,NP44 1BY,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,02-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,02-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 125,,NP44 1BY,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,03-Nov-20,8:30 AM,9:00 AM,Weekday Half Hour,0.5,1.245,3.23
+Carer 125,,NP44 1BY,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,03-Nov-20,9:00 AM,10:00 AM,Weekday Hour,1,,
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,03-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,3.639,9.11
+Carer 125,,NP44 1BY,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,03-Nov-20,11:00 AM,11:30 AM,Weekday Half Hour,0.5,0.394,2.02
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,03-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,3.884,7.46
+Carer 125,,NP44 1BY,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,03-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,03-Nov-20,1:45 PM,2:15 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 125,,NP44 1BY,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,04-Nov-20,8:45 AM,9:15 AM,Weekday Half Hour,0.5,1.245,3.23
+Carer 125,,NP44 1BY,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,04-Nov-20,9:15 AM,10:15 AM,Weekday Hour,1,,
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,04-Nov-20,10:15 AM,11:00 AM,Weekday Three Quarter Hour,0.75,3.639,9.11
+Carer 125,,NP44 1BY,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,04-Nov-20,11:15 AM,11:45 AM,Weekday Half Hour,0.5,0.394,2.02
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,04-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,3.884,7.46
+Carer 125,,NP44 1BY,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,04-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,04-Nov-20,1:45 PM,2:15 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 125,,NP44 1BY,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,7:00 AM,7:30 AM,Weekday Half Hour,0.5,,
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 125,,NP44 1BY,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,05-Nov-20,8:30 AM,9:00 AM,Weekday Half Hour,0.5,1.245,3.23
+Carer 125,,NP44 1BY,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,05-Nov-20,9:00 AM,10:00 AM,Weekday Hour,1,,
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,05-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,3.639,9.11
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,05-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,4.252,9.24
+Carer 125,,NP44 1BY,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,05-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,05-Nov-20,1:30 PM,2:00 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 125,,NP44 1BY,WA01,Client 150,,,,,NP26 5BJ,Monmouth,Social Services,05-Nov-20,4:15 PM,4:45 PM,Weekday Half Hour,0.5,2.708,7.58
+Carer 125,,NP44 1BY,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,05-Nov-20,5:00 PM,5:30 PM,Weekday Half Hour,0.5,1.606,4.41
+Carer 125,,NP44 1BY,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,05-Nov-20,5:45 PM,6:15 PM,Weekday Half Hour,0.5,2.916,8.43
+Carer 125,,NP44 1BY,WA01,Client 48,,,,,NP26 4NH,Monmouth,Social Services,05-Nov-20,6:30 PM,6:45 PM,Weekday Fifteen Minutes,0.25,2.906,10.06
+Carer 125,,NP44 1BY,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,05-Nov-20,7:00 PM,7:30 PM,Weekday Half Hour,0.5,1.03,4.5
+Carer 125,,NP44 1BY,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,05-Nov-20,7:30 PM,8:00 PM,Weekday Half Hour,0.5,1.012,3.08
+Carer 125,,NP44 1BY,WA01,Client 178,,,,,NP26 5TL,Monmouth,Social Services,05-Nov-20,8:00 PM,8:30 PM,Weekday Half Hour,0.5,2.916,8.43
+Carer 125,,NP44 1BY,WA01,Client 211,,,,,NP26 4AE,Monmouth,Social Services,05-Nov-20,8:30 PM,8:45 PM,Weekday Fifteen Minutes,0.25,2.207,6.27
+Carer 125,,NP44 1BY,WA01,Client 40,,,,,NP26 3SY,Monmouth,Social Services,05-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,0.991,3.11
+Carer 125,,NP44 1BY,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,05-Nov-20,9:15 PM,9:45 PM,Weekday Half Hour,0.5,,
+Carer 125,,NP44 1BY,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,7:00 AM,7:30 AM,Weekday Half Hour,0.5,3.13,7.35
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,7:30 AM,8:30 AM,Weekday Hour,1,,
+Carer 125,,NP44 1BY,WA01,Client 61,,,,,NP26 3EW,Monmouth,Social Services,06-Nov-20,8:30 AM,9:00 AM,Weekday Half Hour,0.5,1.245,3.23
+Carer 125,,NP44 1BY,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,06-Nov-20,9:00 AM,10:00 AM,Weekday Hour,1,,
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,06-Nov-20,10:00 AM,10:45 AM,Weekday Three Quarter Hour,0.75,3.639,9.11
+Carer 125,,NP44 1BY,WA01,Client 169,,,,,NP26 3EW,Monmouth,Social Services,06-Nov-20,11:30 AM,12:00 PM,Weekday Half Hour,0.5,3.639,8.51
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,06-Nov-20,12:00 PM,12:30 PM,Weekday Half Hour,0.5,1.245,3.3
+Carer 125,,NP44 1BY,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,06-Nov-20,12:30 PM,1:00 PM,Weekday Half Hour,0.5,9.615,13.09
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,06-Nov-20,1:45 PM,2:15 PM,Weekday Half Hour,0.5,5.405,11.42
+Carer 125,,NP44 1BY,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,07-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,,
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,4:45 PM,5:15 PM,Weekend Half Hour,0.5,10.316,13.11
+Carer 125,,NP44 1BY,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,07-Nov-20,5:15 PM,5:45 PM,Weekend Half Hour,0.5,4.124,9.21
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,07-Nov-20,6:00 PM,6:30 PM,Weekend Half Hour,0.5,1.308,4.43
+Carer 125,,NP44 1BY,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,07-Nov-20,6:30 PM,7:00 PM,Weekend Half Hour,0.5,0.394,2.02
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,7:00 PM,7:30 PM,Weekend Half Hour,0.5,3.884,7.46
+Carer 125,,NP44 1BY,WA01,Client 63,,,,,NP26 3BZ,Monmouth,Social Services,07-Nov-20,7:30 PM,8:00 PM,Weekend Half Hour,0.5,,
+Carer 125,,NP44 1BY,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,07-Nov-20,8:00 PM,8:30 PM,Weekend Half Hour,0.5,4.124,9.21
+Carer 125,,NP44 1BY,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,07-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,6.065,13.03
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,07-Nov-20,9:30 PM,10:00 PM,Weekend Half Hour,0.5,5.405,11.42
+Carer 125,,NP44 1BY,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,08-Nov-20,4:00 PM,4:30 PM,Weekday Half Hour,0.5,,
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,4:45 PM,5:15 PM,Weekend Half Hour,0.5,10.316,13.11
+Carer 125,,NP44 1BY,WA01,Client 41,,,,,NP26 3SY,Monmouth,Social Services,08-Nov-20,5:15 PM,5:45 PM,Weekend Half Hour,0.5,3.124,7.1
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,08-Nov-20,6:00 PM,6:30 PM,Weekend Half Hour,0.5,1.867,6.46
+Carer 125,,NP44 1BY,WA01,Client 35,,,,,NP26 4AJ,Monmouth,Social Services,08-Nov-20,6:30 PM,7:00 PM,Weekend Half Hour,0.5,0.394,2.02
+Carer 125,,NP44 1BY,WA01,Client 62,,,,,NP26 3BZ,Monmouth,Social Services,08-Nov-20,7:15 PM,7:45 PM,Weekend Half Hour,0.5,3.884,7.46
+Carer 125,,NP44 1BY,WA01,Client 93,,,,,NP26 5AH,Monmouth,Social Services,08-Nov-20,8:00 PM,8:30 PM,Weekend Half Hour,0.5,4.124,9.21
+Carer 125,,NP44 1BY,WA01,Client 149,,,,,NP16 5RG,Monmouth,Chepstow Block,08-Nov-20,8:45 PM,9:15 PM,Weekday Half Hour,0.5,6.065,13.03
+Carer 125,,NP44 1BY,WA01,Client 143,,,,,NP26 5DN,Monmouth,Social Services,08-Nov-20,9:30 PM,10:00 PM,Weekend Half Hour,0.5,5.405,11.42

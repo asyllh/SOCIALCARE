@@ -21,9 +21,11 @@ struct INSTANCE {
 	int nSkills; //Number of skills
 	int verbose; // Additional information
 	int isFeasible; // Feasibility (deprecated)
-	float objTravel; // Objective travel
 	float objTime; // Objective time
+	float objTravel; // Objective travel time
+	float objWaiting; // Objective waiting time, NEW 07/01/2021
 	float objTardiness; // Objective tardiness
+	float objShortestDay; // Objective shortest day, NEW 07/01/2021
 	float objLongestDay; // Objective longest day
 	float objOvertime; // Objective overtime
 	float totPref; // Total preference score
@@ -116,6 +118,10 @@ double sol_quality_light(struct INSTANCE* ip);
 double sol_quality_optimised(struct INSTANCE* ip, int n1, int n2);
 double sol_quality(struct INSTANCE* ip, int report);
 int synchronise_jobs(struct INSTANCE* ip);
+// void mins_to_time(double time, int* hours, int* minutes, int* seconds);
+int* mins_to_time(double time);
+// double mins_to_minsecs(double time);
+int* mins_to_minsecs(double time);
 double obj_from_times(struct INSTANCE* ip, int report);
 double alternative_quality(struct INSTANCE* ip, int report);
 int random_integer(int min_val, int max_val);

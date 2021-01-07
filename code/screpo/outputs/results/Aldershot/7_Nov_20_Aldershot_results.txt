@@ -1,0 +1,65 @@
+------------------------------------------------------------
+Date: 2021-01-05 13:40:13.539929
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+5	89.923	5.0	0	-1	-1	612.0190177	13027
+
+OUTPUT VARIABLES:
+Total time (totalTime): 1005.92
+Total Travel Time (totalTravel) = 108.08
+Total Waiting Time (totalWaitingTime): 212.84
+Total Overtime (totalOvertime) = 0.00
+Total Violated TW (totalTardiness) = 0.00
+Total Violated TWMK (totalMKTardiness) = 0.00
+Total Tardiness MK (mk_allowed_tardiness) = 0.00 (totalOvertime + totalTardiness)
+Max Spare Time (maxSpareTime): 30.00
+Min Spare Time (minSpareTime): 14.08
+Shortest Shift (shortestDay): 90.92
+Longest Shift (longestDay): 680.00
+Shift Difference (dayDiff): 589.08
+Total Preference Score (ip->totPref) = 0.00
+Quality = -89.92
+
+------------------------------
+ALL QUALITIES:
+Ait H: -32.42
+Mankowska: -36.03
+Workload Balance: -89.92
+Paper: -313.88
+Nurse order: ( 2,  0,  1,   )
+-------- finished. sol_quality(ip, 12345) --------
+
+        PR all pairs final quality: -89.92
+Iterations performed: 48046
+GRASP Finished.
+Final quality: -89.92
+Theoretical best quality: -89.92
+Iterations performed: 48046
+sols_generated = 48047
+local_searches_performed = 48046
+solutions_relinked = 0
+total path_relinkings_performed = 0
+Elapsed time: 600.29 s (MAX: 600.00)
+Final solution quality is: -89.92
+
+------
+Quality indicators:
+Travel time   (min)     108.08
+Total time    (min)     1005.92
+Total tard.   (min)     0.00
+Longest shift (min)     680.00
+Total Overtime(min)     0.00
+------
+totaldistance:  122826.5
+totaldistancekm:  122.8265
+totaldistancejobs:  82771.40000000001
+totaldistancejobskm:  82.77140000000001
+distNurses:  [72421, 25331.9, 25073.6]
+distNursesJobsOnly:  [47597.3, 13115.300000000003, 22058.8]
+------
+Finshed.
+Quality: 89.923
+Those were results for instance 5 in Aldershot, 7-Nov-20
+Total running time: 612.0 seconds.
+
+Run finished at: 2021-01-05 13:50:38.605339
+------------------------------------------------------------

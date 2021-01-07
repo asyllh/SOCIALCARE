@@ -1,0 +1,87 @@
+Monmouth                              
+Number of tasks:  735                 
+Number of carers:  23                 
+Number of clients:  47                
+                                      
+Client 112      num_tasks:  23        
+Client 129      num_tasks:  2         
+Client 139      num_tasks:  3         
+Client 143      num_tasks:  56        
+Client 149      num_tasks:  42        
+Client 15       num_tasks:  1         
+Client 150      num_tasks:  14        
+Client 156      num_tasks:  7         
+Client 164      num_tasks:  3         
+Client 169      num_tasks:  14        
+Client 170      num_tasks:  28        
+Client 178      num_tasks:  21        
+Client 182      num_tasks:  21        
+Client 185      num_tasks:  22        
+Client 186      num_tasks:  15        
+Client 205      num_tasks:  1         
+Client 208      num_tasks:  14        
+Client 209      num_tasks:  14        
+Client 21       num_tasks:  28        
+Client 211      num_tasks:  21        
+Client 212      num_tasks:  16        
+Client 215      num_tasks:  14        
+Client 217      num_tasks:  8         
+Client 219      num_tasks:  15        
+Client 223      num_tasks:  10        
+Client 224      num_tasks:  7         
+Client 230      num_tasks:  16        
+Client 232      num_tasks:  31        
+Client 235      num_tasks:  2         
+Client 28       num_tasks:  10        
+Client 35       num_tasks:  15        
+Client 4        num_tasks:  7         
+Client 40       num_tasks:  14        
+Client 41       num_tasks:  21        
+Client 48       num_tasks:  14        
+Client 50       num_tasks:  1         
+Client 54       num_tasks:  3         
+Client 55       num_tasks:  28        
+Client 61       num_tasks:  10        
+Client 62       num_tasks:  56        
+Client 63       num_tasks:  14        
+Client 68       num_tasks:  1         
+Client 69       num_tasks:  30        
+Client 85       num_tasks:  1         
+Client 87       num_tasks:  7         
+Client 88       num_tasks:  6         
+Client 93       num_tasks:  28        
+                                      
+2-Nov-20                              
+num_tasks:  102                       
+num_carers:  13                       
+num_clients:  37                      
+                                      
+3-Nov-20                              
+num_tasks:  103                       
+num_carers:  14                       
+num_clients:  38                      
+                                      
+4-Nov-20                              
+num_tasks:  105                       
+num_carers:  15                       
+num_clients:  39                      
+                                      
+5-Nov-20                              
+num_tasks:  116                       
+num_carers:  16                       
+num_clients:  40                      
+                                      
+6-Nov-20                              
+num_tasks:  114                       
+num_carers:  15                       
+num_clients:  41                      
+                                      
+7-Nov-20                              
+num_tasks:  99                        
+num_carers:  11                       
+num_clients:  37                      
+                                      
+8-Nov-20                              
+num_tasks:  96                        
+num_carers:  9                        
+num_clients:  34                      

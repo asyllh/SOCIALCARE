@@ -11,6 +11,7 @@ import subprocess
 from math import sqrt
 import pickle
 import osrm
+import requests # for osrm
 
 import mankowska_data as Mk
 import convert_dict_inst as cdi
@@ -25,14 +26,20 @@ def create_solve_inst(idict, options_vector, random_seed):
     
     # i = INSTANCE()
     inst = INSTANCE()
+    # inst.init_job_and_nurse_objects()
 
     if mkVNS: # For some reason an error occurs (cannot call inst.solve()) without this if statement, so just left it in.
         inst = Mk.generate_Mk(inst, matfile=file_to_run, filetype='large_vns')
     else:
         inst = cdi.convert_dict_inst(inst, idict)
+    inst.init_job_and_nurse_objects()
+    inst = cdi.initialise_nurse_job(inst, idict)
     # exit(-1)
     inst.algorithmOptions = options_vector
-    inst.algorithmOptions[0] = 1.0 # MANKOWSKA
+    # inst.algorithmOptions[0] = 0.0 # ait_h
+    inst.algorithmOptions[0] = 1.0 # mankowska
+    # inst.algorithmOptions[0] = 5.0 # workload_balance
+    # inst.algorithmOptions[0] = 6.0 # paper
     saved_od_data = inst.od[0][0]
     inst.solve(randomSeed=random_seed, printAllCallData=False)
     inst.solve = []
@@ -216,6 +223,7 @@ class JOB(object):
         self.dependsOn = -1
         self.minimumGap = 0
         self.maximumGap = 0
+        self.location = [] # NOTE: NEW, 27/12/2020 ALH
         # Calculated (solution)
         self.assignedNurse = -1
         self.positionInSchedule = 0
@@ -238,7 +246,7 @@ class NURSE(object):
         self.preferences = []
         self.preferredJobs = []
         self.jobsToAvoid = []
-
+        self.postcode = 'Unknown' # NOTE: NEW, 27/12/2020 ALH
         # Calculated (solution)
         self.jobsServed = 0
         self.startTime = 0
@@ -283,7 +291,7 @@ class INSTANCE(object):
         self.capabilityOfDoubleServices = []
 
         # Post-processed solution:
-        self.nurseRoute = []
+        self.nurseRoute = [] # In post_process_solution, this will become equivalent to allNurseRoutes, with dimensions nNurses x nPositions(jobs), and so nurseRoute[nurse][position] = job.
         self.nurseWaitingTime = []
         self.nurseServiceTime = []
         self.nurseTravelTime = []
@@ -292,10 +300,10 @@ class INSTANCE(object):
         self.totalServiceTime = -1
         self.totalTravelTime = -1
         self.totalTardiness = -1
-        self.nLateJobs = 0
         self.totalTime = -1
-        self.qualityMeasure = 'standard'
         self.maxTardiness = -1
+        self.nLateJobs = 0
+        self.qualityMeasure = 'standard'
         self.c_quality = 0
         self.mk_mind = []
         self.mk_maxd = []
@@ -630,7 +638,7 @@ class INSTANCE(object):
                 print(ii)
                 print(self.nurseObjs[ii])
                 continue	
-            self.nurseObjs[ii].postcode = str(row[1])
+            self.nurseObjs[ii].postcode = str(row[1]) # NOTE: Nurse class doesn't have an attribute 'postcode'!
             latLong = str(row[2]).split(',')
             self.nurseObjs[ii].startLocation = geopoint(float(latLong[0]), float(latLong[1]))
             self.nurseObjs[ii].transportMode = str(row[3]).lower()
@@ -679,7 +687,7 @@ class INSTANCE(object):
                     self.nurseObjs[ii].jobsToAvoid.append(str(sk))
 
         self.xy = []
-        self.xy.append(self.nurseObjs[0].startLocation.longlat())
+        self.xy.append(self.nurseObjs[0].startLocation.longlat()) # why only the first nurse [0] location?
         for jo in self.jobObjs:
             self.xy.append(jo.location.longlat())
         # print('Number of skills: ' + str(self.nSkills))
@@ -887,7 +895,7 @@ class INSTANCE(object):
                
     def solve(self, randomSeed=0, printAllCallData=False):
         if self.verbose > 0:
-            print('Calling C function for a max. of ' + str(self.MAX_TIME_SECONDS) + ' seconds , random seed is ' + str(randomSeed) + '.')
+            print('Calling C function for a max. of ' + str(self.MAX_TIME_SECONDS) + ' seconds, random seed is ' + str(randomSeed) + '.')
 
         # Prepare some data: 
         self.mk_mind = np.asarray(self.mk_mind, dtype=np.int32)
@@ -1024,6 +1032,7 @@ class INSTANCE(object):
     ### --- End def solve --- ###  
 
     def post_process_solution(self):
+        # This function creates self.nurseRoute, which is the same as allNurseRoutes[nurse][position] = job.
         # Generate nurse routes:
         self.nurseWaitingTime = np.zeros(self.nNurses)
         self.nurseServiceTime = np.zeros(self.nNurses)
@@ -1206,7 +1215,7 @@ class INSTANCE(object):
         print('Website filename: '  + str(webFilename))
         rxy = []
         for pt in self.xy:
-            rxy.append(reverse_latlong(pt))
+            rxy.append(reverse_latlong(pt)) #rxy has coords in lat/lon format, xy is in lon/lat format.
         m = folium.Map(location=rxy[0], zoom_start=14, tiles='cartodbpositron')
         # folium.TileLayer('openstreetmap').add_to(m)
         # folium.TileLayer('Mapbox Light', attr='Mapbox',tiles='https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw').add_to(m)
@@ -1235,13 +1244,13 @@ class INSTANCE(object):
             nRouteRev = []
             # nRoute.append(tuple(rxy[0]))
 
-            nr = self.get_nurse_route(nursej)
+            nr = self.get_nurse_route(nursej) # nurse route for nurse j, nr[position] = job.
             for pt in range(self.nJobs):
-                idxNRpt = int(nr[pt])
+                idxNRpt = int(nr[pt]) #idxNRpt = the job at point pt in nursej's route.
                 if nr[pt] < -0.1:
                     break
-                nRoute.append(tuple(rxy[idxNRpt + 1]))
-                nRouteRev.append(reverse_latlong(rxy[idxNRpt + 1]))
+                nRoute.append(tuple(rxy[idxNRpt + 1])) #append as a tuple the lat/lon of job
+                nRouteRev.append(reverse_latlong(rxy[idxNRpt + 1])) # append as a list the LON/LAT of the job (reversed, so lon/lat, not lat/lon!)
                 # Add a Marker:
                 popupVal = '<b>Service ID:</b> ' + str(self.jobObjs[idxNRpt].ID) # +  '<br><b>Service time:</b> ' + str(self.jobTimeInfo[int(idxNRpt)][2])
                 popupVal = popupVal + '<br><b>Service no.:</b> ' + str(idxNRpt) # +  '<br><b>Service time:</b> ' + str(self.jobTimeInfo[int(idxNRpt)][2])
@@ -1277,9 +1286,8 @@ class INSTANCE(object):
             # nRoute = tuple(nRoute)
             # [routeList, dur, dist] = route_these_points(tuple(rxy[0]), tuple(rxy[0]), goingThrough=nRoute)
             # routeList, dur, dist = route_these_points(reverse_latlong(rxy[0]), reverse_latlong(rxy[0]), goingThrough=nRouteRev)
-            routeList, dur, dist = route_these_points(self.nurseObjs[nursej].startLocation.longlat(),
-                                                        self.nurseObjs[nursej].startLocation.longlat(),
-                                                        goingThrough=nRouteRev)
+            # routeList, dur, dist = route_these_points(self.nurseObjs[nursej].startLocation.longlat(), self.nurseObjs[nursej].startLocation.longlat(), goingThrough=nRouteRev)
+            routeList, dur, dist = route_points_osrm(self.nurseObjs[nursej].startLocation.longlat(), self.nurseObjs[nursej].startLocation.longlat(), goingThrough=nRouteRev)
 
             # print('Nurse ' + str(nursej) + ' route: ')
             # print(routeList)
@@ -1478,6 +1486,7 @@ class INSTANCE(object):
     ########################################################
     #### Brought from C #####
     def get_nurse_route(self, ni):
+        # nurseRoute = array, all -1s, then if index p has value j, it means that job j is in position p in nurse's route.
         nurseRoute = np.zeros(self.nJobs)
         for ii in range(self.nJobs):
             nurseRoute[ii] = -1
@@ -1494,145 +1503,130 @@ class INSTANCE(object):
     ### --- End def get_travel_time --- ###
 
     def full_solution_report(self, doPlots=True, report=2):
-        # for nurse in range(self.nNurses):
-        # 	print('Nurse 1 starts at ')
-        # report = 1
-        self.totalTardiness = 0
-        self.totalWaitingTime = 0
-        self.totalTime = 0
-        self.nLateJobs = 0
-         # * nurseRoute = self.nurseRoute  # malloc(self.nJobs * sizeof(int))
-        onlyTravelTime = 0
+        
         arriveAt = 0
         leaveAt = 0
+        onlyTravelTime = 0
+        self.totalWaitingTime = 0
+        self.totalTardiness = 0
+        self.totalTime = 0
         self.maxTardiness = 0
-        for j in range(self.nNurses):
+        self.nLateJobs = 0
+
+        for i in range(self.nNurses): # For each nurse i = 0,...,nNurses
             job = -1
             prevPt = -1
-            currentTime = self.nurseWorkingTimes[j][0]
+            currentTime = self.nurseWorkingTimes[i][0] # Start time of current nurse i (start of shift)
             if (report > 1):
-                print("Nurse " + str(j) + " starts at " + " (" + str(currentTime) + ")" + self.time_to_string(currentTime))
+                print('Nurse ', i,  ' starts at (', currentTime, ') ', self.time_to_string(currentTime))
+            self.nurseTravelTime[i] = 0
+            self.nurseWaitingTime[i] = 0
+            self.nurseServiceTime[i] = 0
 
-            # get_nurse_route(ip, j, self.nurseRoute)
-            self.nurseTravelTime[j] = 0
-            self.nurseWaitingTime[j] = 0
-            self.nurseServiceTime[j] = 0
+            for j in self.nurseRoute[i]: # For each job j in nurseRoute[i] (allNurseRoutes[i])
+                job = int(j) # job = the job number at position j in nurse i's route.
+                # Trip from depot:
+                # NOTE: Surely this should be the travel time from the depot if prevPt = -1? It'll just be 0, and the od matrix doesn't have values in the 0 column or row.
+                tTime = self.get_travel_time(prevPt, job) # self.od[int(prevPt + 1)][int(job + 1)]
 
-            for jobb in self.nurseRoute[j]:
-                job = int(jobb)
-                    # if (self.nurseRoute[i] < 0)
-                    # break
-                # job = self.nurseRoute[i]
-                 # Trip from depot:
-                tTime = self.get_travel_time(prevPt, job)
-                # onlyTravelTime = onlyTravelTime  + tTime
-                self.nurseTravelTime[j] = self.nurseTravelTime[j] + tTime
+                self.nurseTravelTime[i] = self.nurseTravelTime[i] + tTime
+                currentTime = currentTime + tTime
+                self.nurseServiceTime[i] = self.nurseServiceTime[i] + self.jobTimeInfo[job][2] # Service time = duration of job (length of time job takes).
+                arriveAt = currentTime # Time nurse arrives at the job.
 
-                currentTime = currentTime + tTime #self.od[prevPt][job]
-
-                self.nurseServiceTime[j] = self.nurseServiceTime[j] + self.jobTimeInfo[job][2]
-
-                arriveAt = currentTime
                 waitingTime = 0
-                if (arriveAt < self.jobTimeInfo[job][0]):
-                    waitingTime = self.jobTimeInfo[job][0] - arriveAt
-                self.nurseWaitingTime[j] = self.nurseWaitingTime[j] + waitingTime
+                if (arriveAt < self.jobTimeInfo[job][0]): # If nurse arrives at the job before the start of the job time window
+                    waitingTime = self.jobTimeInfo[job][0] - arriveAt # waiting time = start of job time window - arrival time
+                self.nurseWaitingTime[i] = self.nurseWaitingTime[i] + waitingTime 
 
                 tardiness = 0
-                if (arriveAt > self.jobTimeInfo[job][1]):
-                    tardiness = arriveAt - self.jobTimeInfo[job][1]
+                if (arriveAt > self.jobTimeInfo[job][1]): # If nurse arrives at the job after the end of the job time window
+                    tardiness = arriveAt - self.jobTimeInfo[job][1] # tardiness = arrival time - end of job time window
 
-                if tardiness > self.maxTardiness:
+                if tardiness > self.maxTardiness: # Update max tardiness.
                     self.maxTardiness = tardiness
-                self.totalTardiness = self.totalTardiness  + tardiness
+                self.totalTardiness = self.totalTardiness  + tardiness # Update total tardiness.
 
-                prevPt = job
-                currentTime = currentTime + self.jobTimeInfo[job][2] + waitingTime
+                prevPt = job 
+                currentTime = currentTime + self.jobTimeInfo[job][2] + waitingTime # Update current time to be the time after the job has been completed.
                 leaveAt = currentTime
 
                 # self.totalWaitingTime = self.totalWaitingTime + waitingTime
                 # self.totalServiceTime = self.totalServiceTime + self.jobTimeInfo[job][2]
                 # self.nurseTravelTime[j] = self.nurseTravelTime[j] + tTime
-
                 # self.totalTime = self.totalTime  + leaveAt - self.nurseWorkingTimes[j][0]
-                 # Add penalty for potential lateness and breaching of normal working hours
-                # SET JOB OBJECT INFO:
-                # print('SETTING JOBOBJ INFO for: ' + str(job))
+                # Add penalty for potential lateness and breaching of normal working hours
+
+                # SET JOB OBJECT INFO: self.jobObjs is a list of size 1 x nJobs of JOB objects.
                 self.jobObjs[job].arrivalTime = arriveAt
                 self.jobObjs[job].departureTime = leaveAt
-                self.jobObjs[job].serviceTime = self.jobTimeInfo[job][2]
+                self.jobObjs[job].serviceTime = self.jobTimeInfo[job][2] # jobTimeInfo[job][2] = duration/length of job (mins)
                 self.jobObjs[job].tardiness = tardiness
                 self.jobObjs[job].waitingToStart = waitingTime
                 if self.jobObjs[job].assignedNurse is list:
-                    self.jobObjs[job].assignedNurse.append(j)
+                    self.jobObjs[job].assignedNurse.append(i)
                 else:
-                    self.jobObjs[job].assignedNurse = [j]
-                self.jobObjs[job].positionInSchedule = self.solMatrix[j][job]
-                # print(self.jobObjs[job])
-                if (report > 1):
-                    # self.jobObjs[job].skillsRequired = []
-                    print("\tArrives at job " + str(job) + " at " + " (" + str(arriveAt) + ")" + self.time_to_string(arriveAt) + " and leaves at " + " (" + str(leaveAt) + ")" + self.time_to_string(leaveAt))
+                    self.jobObjs[job].assignedNurse = [i]
+                self.jobObjs[job].positionInSchedule = self.solMatrix[i][job]
+
+                if (report > 1):                    
+                    print('\tArrives at job ', job, ' at (', arriveAt, ') ', self.time_to_string(arriveAt), ' and leaves at (', leaveAt, ') ', self.time_to_string(leaveAt))
                     if (waitingTime > 0):
-                        print("\t\tNeeds to wait for " + " (" + str(waitingTime) + ")" + self.time_to_string(waitingTime) + " before starting the job")
+                        print('\t\tNeeds to wait for (', waitingTime, ') ', self.time_to_string(waitingTime), ' before starting the job.')
                     if (tardiness > 0):
-                        print("\t\t*** Misses the time window by " + " (" + str(tardiness) + ")" + self.time_to_string(tardiness) + "! ***")
+                        print('\t\t*** Misses the time window by (', tardiness, ') ', self.time_to_string(tardiness), '! ***')
                         self.nLateJobs = self.nLateJobs + 1
-                
-             # Return to depot:
+            # End of for loop j in self.nurseRoute[i]    
+             
+            # Return to depot:
             if job > -1:
-                tTime = self.get_travel_time(job, -1)
-                self.nurseTravelTime[j] = self.nurseTravelTime[j] + tTime
+                # NOTE: Surely this should be the travel time to the depot? 
+                tTime = self.get_travel_time(job, -1) # self.od[int(job + 1)][int(-1 + 1)] = # self.od[int(job + 1)][0]. Note that 0 columns/rows not used in od matrix, just zeros.
+                self.nurseTravelTime[i] = self.nurseTravelTime[i] + tTime
                 finishShiftAt = leaveAt + tTime
             else:
-                finishShiftAt = self.nurseWorkingTimes[j][0]
-
+                finishShiftAt = self.nurseWorkingTimes[i][0]
 
             # Update totals:
             # self.totalTime = self.totalTime  + tTime
-            self.totalServiceTime = self.totalServiceTime + self.nurseServiceTime[j]
-            onlyTravelTime = onlyTravelTime  + self.nurseTravelTime[j]
-            self.totalWaitingTime = self.totalWaitingTime + self.nurseWaitingTime[j]
+            self.totalServiceTime = self.totalServiceTime + self.nurseServiceTime[i]
+            onlyTravelTime = onlyTravelTime  + self.nurseTravelTime[i]
+            self.totalWaitingTime = self.totalWaitingTime + self.nurseWaitingTime[i]
 
-            self.nurseObjs[j].finishTime = finishShiftAt
+            self.nurseObjs[i].finishTime = finishShiftAt
             if (report > 1):
-                print("\tFinishes at the depot at " + " (" + str(finishShiftAt) + ")" + self.time_to_string(finishShiftAt) + ".")
-                if (finishShiftAt > self.nurseWorkingTimes[j][1]):
-                    print("\t\t*** This nurse is finishing late (by " + " (" + str(finishShiftAt - self.nurseWorkingTimes[j][1]) + ")" + self.time_to_string(finishShiftAt - self.nurseWorkingTimes[j][1]) + ")\n")
-                         # else
-                 # {
-                 # 	print("\t\t Finishing before " + self.time_to_string() + " (end of shift)\n", )self.nurseWorkingTimes[j][1])
-                 # }
-
+                print('\tFinishes at the depot at (', finishShiftAt, ') ', self.time_to_string(finishShiftAt))
+                if (finishShiftAt > self.nurseWorkingTimes[i][1]):
+                    print('\t\t*** This nurse is finishing late (by (', finishShiftAt-self.nurseWorkingTimes[i][1], ') ', self.time_to_string(finishShiftAt - self.nurseWorkingTimes[i][1]), ')\n')
+        # End for loop i in range(self.nNurses)
         
         if (report > 0):
-            print("\nTotal travel time: " + str(onlyTravelTime) + '(' + self.time_to_string(onlyTravelTime) + ')')
+            print('\nTotal travel time: ', onlyTravelTime, ' (', self.time_to_string(onlyTravelTime), ')')
         self.totalTravelTime = onlyTravelTime
 
         self.totalTime = self.totalTravelTime + self.totalServiceTime + self.totalWaitingTime
 
-            # print("\n")
-         # free(nurseRoute)
         if self.qualityMeasure == 'mankowska':
             quality = (self.totalTravelTime + self.totalTardiness + self.maxTardiness)/3 # Mankowska
-            print('Quality returned from C DLL: ' + str(self.Cquality))
-            print("Mankowska measure (python computed) = " + str(quality))
-            print("\ttotalTravelTime = " + str(self.totalTravelTime))
-            print("\ttotalTardiness = " + str(self.totalTardiness))
-            print("\tmaxTardiness = " + str(self.maxTardiness))
+            print('Quality returned from C DLL: ', self.Cquality)
+            print('Mankowska measure (python computed) = ', quality)
+            print('\ttotalTravelTime = ', self.totalTravelTime)
+            print('\ttotalTardiness = ', self.totalTardiness)
+            print('\tmaxTardiness = ', self.maxTardiness)
         else:
             quality = -1000000 * self.totalTardiness - self.totalTime
 
         self.mankowskaQuality = quality
         # print('Solution quality: ' + self.time_to_string(quality))
         if report > 0:
-            print('Computed quality: ' + str(quality))
-            print('From: ' + 'totalTime = ' + str(self.totalTime) + '\ntotalTardiness = ' + str(self.totalTardiness) + '\nmaxTardiness = ' + str(self.maxTardiness))
-            print('Total time required to complete the solution: ' + self.time_to_string(self.totalTime))
+            print('Computed quality: ', quality)
+            print('From: totalTime = ', self.totalTime, '\ntotalTardiness = ', self.totalTardiness, '\nmaxTardiness = ', self.maxTardiness)
+            print('Total time required to complete the solution: ', self.time_to_string(self.totalTime))
             if self.nLateJobs > 0:
-                print('The solution is infeasible. Nurses arrive late to ' + str(self.nLateJobs) + ' services.')
-                print('The total tardiness time is ' + self.time_to_string(self.totalTardiness))
+                print('The solution is infeasible. Nurses arrive late to ', self.nLateJobs, ' services.')
+                print('The total tardiness time is ', self.time_to_string(self.totalTardiness))
             else:
-                print('All jobs are served on time. Nurses need to wait a total of ' + self.time_to_string(self.totalWaitingTime) + ' because of early arrivals.')
+                print('All jobs are served on time. Nurses need to wait a total of ', self.time_to_string(self.totalWaitingTime), ' because of early arrivals.')
             
         if doPlots:
             self.pie_chart_how_is_time_spent()
@@ -1857,6 +1851,32 @@ def read_braekers(filename):
 
     return([nJobs, nNurses, maxSkillLevel, nurseWorkingTimes, skArr, jobTimeInfo, jobSkillsRequired, od, secondsPerTU])
 ### --- End def read_braekers --- ###
+
+def route_points_osrm(p1, p2, goingThrough=None):
+    # Returns a list of coordinates with the route between the points, duration and distance
+    # [routeList, duration, distance]
+
+    stringcoord1 = ','.join([str(p1[0]), str(p1[1])])
+    stringcoord2 = ','.join([str(p2[0]), str(p2[1])])
+    stringGoingThrough = ';'.join([','.join([str(i), str(j)]) for i, j in goingThrough])
+
+    string_all = ';'.join([stringcoord1, stringGoingThrough, stringcoord2])
+
+    server = r'localhost:5000'
+    str_call = 'http://' + server + '/route/v1/driving/' + string_all + '?overview=full&geometries=geojson'
+    r = requests.get(str_call)
+    osrm_result = r.json()
+
+    geoTemp = osrm_result['routes'][0]['geometry']['coordinates']
+
+    routeList = []
+    for coordPair in geoTemp:
+        routeList.append([float(coordPair[1]), float(coordPair[0])])
+    dist = osrm_result['routes'][0]['distance']
+    dur = osrm_result['routes'][0]['duration']
+
+    return [routeList, dur, dist]
+### --- End def route_these_points --- ###
 
 def route_these_points(p1, p2, goingThrough=None):
     # Returns a list of coordinates with the route between the points, duration and distance

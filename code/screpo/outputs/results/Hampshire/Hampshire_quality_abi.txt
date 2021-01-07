@@ -1,0 +1,56 @@
+------------------------------------------------------------
+Area: Hampshire	Day: 2-Nov-20	nNurses: 10	nJobs: 69
+travel_time: 475.0000000000001	waiting_time: 1595.0000000000005
+shortest_shift: 270.0	longest_shift: 855.0	day_diff: 585.0
+Ait H Quality: -142.50000000000003
+Mankowska Quality: -158.33333333333337
+Workload Balance Quality: -201.00000000000003
+Paper Quality: -2070.0000000000005
+------------------------------------------------------------
+Area: Hampshire	Day: 3-Nov-20	nNurses: 11	nJobs: 70
+travel_time: 489.8833333333333	waiting_time: 1580.116666666667
+shortest_shift: 195.0	longest_shift: 795.0	day_diff: 600.0
+Ait H Quality: -146.965
+Mankowska Quality: -163.29444444444445
+Workload Balance Quality: -206.965
+Paper Quality: -2070.0000000000005
+------------------------------------------------------------
+Area: Hampshire	Day: 4-Nov-20	nNurses: 10	nJobs: 72
+travel_time: 490.7666666666668	waiting_time: 1189.2333333333333
+shortest_shift: 45.0	longest_shift: 795.0	day_diff: 750.0
+Ait H Quality: -147.23000000000005
+Mankowska Quality: -163.58888888888893
+Workload Balance Quality: -222.23000000000005
+Paper Quality: -1680.0000000000002
+------------------------------------------------------------
+Area: Hampshire	Day: 5-Nov-20	nNurses: 10	nJobs: 73
+travel_time: 490.4166666666665	waiting_time: 1159.5833333333333
+shortest_shift: 285.0	longest_shift: 795.0	day_diff: 510.0
+Ait H Quality: -147.12499999999994
+Mankowska Quality: -163.47222222222217
+Workload Balance Quality: -198.12499999999994
+Paper Quality: -1649.9999999999998
+------------------------------------------------------------
+Area: Hampshire	Day: 6-Nov-20	nNurses: 11	nJobs: 71
+travel_time: 479.50000000000006	waiting_time: 1065.5000000000002
+shortest_shift: 90.0	longest_shift: 825.0	day_diff: 735.0
+Ait H Quality: -143.85000000000002
+Mankowska Quality: -159.83333333333334
+Workload Balance Quality: -217.35000000000002
+Paper Quality: -1545.0000000000002
+------------------------------------------------------------
+Area: Hampshire	Day: 7-Nov-20	nNurses: 8	nJobs: 63
+travel_time: 452.66666666666674	waiting_time: 957.3333333333335
+shortest_shift: 120.0	longest_shift: 885.0	day_diff: 765.0
+Ait H Quality: -135.8
+Mankowska Quality: -150.8888888888889
+Workload Balance Quality: -212.3
+Paper Quality: -1410.0000000000002
+------------------------------------------------------------
+Area: Hampshire	Day: 8-Nov-20	nNurses: 9	nJobs: 62
+travel_time: 405.4096666666666	waiting_time: 1019.5903333333335
+shortest_shift: 120.0	longest_shift: 810.0	day_diff: 690.0
+Ait H Quality: -121.62289999999999
+Mankowska Quality: -135.13655555555553
+Workload Balance Quality: -190.6229
+Paper Quality: -1425.0000000000002

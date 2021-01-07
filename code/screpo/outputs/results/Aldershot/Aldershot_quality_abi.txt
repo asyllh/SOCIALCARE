@@ -1,0 +1,56 @@
+------------------------------------------------------------
+Area: Aldershot	Day: 2-Nov-20	nNurses: 4	nJobs: 26
+travel_time: 192.7666666666667	waiting_time: 222.2333333333333
+shortest_shift: 120.0	longest_shift: 780.0	day_diff: 660.0
+Ait H Quality: -57.83000000000001
+Mankowska Quality: -64.25555555555557
+Workload Balance Quality: -123.83000000000001
+Paper Quality: -415.0
+------------------------------------------------------------
+Area: Aldershot	Day: 3-Nov-20	nNurses: 6	nJobs: 25
+travel_time: 166.05000000000004	waiting_time: 73.94999999999999
+shortest_shift: 90.0	longest_shift: 375.0	day_diff: 285.0
+Ait H Quality: -49.81500000000001
+Mankowska Quality: -55.350000000000016
+Workload Balance Quality: -78.31500000000001
+Paper Quality: -240.00000000000003
+------------------------------------------------------------
+Area: Aldershot	Day: 4-Nov-20	nNurses: 6	nJobs: 29
+travel_time: 178.28333333333336	waiting_time: 36.71666666666667
+shortest_shift: 55.0	longest_shift: 450.0	day_diff: 395.0
+Ait H Quality: -53.48500000000001
+Mankowska Quality: -59.427777777777784
+Workload Balance Quality: -92.98500000000001
+Paper Quality: -215.00000000000003
+------------------------------------------------------------
+Area: Aldershot	Day: 5-Nov-20	nNurses: 5	nJobs: 30
+travel_time: 211.58333333333331	waiting_time: 338.41666666666663
+shortest_shift: 30.0	longest_shift: 785.0	day_diff: 755.0
+Ait H Quality: -63.474999999999994
+Mankowska Quality: -70.52777777777777
+Workload Balance Quality: -138.975
+Paper Quality: -550.0
+------------------------------------------------------------
+Area: Aldershot	Day: 6-Nov-20	nNurses: 5	nJobs: 27
+travel_time: 152.96666666666667	waiting_time: 402.0333333333333
+shortest_shift: 70.0	longest_shift: 740.0	day_diff: 670.0
+Ait H Quality: -45.89
+Mankowska Quality: -50.98888888888889
+Workload Balance Quality: -112.89
+Paper Quality: -555.0
+------------------------------------------------------------
+Area: Aldershot	Day: 7-Nov-20	nNurses: 3	nJobs: 23
+travel_time: 167.70000000000002	waiting_time: 212.29999999999998
+shortest_shift: 105.0	longest_shift: 695.0	day_diff: 590.0
+Ait H Quality: -50.31
+Mankowska Quality: -55.900000000000006
+Workload Balance Quality: -109.31
+Paper Quality: -380.0
+------------------------------------------------------------
+Area: Aldershot	Day: 8-Nov-20	nNurses: 3	nJobs: 24
+travel_time: 176.48333333333335	waiting_time: 143.5166666666667
+shortest_shift: 255.0	longest_shift: 425.0	day_diff: 170.0
+Ait H Quality: -52.945
+Mankowska Quality: -58.82777777777778
+Workload Balance Quality: -69.945
+Paper Quality: -320.00000000000006

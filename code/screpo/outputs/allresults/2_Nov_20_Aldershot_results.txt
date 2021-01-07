@@ -1,0 +1,60 @@
+------------------------------------------------------------
+Date: 2021-01-05 12:35:28.982435
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+0	101.95333333333333	5.0	0	-1	-1	613.5583492	13027
+
+OUTPUT VARIABLES:                                                                                                                 
+Total time (totalTime): 1449.90                                                                                                   
+                                                                                                                                  
+Total Travel Time (totalTravel) = 124.81                                                                                          
+Total Waiting Time (totalWaitingTime): 260.09                                                                                     
+Total Overtime (totalOvertime) = 0.00                                                                                             
+Total Violated TW (totalTardiness) = 0.00                                                                                         
+Total Violated TWMK (totalMKTardiness) = 0.00                                                                                     
+Total Tardiness MK (mk_allowed_tardiness) = 0.00 (totalOvertime + totalTardiness)                                                 
+Max Spare Time (maxSpareTime): 15.00                                                                                              
+Min Spare Time (minSpareTime): -0.00                                                                                              
+Shortest Shift (shortestDay): 119.90                                                                                              
+Longest Shift (longestDay): 765.00                                                                                                
+Shift Difference (dayDiff): 645.10                                                                                                
+Total Preference Score (ip->totPref) = 0.00                                                                                       
+Quality = -101.95                                                                                                                 
+                                                                                                                                  
+------------------------------                                                                                                    
+ALL QUALITIES:                                                                                                                    
+Ait H: -37.44                                                                                                                     
+Mankowska: -41.60                                                                                                                 
+Workload Balance: -101.95                                                                                                         
+Paper: -384.90                                                                                                                    
+Nurse order: ( 3,  2,  0,  1,   )                                                                                                 
+-------- finished. sol_quality(ip, 12345) --------                                                                                
+                                                                                                                                  
+        PR all pairs final quality: -101.95                                                                                       
+Iterations performed: 32717                                                                                                       
+GRASP Finished.                                                                                                                   
+Final quality: -101.95                                                                                                            
+Theoretical best quality: -101.95                                                                                                 
+Iterations performed: 32717                                                                                                       
+sols_generated = 32718                                                                                                            
+local_searches_performed = 32718                                                                                                  
+solutions_relinked = 0                                                                                                            
+total path_relinkings_performed = 0                                                                                               
+Elapsed time: 600.61 s (MAX: 600.00)                                                                                              
+Final solution quality is: -101.95                                                                                                
+                                                                                                                                  
+------                                                                                                                            
+Quality indicators:                                                                                                               
+Travel time   (min)     124.81                                                                                                    
+Total time    (min)     1449.90                                                                                                   
+Total tard.   (min)     0.00                                                                                                      
+Longest shift (min)     765.00                                                                                                    
+Total Overtime(min)     0.00                                                                                                      
+                                                                                                                                  
+------                                                                                                                            
+Finshed.                                                                                                                          
+Quality: 101.95333333333333                                                                                                       
+Those were results for instance 0 in Aldershot, 2-Nov-20                                                                          
+Total running time: 613.6 seconds.                                                                                                
+
+Run finished at: 2021-01-05 12:47:16.431962
+------------------------------------------------------------

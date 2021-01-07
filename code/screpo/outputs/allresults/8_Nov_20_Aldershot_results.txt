@@ -1,0 +1,7 @@
+------------------------------------------------------------
+Date: 2021-01-05 13:52:03.647620
+Instance	Cquality	Measure	totalTravelTime	totalTardiness	maxTardiness	elapsed_time	random_seed
+6	51.86766666666666	5.0	0	-1	-1	611.8656813	13027
+
+Run finished at: 2021-01-05 14:19:25.865307
+------------------------------------------------------------

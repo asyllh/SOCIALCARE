@@ -11,7 +11,7 @@ import sys
 import glob
 import pickle
 import math
-import requests # For website
+import requests # For osrm
 import numpy as np
 import pandas as pd
 import geopandas
@@ -20,9 +20,20 @@ from scipy import stats
 
 # Import python file in project
 import tools_and_scripts.class_cpo_df as ccd
+# from instance_handler import geopoint
 
 # Display all rows and columns of dataframes in command prompt:
-# pd.set_option("display.max_rows", None, "display.max_columns", None)
+pd.set_option("display.max_rows", None, "display.max_columns", None)
+
+class geopoint1(object):
+    def __init__(self, latitude, longitude):
+        self.lat = latitude
+        self.long = longitude
+    def latlong(self):
+        return([self.lat, self.long])
+    def longlat(self):
+        return([self.long, self.lat])
+### --- End class geopoint  --- ###
 
 def convert_dict_inst(inst, idict):
     # This function creates an instance 'inst' of the class 'INSTANCE', and initialises inst with data from our idict dictionary instance created by analyse_mileage.py.
@@ -38,6 +49,8 @@ def convert_dict_inst(inst, idict):
     for i in range(inst.nNurses): #range(len(idict['rota']['start']))
         inst.nurseWorkingTimes[i][0] = idict['rota']['start'][i]
         inst.nurseWorkingTimes[i][1] = idict['rota']['finish'][i]
+        # inst.nurseWorkingTimes[i][0] = idict['rota']['home_start'][i]
+        # inst.nurseWorkingTimes[i][1] = idict['rota']['home_finish'][i]
         # We dont have max working time, so we need to calculate the duration of each carer's shift (total minutes that each carer works during the day)
         maxWorkingTime = idict['rota']['finish'][i] - idict['rota']['start'][i]
         inst.nurseWorkingTimes[i][2] = maxWorkingTime
@@ -53,8 +66,8 @@ def convert_dict_inst(inst, idict):
     inst.jobSkillsRequired = np.ones((inst.nJobs, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
     inst.prefScore = np.zeros((inst.nJobs, inst.nNurses), dtype=np.float64)
     inst.doubleService = np.zeros(inst.nJobs, dtype=np.int32)
-    inst.doubleService[2] = 1 # NOTE: just for testing, make one of the jobs a double service.
-    inst.dependsOn = np.full(inst.nJobs, -1) # Set all jobs to -1, means no jobs are dependent on one another.
+    # inst.doubleService[2] = 1 # NOTE: just for testing, make one of the jobs a double service.
+    inst.dependsOn = np.full(inst.nJobs, -1, dtype=np.int32) # Set all jobs to -1, means no jobs are dependent on one another.
     inst.algorithmOptions = np.zeros(100, dtype=np.float64)
 
     inst.od = np.zeros((inst.nJobs+1, inst.nJobs+1), dtype=np.float64) # TIME IN MINUTES, THIS WILL BE USED IN C
@@ -62,10 +75,10 @@ def convert_dict_inst(inst, idict):
     # print(inst.od[:5,:5])
     
     inst.nurse_travel_from_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From carer's home to job - TIME IN MINS, THIS WILL BE USED IN C
-    osrm_table_request(inst, idict, cpo_inst, 'nursefrom')
+    # osrm_table_request(inst, idict, cpo_inst, 'nursefrom')
 
     inst.nurse_travel_to_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From job to carer's home - TIME IN MINS, THIS WILL BE USED IN C
-    osrm_table_request(inst, idict, cpo_inst, 'nurseto')
+    # osrm_table_request(inst, idict, cpo_inst, 'nurseto')
     
     #Note: this will not work as currently inst.doubleService is empty, and so nDS = 0 - third dimension of capabilityOfDS cannot be zero.
     nDS = np.sum(inst.doubleService) # Number of jobs that are double services, NOTE: in testing, this is equal to one as we've set a job (job [2]) to be a double service.
@@ -85,7 +98,7 @@ def convert_dict_inst(inst, idict):
 
     # For these variables - do we need to change them?
     inst.solMatrix = np.zeros((inst.nNurses, inst.nJobs), dtype=np.int32)
-    inst.MAX_TIME_SECONDS = 360
+    inst.MAX_TIME_SECONDS = 60
     inst.verbose = 1
     # inst.secondsPerTU = 1 # What is this variable?
     inst.DSSkillType = 'strictly-shared'
@@ -98,6 +111,58 @@ def convert_dict_inst(inst, idict):
 
     return inst
 ### --- End of def convert_dict_inst --- ###
+
+def initialise_nurse_job(inst, idict):
+
+    cpo_inst = ccd.CPO_DF()
+    # Start with jobs:
+    for j in range(inst.nJobs):
+        inst.jobObjs[j].ID = idict['tasks'].loc[j, 'client']
+        inst.jobObjs[j].postcode = idict['tasks'].loc[j, 'postcode']
+        pcidict = idict['tasks'].loc[j, 'postcode']
+        latlon = cpo_inst.find_postcode_latlon(pcidict)
+        inst.jobObjs[j].location = geopoint1(float(latlon[0]), float(latlon[1]))
+        inst.jobObjs[j].serviceTime = idict['tasks'].loc[j, 'duration']
+        inst.jobObjs[j].hasTimewindow = True
+        jtw_start = idict['tasks'].loc[j, 'tw_start']
+        jtw_end = idict['tasks'].loc[j, 'tw_end']
+        inst.jobObjs[j].timewindow = [jtw_start, jtw_end]
+        inst.jobObjs[j].hasPreferredTimewindow = False
+        inst.jobObjs[j].preferredTimewindow = [0, 24*3600]
+        inst.jobObjs[j].skillsRequired = []
+        inst.jobObjs[j].doubleService = False
+        inst.jobObjs[j].features = []
+        inst.jobObjs[j].preferences = []
+        inst.jobObjs[j].preferredCarers = []
+        inst.jobObjs[j].dependsOn = -1
+        inst.jobObjs[j].minimumGap = []
+        inst.jobObjs[j].maximumGap = []
+    # End jobs
+
+    for i in range(inst.nNurses):
+        inst.nurseObjs[i].ID = idict['rota'].loc[i, 'carer']
+        inst.nurseObjs[i].postcode = idict['rota'].loc[i, 'postcode']
+        pcidict = idict['rota'].loc[i, 'postcode']
+        latlon = cpo_inst.find_postcode_latlon(pcidict)
+        inst.nurseObjs[i].startLocation = geopoint1(float(latlon[0]), float(latlon[1]))
+        inst.nurseObjs[i].transportMode = 'car'
+        istart = idict['rota'].loc[i, 'start']
+        ifinish = idict['rota'].loc[i, 'finish']
+        inst.nurseObjs[i].shiftTimes = [float(istart), float(ifinish)]
+        inst.nurseObjs[i].maxWorking = float(idict['rota'].loc[i, 'shift'])
+        inst.nurseObjs[i].skills = []
+        inst.nurseObjs[i].features = []
+        inst.nurseObjs[i].preferences = []
+        inst.nurseObjs[i].preferredJobs = []
+        inst.nurseObjs[i].jobsToAvoid = []
+
+        
+        inst.xy = []
+        inst.xy.append(inst.nurseObjs[0].startLocation.longlat()) # why only the first nurse [0] location? Note that coords appended are lon/lat, not lat/lon!
+        for job in inst.jobObjs:
+            inst.xy.append(job.location.longlat()) # Append all job coordinates - lon/lat, not lat/lon!
+        
+        return inst
 
 def osrm_request(coord1, coord2):
     # For osrm, the coordinates need to be in string form, and in the order 'longitude,latitude'. Our data is in 'lat,lon', so create_coord_string function swaps it around.
@@ -401,7 +466,6 @@ def osrm_table_request(inst, idict, cpo_inst, matrix='none'):
         print('Terminating program.')
         exit(-1)
     # --- End else --- #
-
 ### --- End of def osrm__table_request --- ### 
 
 def create_coord_string(coord):
@@ -584,26 +648,81 @@ def dist_metres_to_minutes(dist):
     return time_mins
 ### --- End of dist_metres_to_minutes --- ###
 
-# all_instances = pickle.load(open('tools_and_scripts/all_inst_salisbury.p', 'rb'))
 
+
+# Instance format from analyse_mileage.py (in this file, this is referred to as 'idict')
+# inst = {
+#         'name' : a_name + '_' + day.replace('-', '_'),
+#         'area' : a_name,
+#         'date' : day,
+#         'stats' : {'ncarers' : 0, 'ntasks' : 0, 'ttraveltime' : 0, 'ttravelmiles' : 0, 'tservicetime' : 0, 'tgaptime' : 0},
+#         'txtsummary' : '',
+#         'rota' : {'carer' : [], 'postcode' : [], 'num_addresses' : [], 'eastings': [], 'northings' : [], 'start' : [], 'finish' : [], 'shift' : [], 'home_start' : [], 'home_finish' : [], 'num_tasks' : []},
+#         'tasks' : {'client' : [], 'postcode': [], 'num_addresses': [], 'eastings': [], 'northings' : [], 'duration' : [], 'miles' : [], 'metres' : [], 'esttime' : [], 'start' : [], 'end' : [], 'tw_start' : [], 'tw_end' : []},
+#         'routes' : []
+#         }
+
+# all_instances = pickle.load(open('tools_and_scripts/all_inst_hampshire.p', 'rb'))
+
+# print(len(all_instances))
+# print(type(all_instances))
 # idict = 7th instance in all_instances, which is 08-Nov-2020 in Salisbury. Chose this inst as it is the only one which has all postcodes for carers and clients. ncarers = 12, ntasks = 100.
-# idict = all_instances[6]
+# idict = 1st instance in all_instances, which is 02-Nov-2020 in Hampshire. ncarers = 10, ntasks = 69.
+# idict = all_instances[0]
 # Assign different latitudes and longitudes to the carers and clients that do not have them in idict due to privacy reasons (so lat/lon = nan) - this is just so we can use this instance for a test.
 # idict = assign_missing_postcode(idict)
 
+# print(idict['name'])
 # print(idict['tasks'])
+# print(idict['rota'])
 # cpo_inst = ccd.CPO_DF()
+
+
+# time = 7.31
+# timeRound = math.floor(time)
+# timeSeconds1 = time - timeRound
+# timeSeconds = timeSeconds1 * 100
+# timeSecondsMins = timeSeconds / 60
+# timeTotal = timeRound + timeSecondsMins
+# print('time: ', time)
+# print('timeRound: ', timeRound)
+# print('timeSeconds1: ', timeSeconds1)
+# print('timeSeconds: ', timeSeconds)
+# print('timeSecondsMins: ', timeSecondsMins)
+# print('timeTotal: ', timeTotal)
+
 
 # osrm_table_request(idict, cpo_inst, 'od')
 
+# idict_tasks = {
+#     'tasks' : { 'client' : [], 'postcode' : [], 'eastings' : [], 'northings' : [], 'miles' : [], 'metres' : [], 'esttime' : []}
+# }
+
+# idict_tasks['tasks']['client'] = idict['tasks']['client']
+# idict_tasks['tasks']['postcode'] = idict['tasks']['postcode']
+# idict_tasks['tasks']['eastings'] = idict['tasks']['eastings']
+# idict_tasks['tasks']['northings'] = idict['tasks']['northings']
+# idict_tasks['tasks']['miles'] = idict['tasks']['miles']
+# idict_tasks['tasks']['metres'] = idict['tasks']['metres']
+# idict_tasks['tasks']['esttime'] = idict['tasks']['esttime']
+# idict_tasks['tasks'] = pd.DataFrame(idict_tasks['tasks'])
+# inst['tasks'] = pd.DataFrame(inst['tasks'])
 # nNurses = idict['stats']['ncarers']
 # nJobs = idict['stats']['ntasks']
 # print('nNurses: ', nNurses, 'nJobs: ', nJobs)
+# print(type(idict))
+# keys_to_extract = ['client', 'postcode', 'eastings', 'northings', 'miles', 'esttime']
+# idict_tasks = {key: idict['tasks'][key] for key in keys_to_extract}
 # print(idict['tasks'])
+# print(idict_tasks['tasks'])
+# print(idict['tasks']['postcode'])
 # print(idict['rota'])
 
 
+# a_dictionary = {"a": 1, "b": 2, "c": 3, "d": 4}
+# keys_to_extract = ["a", "c"]
 
+# a_subset = {key: a_dictionary[key] for key in keys_to_extract}
 
 
 
