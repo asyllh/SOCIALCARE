@@ -1,0 +1,119 @@
+------------------------------------------------------------
+Area: Hampshire	Day: 2-Nov-20	nNurses: 10	nJobs: 69
+travel_time: 475.0000000000001	waiting_time: 1595.0000000000005
+travel_timeosrm: 372.88166666666666	waiting_timeosrm: 1697.1183333333338
+shortest_shift: 270.0	longest_shift: 855.0	day_diff: 585.0
+-------------
+Abicare Qualities:
+Ait H : -142.50000000000003
+Mankowska: -158.33333333333337
+Workload Balance: -201.00000000000003
+Paper: -2070.0000000000005
+-------------
+Abicare OSRM Qualities:
+Ait H: -111.86449999999999
+Mankowska: -124.29388888888889
+Workload Balance: -170.3645
+Paper: -2070.0000000000005
+------------------------------------------------------------
+Area: Hampshire	Day: 3-Nov-20	nNurses: 11	nJobs: 70
+travel_time: 489.8833333333333	waiting_time: 1580.116666666667
+travel_timeosrm: 381.5766666666667	waiting_timeosrm: 1688.4233333333332
+shortest_shift: 195.0	longest_shift: 795.0	day_diff: 600.0
+-------------
+Abicare Qualities:
+Ait H : -146.965
+Mankowska: -163.29444444444445
+Workload Balance: -206.965
+Paper: -2070.0000000000005
+-------------
+Abicare OSRM Qualities:
+Ait H: -114.47300000000001
+Mankowska: -127.19222222222224
+Workload Balance: -174.473
+Paper: -2070.0
+------------------------------------------------------------
+Area: Hampshire	Day: 4-Nov-20	nNurses: 10	nJobs: 72
+travel_time: 490.7666666666668	waiting_time: 1189.2333333333333
+travel_timeosrm: 384.52	waiting_timeosrm: 1295.4799999999996
+shortest_shift: 45.0	longest_shift: 795.0	day_diff: 750.0
+-------------
+Abicare Qualities:
+Ait H : -147.23000000000005
+Mankowska: -163.58888888888893
+Workload Balance: -222.23000000000005
+Paper: -1680.0000000000002
+-------------
+Abicare OSRM Qualities:
+Ait H: -115.356
+Mankowska: -128.17333333333332
+Workload Balance: -190.356
+Paper: -1679.9999999999995
+------------------------------------------------------------
+Area: Hampshire	Day: 5-Nov-20	nNurses: 10	nJobs: 73
+travel_time: 490.4166666666665	waiting_time: 1159.5833333333333
+travel_timeosrm: 389.94666666666666	waiting_timeosrm: 1260.0533333333324
+shortest_shift: 285.0	longest_shift: 795.0	day_diff: 510.0
+-------------
+Abicare Qualities:
+Ait H : -147.12499999999994
+Mankowska: -163.47222222222217
+Workload Balance: -198.12499999999994
+Paper: -1649.9999999999998
+-------------
+Abicare OSRM Qualities:
+Ait H: -116.984
+Mankowska: -129.98222222222222
+Workload Balance: -167.98399999999998
+Paper: -1649.999999999999
+------------------------------------------------------------
+Area: Hampshire	Day: 6-Nov-20	nNurses: 11	nJobs: 71
+travel_time: 479.50000000000006	waiting_time: 1065.5000000000002
+travel_timeosrm: 378.22333333333336	waiting_timeosrm: 1166.7766666666666
+shortest_shift: 90.0	longest_shift: 825.0	day_diff: 735.0
+-------------
+Abicare Qualities:
+Ait H : -143.85000000000002
+Mankowska: -159.83333333333334
+Workload Balance: -217.35000000000002
+Paper: -1545.0000000000002
+-------------
+Abicare OSRM Qualities:
+Ait H: -113.467
+Mankowska: -126.07444444444445
+Workload Balance: -186.96699999999998
+Paper: -1545.0
+------------------------------------------------------------
+Area: Hampshire	Day: 7-Nov-20	nNurses: 8	nJobs: 63
+travel_time: 452.66666666666674	waiting_time: 957.3333333333335
+travel_timeosrm: 356.8283333333333	waiting_timeosrm: 1053.171666666667
+shortest_shift: 120.0	longest_shift: 885.0	day_diff: 765.0
+-------------
+Abicare Qualities:
+Ait H : -135.8
+Mankowska: -150.8888888888889
+Workload Balance: -212.3
+Paper: -1410.0000000000002
+-------------
+Abicare OSRM Qualities:
+Ait H: -107.04849999999999
+Mankowska: -118.94277777777778
+Workload Balance: -183.5485
+Paper: -1410.0000000000005
+------------------------------------------------------------
+Area: Hampshire	Day: 8-Nov-20	nNurses: 9	nJobs: 62
+travel_time: 405.4096666666666	waiting_time: 1019.5903333333335
+travel_timeosrm: 324.72333333333336	waiting_timeosrm: 1100.2766666666666
+shortest_shift: 120.0	longest_shift: 810.0	day_diff: 690.0
+-------------
+Abicare Qualities:
+Ait H : -121.62289999999999
+Mankowska: -135.13655555555553
+Workload Balance: -190.6229
+Paper: -1425.0000000000002
+-------------
+Abicare OSRM Qualities:
+Ait H: -97.417
+Mankowska: -108.24111111111112
+Workload Balance: -166.417
+Paper: -1425.0

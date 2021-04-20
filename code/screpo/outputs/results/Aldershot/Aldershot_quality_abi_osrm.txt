@@ -1,0 +1,119 @@
+------------------------------------------------------------
+Area: Aldershot	Day: 2-Nov-20	nNurses: 4	nJobs: 26
+travel_time: 192.7666666666667	waiting_time: 222.2333333333333
+travel_timeosrm: 153.04666666666665	waiting_timeosrm: 261.9533333333334
+shortest_shift: 120.0	longest_shift: 780.0	day_diff: 660.0
+-------------
+Abicare Qualities:
+Ait H : -57.83000000000001
+Mankowska: -64.25555555555557
+Workload Balance: -123.83000000000001
+Paper: -415.0
+-------------
+Abicare OSRM Qualities:
+Ait H: -45.913999999999994
+Mankowska: -51.01555555555555
+Workload Balance: -111.91399999999999
+Paper: -415.0
+------------------------------------------------------------
+Area: Aldershot	Day: 3-Nov-20	nNurses: 6	nJobs: 25
+travel_time: 166.05000000000004	waiting_time: 73.94999999999999
+travel_timeosrm: 129.46666666666667	waiting_timeosrm: 110.5333333333333
+shortest_shift: 90.0	longest_shift: 375.0	day_diff: 285.0
+-------------
+Abicare Qualities:
+Ait H : -49.81500000000001
+Mankowska: -55.350000000000016
+Workload Balance: -78.31500000000001
+Paper: -240.00000000000003
+-------------
+Abicare OSRM Qualities:
+Ait H: -38.839999999999996
+Mankowska: -43.15555555555556
+Workload Balance: -67.34
+Paper: -239.99999999999997
+------------------------------------------------------------
+Area: Aldershot	Day: 4-Nov-20	nNurses: 6	nJobs: 29
+travel_time: 178.28333333333336	waiting_time: 36.71666666666667
+travel_timeosrm: 141.19166666666666	waiting_timeosrm: 73.8083333333334
+shortest_shift: 55.0	longest_shift: 450.0	day_diff: 395.0
+-------------
+Abicare Qualities:
+Ait H : -53.48500000000001
+Mankowska: -59.427777777777784
+Workload Balance: -92.98500000000001
+Paper: -215.00000000000003
+-------------
+Abicare OSRM Qualities:
+Ait H: -42.357499999999995
+Mankowska: -47.06388888888889
+Workload Balance: -81.85749999999999
+Paper: -215.00000000000006
+------------------------------------------------------------
+Area: Aldershot	Day: 5-Nov-20	nNurses: 5	nJobs: 30
+travel_time: 211.58333333333331	waiting_time: 338.41666666666663
+travel_timeosrm: 168.99333333333334	waiting_timeosrm: 381.00666666666666
+shortest_shift: 30.0	longest_shift: 785.0	day_diff: 755.0
+-------------
+Abicare Qualities:
+Ait H : -63.474999999999994
+Mankowska: -70.52777777777777
+Workload Balance: -138.975
+Paper: -550.0
+-------------
+Abicare OSRM Qualities:
+Ait H: -50.698
+Mankowska: -56.33111111111111
+Workload Balance: -126.19800000000001
+Paper: -550.0
+------------------------------------------------------------
+Area: Aldershot	Day: 6-Nov-20	nNurses: 5	nJobs: 27
+travel_time: 152.96666666666667	waiting_time: 402.0333333333333
+travel_timeosrm: 123.08	waiting_timeosrm: 431.9200000000001
+shortest_shift: 70.0	longest_shift: 740.0	day_diff: 670.0
+-------------
+Abicare Qualities:
+Ait H : -45.89
+Mankowska: -50.98888888888889
+Workload Balance: -112.89
+Paper: -555.0
+-------------
+Abicare OSRM Qualities:
+Ait H: -36.924
+Mankowska: -41.026666666666664
+Workload Balance: -103.924
+Paper: -555.0000000000001
+------------------------------------------------------------
+Area: Aldershot	Day: 7-Nov-20	nNurses: 3	nJobs: 23
+travel_time: 167.70000000000002	waiting_time: 212.29999999999998
+travel_timeosrm: 133.91166666666666	waiting_timeosrm: 246.08833333333337
+shortest_shift: 105.0	longest_shift: 695.0	day_diff: 590.0
+-------------
+Abicare Qualities:
+Ait H : -50.31
+Mankowska: -55.900000000000006
+Workload Balance: -109.31
+Paper: -380.0
+-------------
+Abicare OSRM Qualities:
+Ait H: -40.1735
+Mankowska: -44.63722222222222
+Workload Balance: -99.17349999999999
+Paper: -380.0
+------------------------------------------------------------
+Area: Aldershot	Day: 8-Nov-20	nNurses: 3	nJobs: 24
+travel_time: 176.48333333333335	waiting_time: 143.5166666666667
+travel_timeosrm: 142.595	waiting_timeosrm: 177.40499999999997
+shortest_shift: 255.0	longest_shift: 425.0	day_diff: 170.0
+-------------
+Abicare Qualities:
+Ait H : -52.945
+Mankowska: -58.82777777777778
+Workload Balance: -69.945
+Paper: -320.00000000000006
+-------------
+Abicare OSRM Qualities:
+Ait H: -42.7785
+Mankowska: -47.531666666666666
+Workload Balance: -59.7785
+Paper: -320.0
