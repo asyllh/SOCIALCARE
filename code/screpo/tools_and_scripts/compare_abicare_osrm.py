@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 
 # Import python file in project
-import class_cpo_df1 as ccd
+import class_cpo_df as ccd
 
 # Display all rows and columns of dataframes in command prompt:
 pd.set_option("display.max_rows", None, "display.max_columns", None)
@@ -35,7 +35,7 @@ def compare_all_inst_time_dist(filename, timeofday='all'):
     area_name = all_instances[0]['area']
     # print(a_name)
     # exit(-1)
-    cpo_inst = ccd.CPO_DF1()
+    cpo_inst = ccd.CPO_DF()
 
     abitime_all = []
     abidist_all = []
@@ -557,6 +557,8 @@ def calc_abicare_quality(idict):
 
     travel_time = idict['stats']['ttraveltime']
     waiting_time = idict['stats']['twaitingtime']
+    travel_timeosrm = idict['stats']['ttraveltimeosrm']
+    waiting_timeosrm = idict['stats']['twaitingtimeosrm']
     # print('travel_time ', idict['stats']['ttraveltime'])
     
     # Determine the shortest and longest shifts of all the nurses (in minutes)
@@ -571,53 +573,71 @@ def calc_abicare_quality(idict):
 
     # Ait H. quality:
     # ait_quality = -1*(0.3*totalTravel + ip->totPref);
-    ait_quality = -1*((0.3*travel_time) + 0)
+    ait_qualityabi = -1*((0.3*travel_time) + 0)
+    ait_qualityosrm = -1*((0.3*travel_timeosrm) + 0)
     # print('ait_quality: ', ait_quality)
 
     # Mankowska quality:
     # mk_quality = -1*(totalTravel + mk_allowed_tardiness + mk_max_tardiness)/3;
-    mk_quality = -1*(travel_time + 0 + 0)/3
+    mk_qualityabi = -1*(travel_time + 0 + 0)/3
+    mk_qualityosrm = -1*(travel_timeosrm + 0 + 0)/3
     # print('mk_quality: ', mk_quality)
 
     # Workload Balance quality:
     # wb_quality = -1*(0.3*totalTravel + ip->totPref) - 0.1*dayDiff + 0.1*minSpareTime;
-    wb_quality = -1*((0.3*travel_time) + 0) - (0.1*day_diff) + (0.1*0)
+    wb_qualityabi = -1*((0.3*travel_time) + 0) - (0.1*day_diff) + (0.1*0)
+    wb_qualityosrm = -1*((0.3*travel_timeosrm) + 0) - (0.1*day_diff) + (0.1*0)
     # print('wb_quality: ', wb_quality)
 
     # Paper quality:
     #paper_quality = ip->algorithmOptions[51]*totalTravel + ip->algorithmOptions[52]*totalWaitingTime + ip->algorithmOptions[53]*mk_allowed_tardiness + ip->algorithmOptions[54]*totalOvertime
     # + ip->algorithmOptions[55]*minSpareTime + ip->algorithmOptions[56]*ip->totPref + ip->algorithmOptions[57]*mk_max_tardiness;
-    paper_quality = -1*travel_time + -1*waiting_time + -5*0 + -5*0 + 0.5*0 + 1*0 + 0*0
+    paper_qualityabi = -1*travel_time + -1*waiting_time + -5*0 + -5*0 + 0.5*0 + 1*0 + 0*0
+    paper_qualityosrm = -1*travel_timeosrm + -1*waiting_timeosrm + -5*0 + -5*0 + 0.5*0 + 1*0 + 0*0
     # print('paper_quality: ', paper_quality)
 
-    quality_filename = idict['area'] + '_quality_abi.txt'
+    quality_filename = idict['area'] + '_quality_abi_osrm.txt'
     f = open(quality_filename, 'a')
     f.write('------------------------------------------------------------\n')
     f.write('Area: ' + str(idict['area']) + '\tDay: ' + str(idict['date']) + '\tnNurses: ' + str(nNurses) + '\tnJobs: ' + str(nJobs)) 
     f.write('\ntravel_time: ' + str(travel_time) + '\twaiting_time: ' + str(waiting_time))
+    f.write('\ntravel_timeosrm: ' + str(travel_timeosrm) + '\twaiting_timeosrm: ' + str(waiting_timeosrm))
     f.write('\nshortest_shift: ' + str(shortest_shift) + '\tlongest_shift: ' + str(longest_shift) + '\tday_diff: ' + str(day_diff))
     # f.write('\nsum_esttime: ' + str(sum_esttime))
-    f.write('\nAit H Quality: ' + str(ait_quality))
-    f.write('\nMankowska Quality: ' + str(mk_quality))
-    f.write('\nWorkload Balance Quality: ' + str(wb_quality))
-    f.write('\nPaper Quality: ' + str(paper_quality))
+    f.write('\n-------------')
+    f.write('\nAbicare Qualities:')
+    f.write('\nAit H : ' + str(ait_qualityabi))
+    f.write('\nMankowska: ' + str(mk_qualityabi))
+    f.write('\nWorkload Balance: ' + str(wb_qualityabi))
+    f.write('\nPaper: ' + str(paper_qualityabi))
+    f.write('\n-------------')
+    f.write('\nAbicare OSRM Qualities:')
+    f.write('\nAit H: ' + str(ait_qualityosrm))
+    f.write('\nMankowska: ' + str(mk_qualityosrm))
+    f.write('\nWorkload Balance: ' + str(wb_qualityosrm))
+    f.write('\nPaper: ' + str(paper_qualityosrm))
     f.write('\n')
     # f.write('\n------------------------------------------------------------\n')
     f.close()
 ### --- End def calc_abicare_quality --- ###
 
-def solution_to_website_abi(idict, cpo_inst, doPlots=False, filename='unknown'):
+def solution_to_website_abi(idict, cpo_inst, abiosrm=False, doPlots=False, filename='unknown'):
 
     if doPlots:
-        plot_pie_time_spent_abi(idict)
-        plot_bar_time_per_nurse_abi(idict)
+        plot_pie_time_spent_abi(idict, abiosrm)
+        plot_bar_time_per_nurse_abi(idict, abiosrm)
         
-    # cpo_inst = ccd.CPO_DF()
     webFilename = ''
     if filename == 'unknown':
-        webFilename = idict['fname'] + '_abi.html'
+        if abiosrm == False:
+            webFilename = idict['fname'] + '_abi.html'
+        elif abiosrm == True:
+            webFilename = idict['fname'] + '_abiosrm.html'
     else:
-        webFilename = filename + '_abi.html'
+        if abiosrm == False:
+            webFilename = filename + '_abi.html'
+        elif abiosrm == True:
+            webFilename = filename + '_abiosrm.html'
     webFilename = os.path.join(os.getcwd(), webFilename)
     print('Website filename: ', str(webFilename))
 
@@ -683,7 +703,6 @@ def solution_to_website_abi(idict, cpo_inst, doPlots=False, filename='unknown'):
             # if self.jobObjs[job].waitingToStart	> 0:
                 # popupVal = popupVal + '<br><b>Waiting before start:</b> ' + self.time_to_string(self.jobObjs[job].waitingToStart)
             popupVal = popupVal + '<br><b>serviceTime:</b> ' + timemins_to_string(idict['tasks'].loc[job, 'duration'])
-            # popupVal = popupVal + '<br><b>assignedNurse:</b> ' + str(self.jobObjs[idxNRpt].assignedNurse)
             popupVal = popupVal + '<br><b>positionInSchedule:</b> ' + str(pos)
             # popupVal = popupVal + '<br><b>skillsRequired:</b> ' + str(self.jobObjs[job].skillsRequired)
             # Add a circle around the area with popup:
@@ -706,12 +725,22 @@ def solution_to_website_abi(idict, cpo_inst, doPlots=False, filename='unknown'):
                         overflow: auto;
                         ">              
             '''
-    lht = lht + '''&nbsp; <b><u>Solution summary</u></b><br>'''
+    if abiosrm == False:
+        lht = lht + '''&nbsp; <b><u>Solution Summary: Abicare</u></b><br>'''
+    elif abiosrm == True:
+        lht = lht + '''&nbsp; <b><u>Solution Summary: Abicare OSRM</u></b><br>'''
+
     lht = lht + '''&nbsp; <b>Total time: </b>''' + timemins_to_string(idict['stats']['totaltime']) + ''', of which:<br>'''
     lht = lht + '''&nbsp; <i> - Service time: </i>''' + timemins_to_string(idict['stats']['tservicetime']) + '''<br>'''
-    lht = lht + '''&nbsp; <i> - Travel time: </i>''' + timemins_to_string(idict['stats']['ttraveltime']) + '''<br>'''
-    lht = lht + '''&nbsp; <i> - Waiting time: </i>''' + timemins_to_string(idict['stats']['twaitingtime']) + '''<br>'''
-    # lht = lht + '''&nbsp; <i> - Waiting time: </i>''' + time_to_string(self.totalWaitingTime) + '''<br><br>'''
+
+    if abiosrm == False:
+        lht = lht + '''&nbsp; <i> - Travel time: </i>''' + timemins_to_string(idict['stats']['ttraveltime']) + '''<br>'''
+        lht = lht + '''&nbsp; <i> - Waiting time: </i>''' + timemins_to_string(idict['stats']['twaitingtime']) + '''<br>'''
+        lht = lht + '''&nbsp; <i> - Total distance jobs: </i>''' + str(idict['stats']['ttravelmetres']/1000) + '''<br><br>'''
+    elif abiosrm == True:
+        lht = lht + '''&nbsp; <i> - Travel time: </i>''' + timemins_to_string(idict['stats']['ttraveltimeosrm']) + '''<br>'''
+        lht = lht + '''&nbsp; <i> - Waiting time: </i>''' + timemins_to_string(idict['stats']['twaitingtimeosrm']) + '''<br>'''
+        lht = lht + '''&nbsp; <i> - Total distance jobs: </i>''' + str(idict['stats']['ttravelmetresosrm']/1000) + '''<br><br>'''
 
     nursePart = '''&nbsp; <b><u>Nurse breakdown:</u> </b><br>'''
     for i in range(nNurses):
@@ -723,8 +752,12 @@ def solution_to_website_abi(idict, cpo_inst, doPlots=False, filename='unknown'):
         # nn.route = list(self.nurseRoute[i][:])
         nursePart = nursePart + '''&nbsp; <i>Number of services: </i>''' + str(idict['rota'].loc[i, 'num_tasks']) + '''<br>'''
         nursePart = nursePart + '''&nbsp; <i>Total service time: </i>''' + timemins_to_string(idict['rota'].loc[i, 'service_time']) + '''<br>'''
-        nursePart = nursePart + '''&nbsp; <i>Total travel time: </i>''' + timemins_to_string(idict['rota'].loc[i, 'travel_time']) + '''<br>'''
-        nursePart = nursePart + '''&nbsp; <i>Total waiting time: </i>''' + timemins_to_string(idict['rota'].loc[i, 'wait_time']) + '''<br>'''
+        if abiosrm == False:
+            nursePart = nursePart + '''&nbsp; <i>Total travel time: </i>''' + timemins_to_string(idict['rota'].loc[i, 'travel_time']) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Total waiting time: </i>''' + timemins_to_string(idict['rota'].loc[i, 'wait_time']) + '''<br>'''
+        elif abiosrm == True:
+            nursePart = nursePart + '''&nbsp; <i>Total travel time: </i>''' + timemins_to_string(idict['rota'].loc[i, 'travel_timeosrm']) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Total waiting time: </i>''' + timemins_to_string(idict['rota'].loc[i, 'wait_timeosrm']) + '''<br>'''
 
         nurseRoute = get_nurse_route_abi(i, idict)
         if nurseRoute[0] > -1:
@@ -748,7 +781,10 @@ def solution_to_website_abi(idict, cpo_inst, doPlots=False, filename='unknown'):
 
     lht = lht + nursePart
 
-    modalImages = [idict['fname'] + '_workload_abi.png', idict['fname'] + '_time_info_abi.png']
+    if abiosrm == False:
+        modalImages = [idict['fname'] + '_workload_abi.png', idict['fname'] + '_time_info_abi.png']
+    elif abiosrm == True:
+        modalImages = [idict['fname'] + '_workload_abiosrm.png', idict['fname'] + '_time_info_abiosrm.png']
     modalCaptions = ['Workload distribution', 'Time distribution']
 
     for i,imn in enumerate(modalImages):
@@ -806,18 +842,27 @@ def solution_to_website_abi(idict, cpo_inst, doPlots=False, filename='unknown'):
     m.save(webFilename)   
 ### --- End of def solution_to_website_abi --- ###
 
-def plot_pie_time_spent_abi(idict):
+def plot_pie_time_spent_abi(idict, abiosrm=False):
     # fig, ax = plt.subplots(subplot_kw=dict(aspect="equal"))
     fig = plt.figure()
-    fig.suptitle(idict['area'] + ' ' + idict['date'] + ': Abicare', fontsize=13, fontweight='bold')
+    if abiosrm == False:
+        fig.suptitle(idict['area'] + ' ' + idict['date'] + ': Abicare', fontsize=13, fontweight='bold')
+    elif abiosrm == True:
+        fig.suptitle(idict['area'] + ' ' + idict['date'] + ': Abicare OSRM', fontsize=13, fontweight='bold')
     ax = fig.add_subplot(111)
     # fig.subplots_adjust(top=0.72)
     subtitle = 'Total time for ' + str(idict['stats']['ncarers']) + ' nurses: ' + timemins_to_string(idict['stats']['totaltime'])
-    subtitle = '\nTravel Time: ' + timemins_to_string(idict['stats']['ttraveltime']) + '  Service Time: ' + timemins_to_string(idict['stats']['tservicetime']) + '  Waiting Time: ' + timemins_to_string(idict['stats']['twaitingtime'])
+    if abiosrm == False:
+        subtitle = '\nTravel Time: ' + timemins_to_string(idict['stats']['ttraveltime']) + '  Service Time: ' + timemins_to_string(idict['stats']['tservicetime']) + '  Waiting Time: ' + timemins_to_string(idict['stats']['twaitingtime'])
+    elif abiosrm == True:
+        subtitle = '\nTravel Time: ' + timemins_to_string(idict['stats']['ttraveltimeosrm']) + '  Service Time: ' + timemins_to_string(idict['stats']['tservicetime']) + '  Waiting Time: ' + timemins_to_string(idict['stats']['twaitingtimeosrm'])
     ax.set_title(subtitle, fontsize=8)
 
     labels = 'Travel', 'Waiting', 'Service'
-    times = [idict['stats']['ttraveltime'], idict['stats']['twaitingtime'], idict['stats']['tservicetime']]
+    if abiosrm == False:
+        times = [idict['stats']['ttraveltime'], idict['stats']['twaitingtime'], idict['stats']['tservicetime']]
+    elif abiosrm == True:
+        times = [idict['stats']['ttraveltimeosrm'], idict['stats']['twaitingtimeosrm'], idict['stats']['tservicetime']]
     colours = ['#98d4f9', '#a6e781', '#f998c5'] ##a6e781 ##eeee76
 
     def func(pct, allvals):
@@ -832,18 +877,26 @@ def plot_pie_time_spent_abi(idict):
     plt.setp(autotexts, size=8)
 
     plt.draw()
-    plt.savefig(idict['fname'] + '_time_info_abi' + '.png', bbox_inches='tight')
+    if abiosrm == False:
+        plt.savefig(idict['fname'] + '_time_info_abi' + '.png', bbox_inches='tight')
+    elif abiosrm == True:
+        plt.savefig(idict['fname'] + '_time_info_abiosrm' + '.png', bbox_inches='tight')
+
     plt.show()
 ### --- End def plot_pie_time_spent_abi --- ###
 
-def plot_bar_time_per_nurse_abi(idict):
+def plot_bar_time_per_nurse_abi(idict, abiosrm=False):
     nNurses = idict['stats']['ncarers']
     xpos = np.arange(nNurses)
     width = 0.35
 
     service_time = np.array(idict['rota']['service_time'])
-    travel_time = np.array(idict['rota']['travel_time'])
-    waiting_time = np.array(idict['rota']['wait_time'])
+    if abiosrm == False:
+        travel_time = np.array(idict['rota']['travel_time'])
+        waiting_time = np.array(idict['rota']['wait_time'])
+    elif abiosrm == True:
+        travel_time = np.array(idict['rota']['travel_timeosrm'])
+        waiting_time = np.array(idict['rota']['wait_timeosrm'])
 
     p1 = plt.bar(xpos, service_time, width, color='#f998c5')
     p2 = plt.bar(xpos, travel_time, width, bottom=service_time, color='#98d4f9')
@@ -851,7 +904,10 @@ def plot_bar_time_per_nurse_abi(idict):
 
     plt.xlabel('Carer')
     plt.ylabel('Time')
-    plt.title(idict['area'] + ' ' + idict['date'] + ': Abicare', fontsize=13, fontweight='bold')
+    if abiosrm == False:
+        plt.title(idict['area'] + ' ' + idict['date'] + ': Abicare', fontsize=13, fontweight='bold')
+    elif abiosrm == True:
+        plt.title(idict['area'] + ' ' + idict['date'] + ': Abicare OSRM', fontsize=13, fontweight='bold')
     ticksNames = []
     for i in xpos:
         # ticksNames.append(idict['rota'].loc[i, 'carer'])
@@ -865,10 +921,13 @@ def plot_bar_time_per_nurse_abi(idict):
         tt = tt + 0.5
     plt.yticks(tmarks, tuple(tticks), fontsize=6)
     plt.xticks(xpos, tuple(ticksNames), fontsize=6)
-    plt.legend((p1[0], p2[0], p3[0]), ('Service time', 'Travel time', 'Waiting time'))
+    plt.legend((p1[0], p2[0], p3[0]), ('Service Time', 'Travel Time', 'Waiting Time'))
 
     plt.draw()
-    plt.savefig(idict['fname'] + '_workload_abi' + '.png', bbox_inches='tight')
+    if abiosrm == False:
+        plt.savefig(idict['fname'] + '_workload_abi' + '.png', bbox_inches='tight')
+    elif abiosrm == True:
+        plt.savefig(idict['fname'] + '_workload_abiosrm' + '.png', bbox_inches='tight')
     plt.show()
 ### --- End def plot_bar_time_per_nurse_abi --- ###
 
@@ -944,7 +1003,7 @@ def get_time_dist_abi_osrm(filename):
     timeofday = 'all'
     # print(a_name)
     # exit(-1)
-    cpo_inst = ccd.CPO_DF1()
+    cpo_inst = ccd.CPO_DF()
 
     # abitime_all = []
     # abidist_all = []
@@ -997,6 +1056,13 @@ def timemins_to_string(mins):
     # print('minutes: ', minutes)
     seconds = (mins - minsRound) * 60
     seconds = round(seconds)
+
+    if seconds == 60:
+        minutes = minutes + 1
+        seconds = 0
+    if minutes == 60:
+        hours = hours + 1
+        minutes = 0
     # print('seconds: ', seconds)
     return('{0:0>2}:{1:0>2}:{2:0>2}'.format(int(hours), int(minutes), int(seconds)))
 ### --- End def timemins_to_string --- ###
@@ -1073,12 +1139,13 @@ def pie_chart_old(idict):
 
 # inst = {
 #         'name' : a_name + '_' + day.replace('-', '_'),
+#         'fname' : day.replace('-', '_') + '_' + a_name, # filename
 #         'area' : a_name,
 #         'date' : day,
-#         'stats' : {'ncarers' : 0, 'ntasks' : 0, 'ttraveltime' : 0, 'ttravelmiles' : 0, 'tservicetime' : 0, 'tgaptime' : 0, 'twaitingtime' : 0, 'totaltime' : 0},
+#         'stats' : {'ncarers' : 0, 'ntasks' : 0, 'totaltime' : 0, 'tservicetime' : 0, 'ttraveltime' : 0, 'ttraveltimeosrm' : 0, 'twaitingtime' : 0, 'twaitingtimeosrm' : 0, 'tgaptime' : 0, 'ttravelmiles' : 0, 'ttravelmetres' : 0, 'ttravelmetresosrm' : 0}, #ttravelm = ttravel in metres.
 #         'txtsummary' : '',
-#         'rota' : {'carer' : [], 'postcode' : [], 'num_addresses' : [], 'eastings': [], 'northings' : [], 'start' : [], 'finish' : [], 'shift' : [], 'home_start' : [], 'home_finish' : [], 'num_tasks' : [], 'travel_time' : [], 'wait_time' : [], 'service_time' : []},
-#         'tasks' : {'client' : [], 'postcode': [], 'num_addresses': [], 'eastings': [], 'northings' : [], 'duration' : [], 'miles' : [], 'metres' : [], 'esttime' : [], 'start' : [], 'end' : [], 'tw_start' : [], 'tw_end' : []},
+#         'rota' : {'carer' : [], 'postcode' : [], 'num_addr' : [], 'eastings': [], 'northings' : [], 'start' : [], 'finish' : [], 'shift' : [], 'num_tasks' : [], 'firstjob' : [], 'travel_time' : [], 'travel_timeosrm' : [], 'wait_time' : [], 'wait_timeosrm' : [], 'metres' : [], 'metresosrm' : [], 'service_time' : []},
+#         'tasks' : {'client' : [], 'postcode': [], 'num_addr': [], 'eastings': [], 'northings' : [], 'duration' : [], 'miles' : [], 'metres' : [], 'metresosrm' : [], 'esttime' : [], 'esttimeosrm' : [], 'start' : [], 'end' : [], 'tw_start' : [], 'tw_end' : []},
 #         'routes' : []
 #         }
 
@@ -1086,13 +1153,26 @@ def pie_chart_old(idict):
 
 
 # exit(-1)
-all_instances = pickle.load(open('all_inst_Aldershot.p', 'rb'))
+all_instances = pickle.load(open('cpo_all_inst_Aldershot.p', 'rb'))
+
+cpo_inst = ccd.CPO_DF()
+# idict_index = 0
+# idict = all_instances[idict_index]
+# calc_abicare_quality(idict)
+
+# solution_to_website_abi(idict, cpo_inst, abiosrm=True, doPlots=True)
 
 for idict_index in range(len(all_instances)):
     idict = all_instances[idict_index]
-    print(idict['fname'])
-    print(idict['stats']['tservicetime'])
-    print('')
+    solution_to_website_abi(idict, cpo_inst, abiosrm=False, doPlots=True)
+    print('Done: ', idict_index)
+
+
+# for idict_index in range(len(all_instances)):
+#     idict = all_instances[idict_index]
+#     print(idict['fname'])
+#     print(idict['stats']['tservicetime'])
+#     print('')
 #     print('ttravelmiles in metres: ', miles_to_m_km(idict['stats']['ttravelmiles'], km=False))
 #     print('ttravelmiles in km: ', miles_to_m_km(idict['stats']['ttravelmiles'], km=True))
 #     print('')

@@ -15,17 +15,18 @@ from scipy import stats
 # Display all rows and columns of dataframes in command prompt:
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
-# Instance format from analyse_mileage.py (in this file, this is referred to as 'idict')
+# Instance format from fc_analyse_mileage.py (in this file, this is referred to as 'idict')
 # inst = {
-# 'name' : a_name + '_' + day.replace('-', '_'),
-# 'area' : a_name,
-# 'date' : day,
-# 'stats' : {'ncarers' : 0, 'ntasks' : 0, 'ttraveltime' : 0, 'ttravelmiles' : 0, 'tservicetime' : 0, 'tgaptime' : 0, 'twaitingtime' : 0, 'totaltime' : 0},
-# 'txtsummary' : '',
-# 'rota' : {'carer' : [], 'postcode' : [], 'num_addresses' : [], 'eastings': [], 'northings' : [], 'start' : [], 'finish' : [], 'shift' : [], 'home_start' : [], 'home_finish' : [], 'num_tasks' : [], 'travel_time' : [], 'wait_time' : [], 'service_time' : []},
-# 'tasks' : {'client' : [], 'postcode': [], 'num_addresses': [], 'eastings': [], 'northings' : [], 'duration' : [], 'miles' : [], 'metres' : [], 'esttime' : [], 'start' : [], 'end' : [], 'tw_start' : [], 'tw_end' : []},
-# 'routes' : []
-# }
+#         'name' : a_name + '_' + day.replace('-', '_'),
+#         'fname' : day.replace('-', '_') + '_' + a_name, # filename
+#         'area' : a_name,
+#         'date' : day,
+#         'stats' : {'ncarers' : 0, 'ntasks' : 0, 'ttraveltime' : 0, 'ttravelmiles' : 0, 'tservicetime' : 0, 'tgaptime' : 0, 'twaitingtime' : 0, 'totaltime' : 0},
+#         'txtsummary' : '',
+#         'rota' : {'carer' : [], 'postcode' : [], 'num_addr' : [], 'eastings': [], 'northings' : [], 'start' : [], 'finish' : [], 'shift' : [], 'home_start' : [], 'home_finish' : [], 'num_tasks' : [], 'travel_time' : [], 'wait_time' : [], 'service_time' : []},
+#         'tasks' : {'client' : [], 'postcode': [], 'num_addr': [], 'eastings': [], 'northings' : [], 'duration' : [], 'miles' : [], 'metres' : [], 'esttime' : [], 'start' : [], 'end' : [], 'tw_start' : [], 'tw_end' : []},
+#         'routes' : []
+#         }
 
 def calc_abicare_quality(idict):
     print(idict['name'])

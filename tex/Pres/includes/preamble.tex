@@ -81,8 +81,8 @@
 \definecolor{myRed1}{HTML}{F7B5AC}
 \definecolor{myRed}{HTML}{FFCCCC}
 
-\newcommand{\gre}[1]{{\color{myGreen}#1}}
 \newcommand{\red}[1]{{\color{myRed2}#1}}
+\newcommand{\gre}[1]{{\color{myGreen}#1}}
 \renewcommand{\note}[1]{{\color{myPink}#1}} %\note is already inbuilt in Beamer, so need to \renewcommand
 
 % Successor of amsmath
@@ -136,8 +136,14 @@
 \addtobeamertemplate{frametitle}{}{\vspace{-2em}} %top margin of slides
 \addtobeamertemplate{footline}{}{\vspace{-6em}} %bottom margin of slides
 
+\setbeamerfont{caption}{size=\tiny}
+\DeclareCaptionFont{tiny}{\tiny} 
+%\captionsetup[sub]{font+=tiny}
 
-
+\newcommand*\aitem{%
+	\item[\textcolor{myRed2}{$\bullet$}]}
+\newcommand*\ditem{%
+	\item[\textcolor{myGreen}{$\bullet$}]}
 
 \makeatletter
 \let\@@magyar@captionfix\relax

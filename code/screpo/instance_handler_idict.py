@@ -141,6 +141,7 @@ def osrm_table_request(inst, idict, cpo_inst, matrix='none'):
 
     nNurses = idict['stats']['ncarers']
     nJobs = idict['stats']['ntasks']
+    area = idict['area']
 
     lonlat_jobs = []
     for i in range(nJobs):
@@ -176,12 +177,39 @@ def osrm_table_request(inst, idict, cpo_inst, matrix='none'):
         # Fill od matrix:
         durations = osrmdict['durations']
         # od = np.zeros((5, 5), dtype=np.float64)
-        for i in range(len(durations)):
-            for j in range(len(durations[i])):
-                time_seconds = durations[i][j]
-                time_mins = time_seconds/60
-                inst.od[i+1][j+1] = time_mins
-                # od[i+1][j+1] = time_mins
+        # for i in range(len(durations)):
+        #     for j in range(len(durations[i])):
+        #         time_seconds = durations[i][j]
+        #         time_mins = time_seconds/60
+        #         inst.od[i+1][j+1] = time_mins
+        #         # od[i+1][j+1] = time_mins
+
+        # NOTE: NEW, making adjustments for osrm to abicare for each area. Remove nested for loops above, replace with these things.
+        if area == 'Hampshire':
+            for i in range(len(durations)):
+                for j in range(len(durations[i])):
+                    time_seconds = durations[i][j]
+                    time_mins = time_seconds/60
+                    time_mins_adjust = 1.078*time_mins + 1.203 # HAMPSHIRE
+                    inst.od[i+1][j+1] = time_mins_adjust
+        elif area == 'Monmouth':
+            for i in range(len(durations)):
+                for j in range(len(durations[i])):
+                    time_seconds = durations[i][j]
+                    time_mins = time_seconds/60
+                    time_mins_adjust = 0.948*time_mins + 0.875 # MONMOUTH
+                    inst.od[i+1][j+1] = time_mins_adjust
+        elif area == 'Aldershot':
+            for i in range(len(durations)):
+                for j in range(len(durations[i])):
+                    time_seconds = durations[i][j]
+                    time_mins = time_seconds/60
+                    time_mins_adjust = 1.165*time_mins + 0.59 # ALDERSHOT
+                    inst.od[i+1][j+1] = time_mins_adjust
+        else:
+            print('ERROR: no matching area name in osrm_table_request. Exit.')
+            exit(-1)
+
     # --- End od matrix --- #
 
     elif matrix == 'nursefrom':
@@ -881,7 +909,7 @@ class INSTANCE(object):
                 # &nbsp; Cool Legend <br>
                 #               &nbsp; East &nbsp; <i class="fa fa-map-marker fa-2x" style="color:green"></i><br>
                 #               &nbsp; West &nbsp; <i class="fa fa-map-marker fa-2x" style="color:red"></i>
-        lht = lht + '''&nbsp; <b><u>Solution summary</u></b><br>'''
+        lht = lht + '''&nbsp; <b><u>Solution Summary: DST</u></b><br>'''
         lht = lht + '''&nbsp; <b>Total time: </b>''' + self.timemins_to_string(self.totalTime) + ''', of which:<br>'''
         lht = lht + '''&nbsp; <i> - Service time: </i>''' + self.timemins_to_string(self.totalServiceTime) + '''<br>'''
         lht = lht + '''&nbsp; <i> - Travel time: </i>''' + self.timemins_to_string(self.totalTravelTime) + '''<br>'''
@@ -1052,7 +1080,7 @@ class INSTANCE(object):
             tt = tt + 0.5
         plt.yticks(tmarks, tuple(tticks), fontsize=6)
         plt.xticks(xpos, tuple(ticksNames), fontsize=6)
-        plt.legend((p1[0], p2[0], p3[0]), ('Service time', 'Travel time', 'Waiting time'))
+        plt.legend((p1[0], p2[0], p3[0]), ('Service Time', 'Travel Time', 'Waiting Time'))
 
         plt.draw()
         plt.savefig(self.fname + '_workload_dst' + '.png', bbox_inches='tight')

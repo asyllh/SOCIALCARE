@@ -17,7 +17,7 @@ import pandas as pd
 import geopandas
 
 class CPO_DF(): # Codepoint Open DataFrame
-    def __init__(self, foldername=r'data\codepo_gb'):
+    def __init__(self, foldername=r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\codepo_gb'):
     # def __init__(self, foldername=r'..\data\codepo_gb'):
         self.foldername = foldername # CP_Open_Folder = r'..\data\codepo_gb'
         all_cpopen_csvs = glob.glob(os.path.join(self.foldername, 'data\\CSV', '*.csv'))
