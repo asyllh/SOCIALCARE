@@ -1,5 +1,5 @@
 #--------------------#
-# main_analyse_mileage.py
+# retrieve_info_dfs.py
 # 21/04/2021
 # 
 #--------------------#
@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from df_to_inst_test import *
 
-# main_analyse_mileage.py: main full codepoint analyse mileage, using abicare's data
+# retrieve_info_dfs.py: main full codepoint analyse mileage, using abicare's data
 
 class POSTCODE_FINDER():
     """
@@ -95,108 +95,162 @@ def carer_works_this_slot(slot): # Function finds out whether there is 'Unavaila
 # --- End def --- #
 ##################################################
 
-### --- Client --- ###
+
 # filename = 'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\abicare\clientcarerdetails.xlsx' #File from Abicare
 
 def retrieve_dfs():
-    data_filename = r'../data/abicare/clientcarerdetails.xlsx'
-
-    # This is the first sheet, 'Clients Details', could also use sheet_name=0.
-    client_details = pd.read_excel(data_filename, sheet_name='Clients Details', header=2)
-    # client_details.head(-1)
-    client_details.drop(client_details.tail(1).index,inplace=True) # Remove the last row from the dataframe as it is just a row of NaN values.
-
-    client_details['Client ID'] = client_details['Client ID'].str.replace(' ', '')
-    client_details['Client ID'] = client_details['Client ID'].str.lower()
-    client_details['Postcode'] = client_details['Postcode'].str.replace(' ', '')
-    client_details['Postcode'] = client_details['Postcode'].str.lower()
-    # print(client_details)
-
-    client_contracts = pd.read_excel(data_filename, sheet_name='Client Contracts', header=5)
-
-    client_contracts['Client'] = client_contracts['Client'].str.replace(' ', '')
-    client_contracts['Client'] = client_contracts['Client'].str.lower()
-    client_contracts['Duration TD'] = pd.to_timedelta(client_contracts['Duration'], unit='min')
-    client_contracts['From'] = pd.to_datetime(client_contracts['From'], format='%d/%m/%Y %H:%M')
-    client_contracts['Date'] = client_contracts['From'].dt.date
-    client_contracts['Start Time'] = client_contracts['From'].dt.time
-    client_contracts['To'] = client_contracts['From'] + client_contracts['Duration TD']
-    # client_contracts['To'] = client_contracts['To'].dt.time
-    client_contracts['End Time'] = client_contracts['To'].dt.time
-    client_contracts['Area'] = client_contracts['Employee']
-    client_contracts['Postcode'] = client_contracts['Employee']
-    client_contracts['Eastings'] = client_contracts['Employee']
-    client_contracts['Northings'] = client_contracts['Employee']
-
-    # print(type(client_contracts['Start'][0]))
-    # print(type(client_contracts['Duration'][0]))
-    # print(client_contracts)
-
-    # exit(-1)
-    # print(len(client_contracts))
 
     pdfinder = POSTCODE_FINDER() # Instantiate object
+    data_filename = r'../data/abicare/clientcarerdetails.xlsx'
+
+    ### --- Client --- ###
+
+    clientdetails_sheetname = 'Clients Details'
+    clienthours_sheetname = 'Client Contracts'
+    # This is the first sheet, 'Clients Details', could also use sheet_name=0.
+    # clientdf_details = pd.read_excel(data_filename, sheet_name='Clients Details', header=2)
+    clientdf_details = pd.read_excel(data_filename, sheet_name=clientdetails_sheetname, header=2)
+    # clientdf_details.head(-1)
+    clientdf_details.drop(clientdf_details.tail(1).index,inplace=True) # Remove the last row from the dataframe as it is just a row of NaN values.
+
+    clientdf_details['Client ID'] = clientdf_details['Client ID'].str.replace(' ', '')
+    clientdf_details['Client ID'] = clientdf_details['Client ID'].str.lower()
+    clientdf_details['Postcode'] = clientdf_details['Postcode'].str.replace(' ', '')
+    clientdf_details['Postcode'] = clientdf_details['Postcode'].str.lower()
+    # print(clientdf_details)
+
+    # clientdf_hours = pd.read_excel(data_filename, sheet_name='Client Contracts', header=5)
+    clientdf_hours = pd.read_excel(data_filename, sheet_name=clienthours_sheetname, header=5)
+
+    clientdf_hours['Client'] = clientdf_hours['Client'].str.replace(' ', '')
+    clientdf_hours['Client'] = clientdf_hours['Client'].str.lower()
+    clientdf_hours['Duration TD'] = pd.to_timedelta(clientdf_hours['Duration'], unit='min')
+    clientdf_hours['From'] = pd.to_datetime(clientdf_hours['From'], format='%d/%m/%Y %H:%M')
+    clientdf_hours['Date'] = clientdf_hours['From'].dt.date
+    clientdf_hours['Start Time'] = clientdf_hours['From'].dt.time
+    clientdf_hours['To'] = clientdf_hours['From'] + clientdf_hours['Duration TD']
+    # clientdf_hours['To'] = clientdf_hours['To'].dt.time
+    clientdf_hours['End Time'] = clientdf_hours['To'].dt.time
+    clientdf_hours['Area'] = clientdf_hours['Employee']
+    clientdf_hours['Postcode'] = clientdf_hours['Employee']
+    clientdf_hours['Eastings'] = clientdf_hours['Employee']
+    clientdf_hours['Northings'] = clientdf_hours['Employee']
+
+    client_work = {'client_id' : [], 'job_function' : [], 'area' : [], 
+                'county' : [], 'postcode' : [], 'date' : [], 'start' : [], 
+                'duration' : [], 'end' : [], 'exception' : [], 
+                'eastings' : [], 'northings' : []}
+
+    # print(type(clientdf_hours['Start'][0]))
+    # print(type(clientdf_hours['Duration'][0]))
+    # print(clientdf_hours)
+
+    # exit(-1)
+    # print(len(clientdf_hours))
 
     no_details = 0
     multiple_details = 0
     timewindow_interval = datetime.timedelta(minutes = 15) # Timewindow generated as plus-minus these minutes of the start date, change this value 30, 15, etc.
-    for i in range(len(client_contracts)):
-        clientid = client_contracts['Client'][i]
+    client_id = clientdf_hours['Clients']
+    # for i in range(len(clientdf_hours)):
+    for i in range(len(client_id)):
+        # clientid = clientdf_hours['Client'][i]
         # print(clientid)
-        row = client_details.loc[client_details['Client ID'] == clientid]
-        # print(client_details.loc[client_details['Client ID'] == clientid])
+        # row = clientdf_details.loc[clientdf_details['Client ID'] == clientid]
+        client_details_row = clientdf_details.loc[clientdf_details['Client ID'] == client_id[i]]
+        client_work_job_function = np.nan
+        client_work_area = np.nan
+        client_work_county = np.nan 
+        client_work_postcode = np.nan 
+        client_work_eastings = np.nan
+        client_work_northings = np.nan 
+        client_work_date = np.nan
+        client_work_start = np.nan
+        client_work_duration = np.nan
+        client_work_end = np.nan 
+        client_work_exception = np.nan
+        # print(clientdf_details.loc[clientdf_details['Client ID'] == clientid])
         # print(row)
-        if len(row) < 1:
-            # print('DATAFRAME EMPTY')
-            print('WARNING: Client "', clientid, '" has no details')
-            no_details += 1
-        elif len(row) > 1:
-            # print('DATAFRAME EMPTY')
-            print('WARNING: Client "', clientid, '" has duplicated details')
-            print(row)
+        # Check there is no missing information or too much information
+        # if len(row) > 1:
+        if len(client_details_row) > 1: # client_id[i] has multiple rows in the client details list
+            # print('WARNING: Client "', clientid, '" has duplicated details')
+            print('WARNING: Client ', client_id[i], ' has duplicated details')
+            print(client_details_row)
             multiple_details += 1
-        # print(type(row))
+        # elif len(row) < 1: 
+        elif len(client_details_row) < 1: # client_id[i] is not in the client details list
+            # print('DATAFRAME EMPTY')
+            # print('WARNING: Client "', clientid, '" has no details')
+            print('WARNING: Client ', client_id[i], ' has no details')
+            no_details += 1
+        # else:
+        #     area = row.iloc[0]['Area']
+        #     postcode = row.iloc[0]['Postcode']
+        #     eastings, northings = pdfinder.find_postcode_eastnorth(postcode)
+        #     clientdf_hours['Area'][i] = area
+        #     clientdf_hours['Postcode'][i] = postcode
+        #     clientdf_hours['Eastings'][i] = eastings
+        #     clientdf_hours['Northings'][i] = northings
         else:
-            area = row.iloc[0]['Area']
-            postcode = row.iloc[0]['Postcode']
-            eastings, northings = pdfinder.find_postcode_eastnorth(postcode)
-            client_contracts['Area'][i] = area
-            client_contracts['Postcode'][i] = postcode
-            client_contracts['Eastings'][i] = eastings
-            client_contracts['Northings'][i] = northings
+            client_work_job_function = client_details_row['Job Function'].values[0]
+            client_work_area = client_details_row['Area'].values[0]
+            client_work_county = client_details_row['County'].values[0] 
+            client_work_postcode = client_details_row['Postcode'].values[0] 
+            client_work_eastings, client_work_northings = pdfinder.find_postcode_eastnorth(client_work_postcode)
+            client_work_date = clientdf_hours['Date'][i]
+            client_work_start = clientdf_hours['Start Time'][i]
+            client_work_duration = clientdf_hours['Duration TD'][i]
+            client_work_end = clientdf_hours['End Time'][i]
+            client_work_exception = clientdf_hours['Exception'][i]
+
+            client_work['client_id'].append(str(client_id[i]))
+            client_work['job_function'].append(client_work_job_function)
+            client_work['area'].append(client_work_area)
+            client_work['county'].append(client_work_county)
+            client_work['postcode'].append(client_work_postcode)
+            client_work['date'].append(client_work_date)
+            client_work['start'].append(client_work_start)
+            client_work['duration'].append(client_work_duration)
+            client_work['end'].append(client_work_end)
+            client_work['exception'].append(client_work_exception)
+            client_work['eastings'].append(client_work_eastings)
+            client_work['northings'].append(client_work_northings)
     # --- End of for loop --- #
         
 
     print('Number of clients with no details: ', no_details)
     print('Number of clients with multiple details: ', multiple_details)
-    print(client_contracts)
+    # print(clientdf_hours)
 
-    # u_areas = client_details['Area'].unique() # List of Areas in df
+    client_df = pd.DataFrame(client_work)
+    print(client_df)
+    # u_areas = clientdf_details['Area'].unique() # List of Areas in df
     # print('There are', len(u_areas), 'areas:', u_areas)
     # exit(-1)
 
-    ### --- Carer --- ###
+    ### -------------------------------- Carer -------------------------------- ###
 
-    cdetails_sheetname = 'Carer Details'
-    chours_sheetname = 'Carer Availability'
+    carerdetails_sheetname = 'Carer Details'
+    carerhours_sheetname = 'Carer Availability'
 
 
     # Carer details sheet
-    dfdetails = pd.read_excel(data_filename, sheet_name=cdetails_sheetname, header=2)
+    carerdf_details = pd.read_excel(data_filename, sheet_name=carerdetails_sheetname, header=2)
     key_carer_id = 'On-line Identity'
-    dfdetails['Postcode'] = dfdetails['Postcode'].str.replace(' ', '')
-    dfdetails['Postcode'] = dfdetails['Postcode'].str.lower()
+    carerdf_details['Postcode'] = carerdf_details['Postcode'].str.replace(' ', '')
+    carerdf_details['Postcode'] = carerdf_details['Postcode'].str.lower()
 
     # Carer availability sheet
-    dfhours = pd.read_excel(data_filename, sheet_name=chours_sheetname, header=2)
-    h_keys = dfhours.keys()
+    carerdf_hours = pd.read_excel(data_filename, sheet_name=carerhours_sheetname, header=2)
+    h_keys = carerdf_hours.keys()
 
     #ID's are located under the "Nights" column
-    carer_id = dfhours['Nights']
+    carer_id = carerdf_hours['Nights']
 
     # Split by even/odd rows
     carer_id = carer_id[::2].values # start:stop:step, so from the beginning to the end of all rows, but every other step
-    carer_hours = dfhours[1::2].values # start:stop:step, so from row 1 to the end but every other step
+    carer_hours = carerdf_hours[1::2].values # start:stop:step, so from row 1 to the end but every other step
 
     slot_duration = 15
     # Nights is from 23:00 to 6:00am, 7 hours
@@ -210,7 +264,7 @@ def retrieve_dfs():
 
     for i in range(len(carer_id)): # For each carer id number in the Carer Availability sheet (first row, under 'Nights')
         # Extract and save carer info from the other DF:
-        carer_details_row = dfdetails[dfdetails[key_carer_id] == carer_id[i]] # carer_details_row is the dataframe containing details for only the current carer_id in the Carer Details sheet
+        carer_details_row = carerdf_details[carerdf_details[key_carer_id] == carer_id[i]] # carer_details_row is the dataframe containing details for only the current carer_id in the Carer Details sheet
         carer_work_grade = np.nan
         carer_work_p_job_function = np.nan
         carer_work_postcode = np.nan
@@ -273,11 +327,13 @@ def retrieve_dfs():
             carer_work['northings'].append(carer_work_northings)
     # End of main for loop - for i in range(len(carer_id))
 
-    work_df = pd.DataFrame(carer_work) # Convert dictionary into pd dataframe
+    carer_df = pd.DataFrame(carer_work) # Convert dictionary into pd dataframe
 
 
-    print(work_df)
+    print(carer_df)
+
+    return clientdf_hours, carer_df
 ### --- End retrieve_dfs function
 
 
-# df_to_inst(work_df, client_contracts)
+# df_to_inst(carer_df, clientdf_hours)
