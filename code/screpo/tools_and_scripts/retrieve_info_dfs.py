@@ -11,7 +11,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
-from df_to_inst_test import *
+import openpyxl
+# import class_cpo_df as ccd
+import tools_and_scripts.class_cpo_df as ccd
+# from df_to_inst_test import *
 
 # retrieve_info_dfs.py: main full codepoint analyse mileage, using abicare's data
 
@@ -21,7 +24,7 @@ class POSTCODE_FINDER():
     """
     df = []
     filename = []
-    def __init__(self, filename=r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\postcode\full_codepoint.csv'):
+    def __init__(self, filename=r'data\temp\full_codepoint.csv'):
         self.filename = filename
         self.df = pd.read_csv(self.filename)
         self.df['PC'] = self.df['PC'].str.replace('"', '')
@@ -98,10 +101,22 @@ def carer_works_this_slot(slot): # Function finds out whether there is 'Unavaila
 
 # filename = 'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\abicare\clientcarerdetails.xlsx' #File from Abicare
 
-def retrieve_dfs():
+def retrieve_dfs(area = 'None', print_statements=True):
 
     pdfinder = POSTCODE_FINDER() # Instantiate object
-    data_filename = r'../data/abicare/clientcarerdetails.xlsx'
+    cpo_inst = ccd.CPO_DF()
+
+    data_filename = r'data\abicare\clientcarerdetails.xlsx'
+    carerdetails_sheetname = 'Carer Details'
+    carerhours_sheetname = 'Carer Availability'
+
+    # Read date of the rota
+    book = openpyxl.load_workbook(data_filename)
+    sheet = book.active
+    sheet = book[carerhours_sheetname]
+    date_txt = sheet.cell(row=2, column=1).value
+    date_txt = date_txt.split(' ')[1]
+    date_pd = pd.to_datetime(date_txt, format='%d/%m/%Y').date()
 
     ### --- Client --- ###
 
@@ -121,12 +136,17 @@ def retrieve_dfs():
 
     # clientdf_hours = pd.read_excel(data_filename, sheet_name='Client Contracts', header=5)
     clientdf_hours = pd.read_excel(data_filename, sheet_name=clienthours_sheetname, header=5)
+    clientdf_hours['From'] = pd.to_datetime(clientdf_hours['From'], format='%d/%m/%Y %H:%M')
+    clientdf_hours['Date'] = clientdf_hours['From'].dt.date
+    
+    # Filter date by date_pd
+    clientdf_hours = clientdf_hours[clientdf_hours['Date'] == date_pd] # filter by date_pd
+    clientdf_hours.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by data_pd
 
     clientdf_hours['Client'] = clientdf_hours['Client'].str.replace(' ', '')
     clientdf_hours['Client'] = clientdf_hours['Client'].str.lower()
     clientdf_hours['Duration TD'] = pd.to_timedelta(clientdf_hours['Duration'], unit='min')
-    clientdf_hours['From'] = pd.to_datetime(clientdf_hours['From'], format='%d/%m/%Y %H:%M')
-    clientdf_hours['Date'] = clientdf_hours['From'].dt.date
+    
     clientdf_hours['Start Time'] = clientdf_hours['From'].dt.time
     clientdf_hours['To'] = clientdf_hours['From'] + clientdf_hours['Duration TD']
     # clientdf_hours['To'] = clientdf_hours['To'].dt.time
@@ -137,10 +157,13 @@ def retrieve_dfs():
     clientdf_hours['Northings'] = clientdf_hours['Employee']
 
     client_work = {'client_id' : [], 'job_function' : [], 'area' : [], 
-                'county' : [], 'postcode' : [], 'date' : [], 'start' : [], 
-                'duration' : [], 'end' : [], 'exception' : [], 
-                'eastings' : [], 'northings' : []}
+                'county' : [], 'postcode' : [], 'date' : [], 'start_time' : [], 
+                'duration' : [], 'end_time' : [], 'start' : [], 'end' : [], 'exception' : [], 
+                'eastings' : [], 'northings' : [], 'longitude' : [], 'latitude' : []}
 
+    start_of_day = clientdf_hours.iloc[0]['From'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first job.
+    # print('start_of_day: ', start_of_day)
+    # exit(-1)
     # print(type(clientdf_hours['Start'][0]))
     # print(type(clientdf_hours['Duration'][0]))
     # print(clientdf_hours)
@@ -151,7 +174,10 @@ def retrieve_dfs():
     no_details = 0
     multiple_details = 0
     timewindow_interval = datetime.timedelta(minutes = 15) # Timewindow generated as plus-minus these minutes of the start date, change this value 30, 15, etc.
-    client_id = clientdf_hours['Clients']
+    # print(clientdf_hours.keys())
+    # client_id = clientdf_hours['Clients']
+    client_id = clientdf_hours['Client']
+
     # for i in range(len(clientdf_hours)):
     for i in range(len(client_id)):
         # clientid = clientdf_hours['Client'][i]
@@ -165,33 +191,31 @@ def retrieve_dfs():
         client_work_eastings = np.nan
         client_work_northings = np.nan 
         client_work_date = np.nan
-        client_work_start = np.nan
+        client_work_starttime = np.nan
         client_work_duration = np.nan
-        client_work_end = np.nan 
+        client_work_endtime = np.nan 
         client_work_exception = np.nan
+        client_work_longitude = np.nan
+        client_work_latitude = np.nan
+        client_work_start = np.nan 
+        client_work_end = np.nan 
         # print(clientdf_details.loc[clientdf_details['Client ID'] == clientid])
         # print(row)
         # Check there is no missing information or too much information
         # if len(row) > 1:
         if len(client_details_row) > 1: # client_id[i] has multiple rows in the client details list
             # print('WARNING: Client "', clientid, '" has duplicated details')
-            print('WARNING: Client ', client_id[i], ' has duplicated details')
-            print(client_details_row)
             multiple_details += 1
+            if print_statements:
+                print('WARNING: Client ', client_id[i], ' has duplicated details')
+                print(client_details_row)
         # elif len(row) < 1: 
         elif len(client_details_row) < 1: # client_id[i] is not in the client details list
             # print('DATAFRAME EMPTY')
             # print('WARNING: Client "', clientid, '" has no details')
-            print('WARNING: Client ', client_id[i], ' has no details')
             no_details += 1
-        # else:
-        #     area = row.iloc[0]['Area']
-        #     postcode = row.iloc[0]['Postcode']
-        #     eastings, northings = pdfinder.find_postcode_eastnorth(postcode)
-        #     clientdf_hours['Area'][i] = area
-        #     clientdf_hours['Postcode'][i] = postcode
-        #     clientdf_hours['Eastings'][i] = eastings
-        #     clientdf_hours['Northings'][i] = northings
+            if print_statements:
+                print('WARNING: Client ', client_id[i], ' has no details')
         else:
             client_work_job_function = client_details_row['Job Function'].values[0]
             client_work_area = client_details_row['Area'].values[0]
@@ -199,10 +223,22 @@ def retrieve_dfs():
             client_work_postcode = client_details_row['Postcode'].values[0] 
             client_work_eastings, client_work_northings = pdfinder.find_postcode_eastnorth(client_work_postcode)
             client_work_date = clientdf_hours['Date'][i]
-            client_work_start = clientdf_hours['Start Time'][i]
-            client_work_duration = clientdf_hours['Duration TD'][i]
-            client_work_end = clientdf_hours['End Time'][i]
+            client_work_from = clientdf_hours['From'][i] # NOTE: this will not be in the final df
+            client_work_to = clientdf_hours['To'][i] # NOTE: this will not be in the final df
+            client_work_starttime = clientdf_hours['Start Time'][i]
+            client_work_duration = clientdf_hours['Duration'][i]
+            client_work_endtime = clientdf_hours['End Time'][i]
             client_work_exception = clientdf_hours['Exception'][i]
+            client_work_longitude, client_work_latitude = cpo_inst.find_postcode_lonlat(client_work_postcode)
+            client_work_start = time_dif_to_minutes(client_work_from, start_of_day)
+            client_work_end = time_dif_to_minutes(client_work_to, start_of_day)
+            # print('from: ', client_work_from)
+            # print('starttime: ', client_work_starttime)
+            # print('start:', client_work_start)
+            # print('to: ', client_work_to)
+            # print('endtime: ', client_work_endtime)
+            # print('end:', client_work_end)
+            # exit(-1)
 
             client_work['client_id'].append(str(client_id[i]))
             client_work['job_function'].append(client_work_job_function)
@@ -210,33 +246,34 @@ def retrieve_dfs():
             client_work['county'].append(client_work_county)
             client_work['postcode'].append(client_work_postcode)
             client_work['date'].append(client_work_date)
-            client_work['start'].append(client_work_start)
+            client_work['start_time'].append(client_work_starttime)
             client_work['duration'].append(client_work_duration)
+            client_work['end_time'].append(client_work_endtime)
+            client_work['start'].append(client_work_start)
             client_work['end'].append(client_work_end)
             client_work['exception'].append(client_work_exception)
             client_work['eastings'].append(client_work_eastings)
             client_work['northings'].append(client_work_northings)
+            client_work['longitude'].append(client_work_longitude)
+            client_work['latitude'].append(client_work_latitude)
     # --- End of for loop --- #
         
-
-    print('Number of clients with no details: ', no_details)
-    print('Number of clients with multiple details: ', multiple_details)
+    if print_statements:
+        print('Number of clients with no details: ', no_details)
+        print('Number of clients with multiple details: ', multiple_details)
     # print(clientdf_hours)
 
     client_df = pd.DataFrame(client_work)
-    print(client_df)
+    # print(client_df)
     # u_areas = clientdf_details['Area'].unique() # List of Areas in df
     # print('There are', len(u_areas), 'areas:', u_areas)
     # exit(-1)
 
     ### -------------------------------- Carer -------------------------------- ###
 
-    carerdetails_sheetname = 'Carer Details'
-    carerhours_sheetname = 'Carer Availability'
-
-
     # Carer details sheet
     carerdf_details = pd.read_excel(data_filename, sheet_name=carerdetails_sheetname, header=2)
+
     key_carer_id = 'On-line Identity'
     carerdf_details['Postcode'] = carerdf_details['Postcode'].str.replace(' ', '')
     carerdf_details['Postcode'] = carerdf_details['Postcode'].str.lower()
@@ -258,39 +295,44 @@ def retrieve_dfs():
     carer_work = {'unique_id' : [], 'carer' : [], 
                 'shift' : [], 'start' : [], 
                 'duration' : [], 'end' : [],
-                'grade' : [], 'p_job_function' : [],
+                'grade' : [], 'job_function' : [],
                 'postcode' : [], 'not_on_rota' : [],
-                'driver' : [], 'p_area' : [], 'eastings' : [], 'northings' : []}
+                'driver' : [], 'area' : [], 'eastings' : [], 'northings' : [], 'longitude' : [], 'latitude' : []}
 
     for i in range(len(carer_id)): # For each carer id number in the Carer Availability sheet (first row, under 'Nights')
         # Extract and save carer info from the other DF:
         carer_details_row = carerdf_details[carerdf_details[key_carer_id] == carer_id[i]] # carer_details_row is the dataframe containing details for only the current carer_id in the Carer Details sheet
         carer_work_grade = np.nan
-        carer_work_p_job_function = np.nan
+        carer_work_job_function = np.nan
         carer_work_postcode = np.nan
         carer_work_not_on_rota = np.nan
         carer_work_driver = np.nan
-        carer_work_p_area = np.nan
+        carer_work_area = np.nan
         carer_work_eastings = np.nan
         carer_work_northings = np.nan
+        carer_work_longitude = np.nan
+        carer_work_latitude = np.nan
 
         # Check there is no missing/too much info
         if len(carer_details_row) > 1: # If the carer_id[i] has more than one row in Carer Details, then there are duplicate entries
-            print('WARNING: Carer "', carer_id[i], '" has duplicated details.')
-            print(carer_details_row)
-            print('Using only first entry.')
+            if print_statements:
+                print('WARNING: Carer "', carer_id[i], '" has duplicated details.')
+                print(carer_details_row)
+                print('Using only first entry.')
             
         if len(carer_details_row) < 1: # If the carer_id[i] has no rows in Carer Details, then there is no information for that carer.
-            print('WARNING: Carer "', carer_id[i], '" has no details.')
+            if print_statements:
+                print('WARNING: Carer "', carer_id[i], '" has no details.')
         else:
             # This is the expected case, only 1 entry:
             carer_work_grade = carer_details_row['Grade'].values[0]
-            carer_work_p_job_function = carer_details_row['Primary Job Function'].values[0]
+            carer_work_job_function = carer_details_row['Primary Job Function'].values[0]
             carer_work_postcode = carer_details_row['Postcode'].values[0]
             carer_work_not_on_rota = carer_details_row['Not on Rota'].values[0]
             carer_work_driver = carer_details_row['Driver'].values[0]
-            carer_work_p_area = carer_details_row['Primary Area'].values[0]
+            carer_work_area = carer_details_row['Primary Area'].values[0]
             carer_work_eastings, carer_work_northings = pdfinder.find_postcode_eastnorth(carer_work_postcode)
+            carer_work_longitude, carer_work_latitude = cpo_inst.find_postcode_lonlat(carer_work_postcode)
 
 
         wh = []
@@ -318,22 +360,43 @@ def retrieve_dfs():
             carer_work['end'].append(endtime)
             # Link with carer details:
             carer_work['grade'].append(carer_work_grade)
-            carer_work['p_job_function'].append(carer_work_p_job_function)
+            carer_work['job_function'].append(carer_work_job_function)
             carer_work['postcode'].append(carer_work_postcode)
             carer_work['not_on_rota'].append(carer_work_not_on_rota)
             carer_work['driver'].append(carer_work_driver)
-            carer_work['p_area'].append(carer_work_p_area)
+            carer_work['area'].append(carer_work_area)
             carer_work['eastings'].append(carer_work_eastings)
             carer_work['northings'].append(carer_work_northings)
+            carer_work['longitude'].append(carer_work_longitude)
+            carer_work['latitude'].append(carer_work_latitude)
     # End of main for loop - for i in range(len(carer_id))
 
     carer_df = pd.DataFrame(carer_work) # Convert dictionary into pd dataframe
 
+    # print(carer_df)
+    # exit(-1)
 
-    print(carer_df)
+    if area == 'None':
+        return client_df, carer_df
+    else:
+        # print('Len client_df: ', len(client_df))
+        # print('Len carer_df: ', len(carer_df))
+        clientdf_area = client_df[client_df['area'] == area]
+        carerdf_area = carer_df[carer_df['area'] == area]
+        clientdf_area.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by area
+        carerdf_area.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by area
+        # print(clientdf_area)
+        # print(carerdf_area)
+        return clientdf_area, carerdf_area
 
-    return clientdf_hours, carer_df
+    # print(carer_df)
+    
 ### --- End retrieve_dfs function
+
+# client_df, carer_df = retrieve_dfs(print_statements=False)
+# print('Len client_df: ', len(client_df))
+# print('Len carer_df: ', len(carer_df))
+
 
 
 # df_to_inst(carer_df, clientdf_hours)
