@@ -34,7 +34,8 @@ def main():
     create_python_plots = True
     # create_html_website = False
     create_html_website = True
-    input_filename = 'all_inst_Aldershot.p'
+    area = 'Hampshire'
+    # input_filename = 'all_inst_Aldershot.p'
     # results_filename = '02_Nov_Hampshire_results.txt'
     # results_filename = 'test_02_Nov_Hampshire_results.txt'
     # run_in_parallel = False
@@ -68,17 +69,24 @@ def main():
     # big_m = 10000000
     ####-------------------------- START CODE --------------------------####
 
-    client_df, carer_df = rdi.retrieve_dfs()
+    client_df, carer_df = rdi.retrieve_dfs(area, print_statements=False)
+    # print(client_df)
+    # print('Len client_df:', len(client_df))
+    print(carer_df)
+ 
+
+    exit(-1)
 
     
 
-    all_instances = pickle.load(open('tools_and_scripts/' + input_filename, 'rb'))
-    idict_index = 7
+    # all_instances = pickle.load(open('tools_and_scripts/' + input_filename, 'rb'))
+    # idict_index = 7
     # idict = 7th instance in all_instances, which is 08-Nov-2020 in Salisbury. Chose this inst as it is the only one which has all postcodes for carers and clients. ncarers = 12, ntasks = 100.
-    idict = all_instances[idict_index]
+    # idict = all_instances[idict_index]
     # Assign client 16 a different postcode (sp27tq) as its original postcode (sp27xx) is missing from codepoint open. This is just so we can use this instance for a test.
     # idict = cdi.assign_missing_postcode(idict)
-    results_filename = idict['fname'] + '_results_test.txt'
+    # results_filename = idict['fname'] + '_results_test.txt'
+    results_filename = 'test' + '_results_test.txt'
     f = open(results_filename, 'a')
     f.write('------------------------------------------------------------\n')
     f.write('Date: ' + str(datetime.now()) + '\n')
@@ -92,7 +100,7 @@ def main():
     f.close()
 
     print('\n-------------------------------------------------------')
-    print('Running program for instance ' + str(idict_index) + ' in ' + str(input_filename) + ', ' + str(idict['date']))
+    #print('Running program for instance ' + str(idict_index) + ' in ' + str(input_filename) + ', ' + str(idict['date']))
     stt_time = time.perf_counter()
 
     # inst = hhc.create_solve_inst(idict, options_vector, random_seed) # old, for idict
