@@ -17,7 +17,7 @@ import pandas as pd
 import geopandas
 
 class CPO_DF(): # Codepoint Open DataFrame
-    def __init__(self, foldername=r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\codepo_gb'):
+    def __init__(self, foldername=r'data\codepo_gb'):
     # def __init__(self, foldername=r'..\data\codepo_gb'):
         self.foldername = foldername # CP_Open_Folder = r'..\data\codepo_gb'
         all_cpopen_csvs = glob.glob(os.path.join(self.foldername, 'data\\CSV', '*.csv'))
@@ -53,11 +53,19 @@ class CPO_DF(): # Codepoint Open DataFrame
 
         # Now we convert eastings/northings to longitude/latitude and add these new columns to the datafram df. Our reference coordinate is EPSG:7405: https://spatialreference.org/ref/epsg/7405/ 
         gdf = geopandas.GeoDataFrame(self.df, geometry=geopandas.points_from_xy(self.df.EA, self.df.NO)) 
-        gdf = gdf.set_crs("EPSG:7405") # Set our current reference coordinates (eastings and northings)
+
+
+        # TO DO: Make this a try/except statement        
+        gdf.crs = {"init":"epsg:7405"}
+        # gdf = gdf.set_crs("EPSG:7405") # Set our current reference coordinates (eastings and northings)
+
         gdf = gdf.to_crs("EPSG:4326") # Change it to standard lat-long
+
         # Put the data back in our original df DataFrame (swap the rows around if we want lat then lon in the df)
         self.df['LON'] = gdf['geometry'][:].x
         self.df['LAT'] = gdf['geometry'][:].y
+        # print(self.df.head())
+        # exit(-1)
     # --- End of def __init__ --- #
 
     def find_postcode_index(self, postcode): # Return the index of the df (the row number) where the postcode is located. 'no match' means postcode is not in df.
@@ -79,7 +87,7 @@ class CPO_DF(): # Codepoint Open DataFrame
         else:
             # return [dfview.iloc[0]['EA'], dfview.iloc[0]['NO']]
             return [dfview.iloc[0]['LON'], dfview.iloc[0]['LAT']]
-    
+
     # --- End of def find_postcode_lonlat --- #
     
     # def find_postcode_n_addresses(self, postcode): # Returns number of registered properties at a given postcode.
