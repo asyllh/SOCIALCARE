@@ -21,8 +21,8 @@ from datetime import timedelta
 from numpy.ctypeslib import ndpointer
 
 import mankowska_data as Mk
-import convert_dict_inst as cdi
-import convert_dfs_inst as cdfi
+# import convert_dict_inst as cdi
+# import convert_dfs_inst as cdfi
 import tools_and_scripts.class_cpo_df as ccd
 
 # Display all rows and columns of dataframes in command prompt:
@@ -35,7 +35,7 @@ def create_solve_inst(client_df, carer_df, options_vector, random_seed): # chang
     file_to_run = 'something.mat'
     
     inst = INSTANCE()
-    cpo_inst = ccd.CPO_DF()
+    # cpo_inst = ccd.CPO_DF() # NOTE: Not needed anymore!
 
     if mkVNS: # For some reason an error occurs (cannot call inst.solve()) without this if statement, so just left it in.
         inst = Mk.generate_Mk(inst, matfile=file_to_run, filetype='large_vns')
@@ -60,28 +60,29 @@ def create_solve_inst(client_df, carer_df, options_vector, random_seed): # chang
     return inst
 ### --- End def create_solve_inst --- ###
 
-def convert_dict_inst(inst, idict, cpo_inst):
+def convert_dfs_inst(inst, client_df, carer_df):
     # This function creates an instance 'inst' of the class 'INSTANCE', and initialises inst with data from our idict dictionary instance created by analyse_mileage.py.
     # This function takes a dictionary instance 'idict' as input, and returns the object 'inst'.
 
-    # cpo_inst = ccd.CPO_DF()
-    inst.name = idict['name']
-    inst.fname = idict['fname']
-    inst.area = idict['area']
-    inst.date = idict['date']
-    inst.nNurses = idict['stats']['ncarers']
-    inst.nJobs = idict['stats']['ntasks']
+
+    inst.name = idict['name'] # Note: Need to change
+    inst.fname = idict['fname'] # Note: Need to change
+    inst.area = client_df.loc[0]['area']
+    inst.date = client_df.loc[0]['date']
+    inst.nNurses = len(carer_df)
+    inst.nJobs = len(client_df)
     inst.nSkills = 5 # NOTE: this is a random number just for testing.
 
     inst.nurseWorkingTimes = np.zeros((inst.nNurses, 3), dtype=np.int32) # nurseWorkingTimes is nNurses x 3, col[0] = start time, col[1] = finish time, col[2] = max working time.
     for i in range(inst.nNurses): #range(len(idict['rota']['start']))
-        inst.nurseWorkingTimes[i][0] = idict['rota']['start'][i]
-        inst.nurseWorkingTimes[i][1] = idict['rota']['finish'][i]
+        inst.nurseWorkingTimes[i][0] = carer_df.iloc[i]['start']
+        inst.nurseWorkingTimes[i][1] = carer_df.iloc[i]['end']
+        inst.nurseWorkingTimes[i][2] = carer_df.iloc[i]['duration']
         # inst.nurseWorkingTimes[i][0] = idict['rota']['home_start'][i]
         # inst.nurseWorkingTimes[i][1] = idict['rota']['home_finish'][i]
         # We dont have max working time, so we need to calculate the duration of each carer's shift (total minutes that each carer works during the day)
-        maxWorkingTime = idict['rota']['finish'][i] - idict['rota']['start'][i]
-        inst.nurseWorkingTimes[i][2] = maxWorkingTime
+        # maxWorkingTime = idict['rota']['finish'][i] - idict['rota']['start'][i]
+        # inst.nurseWorkingTimes[i][2] = maxWorkingTime
     
     inst.nurseSkills = np.ones((inst.nNurses, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
 
