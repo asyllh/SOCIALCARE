@@ -72,10 +72,11 @@ def main():
     client_df, carer_df = rdi.retrieve_dfs(area, print_statements=False)
     # print(client_df)
     # print('Len client_df:', len(client_df))
-    print(carer_df)
- 
-
+    # print(carer_df)
+    
     exit(-1)
+    inst = ihd.create_solve_inst(client_df, carer_df, options_vector, random_seed) # new, for dfs
+
 
     
 
@@ -104,7 +105,7 @@ def main():
     stt_time = time.perf_counter()
 
     # inst = hhc.create_solve_inst(idict, options_vector, random_seed) # old, for idict
-    inst = ihd.create_solve_inst(client_df, carer_df, options_vector, random_seed) # new, for dfs
+    # inst = ihd.create_solve_inst(client_df, carer_df, options_vector, random_seed) # new, for dfs
 
     quality = inst.Cquality
 
