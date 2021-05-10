@@ -65,8 +65,8 @@ def convert_dfs_inst(inst, client_df, carer_df):
     # This function takes a dictionary instance 'idict' as input, and returns the object 'inst'.
 
 
-    inst.name = idict['name'] # Note: Need to change
-    inst.fname = idict['fname'] # Note: Need to change
+    inst.name = 'inst_' + str(client_df.loc[0]['area']) + '_' + str(client_df.loc[0]['date']) # name is 'inst_area_date'
+    inst.fname = inst.name # Note: Need to change
     inst.area = client_df.loc[0]['area']
     inst.date = client_df.loc[0]['date']
     inst.nNurses = len(carer_df)
@@ -88,9 +88,9 @@ def convert_dfs_inst(inst, client_df, carer_df):
 
     inst.jobTimeInfo = np.zeros((inst.nJobs, 3), dtype=np.int32) # jobTimeInfo is nJobs x 3, col[0] = startTW, col[1] = endTW, col[2] = length of job (time)
     for i in range(inst.nJobs): #range(len(idict['tasks']['duration']))
-        inst.jobTimeInfo[i][0] = idict['tasks']['tw_start'][i]
-        inst.jobTimeInfo[i][1] = idict['tasks']['tw_end'][i]
-        inst.jobTimeInfo[i][2] = idict['tasks']['duration'][i]
+        inst.jobTimeInfo[i][0] = client_df.iloc[i]['tw_start']
+        inst.jobTimeInfo[i][1] = client_df.iloc[i]['tw_end']
+        inst.jobTimeInfo[i][2] = client_df.iloc[i]['duration']
 
     inst.jobSkillsRequired = np.ones((inst.nJobs, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
     inst.prefScore = np.zeros((inst.nJobs, inst.nNurses), dtype=np.float64)
