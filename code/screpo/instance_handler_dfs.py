@@ -42,7 +42,7 @@ def create_solve_inst(client_df, carer_df, options_vector, random_seed): # chang
     else:
         # inst = convert_dict_inst(inst, idict, cpo_inst)
         inst = convert_dfs_inst(inst, client_df, carer_df)
-    inst.init_job_and_nurse_objects(idict, cpo_inst)
+    inst.init_job_and_nurse_objects(client_df, carer_df)
 
     inst.algorithmOptions = options_vector
     # inst.algorithmOptions[0] = 0.0 # ait_h
@@ -100,14 +100,14 @@ def convert_dfs_inst(inst, client_df, carer_df):
     inst.algorithmOptions = np.zeros(100, dtype=np.float64)
 
     inst.od = np.zeros((inst.nJobs+1, inst.nJobs+1), dtype=np.float64) # TIME IN MINUTES, THIS WILL BE USED IN C
-    osrm_table_request(inst, idict, cpo_inst, 'od')
+    osrm_table_request(inst, client_df, carer_df, 'od')
     # print(inst.od[:5,:5])
     
     inst.nurse_travel_from_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From carer's home to job - TIME IN MINS, THIS WILL BE USED IN C
-    # osrm_table_request(inst, idict, cpo_inst, 'nursefrom')
+    # osrm_table_request(inst, client_df, carer_df, 'nursefrom')
 
     inst.nurse_travel_to_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From job to carer's home - TIME IN MINS, THIS WILL BE USED IN C
-    # osrm_table_request(inst, idict, cpo_inst, 'nurseto')
+    # osrm_table_request(inst, client_df, carer_df, 'nurseto')
     
     #Note: this will not work as currently inst.doubleService is empty, and so nDS = 0 - third dimension of capabilityOfDS cannot be zero.
     nDS = np.sum(inst.doubleService) # Number of jobs that are double services, NOTE: in testing, this is equal to one as we've set a job (job [2]) to be a double service.
@@ -123,12 +123,13 @@ def convert_dfs_inst(inst, client_df, carer_df):
     inst.lambda_5 = 1
     inst.lambda_6 = 10
 
-    inst.qualityMeasure = 'paper'
+    # inst.qualityMeasure = 'paper'
+    inst.qualityMeasure = 'workload_balance'
     # inst.qualityMeasure = 'mankowska'
 
     # For these variables - do we need to change them?
     inst.solMatrix = np.zeros((inst.nNurses, inst.nJobs), dtype=np.int32)
-    inst.MAX_TIME_SECONDS = 600
+    inst.MAX_TIME_SECONDS = 120
     inst.verbose = 1
     # inst.secondsPerTU = 1 # What is this variable?
     inst.DSSkillType = 'strictly-shared'
@@ -142,24 +143,22 @@ def convert_dfs_inst(inst, client_df, carer_df):
     return inst
 ### --- End of def convert_dict_inst --- ###
 
-def osrm_table_request(inst, idict, cpo_inst, matrix='none'):
+def osrm_table_request(inst, client_df, carer_df, matrix='none'):
     # For osrm, the coordinates need to be in string form, and in the order 'longitude,latitude'. Our data is in 'lat,lon', so create_coord_string function swaps it around.
 
-    nNurses = idict['stats']['ncarers']
-    nJobs = idict['stats']['ntasks']
-    area = idict['area']
+    nNurses = inst.nNurses
+    nJobs = inst.nJobs
+    area = inst.area
 
     lonlat_jobs = []
     for i in range(nJobs):
-        pcidict = idict['tasks'].loc[i, 'postcode']
-        lonlat = cpo_inst.find_postcode_lonlat(pcidict) #Note that we're getting coords in order lon/lat, not lat/lon, so we don't need to swap them over for osrm.
+        lonlat = [client_df.iloc[i]['longitude'], client_df.iloc[i]['latitude']] #Note that we're getting coords in order lon/lat, not lat/lon, so we don't need to swap them over for osrm.
         lonlat_jobs.append(lonlat)
     lljSize = len(lonlat_jobs)
         
     lonlat_nurses = []
     for i in range(nNurses):
-        pcidict = idict['rota'].loc[i, 'postcode']
-        lonlat = cpo_inst.find_postcode_lonlat(pcidict) #Note that we're getting coords in order lon/lat, not lat/lon, so we don't need to swap them over for osrm.
+        lonlat = [carer_df.iloc[i]['longitude'], carer_df.iloc[i]['latitude']] #Note that we're getting coords in order lon/lat, not lat/lon, so we don't need to swap them over for osrm.
         lonlat_nurses.append(lonlat)
     llnSize = len(lonlat_nurses)
 
@@ -182,39 +181,38 @@ def osrm_table_request(inst, idict, cpo_inst, matrix='none'):
         
         # Fill od matrix:
         durations = osrmdict['durations']
-        # od = np.zeros((5, 5), dtype=np.float64)
-        # for i in range(len(durations)):
-        #     for j in range(len(durations[i])):
-        #         time_seconds = durations[i][j]
-        #         time_mins = time_seconds/60
-        #         inst.od[i+1][j+1] = time_mins
-        #         # od[i+1][j+1] = time_mins
+        for i in range(len(durations)):
+            for j in range(len(durations[i])):
+                time_seconds = durations[i][j]
+                time_mins = time_seconds/60
+                inst.od[i+1][j+1] = time_mins
+                # od[i+1][j+1] = time_mins
 
         # NOTE: NEW, making adjustments for osrm to abicare for each area. Remove nested for loops above, replace with these things.
-        if area == 'Hampshire':
-            for i in range(len(durations)):
-                for j in range(len(durations[i])):
-                    time_seconds = durations[i][j]
-                    time_mins = time_seconds/60
-                    time_mins_adjust = 1.078*time_mins + 1.203 # HAMPSHIRE
-                    inst.od[i+1][j+1] = time_mins_adjust
-        elif area == 'Monmouth':
-            for i in range(len(durations)):
-                for j in range(len(durations[i])):
-                    time_seconds = durations[i][j]
-                    time_mins = time_seconds/60
-                    time_mins_adjust = 0.948*time_mins + 0.875 # MONMOUTH
-                    inst.od[i+1][j+1] = time_mins_adjust
-        elif area == 'Aldershot':
-            for i in range(len(durations)):
-                for j in range(len(durations[i])):
-                    time_seconds = durations[i][j]
-                    time_mins = time_seconds/60
-                    time_mins_adjust = 1.165*time_mins + 0.59 # ALDERSHOT
-                    inst.od[i+1][j+1] = time_mins_adjust
-        else:
-            print('ERROR: no matching area name in osrm_table_request. Exit.')
-            exit(-1)
+        # if area == 'Hampshire':
+        #     for i in range(len(durations)):
+        #         for j in range(len(durations[i])):
+        #             time_seconds = durations[i][j]
+        #             time_mins = time_seconds/60
+        #             time_mins_adjust = 1.078*time_mins + 1.203 # HAMPSHIRE
+        #             inst.od[i+1][j+1] = time_mins_adjust
+        # elif area == 'Monmouth':
+        #     for i in range(len(durations)):
+        #         for j in range(len(durations[i])):
+        #             time_seconds = durations[i][j]
+        #             time_mins = time_seconds/60
+        #             time_mins_adjust = 0.948*time_mins + 0.875 # MONMOUTH
+        #             inst.od[i+1][j+1] = time_mins_adjust
+        # elif area == 'Aldershot':
+        #     for i in range(len(durations)):
+        #         for j in range(len(durations[i])):
+        #             time_seconds = durations[i][j]
+        #             time_mins = time_seconds/60
+        #             time_mins_adjust = 1.165*time_mins + 0.59 # ALDERSHOT
+        #             inst.od[i+1][j+1] = time_mins_adjust
+        # else:
+        #     print('ERROR: no matching area name in osrm_table_request. Exit.')
+        #     exit(-1)
 
     # --- End od matrix --- #
 
@@ -480,7 +478,7 @@ class INSTANCE(object):
                         ctypes.c_int] # Random seed
     ### --- End def  __init__ --- ### 
 
-    def init_job_and_nurse_objects(self, idict, cpo_inst):
+    def init_job_and_nurse_objects(self, client_df, carer_df):
         # Create two lists containing objects of the classes JOBS and NURSES respectively.
         self.jobObjs = []
         for ii in range(self.nJobs):
@@ -494,15 +492,21 @@ class INSTANCE(object):
         
         # Start with jobs:
         for j in range(self.nJobs):
-            self.jobObjs[j].ID = idict['tasks'].loc[j, 'client']
-            self.jobObjs[j].postcode = idict['tasks'].loc[j, 'postcode']
-            pcidict = idict['tasks'].loc[j, 'postcode']
-            latlon = cpo_inst.find_postcode_latlon(pcidict)
+            # self.jobObjs[j].ID = idict['tasks'].loc[j, 'client']
+            self.jobObjs[j].ID = client_df.iloc[j]['client_id']
+            # self.jobObjs[j].postcode = idict['tasks'].loc[j, 'postcode']
+            self.jobObjs[j].postcode = client_df.iloc[j]['postcode']
+            # pcidict = idict['tasks'].loc[j, 'postcode']
+            # latlon = cpo_inst.find_postcode_latlon(pcidict)
+            latlon = [client_df.iloc[j]['latitude'], client_df.iloc[j]['longitude']]
             self.jobObjs[j].location = GEOPOINT(float(latlon[0]), float(latlon[1]))
-            self.jobObjs[j].serviceTime = idict['tasks'].loc[j, 'duration']
+            # self.jobObjs[j].serviceTime = idict['tasks'].loc[j, 'duration']
+            self.jobObjs[j].serviceTime = client_df.iloc[j]['duration']
             self.jobObjs[j].hasTimewindow = True
-            jtw_start = idict['tasks'].loc[j, 'tw_start']
-            jtw_end = idict['tasks'].loc[j, 'tw_end']
+            # jtw_start = idict['tasks'].loc[j, 'tw_start']
+            # jtw_end = idict['tasks'].loc[j, 'tw_end']
+            jtw_start = client_df.iloc[j]['tw_start']
+            jtw_end = client_df.iloc[j]['tw_end']
             self.jobObjs[j].timewindow = [jtw_start, jtw_end]
             self.jobObjs[j].hasPreferredTimewindow = False
             self.jobObjs[j].preferredTimewindow = [0, 24*3600]
@@ -517,18 +521,22 @@ class INSTANCE(object):
         # End jobs
 
         for i in range(self.nNurses):
-            self.nurseObjs[i].ID = idict['rota'].loc[i, 'carer']
-            self.nurseObjs[i].postcode = idict['rota'].loc[i, 'postcode']
-            pcidict = idict['rota'].loc[i, 'postcode']
+            # self.nurseObjs[i].ID = idict['rota'].loc[i, 'carer']
+            self.nurseObjs[i].ID = carer_df.iloc[i]['unique_id'] # NOTE: this could also be 'carer' instead of unique_id, but unique_id has the shift number
+            # self.nurseObjs[i].postcode = idict['rota'].loc[i, 'postcode']
+            self.nurseObjs[i].postcode = carer_df.iloc[i]['postcode']
+            # pcidict = idict['rota'].loc[i, 'postcode']
             # print(i, ': ', pcidict)
-            latlon = cpo_inst.find_postcode_latlon(pcidict)
+            latlon = [carer_df.iloc[i]['latitude'], carer_df.iloc[i]['longitude']]
             # print(i, ': ', latlon)
             self.nurseObjs[i].startLocation = GEOPOINT(float(latlon[0]), float(latlon[1]))
             self.nurseObjs[i].transportMode = 'car'
-            istart = idict['rota'].loc[i, 'start']
-            ifinish = idict['rota'].loc[i, 'finish']
+            # istart = idict['rota'].loc[i, 'start']
+            # ifinish = idict['rota'].loc[i, 'finish']
+            istart = carer_df.iloc[i]['start']
+            ifinish = carer_df.iloc[i]['end']
             self.nurseObjs[i].shiftTimes = [float(istart), float(ifinish)]
-            self.nurseObjs[i].maxWorking = float(idict['rota'].loc[i, 'shift'])
+            self.nurseObjs[i].maxWorking = float(carer_df.iloc[i]['shift'])
             self.nurseObjs[i].skills = []
             self.nurseObjs[i].features = []
             self.nurseObjs[i].preferences = []
