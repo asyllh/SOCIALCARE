@@ -34,7 +34,7 @@ def main():
     create_python_plots = True
     # create_html_website = False
     create_html_website = True
-    area = 'Hampshire'
+    area = 'Salisbury'
     # input_filename = 'all_inst_Aldershot.p'
     # results_filename = '02_Nov_Hampshire_results.txt'
     # results_filename = 'test_02_Nov_Hampshire_results.txt'
@@ -70,14 +70,11 @@ def main():
     ####-------------------------- START CODE --------------------------####
 
     client_df, carer_df = rdi.retrieve_dfs(area, print_statements=False)
-    # print(client_df)
+    print(client_df)
     # print('Len client_df:', len(client_df))
-    # print(carer_df)
+    print(carer_df)
     
-    exit(-1)
-    inst = ihd.create_solve_inst(client_df, carer_df, options_vector, random_seed) # new, for dfs
-
-
+    # exit(-1)
     
 
     # all_instances = pickle.load(open('tools_and_scripts/' + input_filename, 'rb'))
@@ -87,7 +84,8 @@ def main():
     # Assign client 16 a different postcode (sp27tq) as its original postcode (sp27xx) is missing from codepoint open. This is just so we can use this instance for a test.
     # idict = cdi.assign_missing_postcode(idict)
     # results_filename = idict['fname'] + '_results_test.txt'
-    results_filename = 'test' + '_results_test.txt'
+    # results_filename = 'test' + '_results_test.txt'
+    results_filename = 'new_inst_test_Salisbury.txt'
     f = open(results_filename, 'a')
     f.write('------------------------------------------------------------\n')
     f.write('Date: ' + str(datetime.now()) + '\n')
@@ -105,7 +103,7 @@ def main():
     stt_time = time.perf_counter()
 
     # inst = hhc.create_solve_inst(idict, options_vector, random_seed) # old, for idict
-    # inst = ihd.create_solve_inst(client_df, carer_df, options_vector, random_seed) # new, for dfs
+    inst = ihd.create_solve_inst(client_df, carer_df, options_vector, random_seed) # new, for dfs
 
     quality = inst.Cquality
 
@@ -116,10 +114,12 @@ def main():
 
     end_time = time.perf_counter()
     elapsed_time = end_time - stt_time
-    print('Those were results for instance ' + str(idict_index) + ' in ' + str(idict['area']) + ', ' + str(idict['date']))
+    # print('Those were results for instance ' + str(idict_index) + ' in ' + str(idict['area']) + ', ' + str(idict['date']))
+    print('Those were results for instance ' + str(inst.fname) + ' in ' + str(inst.area) + ', ' + str(inst.date))
     print('Total running time: ' + str(np.round(elapsed_time, 1)) + ' seconds.')
     f = open(results_filename, 'a')
-    f.write(str(idict_index)+ '\t' + str(inst.Cquality))
+    # f.write(str(idict_index)+ '\t' + str(inst.Cquality))
+    f.write(str(inst.fname)+ '\t' + str(inst.Cquality))
     f.write("\t" + str(inst.algorithmOptions[0]))
     f.write("\t" + str(inst.totalTravelTime))
     f.write("\t" + str(inst.totalTardiness))
