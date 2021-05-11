@@ -156,10 +156,10 @@ def retrieve_dfs(area = 'None', print_statements=True):
     clientdf_hours['Eastings'] = clientdf_hours['Employee']
     clientdf_hours['Northings'] = clientdf_hours['Employee']
 
-    client_work = {'client_id' : [], 'job_function' : [], 'area' : [], 
-                'county' : [], 'postcode' : [], 'date' : [], 'start_time' : [], 
-                'duration' : [], 'end_time' : [], 'start' : [], 'end' : [], 'tw_start' : [], 'tw_end' : [], 'exception' : [], 
-                'eastings' : [], 'northings' : [], 'longitude' : [], 'latitude' : []}
+    client_work = {'client_id' : [], 'postcode' : [], 'area' : [], 'date' : [], 
+                'start' : [],  'duration' : [], 'end' : [],  'tw_start' : [], 'tw_end' : [], 
+                'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
+                'start_time' : [], 'end_time' : [], 'exception' : [], 'county' : [], 'job_function' : []}
 
     start_of_day = clientdf_hours.iloc[0]['From'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first job.
     # print('start_of_day: ', start_of_day)
@@ -300,12 +300,12 @@ def retrieve_dfs(area = 'None', print_statements=True):
     slot_duration = 15
     # Nights is from 23:00 to 6:00am, 7 hours
     first_slot_duration = 60*7 # Double check this, how long is "nights"?
-    carer_work = {'unique_id' : [], 'carer' : [], 
-                'shift' : [], 'start' : [], 
-                'duration' : [], 'end' : [],
+    carer_work = {'unique_id' : [], 'carer' : [], 'postcode' : [], 'area' : [],
+                'shift' : [], 'start' : [], 'duration' : [], 'end' : [], 
+                'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
+                'start_time' : [], 'end_time' : [],
                 'grade' : [], 'job_function' : [],
-                'postcode' : [], 'not_on_rota' : [],
-                'driver' : [], 'area' : [], 'eastings' : [], 'northings' : [], 'longitude' : [], 'latitude' : []}
+                'not_on_rota' : [], 'driver' : [],   }
 
     for i in range(len(carer_id)): # For each carer id number in the Carer Availability sheet (first row, under 'Nights')
         # Extract and save carer info from the other DF:
@@ -363,6 +363,8 @@ def retrieve_dfs(area = 'None', print_statements=True):
             carer_work['unique_id'].append(str(carer_id[i]) + '___' + str(shift_count))
             carer_work['carer'].append(str(carer_id[i]))
             carer_work['shift'].append(shift_count)
+            carer_work['start_time'].append(wh[k]['start']) # Start time in hh:mm:ss
+            
 
             # print(wh[k]['start'])
             # print(type(wh[k]['start']))
@@ -371,7 +373,7 @@ def retrieve_dfs(area = 'None', print_statements=True):
             # exit(-1)
             # carer_work['start'].append(wh[k]['start'])
             # start_dt = datetime.datetime.combine(date_pd, carer_work['start'][-1])
-            start_dt = datetime.datetime.combine(date_pd, wh[k]['start']) # wh[k]['start'] is datetime.time, need to combine with date_pd to get datetime.datetime
+            start_dt = datetime.datetime.combine(date_pd, wh[k]['start']) # wh[k]['start'] is datetime.time, need to combine with date_pd to get datetime.datetime, , i.e. yyyy-mm-dd hh:mm:ss
             # print('start_dt:', start_dt)
             # print('type start_dt:', type(start_dt))
             carer_work_start = time_dif_to_minutes(start_dt, start_of_day) # Get carer start time in minutes from midnight
@@ -381,8 +383,9 @@ def retrieve_dfs(area = 'None', print_statements=True):
 
             # exit(-1)
             carer_work['duration'].append(wh[k]['duration']) # type is int
-            # endtime = (datetime.datetime.combine(datetime.date(1,1,1), carer_work['start'][-1]) + datetime.timedelta(minutes=carer_work['duration'][-1])).time()
-            end_dt = start_dt + datetime.timedelta(minutes=carer_work['duration'][-1]) # datetime.datetime, end_dt is the timestamp
+            end_time = (datetime.datetime.combine(datetime.date(1,1,1), carer_work['start_time'][-1]) + datetime.timedelta(minutes=carer_work['duration'][-1])).time()
+            carer_work['end_time'].append(end_time) # End time in hh:mm:ss
+            end_dt = start_dt + datetime.timedelta(minutes=carer_work['duration'][-1]) # datetime.datetime, end_dt is the timestamp, i.e. yyyy-mm-dd hh:mm:ss
             # print('end_dt:', end_dt)
             # print('type end_dt:', type(end_dt))
             carer_work_end = time_dif_to_minutes(end_dt, start_of_day) # Get carer end time in minutes from midnight
