@@ -29,7 +29,18 @@ class CPO_DF(): # Codepoint Open DataFrame
         
         # We are interested in the areas 'Wiltshire', 'Hampshire', 'Berkshire/Buckinghamshire', and 'Monmouthshire', which we search with the codes below (CC county code, DC district code).
         # Wiltshire: DC E06000054, Hampshire: CC E10000014, Berkshire/Buckinghamshire: DC E06000060, Monmouthshire: DC W06000019, W06000020 and W06000021, W06000022
-        utas = [['DC', 'E06000054'], ['CC', 'E10000014'], ['DC', 'E06000060'], ['DC', 'W06000019'], ['DC', 'W06000020'], ['DC', 'W06000021'], ['DC', 'W06000022']]
+        utas = [['CC', 'E10000030'], 
+                ['CC', 'E10000032'], 
+                ['DC', 'E06000037'],
+                ['DC', 'E06000045'], 
+                ['DC', 'E06000054'], 
+                ['CC', 'E10000014'], 
+                ['DC', 'E07000092'], 
+                ['DC', 'E06000060'], 
+                ['DC', 'W06000019'], 
+                ['DC', 'W06000020'], 
+                ['DC', 'W06000021'], 
+                ['DC', 'W06000022']]
 
         count = 0
         dict_dfs = {}
@@ -54,7 +65,6 @@ class CPO_DF(): # Codepoint Open DataFrame
         # Now we convert eastings/northings to longitude/latitude and add these new columns to the datafram df. Our reference coordinate is EPSG:7405: https://spatialreference.org/ref/epsg/7405/ 
         gdf = geopandas.GeoDataFrame(self.df, geometry=geopandas.points_from_xy(self.df.EA, self.df.NO)) 
 
-
         # TO DO: Make this a try/except statement        
         gdf.crs = {"init":"epsg:7405"}
         # gdf = gdf.set_crs("EPSG:7405") # Set our current reference coordinates (eastings and northings)
@@ -65,7 +75,7 @@ class CPO_DF(): # Codepoint Open DataFrame
         self.df['LON'] = gdf['geometry'][:].x
         self.df['LAT'] = gdf['geometry'][:].y
         # print(self.df.head())
-        # exit(-1)
+    
     # --- End of def __init__ --- #
 
     def find_postcode_index(self, postcode): # Return the index of the df (the row number) where the postcode is located. 'no match' means postcode is not in df.
