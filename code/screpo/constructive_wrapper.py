@@ -34,7 +34,8 @@ def main():
     create_python_plots = True
     # create_html_website = False
     create_html_website = True
-    area = 'Salisbury'
+    area = 'Hampshire'
+    tw_interval = 15
     # input_filename = 'all_inst_Aldershot.p'
     # results_filename = '02_Nov_Hampshire_results.txt'
     # results_filename = 'test_02_Nov_Hampshire_results.txt'
@@ -43,7 +44,7 @@ def main():
     # random_seed = -1 # Only if run_in_parallel = False. -1 is a true random seed, otherwise set to this value
     random_seed = 13027 # NOTE: used for testing only. #35807 600seconds 13027
 
-    options_vector = hhc.default_options_vector() 
+    options_vector = ihd.default_options_vector() 
     # options_vector[1] = 1.0 # Two-opt active
     # options_vector[3] = 0.0 # Nurse order change active (neighbourhood in local search)
     # # options_vector[3] = 1.0 # Nurse order change active (neighbourhood in local search)
@@ -69,12 +70,19 @@ def main():
     # big_m = 10000000
     ####-------------------------- START CODE --------------------------####
 
-    client_df, carer_df = rdi.retrieve_dfs(area, print_statements=False)
-    print(client_df)
+    
+
+    client_df, carershift_df, carerday_df = rdi.retrieve_dfs(area, tw_interval, print_statements=False)
+    # print(client_df)
+    # print(carershift_df)
+    # print(carerday_df)
     # print('Len client_df:', len(client_df))
-    print(carer_df)
+    # print('Len carershift_df:', len(carershift_df))
+    # print('Len carerday_df:', len(carerday_df))
+
     
     # exit(-1)
+
     
 
     # all_instances = pickle.load(open('tools_and_scripts/' + input_filename, 'rb'))
@@ -85,7 +93,7 @@ def main():
     # idict = cdi.assign_missing_postcode(idict)
     # results_filename = idict['fname'] + '_results_test.txt'
     # results_filename = 'test' + '_results_test.txt'
-    results_filename = 'new_inst_test_Salisbury.txt'
+    results_filename = 'test_Hampshire.txt'
     f = open(results_filename, 'a')
     f.write('------------------------------------------------------------\n')
     f.write('Date: ' + str(datetime.now()) + '\n')
@@ -103,7 +111,7 @@ def main():
     stt_time = time.perf_counter()
 
     # inst = hhc.create_solve_inst(idict, options_vector, random_seed) # old, for idict
-    inst = ihd.create_solve_inst(client_df, carer_df, options_vector, random_seed) # new, for dfs
+    inst = ihd.create_solve_inst(client_df, carershift_df, carerday_df, options_vector, random_seed) # new, for dfs
 
     quality = inst.Cquality
 
