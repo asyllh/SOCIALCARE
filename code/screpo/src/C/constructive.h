@@ -1,4 +1,5 @@
-#include<stdio.h>
+#include <stdio.h>
+#include <stdbool.h> // Required to use 'bool' variable type
 #include <stdlib.h>
 #include <time.h>
 
@@ -31,6 +32,8 @@ struct INSTANCE {
 	float totPref; // Total preference score
 	int quality_measure; // Temp. Allow to choose (Mk, Ait h., etc.) Ideally we want a vector with weights! This should be set ONLY in "instance_from_python" (read_instance.c). The value is hardcoded at the moment.
 	float MAX_TIME_SECONDS; // Maximum time limit in seconds
+	int tw_interval; // Time window interval
+	bool exclude_nurse_travel; // True if excluding the nurse travel time from home to the first job when updating current time in 'set_nurse_time' function, else false.
 	// double **od_cost;
 	int** nurseWorkingTimes; // 2D array, size = nNurses x 3. For each nurse i (row): column[0] = start time, column[1] = finish time, column[2] = max working time. (column[2] not used?)
 	int** solMatrix; // 2D array, size = nNurses x nJobs. For each nurse i (row), the element in solMatrix[i][j] gives the position in nurse i's route where nurse i visits job j.
@@ -57,6 +60,8 @@ struct INSTANCE {
 	int*** capabilityOfDoubleServices; // 3D array, size = nNurses x nNurses x nDoubleService. For each pair of nurses, are the nurses capable of performing the double service together?
 	double** prefScore; // 2D array, size = nJobs x nNurses (note that the matrix dimension are the other way around compared to the others). Preference score: -ve if best to avoid, +ve if suitable.
 	double* algorithmOptions; // 1D array, size = 1 x 100, set in python file instance_handler.py, def default_options_vector.
+    int*** unavailMatrix; // 10 X 4 X nNurses 3d matrix, col[0] = unavailable shift number, col[1] = start of unavailable time, col[2] = end of unavailable time, col[3] = duration of unavailable time.
+    int* nurseUnavail; // 1D array, size = nNurses, for each nurse contains the number of unavailable shifts.
 	// int startTime;
 	// int ** jobTimeWindow;
 	// int * jobDuration;
@@ -64,8 +69,8 @@ struct INSTANCE {
 
 };
 
-MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, double* od_data, double* nurse_travel_from_depot,
-	double* nurse_travel_to_depot, int* nurseWorkingTimes_data, int* jobTimeInfo_data, int* jobRequirements_data, int* nurseSkills_data, int* solMatrixPointer, int* doubleService,
+MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, int tw_interval_data, bool exclude_nurse_travel_data, double* od_data, double* nurse_travel_from_depot,
+	double* nurse_travel_to_depot, int* unavail_matrix_data, int* nurse_unavail_data, int* nurseWorkingTimes_data, int* jobTimeInfo_data, int* jobRequirements_data, int* nurseSkills_data, int* solMatrixPointer, int* doubleService,
 	int* dependsOn, int* mk_mind, int* mk_maxd, int* capabilityOfDoubleServices, double* prefScore, double* algorithmOptions_data, int randomSeed);
 int main_with_output(struct INSTANCE* ip, int* solMatrixPointer, double* odmat_pointer);
 void solmatrix_to_python_format(struct INSTANCE* ip, int* solMatrixPointer);
@@ -110,6 +115,7 @@ void set_nurse_route(struct INSTANCE* ip, int ni);
 void get_nurse_route(struct INSTANCE* ip, int ni, int* nurseRoute);
 void print_nurse_route(struct INSTANCE* ip, int ni, int* nurseRoute);
 void set_nurse_time(struct INSTANCE* ip, int nursej);
+void new_set_nurse_time(struct INSTANCE* ip, int nursej);
 void set_times_full(struct INSTANCE* ip);
 void set_times_from(struct INSTANCE* ip, int first_nurse);
 int synchronise_job_i(struct INSTANCE* ip, int job, int nurse1, int nurse2);
@@ -139,8 +145,8 @@ void free_instance_copy(struct INSTANCE* ip);
 
 
 // Reading data functions: read_instance.c
-struct INSTANCE instance_from_python(int nJobs_data, int nNurses_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, double* od_data, double* nurse_travel_from_depot,
-	double* nurse_travel_to_depot, int* nurseWorkingTimes_data, int* jobTimeInfo_data, int* jobRequirements_data, int* nurseSkills_data, int* doubleService_data,
+struct INSTANCE instance_from_python(int nJobs_data, int nNurses_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, int tw_interval_data, bool exclude_nurse_travel_data, double* od_data, double* nurse_travel_from_depot,
+	double* nurse_travel_to_depot, int* unavail_matrix_data, int* nurse_unavail_data, int* nurseWorkingTimes_data, int* jobTimeInfo_data, int* jobRequirements_data, int* nurseSkills_data, int* doubleService_data,
 	int* dependsOn_data, int* mk_mind_data, int* mk_maxd_data, int* capabilityOfDoubleServices, double* prefScore, double* algorithmOptions);
 struct INSTANCE generate_instance();
 struct INSTANCE copy_instance(struct INSTANCE* original_instance);
