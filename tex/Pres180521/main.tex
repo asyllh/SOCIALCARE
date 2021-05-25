@@ -1,0 +1,1383 @@
+\documentclass[usenames,dvipsnames]{beamer}
+\input{includes/preamble.tex}
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+\begin{document}
+
+\title{Increasing Productivity in the Domiciliary Care Sector Through Automated Routing and Scheduling of Carers}
+\date{}
+%\author{A. L. Hawa, C. Lamas-Fernandez, A. Martinez-Sykora, C. Currie, T. Monks, T. Chalklen}
+\titlegraphic{\includegraphics[height=1.2cm]{figures/sotonabicare2.png}}
+\maketitle
+
+%\section{Introduction}
+
+
+\begin{frame}{Queries}
+	\scriptsize
+	%\begin{multicols}{2}
+	\begin{itemize}
+		\item Size of the dataset provided
+		\item Incomplete/incorrect postcodes (e.g. CU14 9DD, NP13)
+		\item Travel to/from carer's homes to be included?
+		\item Carers' locations between shifts (return home or elsewhere)
+		\item Areas have multiple locations (e.g. AndoverSalisbury, AldershotHampshire)
+		\item Clients' names in Carer Availability dataset
+		\item Missing details for some clients/carers
+		\item Duration of some tasks is 0 minutes
+	\end{itemize}	
+	%\end{multicols}
+\end{frame}
+
+\begin{frame}{Clients' Names in Carer Availability Dataset}
+	\begin{figure}
+		\includegraphics[width=1\linewidth]{figures/ClientNames}%
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Incorrect Postcodes and Multiple Locations}
+\begin{columns}
+	\column{0.5\textwidth}
+	\begin{minipage}[c][1\textheight][c]{\linewidth}
+		\includegraphics[width=1\linewidth]{figures/IncorrectPostcodes}
+	\end{minipage}
+	\column{0.5\textwidth}
+	\begin{minipage}[c][1\textheight][c]{\linewidth}
+		\includegraphics[width=0.8\linewidth]{figures/MultipleAreas}
+	\end{minipage}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Comparison: Salisbury vs Hampshire}
+	\small
+	\begin{multicols}{2}	
+		\begin{block}{Salisbury}
+			\begin{itemize}
+%				\setlength{\itemindent}{-.1in}
+				\item Carers = 35
+				\item Shifts = 70
+				\item Jobs = 14
+			\end{itemize}
+		\end{block}
+		\begin{block}{Hampshire}
+			\begin{itemize}
+%				\setlength{\itemindent}{-.1in}
+				\item Carers = 21
+				\item Shifts = 24
+				\item Jobs = 68
+			\end{itemize}
+		\end{block}
+	\end{multicols}	
+\end{frame}
+
+
+
+
+
+
+% Salisbury original vs including nursesto/from home. nNurses = 35, nJobs = 14, nShifts = 70
+\begin{frame} 
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\textbf{Salisbury}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=0.7\linewidth]{figures/ogSalisbury}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{Without home travel:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\setlength\itemsep{-0.2em}
+				\aitem Total: 38:24:18
+				\aitem Travel: 01:28:22
+				\aitem Waiting: 01:56:56
+				\aitem Distance: 246.53km
+			\end{itemize}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=0.7\linewidth]{figures/nurseSalisbury}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{With home travel:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\setlength\itemsep{-0.2em}
+				\ditem Total: 39:14:03
+				\ditem Travel: 02:01:38
+				\ditem Waiting: 02:13:25
+				\ditem Distance: 171.67km
+			\end{itemize}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Comparison: Salisbury with and without carer home travel}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/og_inst_Salisbury_2021-03-01_time_info_dst}%
+		\includegraphics[width=0.5\linewidth]{figures/nurse_inst_Salisbury_2021-03-01_time_info_dst}
+	\end{figure}
+\end{frame}
+
+% Hampshire original vs including nursesto/from home. nNurses = 21, nJobs = 68, nShifts = 24
+\begin{frame} 
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\textbf{Hampshire}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figures/ogHampshire}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{Without home travel:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\setlength\itemsep{-0.2em}
+				\aitem Total: 50:02:53
+				\aitem Travel: 05:30:20
+				\aitem Waiting: 01:47:33
+				\aitem Distance: 345.15km
+			\end{itemize}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figures/nurseHampshire}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{With home travel:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\setlength\itemsep{-0.2em}
+				\ditem Total: 53:07:04
+				\ditem Travel: 06:02:27
+				\ditem Waiting: 04:19:37
+				\ditem Distance: 363.78km
+			\end{itemize}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Comparison: Hampshire with and without carer home travel}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/og_inst_Hampshire_2021-03-01_time_info_dst}%
+		\includegraphics[width=0.5\linewidth]{figures/nurse_inst_Hampshire_2021-03-01_time_info_dst}
+	\end{figure}
+\end{frame}
+
+
+\begin{comment}
+\begin{frame}{Task}
+To create an efficient route and schedule for each carer such that all patients (jobs) are visited at the correct times by suitable carers.
+\small
+\begin{multicols}{2}
+	\begin{itemize}
+		\item Assign jobs to sufficiently skilled carer(s)
+		\item Assign jobs to preferred carers(s)
+		\item Assign carers to preferred jobs
+		\item Workload balance %($\overline{B}$)
+		\item Minimise waiting times %($\overline{W}$)
+		\item Minimise tardiness %($\overline{Z}$)
+		\item Minimise overtime %($\overline{O}$)
+		\item Minimise travel time %($\overline{T}$)
+		\item Minimise travel distance*
+		%\item Assign jobs and carers according to preferences ($\overline{P}$)
+	\end{itemize}	
+\end{multicols}	
+\end{frame}	
+
+\begin{frame}{Current Model and Approach}
+%\begin{multicols}{2}
+	\begin{itemize}
+		\item Weighted objective function 
+		\item Produce multiple schedules depending on the desired objective
+		\item Currently implemented in C++ and Python
+	\end{itemize}	
+%\end{multicols}	
+\end{frame}
+
+\begin{frame}{Data}
+This is required from each location:
+\footnotesize
+\begin{multicols}{2}
+	\begin{itemize}
+		\item Total number of patients/carers in each location
+		\item Max travel distance (route/radius)
+		\item Skills of carers
+		\item Time window of each job
+		\item Patient preferences: language, gender of carers, personal
+		\item Carer preferences: gender of patient, allergies, personal
+		\item Length of day for carers (full/half/flexible)
+		\item Number of DS/synchronised services
+		\item Distinct job types?
+		\item Carers ``on call''
+		\item Strength of preferences
+	\end{itemize}	
+\end{multicols}	
+\end{frame}
+
+
+\begin{frame}{Queries}
+\scriptsize
+%\begin{multicols}{2}
+	\begin{itemize}
+		\item \note{Desired objective(s)}
+		\item Are there skill ``levels'' for carers?
+		\item Distinct job types or customised per job
+		\item Jobs that \emph{cannot} start late
+		\item Lunch breaks
+		\item Parking availability at patient's home
+		\item PPE/COVID-19 conditions
+		\item Frequency of schedule formation
+		\item Database/software currently used
+		\item Hard and soft constraints
+		\item Any additional constraints?
+		\item Who will be using the application?
+		\item Additional carers available?
+	\end{itemize}	
+%\end{multicols}
+\end{frame}
+
+
+\begin{frame}{Rerouting and Rescheduling (R\&R)}
+In the event of an unexpected disruption, the original plan may need to be updated to accommodate any changes that occur.
+
+\note{Which of these do we need to address?}
+\small
+\begin{itemize}
+	\item Cancellation of a service
+	\item Addition of a new service (single or double)
+	\item Modification of a service (single or double)
+	\item Patient emergency, carer remains with patient
+	\item Increase in skill level of service
+	\item Increase in number of carers required for a service
+	\item Carer unwell at beginning/during the day or personal emergency
+	\item Carer requiring urgent assistance from another carer
+\end{itemize}	
+\end{frame}
+
+\begin{frame}{Meeting}
+\small
+\begin{itemize}
+	\item EasyLog only has details of time/length of job
+	\item Preferences/carer skills/client needs are known by staff only
+	\item No jobs between 2-4pm
+	\item Day in two shifts: 7am-2pm, 4pm-10pm
+	\item ``Ideal rotas'' on EasyLog
+	\item Availability of extra carers (e.g. part-time, can help with issues)
+	\item TW 15mins before and after start time
+	\item QR code carer clock in/out, not accurate
+	\item Larger gaps between jobs for new carers, e.g. +10mins travel time
+	\item Continuity of care
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Literature}
+
+\end{frame}
+
+	
+
+
+\begin{frame}{Comparison: Abicare vs DST}
+\small
+\begin{multicols}{3}	
+\begin{block}{Hampshire}
+	\begin{itemize}
+		\setlength{\itemindent}{-.1in}
+		\item Carers = 15
+		\item Clients = 34
+		\item Jobs = 480
+	\end{itemize}
+\end{block}
+\begin{block}{Monmouth}
+	\begin{itemize}
+		\setlength{\itemindent}{-.1in}
+		\item Carers = 23
+		\item Clients = 47
+		\item Jobs = 735
+	\end{itemize}
+\end{block}
+\begin{block}{Aldershot}
+	\begin{itemize}
+		\setlength{\itemindent}{-.1in}
+		\item Carers = 9
+		\item Clients = 19
+		\item Jobs = 184
+	\end{itemize}
+\end{block}
+\end{multicols}	
+\end{frame}
+\end{comment}
+
+\begin{comment}
+\begin{frame}{Comparison: Hampshire Time and Distance}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/Hampshire_time_comparison_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/Hampshire_dist_comparison_abi}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison: Monmouth Time and Distance}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/Monmouth_time_comparison_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/Monmouth_dist_comparison_abi}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison: Aldershot Time and Distance}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/Aldershot_time_comparison_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/Aldershot_dist_comparison_abi}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison: Hampshire Peak/Off-Peak Times}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/Hampshire_peaktime_comparison_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/Hampshire_offpeaktime_comparison_abi}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison: Monmouth Peak/Off-Peak Times}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/Monmouth_peaktime_comparison_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/Monmouth_offpeaktime_comparison_abi}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison: Aldershot Peak/Off-Peak Times}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/Aldershot_peaktime_comparison_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/Aldershot_offpeaktime_comparison_abi}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}
+		\includegraphics[width=0.5\textwidth]{figures/Hampshire_timeofday_jobs_abi}
+	\end{figure}
+	\vspace*{-0.9cm}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\includegraphics[width=\textwidth]{figures/Monmouth_timeofday_jobs_abi}
+			\end{figure}
+		\end{column}%
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\includegraphics[width=\textwidth]{figures/Aldershot_timeofday_jobs_abi}
+			\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}
+		\includegraphics[width=0.5\textwidth]{figures/Hampshire_shift_jobs_abi}
+	\end{figure}
+	\vspace*{-0.8cm}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\includegraphics[width=\textwidth]{figures/Monmouth_shift_jobs_abi}
+			\end{figure}
+		\end{column}%
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\includegraphics[width=\textwidth]{figures/Aldershot_shift_jobs_abi}
+			\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+
+
+\begin{frame}{Comparison: Total Time (minutes)}
+\scriptsize
+\begin{table}
+%\caption{Comparison}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ccrrcrrcrr}\toprule
+	&& \multicolumn{2}{c}{Hampshire} && \multicolumn{2}{c}{Monmouth} && \multicolumn{2}{c}{Aldershot} \\
+	\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}
+	\multicolumn{1}{c}{Date} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} \\
+	\midrule
+	02-Nov && 5640.00 & \gre{5452.46} && 6285.00 & \gre{5851.16} && 1480.00 & \gre{1449.90}\\
+	03-Nov && 5460.00 & \gre{5282.68} && 6030.00 & \gre{5758.70} && 1080.00 & \gre{1015.74}\\
+	04-Nov && 5160.00 & \gre{4996.38} && 6135.00 & \gre{6044.82} && 1355.00 & \gre{1321.32}\\
+	05-Nov && 5265.00 & \gre{5089.72} && 7200.00 & \gre{6955.46} && 2000.00 & \gre{1905.00}\\
+	06-Nov && 4875.00 & \gre{4617.36} && 7455.00 & \gre{7100.96} && 1470.00 & \gre{1345.28}\\
+	07-Nov && 3780.00 & \gre{3616.35} && 4845.00 & \gre{4574.79} && 1065.00 & \gre{1005.92}\\
+	08-Nov && 3720.00 & \gre{3608.01} && 4470.00 & \gre{4380.78} && 1050.00 & \gre{1006.87}\\
+	\bottomrule
+\end{tabular}
+\end{table}%
+\end{frame}
+
+
+
+\begin{frame}{Comparison: Total Travel Time (minutes)}
+	\scriptsize
+	\begin{table}
+		%\caption{Comparison}
+		\renewcommand{\arraystretch}{1.5}
+		\begin{tabular}{ccrrcrrcrr}\toprule
+			&& \multicolumn{2}{c}{Hampshire} && \multicolumn{2}{c}{Monmouth} && \multicolumn{2}{c}{Aldershot} \\
+			\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}
+			\multicolumn{1}{c}{Date} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} \\
+			\midrule
+			02-Nov && 372.88 & \gre{232.28} && \red{674.46} & 687.00 && 153.05 & \gre{124.81}\\
+			03-Nov && 381.58 & \gre{227.02} && \red{675.89} & 745.88 && 129.47 & \gre{119.21}\\
+			04-Nov && 384.52 & \gre{242.58} && \red{722.42} & 895.18 && 141.19 & \gre{119.79}\\
+			05-Nov && 389.95 & \gre{271.44} && 745.86 & \gre{687.87} && 168.99 & \gre{122.75}\\
+			06-Nov && 378.22 & \gre{243.76} && \red{824.72} & 920.79 && 123.08 & \gre{108.11}\\
+			07-Nov && 356.83 & \gre{243.81} && \red{661.50} & 779.27 && 133.91 & \gre{108.08}\\
+			08-Nov && 324.72 & \gre{223.68} && \red{636.07} & 802.96 && 142.60 & \gre{119.98}\\
+			\bottomrule
+		\end{tabular}
+	\end{table}%
+\end{frame}
+
+\begin{frame}{Comparison: Total Waiting Time (minutes)}
+	\scriptsize
+	\begin{table}
+		%\caption{Comparison}
+		\renewcommand{\arraystretch}{1.5}
+		\begin{tabular}{ccrrcrrcrr}\toprule
+			&& \multicolumn{2}{c}{Hampshire} && \multicolumn{2}{c}{Monmouth} && \multicolumn{2}{c}{Aldershot} \\
+			\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}
+			\multicolumn{1}{c}{Date} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} \\
+			\midrule
+			02-Nov && 1697.12 & \gre{1650.18} && 1455.54 & \gre{1009.16} && 261.95 & \gre{260.09}\\
+			03-Nov && 1688.42 & \gre{1665.65} && 1079.11 & \gre{737.81} && 110.53 & \gre{56.53}\\
+			04-Nov && 1295.48 & \gre{1273.80} && 822.58 & \gre{559.64} && 73.81 & \gre{61.53}\\
+			05-Nov && 1260.05 & \gre{1203.28} && 1714.14 & \gre{1527.59} && 381.01 & \gre{332.25}\\
+			06-Nov && 1166.78 & \gre{1043.60} && 1545.28 & \gre{1095.16} && 431.92 & \gre{322.17}\\
+			07-Nov && 1053.17 & \gre{1002.54} && 823.50 & \gre{435.51} && 246.09 & \gre{212.84}\\
+			08-Nov && 1100.28 & \gre{1089.32} && 578.93 & \gre{322.82} && 177.41 & \gre{156.89}\\
+			\bottomrule
+		\end{tabular}
+	\end{table}%
+\end{frame}
+
+\begin{frame}{Comparison: Total Travel Distance (km)}
+	\scriptsize
+	\begin{table}
+		%\caption{Comparison}
+		\renewcommand{\arraystretch}{1.5}
+		\begin{tabular}{ccrrcrrcrr}\toprule
+			&& \multicolumn{2}{c}{Hampshire} && \multicolumn{2}{c}{Monmouth} && \multicolumn{2}{c}{Aldershot} \\
+			\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}
+			\multicolumn{1}{c}{Date} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} \\
+			\midrule
+			02-Nov && 288.26 & \gre{161.16} && \red{497.03} & 569.09 && 127.14 & \gre{100.00}\\
+			03-Nov && 307.63 & \gre{153.31} && \red{502.23} & 662.55 && 106.41 & \gre{99.03}\\
+			04-Nov && 301.65 & \gre{165.69} && \red{550.60} & 822.70 && 108.11 & \gre{90.21}\\
+			05-Nov && 302.08 & \gre{193.55} && \red{561.90} & 578.20 && 129.57 & \gre{92.00}\\
+			06-Nov && 301.39 & \gre{167.34} && \red{639.99} & 831.14 && 98.11 & \gre{83.70}\\
+			07-Nov && 291.58 & \gre{176.95} && \red{503.89} & 662.54 && 110.56 & \gre{82.77}\\
+			08-Nov && 250.77 & \gre{160.10} && \red{489.51} & 676.26 && 113.47 & \gre{91.53}\\
+			\bottomrule
+		\end{tabular}
+	\end{table}%
+\end{frame}
+
+%----------------------------------- FIGURES AND PLOTS ------------------------------------%
+
+%=================================== HAMPSHIRE 03 NOV ===================================%
+
+\begin{frame} % HAMPSHIRE 03-NOV nNurses = 11, nJobs = 70, nClients = 28
+	\begin{columns}
+		\column{0.75\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\hspace{35mm}
+			\textbf{Hampshire: 03-Nov-2020}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figures/03HampshireAbi}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figures/03HampshireDST}
+		\end{minipage}
+		\column{0.25\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			%
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\scriptsize
+			\textbf{Abicare:}
+			\begin{itemize}
+				\setlength{\itemindent}{-.2in}
+				\aitem Total: 91:00:00
+				\aitem Travel: 06:21:35
+				\aitem Waiting: 28:08:25
+				\aitem Distance: 307.63km
+			\end{itemize}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\scriptsize
+			\textbf{DST:}
+			\begin{itemize}
+				\setlength{\itemindent}{-.2in}
+				\ditem Total: 88:02:41
+				\ditem Travel: 03:47:01
+				\ditem Waiting: 27:45:39
+				\ditem Distance: 153.31km
+			\end{itemize}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+\begin{frame} % PLOTS HAMPSHIRE 03-NOV nNurses = 11, nJobs = 70, nClients = 28
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/3_Nov_20_Hampshire_time_info_abiosrm}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/3_Nov_20_Hampshire_workload_abiosrm}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/3_Nov_20_Hampshire_time_info_dst}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/3_Nov_20_Hampshire_workload_dst}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+%=================================== HAMPSHIRE 06 NOV ===================================%
+
+\begin{frame} % HAMPSHIRE 06-NOV nNurses = 11, nJobs = 71, nClients = 27
+	\begin{columns}
+		\column{0.75\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\hspace{35mm}
+			\textbf{Hampshire: 06-Nov-2020}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/06HampshireAbi}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/06HampshireDST}
+		\end{minipage}
+		\column{0.25\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			%
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\scriptsize
+			\textbf{Abicare:}
+			\begin{itemize}
+				\setlength{\itemindent}{-.2in}
+				\aitem Total: 81:15:00
+				\aitem Travel: 06:18:13
+				\aitem Waiting: 19:26:47
+				\aitem Distance: 301.39km
+			\end{itemize}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\scriptsize
+			\textbf{DST:}
+			\begin{itemize}
+				\setlength{\itemindent}{-.2in}
+				\ditem Total: 76:57:22
+				\ditem Travel: 04:03:45
+				\ditem Waiting: 17:23:26
+				\ditem Distance: 167.34km
+			\end{itemize}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+\begin{frame} % PLOTS HAMPSHIRE 06-NOV nNurses = 11, nJobs = 71, nClients = 27
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/6_Nov_20_Hampshire_time_info_abiosrm}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/6_Nov_20_Hampshire_workload_abiosrm}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/6_Nov_20_Hampshire_time_info_dst}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/6_Nov_20_Hampshire_workload_dst}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+%=================================== MONMOUTH 02 NOV ===================================%
+
+\begin{frame} % MONMOUTH 02-NOV nNurses = 13, nJobs = 102, nClients = 37
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\hspace{35mm}
+			\textbf{Monmouth:}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/02MonmouthAbi}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{Abicare:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\aitem Total: 104:45:00
+				\aitem Travel: 11:14:28
+				\aitem Waiting: 24:15:32
+				\aitem Distance: 497.03km
+			\end{itemize}
+		\vspace{10mm}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\textbf{02-Nov-2020}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/02MonmouthDST}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{DST:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\ditem Total: 97:31:10
+				\ditem Travel: 11:27:00
+				\ditem Waiting: 16:49:10
+				\ditem Distance: 569.09km
+			\end{itemize}
+			\vspace{10mm}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+\begin{frame} % PLOTS MONMOUTH 02-NOV nNurses = 13, nJobs = 102, nClients = 37
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/2_Nov_20_Monmouth_time_info_abiosrm}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/2_Nov_20_Monmouth_workload_abiosrm}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/2_Nov_20_Monmouth_time_info_dst}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/2_Nov_20_Monmouth_workload_dst}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+%=================================== MONMOUTH 05 NOV ===================================%
+
+\begin{frame} % MONMOUTH 05-NOV nNurses = 16, nJobs = 116, nClients = 40
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\hspace{35mm}
+			\textbf{Monmouth:}
+		\end{minipage}
+		\begin{minipage}[c][0.65\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/05MonmouthAbi}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{Abicare:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\aitem Total: 120:00:00
+				\aitem Travel: 12:25:52
+				\aitem Waiting: 28:34:08
+				\aitem Distance: 561.90km
+			\end{itemize}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\textbf{05-Nov-2020}
+		\end{minipage}
+		\begin{minipage}[c][0.65\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/05MonmouthDST}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{DST:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\ditem Total: 115:55:27
+				\ditem Travel: 11:27:52
+				\ditem Waiting: 25:27:35
+				\ditem Distance: 578.20km
+			\end{itemize}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+\begin{frame} % PLOTS MONMOUTH 05-NOV nNurses = 16, nJobs = 116, nClients = 40
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/5_Nov_20_Monmouth_time_info_abiosrm}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/5_Nov_20_Monmouth_workload_abiosrm}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/5_Nov_20_Monmouth_time_info_dst}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/5_Nov_20_Monmouth_workload_dst}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+%=================================== ALDERSHOT 05 NOV ===================================%
+
+\begin{frame} % ALDERSHOT 05-NOV nNurses = 5, nJobs = 30, nClients = 16
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\hspace{37mm}
+			\textbf{Aldershot:}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figures/05AldershotAbi2}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{Abicare:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\aitem Total: 33:20:00
+				\aitem Travel: 02:48:59
+				\aitem Waiting: 06:21:01
+				\aitem Distance: 129.57km
+			\end{itemize}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\textbf{05-Nov-2020}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figures/05AldershotDST2}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{DST:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\ditem Total: 31:45:00
+				\ditem Travel: 02:02:25
+				\ditem Waiting: 05:32:15
+				\ditem Distance: 92.00km
+			\end{itemize}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+\begin{frame} % PLOTS ALDERSHOT 05-NOV nNurses = 5, nJobs = 30, nClients = 16
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/5_Nov_20_Aldershot_time_info_abiosrm}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/5_Nov_20_Aldershot_workload_abiosrm}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/5_Nov_20_Aldershot_time_info_dst}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/5_Nov_20_Aldershot_workload_dst}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+%=================================== ALDERSHOT 06 NOV ===================================%
+
+\begin{frame} % ALDERSHOT 06-NOV nNurses = 5, nJobs = 27, nClients = 15
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\hspace{37mm}
+			\textbf{Aldershot:}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/06AldershotAbi}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{Abicare:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\aitem Total: 24:30:00
+				\aitem Travel: 02:03:05
+				\aitem Waiting: 07:11:55
+				\aitem Distance: 98.11km
+			\end{itemize}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.05\textheight][c]{\linewidth}
+			\textbf{06-Nov-2020}
+		\end{minipage}
+		\begin{minipage}[c][0.7\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/06AldershotDST}
+		\end{minipage}
+		\begin{minipage}[c][0.2\textheight][c]{\linewidth}
+			\scriptsize
+			\hspace{17mm}\textbf{DST:}
+			\begin{itemize}
+				\setlength{\itemindent}{0.5in}
+				\ditem Total: 22:25:16
+				\ditem Travel: 01:48:06
+				\ditem Waiting: 05:22:10
+				\ditem Distance: 83.70km
+			\end{itemize}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+\begin{frame} % ALDERSHOT 06-NOV nNurses = 5, nJobs = 27, nClients = 15
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/6_Nov_20_Aldershot_time_info_abiosrm}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/6_Nov_20_Aldershot_workload_abiosrm}
+		\end{minipage}
+		\column{0.5\textwidth}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/6_Nov_20_Aldershot_time_info_dst}
+		\end{minipage}
+		\begin{minipage}[c][0.45\textheight][c]{\linewidth}
+			\vspace{5mm}
+			\centering
+			\includegraphics[width=1\linewidth]{figures/6_Nov_20_Aldershot_workload_dst}
+		\end{minipage}
+	\end{columns}
+\end{frame}
+
+%==========================================================================================
+
+\begin{frame}{Issues}
+	\begin{itemize}
+		\aitem Missing miles/estimated time for some tasks
+		\aitem No travel data (miles/estimated time) between carer's home and first/last tasks
+		\aitem Some clients have tasks back-to-back that are given separately - why?
+		\aitem All other areas cannot be studied due to missing postcodes
+	\end{itemize}
+\end{frame}
+
+%==========================================================================================
+\end{comment}
+\begin{comment}
+\begin{frame}{Comparison}
+	\begin{figure}[T]
+		\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Hampshire_time_info_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Hampshire_time_info_dst}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+	\begin{figure}[T]
+		\includegraphics[width=0.5\linewidth]{figures/3_Nov_20_Hampshire_time_info_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/3_Nov_20_Hampshire_time_info_dst}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+	\begin{figure}[T]
+		\includegraphics[width=0.5\linewidth]{figures/4_Nov_20_Hampshire_time_info_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/4_Nov_20_Hampshire_time_info_dst}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+	\begin{figure}[T]
+		\includegraphics[width=0.5\linewidth]{figures/5_Nov_20_Hampshire_time_info_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/5_Nov_20_Hampshire_time_info_dst}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+	\begin{figure}[T]
+		\includegraphics[width=0.5\linewidth]{figures/6_Nov_20_Hampshire_time_info_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/6_Nov_20_Hampshire_time_info_dst}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+	\begin{figure}[T]
+		\includegraphics[width=0.5\linewidth]{figures/7_Nov_20_Hampshire_time_info_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/7_Nov_20_Hampshire_time_info_dst}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+	\begin{figure}[T]
+		\includegraphics[width=0.5\linewidth]{figures/8_Nov_20_Hampshire_time_info_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/8_Nov_20_Hampshire_time_info_dst}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Hampshire_workload_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Hampshire_workload_dst}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/3_Nov_20_Hampshire_workload_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/3_Nov_20_Hampshire_workload_dst}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Comparison}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/4_Nov_20_Hampshire_workload_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/4_Nov_20_Hampshire_workload_dst}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Comparison}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/5_Nov_20_Hampshire_workload_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/5_Nov_20_Hampshire_workload_dst}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Comparison}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/6_Nov_20_Hampshire_workload_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/6_Nov_20_Hampshire_workload_dst}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Comparison}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/7_Nov_20_Hampshire_workload_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/7_Nov_20_Hampshire_workload_dst}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{Comparison}
+	\begin{figure}
+		\includegraphics[width=0.5\linewidth]{figures/8_Nov_20_Hampshire_workload_abi}%
+		\includegraphics[width=0.5\linewidth]{figures/8_Nov_20_Hampshire_workload_dst}
+	\end{figure}
+\end{frame}
+\end{comment}
+
+\begin{comment}
+\begin{frame}{Comparison OLD: Total Travel Time (minutes)}
+\scriptsize
+\begin{table}
+%\caption{Comparison}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ccrrcrrcrr}\toprule
+&& \multicolumn{2}{c}{Hampshire} && \multicolumn{2}{c}{Monmouth} && \multicolumn{2}{c}{Aldershot} \\
+\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}
+\multicolumn{1}{c}{Date} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} \\
+\midrule
+02-Nov && 475.00 & \gre{232.28} && 722.55 & \gre{687.00} && 192.77 & \gre{124.81}\\
+03-Nov && 489.88 & \gre{227.02} && \red{728.62} & 745.88 && 166.05 & \gre{119.21}\\
+04-Nov && 490.77 & \gre{242.58} && \red{769.78} & 895.18 && 178.28 & \gre{119.79}\\
+05-Nov && 490.42 & \gre{271.44} && 798.20 & \gre{687.87} && 211.58 & \gre{122.75}\\
+06-Nov && 479.50 & \gre{243.76} && \red{864.52} & 920.79 && 152.97 & \gre{108.11}\\
+07-Nov && 452.67 & \gre{243.81} && \red{694.07} & 779.27 && 167.70 & \gre{108.08}\\
+08-Nov && 405.41 & \gre{223.68} && \red{666.17} & 802.96 && 176.48 & \gre{119.98}\\
+\bottomrule
+\end{tabular}
+\end{table}%
+\end{frame}
+
+
+\begin{frame}{Comparison OLD: Total Waiting Time (minutes)}
+\scriptsize
+\begin{table}
+%\caption{Comparison}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ccrrcrrcrr}\toprule
+&& \multicolumn{2}{c}{Hampshire} && \multicolumn{2}{c}{Monmouth} && \multicolumn{2}{c}{Aldershot} \\
+\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}
+\multicolumn{1}{c}{Date} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} \\
+\midrule
+02-Nov && \red{1595.00} & 1650.18 && 1407.45 & \gre{1009.16} && \red{222.23} & 260.09\\
+03-Nov && \red{1580.12} & 1665.65 && 1026.38 & \gre{737.81} && 73.95 & \gre{56.53}\\
+04-Nov && \red{1189.23} & 1273.80 && 775.22 & \gre{559.64} && \red{36.72} & 61.53\\
+05-Nov && \red{1159.58} & 1203.28 && 1661.80 & \gre{1527.59} && 338.42 & \gre{332.25}\\
+06-Nov && 1065.50 & \gre{1043.60} && 1505.48 & \gre{1095.16} && 402.03 & \gre{322.17}\\
+07-Nov && \red{957.33} & 1002.54 && 790.93 & \gre{435.51} && \red{212.30} & 212.84\\
+08-Nov && \red{1019.59} & 1089.32 && 548.83 & \gre{322.82} && \red{143.52} & 156.89\\
+\bottomrule
+\end{tabular}
+\end{table}%
+\end{frame}
+
+\begin{figure}
+\centering
+\begin{subfigure}[h]{0.67\textwidth}
+\vspace{3mm}
+\includegraphics[width=1\linewidth]{figures/03HampshireAbi}
+\caption{Hampshire 03-Nov: Abicare}
+\label{fig:03hampabi} 
+\end{subfigure}
+%\vspace{-10mm}
+\begin{subfigure}[h]{0.67\textwidth}
+\includegraphics[width=1\linewidth]{figures/03HampshireDST}
+\caption{Hampshire 03-Nov: DST}
+\label{fig:03hampdst}
+\end{subfigure}
+\end{figure}
+
+\begin{frame}
+\begin{columns}
+\column{0.75\textwidth}
+\begin{minipage}[c][0.47\textheight][c]{\linewidth}
+\centering
+\includegraphics[width=0.9\linewidth]{figures/03HampshireAbi}
+\end{minipage}
+\begin{minipage}[c][0.47\textheight][c]{\linewidth}
+\centering
+\includegraphics[width=0.9\linewidth]{figures/03HampshireDST}
+\end{minipage}
+\column{0.25\textwidth}
+\begin{minipage}[c][0.47\textheight][c]{\linewidth}
+\scriptsize
+Hampshire 03Nov: Abicare
+\begin{itemize}
+\setlength{\itemindent}{-.2in}
+\item Total: 91:00:00
+\item Travel: 08:09:53
+\item Waiting: 26:20:07
+\end{itemize}
+\end{minipage}
+\begin{minipage}[c][0.47\textheight][c]{\linewidth}
+\scriptsize
+Hampshire 03-Nov: DST
+\begin{itemize}
+\setlength{\itemindent}{-.2in}
+\item Total: 88:02:41
+\item Travel: 03:47:01
+\item Waiting: 27:45:39
+\end{itemize}
+\end{minipage}
+\end{columns}
+\end{frame}
+\end{comment}
+
+
+\begin{comment}
+%SAVE TEMPLATE
+\begin{frame}{Comparison: Total Time (minutes)}
+\scriptsize
+\begin{table}
+%\caption{Comparison}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ccrrcrrcrr}\toprule
+&& \multicolumn{2}{c}{Hampshire} && \multicolumn{2}{c}{Monmouth} && \multicolumn{2}{c}{Aldershot} \\
+\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}
+\multicolumn{1}{c}{Date} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} \\
+\midrule
+02-Nov && 5640.00 & 5452.46 && 6285.00 & 5851.16 && 1480.00 & 1449.90\\
+03-Nov && 5460.00 & 5282.68 && 6030.00 & 5758.70 && 1080.00 & 1015.74\\
+04-Nov && 5160.00 & 4996.38 && 6135.00 & 6044.82 && 1355.00 & 1321.32\\
+05-Nov && 5265.00 & 5089.72 && 7200.00 & 6955.46 && 2000.00 & 1905.00\\
+06-Nov && 4875.00 & 4617.36 && 7455.00 & 7100.96 && 1470.00 & 1345.28\\
+07-Nov && 3780.00 & 3616.35 && 4845.00 & 4574.79 && 1065.00 & 1005.92\\
+08-Nov && 3720.00 & 3608.01 && 4470.00 & 4380.78 && 1050.00 & 1006.87\\
+\bottomrule
+\end{tabular}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Comparison: Total Travel Time (minutes)}
+\scriptsize
+\begin{table}
+%\caption{Comparison}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ccrrcrrcrr}\toprule
+&& \multicolumn{2}{c}{Hampshire} && \multicolumn{2}{c}{Monmouth} && \multicolumn{2}{c}{Aldershot} \\
+\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}
+\multicolumn{1}{c}{Date} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} \\
+\midrule
+02-Nov && 475.00 & 232.28 && 722.55 & 687.00 && 192.77 & 124.81\\
+03-Nov && 489.88 & 227.02 && 728.62 & 745.88 && 166.05 & 119.21\\
+04-Nov && 490.77 & 242.58 && 769.78 & 895.18 && 178.28 & 119.79\\
+05-Nov && 490.42 & 271.44 && 798.20 & 687.87 && 211.58 & 122.75\\
+06-Nov && 479.50 & 243.76 && 864.52 & 920.79 && 152.97 & 108.11\\
+07-Nov && 452.67 & 243.81 && 694.07 & 779.27 && 167.70 & 108.08\\
+08-Nov && 405.41 & 223.68 && 666.17 & 802.96 && 176.48 & 119.98\\
+\bottomrule
+\end{tabular}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Comparison: Total Waiting Time (minutes)}
+	\scriptsize
+	\begin{table}
+		%\caption{Comparison}
+		\renewcommand{\arraystretch}{1.5}
+		\begin{tabular}{ccrrcrrcrr}\toprule
+			&& \multicolumn{2}{c}{Hampshire} && \multicolumn{2}{c}{Monmouth} && \multicolumn{2}{c}{Aldershot} \\
+			\cmidrule{3-4} \cmidrule{6-7} \cmidrule{9-10}
+			\multicolumn{1}{c}{Date} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} && \multicolumn{1}{c}{Abicare} & \multicolumn{1}{c}{DST} \\
+			\midrule
+			02-Nov && 1595.00 & 1650.18 && 1407.45 & 1009.16 && 222.23 & 260.09\\
+			03-Nov && 1580.12 & 1665.65 && 1026.38 & 737.81 && 73.95 & 56.53\\
+			04-Nov && 1189.23 & 1273.80 && 775.22 & 559.64 && 36.72 & 61.53\\
+			05-Nov && 1159.58 & 1203.28 && 1661.80 & 1527.59 && 338.42 & 332.25\\
+			06-Nov && 1065.50 & 1043.60 && 1505.48 & 1095.16 && 402.03 & 322.17\\
+			07-Nov && 957.33 & 1002.54 && 790.93 & 435.51 && 212.30 & 212.84\\
+			08-Nov && 1019.59 & 1089.32 && 548.83 & 322.82 && 143.52 & 156.89\\
+			\bottomrule
+		\end{tabular}
+	\end{table}%
+\end{frame}
+\end{comment}
+
+
+
+
+\begin{comment}
+\begin{frame}
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{figures/Hampshire_timeofday_jobs_abi}
+\end{figure}
+\vspace*{-0.9cm}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figures/Monmouth_timeofday_jobs_abi}
+\end{figure}
+\end{column}%
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figures/Aldershot_timeofday_jobs_abi}
+\end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{figures/Hampshire_shift_jobs_abi}
+\end{figure}
+\vspace*{-0.8cm}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figures/Monmouth_shift_jobs_abi}
+\end{figure}
+\end{column}%
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figures/Aldershot_shift_jobs_abi}
+\end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Comparison}
+\begin{figure}[T]
+\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Hampshire_time_info_abi}%
+\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Hampshire_time_info_dst}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+\begin{figure}
+\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Hampshire_workload_abi}%
+\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Hampshire_workload_dst}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Comparisonx}
+\begin{figure}
+\includegraphics[width=0.5\linewidth]{figures/3_Nov_20_Hampshire_workload_abi}%
+\includegraphics[width=0.5\linewidth]{figures/3_Nov_20_Hampshire_workload_dst}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+\begin{figure}[B]
+\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Monmouth_time_info_abi}%
+\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Monmouth_workload_abi}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Comparison}
+\begin{figure}
+\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Aldershot_time_info_abi}%
+\includegraphics[width=0.5\linewidth]{figures/2_Nov_20_Aldershot_workload_abi}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{minipage}[c][0.4\textheight][c]{\linewidth}
+\centering
+\includegraphics[width=0.9\linewidth]{figures/Hampshire_timeofday_jobs_abi}
+\end{minipage}
+\begin{minipage}[c][0.4\textheight][c]{\linewidth}
+\centering
+\includegraphics[width=0.9\linewidth]{figures/Monmouth_timeofday_jobs_abi}
+\end{minipage}
+\column{0.5\textwidth}
+\begin{minipage}[c][0.4\textheight][c]{\linewidth}
+\begin{enumerate}
+\item First.
+\item Second.
+\item Third.
+\end{enumerate}
+\end{minipage}
+\begin{minipage}[c][0.4\textheight][c]{\linewidth}
+\centering
+\includegraphics[width=0.9\linewidth]{figures/Aldershot_timeofday_jobs_abi}
+\end{minipage}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}
+\scriptsize
+\begin{multicols}{3}
+\begin{table}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.5}
+%		\caption{Hampshire}
+\begin{tabular}{ccc}\toprule
+Date & Abicare & DST \\
+\midrule
+02-Nov & 5640.00 & 5452.46\\
+03-Nov & 5460.00 & 5282.68\\
+04-Nov & 5160.00 & 4996.38\\
+05-Nov & 5265.00 & 5089.72\\
+06-Nov & 4875.00 & 4617.36 \\
+07-Nov & 3780.00 & 3616.35\\
+08-Nov & 3720.00 & 3608.01\\
+\bottomrule
+\end{tabular}
+\end{table}%
+\vspace{2mm}
+\begin{table}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ccc}\toprule
+Date & Abicare & DST \\
+\midrule
+02-Nov & 6285.00 & 5851.16\\
+03-Nov & 6030.00 & 5758.70\\
+04-Nov & 6135.00 & 6044.82\\
+05-Nov & 7200.00 & 6955.46\\
+06-Nov & 7455.00 & 7100.96 \\
+07-Nov & 4845.00 & 4574.79\\
+08-Nov & 4470.00 & 4380.78\\
+\bottomrule
+\end{tabular}
+\end{table}%
+\vspace{2mm}
+\begin{table}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{ccc}\toprule
+Date & Abicare & DST \\
+\midrule
+02-Nov & 1480.00 & 1449.90\\
+03-Nov & 1080.00 & 1015.74\\
+04-Nov & 1355.00 & 1321.32\\
+05-Nov & 2000.00 & 1905.00\\
+06-Nov & 1470.00 & 1345.28 \\
+07-Nov & 1065.00 & 1005.92\\
+08-Nov & 1050.00 & 1006.87\\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{multicols}
+\end{frame}
+\end{comment}
+
+
+\end{document}
