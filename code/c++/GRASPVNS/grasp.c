@@ -442,6 +442,7 @@ int GRASP(struct INSTANCE* ip) {
 						// PR improved the current solution and it's different from the one in the pool
 						overwrite_instance(&bestRelinkedSolution, &output);
 						printf("\tPair %d - %d: *** achieved quality: %.2f ***\n", ps, ps2, sol_quality(&bestRelinkedSolution, -123));
+						printf("\tbest_final_quality: %.2f, relinking_quality: %.2f\n", best_final_quality, relinking_quality);
 						best_final_quality = relinking_quality;
 					}
 				}
@@ -449,16 +450,22 @@ int GRASP(struct INSTANCE* ip) {
 		}
 
 		if (quality < best_final_quality - TOL) { //If bestRS has better quality than previous ip solution (before PR), then update ip to be bestRS
+		    printf("quality: %.2f, best_final_quality: %.2f\n", quality, best_final_quality);
+		    printf("bestRelinkedSolution quality: %.2f\n", sol_quality(&bestRelinkedSolution, -123));
 			overwrite_instance(ip, &bestRelinkedSolution);
+			double new_quality = sol_quality(ip, -123);
+			printf("new_quality: %.2f \n", new_quality);
 		}
 
 		int solcallnum = ip->verbose - 1;
 		solcallnum = 12345;
 		quality = sol_quality(ip, solcallnum); //quality of updated ip solution
 
+
 		if (fabs(quality - best_final_quality) > TOL) { //If quality of ip is not the same as quality of bestRS, then we haven't updated ip correctly
-			printf("ERROR: PR all pairs did not work as expected!\n We thought we'd get: %.2f but we got %.2f\n", best_final_quality, quality);
+			printf("ERROR: PR all pairs did not work as expected!\n We thought we'd get: (bfq) %.2f but we got (q) %.2f\n", best_final_quality, quality);
 			printf("Sol quality type: %d\n", ip->quality_measure);
+			printf("Exiting program.");
 			exit(-34339);
 		}
 		printf("\tPR all pairs final quality: %.2f\n", quality);
