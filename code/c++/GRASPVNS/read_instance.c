@@ -146,25 +146,11 @@ struct INSTANCE copy_instance(struct INSTANCE* oi) {
 
 
 // // Functions to read instances, and some hardcoded instances too
-struct INSTANCE instance_from_python(int nJobs_data,
-	int nNurses_data,
-	int nSkills_data,
-	int verbose_data,
-	float MAX_TIME_SECONDS,
-	double* od_data,
-	double* nurse_travel_from_depot_data,
-	double* nurse_travel_to_depot_data,
-	int* nurseWorkingTimes_data,
-	int* jobTimeInfo_data,
-	int* jobRequirements_data,
-	int* nurseSkills_data,
-	int* doubleService_data,
-	int* dependsOn_data,
-	int* mk_mind_data,
-	int* mk_maxd_data,
-	int* capabilityOfDoubleServices_data,
-	double* prefScore_data,
-	double* algorithmOptions_data) {
+struct INSTANCE instance_from_python(int nJobs_data, int nNurses_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, int tw_interval_data, bool exclude_nurse_travel_data,
+	                                double* od_data, double* nurse_travel_from_depot_data, double* nurse_travel_to_depot_data, int* unavail_matrix_data, int* nurse_unavail_data,
+	                                int* nurseWorkingTimes_data, int* jobTimeInfo_data,
+	                                int* jobRequirements_data, int* nurseSkills_data, int* doubleService_data, int* dependsOn_data, int* mk_mind_data, int* mk_maxd_data,
+	                                int* capabilityOfDoubleServices_data, double* prefScore_data, double* algorithmOptions_data) {
 	int printAllAllocations = 0;
 
 	// quality_measure = 1 is Mk, 0 is Ait H.
@@ -200,8 +186,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 	int nJobs = nJobs_data;
 	int nNurses = nNurses_data;
 	int nSkills = nSkills_data;
-	if (verbose_data > 5)
-		printf("Starting allocation of memory\n");
+	if (verbose_data > 5){
+        printf("Starting allocation of memory\n");
+    }
 	///////////////////// ALLOCATE MEMORY /////////////////////
 
 		// int **od;.
@@ -220,8 +207,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 			od[i][j] = (double)od_data[ct];
 		}
 
-	if (verbose_data > 5)
-		printf("Allocated od.\n");
+	if (verbose_data > 5){
+        printf("Allocated od.\n");
+    }
 
 
 	nRows = nNurses;
@@ -241,8 +229,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 			// printf("\tnurse_travel_from_depot[%d][%d] = %.2f\n", i, j, nurse_travel_from_depot[i][j]);
 		}
 
-	if (verbose_data > 5)
-		printf("Allocated nurse_travel_from_depot.\n");
+	if (verbose_data > 5){
+        printf("Allocated nurse_travel_from_depot.\n");
+    }
 
 
 	double** nurse_travel_to_depot;
@@ -260,8 +249,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 			// printf("\tnurse_travel_to_depot[%d][%d] = %.2f\n", i, j, nurse_travel_to_depot[i][j]);
 		}
 
-	if (verbose_data > 5)
-		printf("Allocated nurse_travel_to_depot.\n");
+	if (verbose_data > 5){
+        printf("Allocated nurse_travel_to_depot.\n");
+    }
 
 
 	// Should include eventually working times here as well
@@ -277,7 +267,7 @@ struct INSTANCE instance_from_python(int nJobs_data,
 	// 	printf("Allocated jobDuration.\n");
 
 
-// nurseWorkingTimes_data
+    // nurseWorkingTimes_data
 	int** nurseWorkingTimes;
 	nRows = nNurses;
 	nCols = 3;
@@ -292,8 +282,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 			nurseWorkingTimes[i][j] = nurseWorkingTimes_data[ct];
 		}
 	//end populating
-	if (verbose_data > 5)
-		printf("Allocated nurseWorkingTimes.\n");
+	if (verbose_data > 5){
+        printf("Allocated nurseWorkingTimes.\n");
+    }
 
 	// nurseSkills_data
 	int** nurseSkills;
@@ -310,8 +301,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 			nurseSkills[i][j] = nurseSkills_data[ct];
 		}
 	//end populating
-	if (verbose_data > 5)
-		printf("Allocated nurseSkills.\n");
+	if (verbose_data > 5){
+        printf("Allocated nurseSkills.\n");
+    }
 
 	// jobRequirements_data
 	int** jobRequirements;
@@ -328,8 +320,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 			jobRequirements[i][j] = jobRequirements_data[ct];
 		}
 	//end populating
-	if (verbose_data > 5)
-		printf("Allocated jobRequirements.\n");
+	if (verbose_data > 5){
+        printf("Allocated jobRequirements.\n");
+    }
 
 
 	int** jobTimeInfo;
@@ -347,8 +340,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 		}
 	//end populating
 
-	if (verbose_data > 5)
-		printf("Allocated jobTimeInfo.\n");
+	if (verbose_data > 5){
+        printf("Allocated jobTimeInfo.\n");
+    }
 
 
 	int** solMatrix;
@@ -362,8 +356,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 		for (int j = 0; j < nCols; ++j)
 			solMatrix[i][j] = -1;
 	//end populating
-	if (verbose_data > 5)
-		printf("Allocated solMatrix.\n");
+	if (verbose_data > 5){
+        printf("Allocated solMatrix.\n");
+    }
 
 
 	double** timeMatrix;
@@ -377,8 +372,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 		for (int j = 0; j < nCols; ++j)
 			timeMatrix[i][j] = -1;
 	//end populating
-	if (verbose_data > 5)
-		printf("Allocated timeMatrix.\n");
+	if (verbose_data > 5){
+        printf("Allocated timeMatrix.\n");
+    }
 
 
 	int* nurseRoute = malloc(nJobs * sizeof(int));
@@ -394,8 +390,9 @@ struct INSTANCE instance_from_python(int nJobs_data,
 		for (int j = 0; j < nCols; ++j)
 			allNurseRoutes[i][j] = -1;
 	//end populating
-	if (verbose_data > 5)
-		printf("Allocated allNurseRoutes.\n");
+	if (verbose_data > 5){
+        printf("Allocated allNurseRoutes.\n");
+    }
 
 	double* nurseWaitingTime = malloc(nNurses * sizeof(double));
 	double* nurseTravelTime = malloc(nNurses * sizeof(double));
@@ -404,6 +401,7 @@ struct INSTANCE instance_from_python(int nJobs_data,
 	int* dependsOn = malloc(nJobs * sizeof(int));
 	int* mk_mind = malloc(nJobs * sizeof(int));
 	int* mk_maxd = malloc(nJobs * sizeof(int));
+
 	int nDoubleServices = 0;
 	for (int i = 0; i < nJobs; ++i) {
 		doubleService[i] = doubleService_data[i];
@@ -411,8 +409,13 @@ struct INSTANCE instance_from_python(int nJobs_data,
 		mk_mind[i] = mk_mind_data[i + 1];
 		mk_maxd[i] = mk_maxd_data[i + 1];
 		nDoubleServices += doubleService_data[i];
-
 		// printf("DS %d = %d\n", i, doubleService_data[i]);
+	}
+
+	// nurseUnavail from nurse_unavail_data (24/05/2021)
+    int* nurseUnavail = malloc(nNurses * sizeof(int));
+	for (int i = 0; i < nNurses; i++){
+        nurseUnavail[i] = nurse_unavail_data[i];
 	}
 
 
@@ -425,18 +428,10 @@ struct INSTANCE instance_from_python(int nJobs_data,
 	for (int i = 0; i < nRows; i++)
 		nurseSkilled[i] = malloc(nCols * sizeof(int)); // Cols
 	nurse_skilled_from_skills_and_requirements(nurseSkills, jobRequirements, nurseSkilled, doubleService, nJobs, nNurses, nSkills);
-	if (verbose_data > 5)
-		printf("Allocated nurseSkilled.\n");
+	if (verbose_data > 5){
+        printf("Allocated nurseSkilled.\n");
+    }
 
-	// printf("\nnurseSkilled\n");
-	// for (int nnnn = 0; nnnn < nNurses; ++nnnn)
-	// {
-	// 	for (int jjjj = 0; jjjj < nJobs; ++jjjj)
-	// 	{
-	// 		printf("(%d, %d) = %d\t", nnnn, jjjj, nurseSkilled[nnnn][jjjj]);
-	// 	}
-	// }
-	// printf("\n");
 
 
 	double** prefScore; // Job x Nurse
@@ -491,7 +486,31 @@ struct INSTANCE instance_from_python(int nJobs_data,
 		}
 		// printf("\n");
 	}
-	//end populating
+
+    // unavailMatrix from unavail_matrix_data (24/05/2021)
+    int*** unavailMatrix;
+    nRows = 10; /** NEED TO CHANGE THIS **/
+    nCols = 4;
+    // dim3 is nDoubleServices
+    unavailMatrix = malloc(nRows * sizeof(int**)); // Rows
+    for (int i = 0; i < nRows; i++) {
+        unavailMatrix[i] = malloc(nCols * sizeof(int*)); // Cols
+        for (int j = 0; j < nCols; j++)
+            unavailMatrix[i][j] = malloc(nNurses * sizeof(int));
+    }
+
+    // printf("Size should be %d x %d x %d\n", nRows, nCols, nNurses);
+    ct = -1;
+    for (int i = 0; i < nRows; ++i) {
+        for (int j = 0; j < nCols; ++j) {
+            for (int k = 0; k < nNurses; ++k) {
+                ct++;
+                unavailMatrix[i][j][k] = unavail_matrix_data[ct];
+            }
+
+        }
+    }
+
 	if (verbose_data > 5) {
 		printf("Allocated capabilityOfDoubleServices.\n");
 		printf("Data allocated, leaving instance_from_python()...\n");
@@ -499,45 +518,50 @@ struct INSTANCE instance_from_python(int nJobs_data,
 
 	verbose_data = printAllAllocations;	// Return this to what it was
 	int* nurseOrder = malloc(nNurses * sizeof(int));
-	for (int i = 0; i < nNurses; ++i)
-		nurseOrder[i] = i;
+	for (int i = 0; i < nNurses; ++i){
+        nurseOrder[i] = i;
+    }
 
 	struct INSTANCE inst = { .nJobs = nJobs,
-									.nNurses = nNurses,
-									.nSkills = nSkills,
-									.verbose = verbose_data,
-									.quality_measure = quality_measure,
-									.MAX_TIME_SECONDS = MAX_TIME_SECONDS,
-									.od = od,
-									.nurse_travel_from_depot = nurse_travel_from_depot,
-									.nurse_travel_to_depot = nurse_travel_to_depot,
-		// .od_cost = od_cost, 
-		.nurseWorkingTimes = nurseWorkingTimes,
-		.solMatrix = solMatrix,
-		.timeMatrix = timeMatrix,
-		.jobTimeInfo = jobTimeInfo,
-		.jobRequirements = jobRequirements,
-		.nurseSkills = nurseSkills,
-		.nurseSkilled = nurseSkilled,
-		.nurseRoute = nurseRoute,
-		.allNurseRoutes = allNurseRoutes,
-		.nurseOrder = nurseOrder,
-		.nurseWaitingTime = nurseWaitingTime,
-		.nurseTravelTime = nurseTravelTime,
-		.doubleService = doubleService,
-		.dependsOn = dependsOn,
-		.violatedTW = violatedTW,
-		.violatedTWMK = violatedTWMK,
-		.isFeasible = 0,
-		.MK_mind = mk_mind,
-		.MK_maxd = mk_maxd,
-		.capabilityOfDoubleServices = capabilityOfDoubleServices,
-		.prefScore = prefScore,
-		.algorithmOptions = algorithmOptions
+	        .nNurses = nNurses,
+			.nSkills = nSkills,
+            .verbose = verbose_data,
+            .quality_measure = quality_measure,
+            .MAX_TIME_SECONDS = MAX_TIME_SECONDS,
+            .tw_interval = tw_interval_data,
+            .exclude_nurse_travel = exclude_nurse_travel_data,
+            .od = od,
+            .nurse_travel_from_depot = nurse_travel_from_depot,
+            .nurse_travel_to_depot = nurse_travel_to_depot,
+            .nurseWorkingTimes = nurseWorkingTimes,
+            .solMatrix = solMatrix,
+            .timeMatrix = timeMatrix,
+            .jobTimeInfo = jobTimeInfo,
+            .jobRequirements = jobRequirements,
+            .nurseSkills = nurseSkills,
+            .nurseSkilled = nurseSkilled,
+            .nurseRoute = nurseRoute,
+            .allNurseRoutes = allNurseRoutes,
+            .nurseOrder = nurseOrder,
+            .nurseWaitingTime = nurseWaitingTime,
+            .nurseTravelTime = nurseTravelTime,
+            .doubleService = doubleService,
+            .dependsOn = dependsOn,
+            .violatedTW = violatedTW,
+            .violatedTWMK = violatedTWMK,
+            .isFeasible = 0,
+            .MK_mind = mk_mind,
+            .MK_maxd = mk_maxd,
+            .capabilityOfDoubleServices = capabilityOfDoubleServices,
+            .prefScore = prefScore,
+            .algorithmOptions = algorithmOptions,
+            .unavailMatrix = unavailMatrix,
+            .nurseUnavail = nurseUnavail
 	};
+
 	return inst;
 
-}
+} // END OF instance_from_python
 
 void free_instance_copy(struct INSTANCE* ip) {
 	for (int i = 0; i < ip->nNurses; ++i)
