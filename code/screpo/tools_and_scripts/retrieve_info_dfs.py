@@ -32,8 +32,10 @@ class POSTCODE_FINDER():
         self.df['PC'] = self.df['PC'].str.lower()
 
     def find_postcode_eastnorth(self, postcode): # Returns eastings and northings of given postcode
+
         dfview = self.df[self.df['PC'] == postcode]
         if dfview.empty:
+            print('ERROR Postcode does not exist:', postcode)
             return [None, None]
         else:
             # Need to convert eastings and northings to lat and lon
@@ -101,7 +103,7 @@ def carer_works_this_slot(slot): # Function finds out whether there is 'Unavaila
 
 # filename = 'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\abicare\clientcarerdetails.xlsx' #File from Abicare
 
-def retrieve_dfs(area = 'None', print_statements=True):
+def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
 
     pdfinder = POSTCODE_FINDER() # Instantiate object
     cpo_inst = ccd.CPO_DF()
@@ -174,7 +176,7 @@ def retrieve_dfs(area = 'None', print_statements=True):
     no_details = 0
     multiple_details = 0
     # timewindow_interval = datetime.timedelta(minutes = 15) # Timewindow generated as plus-minus these minutes of the start date, change this value 30, 15, etc.
-    timewindow_interval = 15 # Timewindow generated as plus-minus these minutes of the start date, change this value 30, 15, etc.
+    # timewindow_interval = 15 # Timewindow generated as plus-minus these minutes of the start date, change this value 30, 15, etc.
     # print(clientdf_hours.keys())
     # client_id = clientdf_hours['Clients']
     client_id = clientdf_hours['Client']
@@ -252,8 +254,8 @@ def retrieve_dfs(area = 'None', print_statements=True):
             client_work['end_time'].append(client_work_endtime)
             client_work['start'].append(client_work_start)
             client_work['end'].append(client_work_end)
-            client_work['tw_start'].append(client_work_start - timewindow_interval)
-            client_work['tw_end'].append(client_work_end + timewindow_interval)
+            client_work['tw_start'].append(client_work_start - tw_interval)
+            client_work['tw_end'].append(client_work_start + tw_interval)
             # print('start client:', client_work['start'][-1])
             # print('tw_start client:', client_work['tw_start'][-1])
             # print('end client:', client_work['end'][-1])
@@ -296,16 +298,21 @@ def retrieve_dfs(area = 'None', print_statements=True):
     # Split by even/odd rows
     carer_id = carer_id[::2].values # start:stop:step, so from the beginning to the end of all rows, but every other step
     carer_hours = carerdf_hours[1::2].values # start:stop:step, so from row 1 to the end but every other step
-
     slot_duration = 15
     # Nights is from 23:00 to 6:00am, 7 hours
     first_slot_duration = 60*7 # Double check this, how long is "nights"?
-    carer_work = {'unique_id' : [], 'carer' : [], 'postcode' : [], 'area' : [],
+    carer_shift_work = {'unique_id' : [], 'carer' : [], 'postcode' : [], 'area' : [],
                 'shift' : [], 'start' : [], 'duration' : [], 'end' : [], 
                 'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
                 'start_time' : [], 'end_time' : [],
                 'grade' : [], 'job_function' : [],
-                'not_on_rota' : [], 'driver' : [],   }
+                'not_on_rota' : [], 'driver' : []}
+    
+    carer_day_work = {'carer' : [], 'postcode' : [], 'area' : [], 'start' : [], 'duration' : [], 'end' : [], 
+                'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
+                'start_time' : [], 'end_time' : [],
+                'grade' : [], 'job_function' : [],
+                'not_on_rota' : [], 'driver' : []}
 
     for i in range(len(carer_id)): # For each carer id number in the Carer Availability sheet (first row, under 'Nights')
         # Extract and save carer info from the other DF:
@@ -331,6 +338,7 @@ def retrieve_dfs(area = 'None', print_statements=True):
         if len(carer_details_row) < 1: # If the carer_id[i] has no rows in Carer Details, then there is no information for that carer.
             if print_statements:
                 print('WARNING: Carer "', carer_id[i], '" has no details.')
+            continue
         else:
             # This is the expected case, only 1 entry:
             carer_work_grade = carer_details_row['Grade'].values[0]
@@ -341,6 +349,15 @@ def retrieve_dfs(area = 'None', print_statements=True):
             carer_work_area = carer_details_row['Primary Area'].values[0]
             carer_work_eastings, carer_work_northings = pdfinder.find_postcode_eastnorth(carer_work_postcode)
             carer_work_longitude, carer_work_latitude = cpo_inst.find_postcode_lonlat(carer_work_postcode)
+            # print(carer_work_longitude)
+            # print(type(carer_work_longitude))
+            if (carer_work_longitude == None):
+                print('carer_work_eastings', carer_work_eastings)
+                print('carer_work_northings', carer_work_northings)
+                # print('carer_work_longitude', carer_work_longitude)
+                # print('carer_work_latitude', carer_work_latitude)
+                print('carer_work_postcode', carer_work_postcode)
+                # exit(-1)
 
         wh = []
         in_shift = carer_works_this_slot(carer_hours[i,0]) # in_shift = true if carer i is available for column 0 (Nights), else = false if cell contains 'Unavailable'
@@ -356,86 +373,122 @@ def retrieve_dfs(area = 'None', print_statements=True):
                 wh.append({'start' : h_keys[j], 'duration' : 15}) # add this as the start of the carer's shift or a new shift for the same carer
             in_shift = carer_works_this_slot(carer_hours[i,j]) # update in_shift from the previous shift to the current shift j
 
-        # Update carer_work dictionary for current carer i
+        # if i == 4:
+        #     print('i: ', i)
+        #     print('carer_id: ', carer_id[i])
+        #     print('len wh: ', len(wh))
+        #     print(wh)
+        #     exit(-1)
+        # Update carer_shift_work dictionary for current carer i
         shift_count = 0
+        day_start = 0
+        day_start_time = 0
+        day_end = 0
+        day_end_time = 0
         for k in range(len(wh) - 1, -1, -1): #for k in range (start from len(wh)-1, end at -1 (so go up to 0), and step decrement by -1 each time)
             shift_count += 1 
-            carer_work['unique_id'].append(str(carer_id[i]) + '___' + str(shift_count))
-            carer_work['carer'].append(str(carer_id[i]))
-            carer_work['shift'].append(shift_count)
-            carer_work['start_time'].append(wh[k]['start']) # Start time in hh:mm:ss
-            
-
-            # print(wh[k]['start'])
-            # print(type(wh[k]['start']))
-            # print(wh[k]['duration'])
-            # print(type(wh[k]['duration']))
-            # exit(-1)
-            # carer_work['start'].append(wh[k]['start'])
-            # start_dt = datetime.datetime.combine(date_pd, carer_work['start'][-1])
+            carer_shift_work['unique_id'].append(str(carer_id[i]) + '___' + str(shift_count))
+            carer_shift_work['carer'].append(str(carer_id[i]))
+            carer_shift_work['shift'].append(shift_count)
+            carer_shift_work['start_time'].append(wh[k]['start']) # Start time in hh:mm:ss
             start_dt = datetime.datetime.combine(date_pd, wh[k]['start']) # wh[k]['start'] is datetime.time, need to combine with date_pd to get datetime.datetime, , i.e. yyyy-mm-dd hh:mm:ss
-            # print('start_dt:', start_dt)
-            # print('type start_dt:', type(start_dt))
             carer_work_start = time_dif_to_minutes(start_dt, start_of_day) # Get carer start time in minutes from midnight
-            # print('carer_work_start: ', carer_work_start)    
-            # print('type carer_work_start: ', type(carer_work_start))    
-            carer_work['start'].append(carer_work_start)
+            carer_shift_work['start'].append(carer_work_start)
+            if k == len(wh)-1:
+                day_start_time = wh[k]['start']
+                day_start = carer_work_start
 
-            # exit(-1)
-            carer_work['duration'].append(wh[k]['duration']) # type is int
-            end_time = (datetime.datetime.combine(datetime.date(1,1,1), carer_work['start_time'][-1]) + datetime.timedelta(minutes=carer_work['duration'][-1])).time()
-            carer_work['end_time'].append(end_time) # End time in hh:mm:ss
-            end_dt = start_dt + datetime.timedelta(minutes=carer_work['duration'][-1]) # datetime.datetime, end_dt is the timestamp, i.e. yyyy-mm-dd hh:mm:ss
-            # print('end_dt:', end_dt)
-            # print('type end_dt:', type(end_dt))
+            carer_shift_work['duration'].append(wh[k]['duration']) # type is int
+            end_time = (datetime.datetime.combine(datetime.date(1,1,1), carer_shift_work['start_time'][-1]) + datetime.timedelta(minutes=carer_shift_work['duration'][-1])).time()
+            carer_shift_work['end_time'].append(end_time) # End time in hh:mm:ss
+            end_dt = start_dt + datetime.timedelta(minutes=carer_shift_work['duration'][-1]) # datetime.datetime, end_dt is the timestamp, i.e. yyyy-mm-dd hh:mm:ss
             carer_work_end = time_dif_to_minutes(end_dt, start_of_day) # Get carer end time in minutes from midnight
-            # print('carer_work_end: ', carer_work_end)
-            # print('type carer_work_end: ', type(carer_work_end))
-            carer_work['end'].append(carer_work_end)
-            # carer_work['end'].append(endtime)
-            # print('end: ', carer_work['end'][-1])
-            # print('end type carer:', type(carer_work['end'][-1]))
-            # exit(-1)
+            carer_shift_work['end'].append(carer_work_end)
+            if k == 0:
+                day_end_time = end_time
+                day_end = carer_work_end
             # Link with carer details:
-            carer_work['grade'].append(carer_work_grade)
-            carer_work['job_function'].append(carer_work_job_function)
-            carer_work['postcode'].append(carer_work_postcode)
-            carer_work['not_on_rota'].append(carer_work_not_on_rota)
-            carer_work['driver'].append(carer_work_driver)
-            carer_work['area'].append(carer_work_area)
-            carer_work['eastings'].append(carer_work_eastings)
-            carer_work['northings'].append(carer_work_northings)
-            carer_work['longitude'].append(carer_work_longitude)
-            carer_work['latitude'].append(carer_work_latitude)
+            carer_shift_work['grade'].append(carer_work_grade)
+            carer_shift_work['job_function'].append(carer_work_job_function)
+            carer_shift_work['postcode'].append(carer_work_postcode)
+            carer_shift_work['not_on_rota'].append(carer_work_not_on_rota)
+            carer_shift_work['driver'].append(carer_work_driver)
+            carer_shift_work['area'].append(carer_work_area)
+            carer_shift_work['eastings'].append(carer_work_eastings)
+            carer_shift_work['northings'].append(carer_work_northings)
+            carer_shift_work['longitude'].append(carer_work_longitude)
+            carer_shift_work['latitude'].append(carer_work_latitude)
+
+            # Fill in carer_day_work details:
+            if k == 0:
+                day_duration = day_end - day_start
+                carer_day_work['carer'].append(str(carer_id[i]))
+                carer_day_work['start'].append(day_start)
+                carer_day_work['end'].append(day_end)
+                carer_day_work['start_time'].append(day_start_time)
+                carer_day_work['end_time'].append(day_end_time)
+                carer_day_work['duration'].append(day_duration)
+                carer_day_work['grade'].append(carer_work_grade)
+                carer_day_work['job_function'].append(carer_work_job_function)
+                carer_day_work['postcode'].append(carer_work_postcode)
+                carer_day_work['not_on_rota'].append(carer_work_not_on_rota)
+                carer_day_work['driver'].append(carer_work_driver)
+                carer_day_work['area'].append(carer_work_area)
+                carer_day_work['eastings'].append(carer_work_eastings)
+                carer_day_work['northings'].append(carer_work_northings)
+                carer_day_work['longitude'].append(carer_work_longitude)
+                carer_day_work['latitude'].append(carer_work_latitude)
+        # End of for k in range len(wh)-1 loop
+        # if carer_id[i] == 209515:
+        #     print('i: ', i)
+        #     print('carer_id: ', carer_id[i])
+        #     print('len wh: ', len(wh))
+        #     print(wh)
+        #     print('day_start: ', day_start)
+        #     print('day_start_time: ', day_start_time)
+        #     print('day_end: ', day_end)
+        #     print('day_end_time: ', day_end_time)
+        #     day_duration = day_end - day_start
+        #     print('day_duration: ', day_duration)
+        #     exit(-1)
     # End of main for loop - for i in range(len(carer_id))
 
-    carer_df = pd.DataFrame(carer_work) # Convert dictionary into pd dataframe
+    carershift_df = pd.DataFrame(carer_shift_work) # Convert dictionary into pd dataframe
+    carerday_df = pd.DataFrame(carer_day_work) # Convert dictionary into pd dataframe
 
-    # print(carer_df)
+    # print(carershift_df)
     # exit(-1)
 
     if area == 'None':
-        return client_df, carer_df
+        return client_df, carershift_df, carerday_df
     else:
         # print('Len client_df: ', len(client_df))
-        # print('Len carer_df: ', len(carer_df))
+        # print('Len carershift_df: ', len(carershift_df))
         clientdf_area = client_df[client_df['area'] == area]
-        carerdf_area = carer_df[carer_df['area'] == area]
+        carershiftdf_area = carershift_df[carershift_df['area'] == area]
+        carerdaydf_area = carerday_df[carerday_df['area'] == area]
         clientdf_area.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by area
-        carerdf_area.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by area
+        carershiftdf_area.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by area
+        carerdaydf_area.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by area
+        carer_count = 0
+        for i in range(len(carershiftdf_area)):
+            shift_number = carershiftdf_area.iloc[i]['shift']
+            if shift_number == 1:
+                carer_count += 1
+        print('Carer_count: ', carer_count)
         # print(clientdf_area)
         # print(carerdf_area)
         # exit(-1)
-        return clientdf_area, carerdf_area
+        return clientdf_area, carershiftdf_area, carerdaydf_area
 
-    # print(carer_df)
+    # print(carershift_df)
     
 ### --- End retrieve_dfs function
 
-# client_df, carer_df = retrieve_dfs(print_statements=False)
+# client_df, carershift_df = retrieve_dfs(print_statements=False)
 # print('Len client_df: ', len(client_df))
-# print('Len carer_df: ', len(carer_df))
+# print('Len carershift_df: ', len(carershift_df))
 
 
 
-# df_to_inst(carer_df, clientdf_hours)
+# df_to_inst(carershift_df, clientdf_hours)
