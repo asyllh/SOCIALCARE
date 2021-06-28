@@ -1,0 +1,1 @@
+cl.exe ..\src\GRASPVNS\constructive.c ..\src\GRASPVNS\read_instance.c ..\src\GRASPVNS\grasp.c /Ox /LD /I C:\Users\ah4c20\Anaconda3\include /link /dll /libpath:C:\Users\ah4c20\Anaconda3\libs /out:.\constructive.dll
