@@ -32,7 +32,6 @@ class POSTCODE_FINDER():
         self.df['PC'] = self.df['PC'].str.lower()
 
     def find_postcode_eastnorth(self, postcode): # Returns eastings and northings of given postcode
-
         dfview = self.df[self.df['PC'] == postcode]
         if dfview.empty:
             print('ERROR Postcode does not exist:', postcode)
@@ -97,15 +96,12 @@ def carer_works_this_slot(slot): # Function finds out whether there is 'Unavaila
     else: # Else, the 'slot' is empty, and so the carer is available to work that time.
         works = np.isnan(slot)
     return works
-# --- End def --- #
-##################################################
-
 
 # filename = 'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\abicare\clientcarerdetails.xlsx' #File from Abicare
 
 def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
 
-    pdfinder = POSTCODE_FINDER() # Instantiate object
+    # pdfinder = POSTCODE_FINDER() # Instantiate object
     cpo_inst = ccd.CPO_DF()
 
     data_filename = r'data\abicare\clientcarerdetails.xlsx'
@@ -158,13 +154,20 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
     clientdf_hours['Eastings'] = clientdf_hours['Employee']
     clientdf_hours['Northings'] = clientdf_hours['Employee']
 
+    # client_work = {'client_id' : [], 'postcode' : [], 'area' : [], 'date' : [], 
+    #             'start' : [],  'duration' : [], 'end' : [],  'tw_start' : [], 'tw_end' : [], 
+    #             'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
+    #             'start_time' : [], 'end_time' : [], 'exception' : [], 'county' : [], 'job_function' : []}
+
+    # NOTE: This version of the dictionary doesn't have eastings and northings, means we don't have to use POSTCODE_FINDER which uses full codepoint
     client_work = {'client_id' : [], 'postcode' : [], 'area' : [], 'date' : [], 
                 'start' : [],  'duration' : [], 'end' : [],  'tw_start' : [], 'tw_end' : [], 
-                'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
+                'longitude' : [], 'latitude' : [], 
                 'start_time' : [], 'end_time' : [], 'exception' : [], 'county' : [], 'job_function' : []}
 
     start_of_day = clientdf_hours.iloc[0]['From'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first job.
-    # print('start_of_day: ', start_of_day)
+    print('start_of_day: ', start_of_day)
+    print('type start_of_day: ', type(start_of_day))
     # exit(-1)
     # print(type(clientdf_hours['Start'][0]))
     # print(type(clientdf_hours['Duration'][0]))
@@ -191,8 +194,8 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
         client_work_area = np.nan
         client_work_county = np.nan 
         client_work_postcode = np.nan 
-        client_work_eastings = np.nan
-        client_work_northings = np.nan 
+        # client_work_eastings = np.nan
+        # client_work_northings = np.nan 
         client_work_date = np.nan
         client_work_starttime = np.nan
         client_work_duration = np.nan
@@ -224,17 +227,26 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
             client_work_area = client_details_row['Area'].values[0]
             client_work_county = client_details_row['County'].values[0] 
             client_work_postcode = client_details_row['Postcode'].values[0] 
-            client_work_eastings, client_work_northings = pdfinder.find_postcode_eastnorth(client_work_postcode)
+            # client_work_eastings, client_work_northings = pdfinder.find_postcode_eastnorth(client_work_postcode)
             client_work_date = clientdf_hours['Date'][i]
             client_work_from = clientdf_hours['From'][i] # NOTE: this will not be in the final df
             client_work_to = clientdf_hours['To'][i] # NOTE: this will not be in the final df
+            print('client-work_from: ', client_work_from, ' type: ', type(client_work_from))
+            print('client-work_to: ', client_work_to, ' type: ', type(client_work_to))
             client_work_starttime = clientdf_hours['Start Time'][i]
             client_work_duration = clientdf_hours['Duration'][i]
             client_work_endtime = clientdf_hours['End Time'][i]
+            print('client_work_starttime: ', client_work_starttime, ' type: ', type(client_work_starttime))
+            print('client_work_endtime: ', client_work_endtime, ' type: ', type(client_work_endtime))
+            print('client_work_duration: ', client_work_duration, ' type: ', type(client_work_duration))
+
             client_work_exception = clientdf_hours['Exception'][i]
             client_work_longitude, client_work_latitude = cpo_inst.find_postcode_lonlat(client_work_postcode)
             client_work_start = time_dif_to_minutes(client_work_from, start_of_day)
             client_work_end = time_dif_to_minutes(client_work_to, start_of_day)
+            print('client_work_start: ', client_work_start, ' type: ', type(client_work_start))
+            print('client_work_end: ', client_work_end, ' type: ', type(client_work_end))
+            exit(-1)
             # print('from: ', client_work_from)
             # print('starttime: ', client_work_starttime)
             # print('start:', client_work_start)
@@ -262,8 +274,8 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
             # print('tw_end client:', client_work['tw_end'][-1])
             # exit(-1)
             client_work['exception'].append(client_work_exception)
-            client_work['eastings'].append(client_work_eastings)
-            client_work['northings'].append(client_work_northings)
+            # client_work['eastings'].append(client_work_eastings)
+            # client_work['northings'].append(client_work_northings)
             client_work['longitude'].append(client_work_longitude)
             client_work['latitude'].append(client_work_latitude)
     # --- End of for loop --- #
@@ -301,15 +313,30 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
     slot_duration = 15
     # Nights is from 23:00 to 6:00am, 7 hours
     first_slot_duration = 60*7 # Double check this, how long is "nights"?
+
+    # carer_shift_work = {'unique_id' : [], 'carer' : [], 'postcode' : [], 'area' : [],
+    #             'shift' : [], 'start' : [], 'duration' : [], 'end' : [], 
+    #             'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
+    #             'start_time' : [], 'end_time' : [],
+    #             'grade' : [], 'job_function' : [],
+    #             'not_on_rota' : [], 'driver' : []}
+    
+    # carer_day_work = {'carer' : [], 'postcode' : [], 'area' : [], 'start' : [], 'duration' : [], 'end' : [], 
+    #             'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
+    #             'start_time' : [], 'end_time' : [],
+    #             'grade' : [], 'job_function' : [],
+    #             'not_on_rota' : [], 'driver' : []}
+
+    # NOTE: These versions of the dictionaries don't have eastings and northings, means we don't have to use POSTCODE_FINDER which uses full codepoint
     carer_shift_work = {'unique_id' : [], 'carer' : [], 'postcode' : [], 'area' : [],
                 'shift' : [], 'start' : [], 'duration' : [], 'end' : [], 
-                'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
+                'longitude' : [], 'latitude' : [],
                 'start_time' : [], 'end_time' : [],
                 'grade' : [], 'job_function' : [],
                 'not_on_rota' : [], 'driver' : []}
     
     carer_day_work = {'carer' : [], 'postcode' : [], 'area' : [], 'start' : [], 'duration' : [], 'end' : [], 
-                'longitude' : [], 'latitude' : [], 'eastings' : [], 'northings' : [],
+                'longitude' : [], 'latitude' : [],
                 'start_time' : [], 'end_time' : [],
                 'grade' : [], 'job_function' : [],
                 'not_on_rota' : [], 'driver' : []}
@@ -323,8 +350,8 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
         carer_work_not_on_rota = np.nan
         carer_work_driver = np.nan
         carer_work_area = np.nan
-        carer_work_eastings = np.nan
-        carer_work_northings = np.nan
+        # carer_work_eastings = np.nan
+        # carer_work_northings = np.nan
         carer_work_longitude = np.nan
         carer_work_latitude = np.nan
 
@@ -347,17 +374,17 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
             carer_work_not_on_rota = carer_details_row['Not on Rota'].values[0]
             carer_work_driver = carer_details_row['Driver'].values[0]
             carer_work_area = carer_details_row['Primary Area'].values[0]
-            carer_work_eastings, carer_work_northings = pdfinder.find_postcode_eastnorth(carer_work_postcode)
+            # carer_work_eastings, carer_work_northings = pdfinder.find_postcode_eastnorth(carer_work_postcode)
             carer_work_longitude, carer_work_latitude = cpo_inst.find_postcode_lonlat(carer_work_postcode)
             # print(carer_work_longitude)
             # print(type(carer_work_longitude))
             if (carer_work_longitude == None):
-                print('carer_work_eastings', carer_work_eastings)
-                print('carer_work_northings', carer_work_northings)
+                # print('carer_work_eastings', carer_work_eastings)
+                # print('carer_work_northings', carer_work_northings)
                 # print('carer_work_longitude', carer_work_longitude)
                 # print('carer_work_latitude', carer_work_latitude)
-                print('carer_work_postcode', carer_work_postcode)
-                # exit(-1)
+                print('No latitude and longitude found for carer_work_postcode: ', carer_work_postcode)
+                exit(-1)
 
         wh = []
         in_shift = carer_works_this_slot(carer_hours[i,0]) # in_shift = true if carer i is available for column 0 (Nights), else = false if cell contains 'Unavailable'
@@ -373,7 +400,7 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
                 wh.append({'start' : h_keys[j], 'duration' : 15}) # add this as the start of the carer's shift or a new shift for the same carer
             in_shift = carer_works_this_slot(carer_hours[i,j]) # update in_shift from the previous shift to the current shift j
 
-        # if i == 4:
+        # if carer_id[i] == 209608 and i != 140:
         #     print('i: ', i)
         #     print('carer_id: ', carer_id[i])
         #     print('len wh: ', len(wh))
@@ -414,8 +441,8 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
             carer_shift_work['not_on_rota'].append(carer_work_not_on_rota)
             carer_shift_work['driver'].append(carer_work_driver)
             carer_shift_work['area'].append(carer_work_area)
-            carer_shift_work['eastings'].append(carer_work_eastings)
-            carer_shift_work['northings'].append(carer_work_northings)
+            # carer_shift_work['eastings'].append(carer_work_eastings)
+            # carer_shift_work['northings'].append(carer_work_northings)
             carer_shift_work['longitude'].append(carer_work_longitude)
             carer_shift_work['latitude'].append(carer_work_latitude)
 
@@ -434,8 +461,8 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
                 carer_day_work['not_on_rota'].append(carer_work_not_on_rota)
                 carer_day_work['driver'].append(carer_work_driver)
                 carer_day_work['area'].append(carer_work_area)
-                carer_day_work['eastings'].append(carer_work_eastings)
-                carer_day_work['northings'].append(carer_work_northings)
+                # carer_day_work['eastings'].append(carer_work_eastings)
+                # carer_day_work['northings'].append(carer_work_northings)
                 carer_day_work['longitude'].append(carer_work_longitude)
                 carer_day_work['latitude'].append(carer_work_latitude)
         # End of for k in range len(wh)-1 loop
@@ -467,28 +494,21 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
         clientdf_area = client_df[client_df['area'] == area]
         carershiftdf_area = carershift_df[carershift_df['area'] == area]
         carerdaydf_area = carerday_df[carerday_df['area'] == area]
-        clientdf_area.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by area
-        carershiftdf_area.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by area
-        carerdaydf_area.reset_index(inplace=True) # reset the index of the dataframe now that we've filtered by area
+        clientdf_area.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by area
+        carershiftdf_area.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by area
+        carerdaydf_area.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by area
         carer_count = 0
         for i in range(len(carershiftdf_area)):
             shift_number = carershiftdf_area.iloc[i]['shift']
             if shift_number == 1:
                 carer_count += 1
-        print('Carer_count: ', carer_count)
+        # print('Carer_count: ', carer_count)
         # print(clientdf_area)
         # print(carerdf_area)
         # exit(-1)
         return clientdf_area, carershiftdf_area, carerdaydf_area
 
     # print(carershift_df)
+### --- End of def retrieve_info_dfs --- ###
+
     
-### --- End retrieve_dfs function
-
-# client_df, carershift_df = retrieve_dfs(print_statements=False)
-# print('Len client_df: ', len(client_df))
-# print('Len carershift_df: ', len(carershift_df))
-
-
-
-# df_to_inst(carershift_df, clientdf_hours)
