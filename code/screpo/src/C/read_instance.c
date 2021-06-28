@@ -112,9 +112,13 @@ struct INSTANCE copy_instance(struct INSTANCE* oi) {
 									.verbose = oi->verbose,
 									.quality_measure = oi->quality_measure,
 									.MAX_TIME_SECONDS = oi->MAX_TIME_SECONDS,
+                                    .tw_interval = oi->tw_interval,
+                                    .exclude_nurse_travel = oi->exclude_nurse_travel,
 									.od = oi->od,
 									.nurse_travel_from_depot = oi->nurse_travel_from_depot,
 									.nurse_travel_to_depot = oi->nurse_travel_to_depot,
+                                    .unavailMatrix = oi->unavailMatrix,
+                                    .nurseUnavail = oi->nurseUnavail,
 									.nurseWorkingTimes = oi->nurseWorkingTimes,
 									.solMatrix = solMatrix,
 									.timeMatrix = timeMatrix,
@@ -533,6 +537,8 @@ struct INSTANCE instance_from_python(int nJobs_data, int nNurses_data, int nSkil
             .od = od,
             .nurse_travel_from_depot = nurse_travel_from_depot,
             .nurse_travel_to_depot = nurse_travel_to_depot,
+            .unavailMatrix = unavailMatrix,
+            .nurseUnavail = nurseUnavail,
             .nurseWorkingTimes = nurseWorkingTimes,
             .solMatrix = solMatrix,
             .timeMatrix = timeMatrix,
@@ -554,9 +560,7 @@ struct INSTANCE instance_from_python(int nJobs_data, int nNurses_data, int nSkil
             .MK_maxd = mk_maxd,
             .capabilityOfDoubleServices = capabilityOfDoubleServices,
             .prefScore = prefScore,
-            .algorithmOptions = algorithmOptions,
-            .unavailMatrix = unavailMatrix,
-            .nurseUnavail = nurseUnavail
+            .algorithmOptions = algorithmOptions
 	};
 
 	return inst;

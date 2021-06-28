@@ -35,6 +35,8 @@ struct INSTANCE {
 	int tw_interval; // Time window interval
 	bool exclude_nurse_travel; // True if excluding the nurse travel time from home to the first job when updating current time in 'set_nurse_time' function, else false.
 	// double **od_cost;
+    int*** unavailMatrix; // 10 X 4 X nNurses 3d matrix, col[0] = unavailable shift number, col[1] = start of unavailable time, col[2] = end of unavailable time, col[3] = duration of unavailable time.
+    int* nurseUnavail; // 1D array, size = nNurses, for each nurse contains the number of unavailable shifts.
 	int** nurseWorkingTimes; // 2D array, size = nNurses x 3. For each nurse i (row): column[0] = start time, column[1] = finish time, column[2] = max working time. (column[2] not used?)
 	int** solMatrix; // 2D array, size = nNurses x nJobs. For each nurse i (row), the element in solMatrix[i][j] gives the position in nurse i's route where nurse i visits job j.
 	// E.g. if solMatrix[2][4] = 3 -> the third job in nurse 2's route is job 4. If solMatrix[i][j] = -1, then job j is not in nurse i's route.
@@ -60,8 +62,6 @@ struct INSTANCE {
 	int*** capabilityOfDoubleServices; // 3D array, size = nNurses x nNurses x nDoubleService. For each pair of nurses, are the nurses capable of performing the double service together?
 	double** prefScore; // 2D array, size = nJobs x nNurses (note that the matrix dimension are the other way around compared to the others). Preference score: -ve if best to avoid, +ve if suitable.
 	double* algorithmOptions; // 1D array, size = 1 x 100, set in python file instance_handler.py, def default_options_vector.
-    int*** unavailMatrix; // 10 X 4 X nNurses 3d matrix, col[0] = unavailable shift number, col[1] = start of unavailable time, col[2] = end of unavailable time, col[3] = duration of unavailable time.
-    int* nurseUnavail; // 1D array, size = nNurses, for each nurse contains the number of unavailable shifts.
 	// int startTime;
 	// int ** jobTimeWindow;
 	// int * jobDuration;
@@ -86,6 +86,7 @@ void print_int_matrix_one(int* matrix, int nRows, int nCols);
 void print_double_matrix_one(double* matrix, int nRows, int nCols);
 void print_double_matrix(double** matrix, int nRows, int nCols);
 void print_solmatrix(struct INSTANCE* ip);
+void print_allNurseRoutes(struct INSTANCE* ip);
 void print_timeMatrix(struct INSTANCE* ip);
 double get_travel_time(struct INSTANCE* ip, int i, int j);
 double get_travel_time_from_depot(struct INSTANCE* ip, int nurse, int job);
@@ -114,8 +115,8 @@ void set_all_nurse_routes(struct INSTANCE* ip);
 void set_nurse_route(struct INSTANCE* ip, int ni);
 void get_nurse_route(struct INSTANCE* ip, int ni, int* nurseRoute);
 void print_nurse_route(struct INSTANCE* ip, int ni, int* nurseRoute);
+void old_set_nurse_time(struct INSTANCE* ip, int nursej);
 void set_nurse_time(struct INSTANCE* ip, int nursej);
-void new_set_nurse_time(struct INSTANCE* ip, int nursej);
 void set_times_full(struct INSTANCE* ip);
 void set_times_from(struct INSTANCE* ip, int first_nurse);
 int synchronise_job_i(struct INSTANCE* ip, int job, int nurse1, int nurse2);
