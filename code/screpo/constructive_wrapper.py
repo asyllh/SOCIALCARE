@@ -4,38 +4,129 @@ import copy
 import time
 import pickle
 import numpy as np
+import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
 from numpy.ctypeslib import ndpointer
 from joblib import Parallel, delayed
 # import random
 # import tkinter
-# from tkinter import messagebox
+from tkinter import *
 # import tkMessageBox # Python 2.x version
 
 # Own modules:
 import mankowska_data as Mk
 import python_resources as pr
 # import instance_handler as hhc
-import instance_handler_idict as hhc
+# import instance_handler_idict as hhc
 import instance_handler_dfs as ihd
 # import convert_dict_inst as cdi
 import tools_and_scripts.retrieve_info_dfs as rdi
+import tools_and_scripts.tkinter_userinput as tui
+import tools_and_scripts.get_data_dfs as gdd
 
 def main():
     # New main function.
     
+    root = Tk()
+    root.title('User Input Variables')
+
+    Uib = tui.UserInputBox(root)
+    root.mainloop()
+
+    # print('areaName retrieved: ', Uib.areaName)
+    # print('twInterval retrieved: ', Uib.twInterval)
+    # print('wbBalance retrieved: ', Uib.wbBalance)
+    # print('qualityMeasure retrieved: ', Uib.qualityMeasure)
+    # print('maxTimeSeconds retrieved: ', Uib.maxTimeSeconds)
+
+    # Default values for user input variables
+    area = 'Hampshire'
+    tw_interval = 15
+    wb_balance = 1
+    quality_measure = 'paper'
+    max_time_seconds = 60
+    create_html_website = True
+    create_python_plots = True
+
+    # Assign user input values:
+    if Uib.areaName == "":
+        # set default
+        print('No area given - area set to Hampshire')
+        area = 'Hampshire'
+    else:
+        area = Uib.areaName
+        print('area: ', area)
+
+    if Uib.twInterval == 0:
+        print('No time window interval given - time window interval set to 15 minutes')
+        tw_interval = 15
+    else:
+        tw_interval = Uib.twInterval
+        print('time window interval: ', tw_interval)
+
+    if Uib.wbBalance == 0:
+        print('No workload balance coefficient given - coefficient set to 1')
+        wb_balance = 1
+    else:
+        wb_balance = Uib.wbBalance
+        print('workload balance coefficient: ', wb_balance)
+
+    if Uib.qualityMeasure == "":
+        # set default
+        print('No quality measure given - quality measure set to Hampshire')
+        quality_measure = 'paper'
+    else:
+        quality_measure = Uib.qualityMeasure
+        print('quality measure: ', quality_measure)
+
+    if Uib.maxTimeSeconds == 0:
+        print('No time limit given - time limit set to 60 seconds')
+        max_time_seconds = 60
+    else:
+        max_time_seconds = Uib.maxTimeSeconds
+        print('time limit: ', max_time_seconds)
+
+    if Uib.createHtmlWebsite == "":
+        print('No html website option given - create html website set to True')
+        create_html_website = True
+    elif Uib.createHtmlWebsite == 'y' or Uib.createHtmlWebsite == 'Y':
+        create_html_website = True
+        print('create_html_website: ', create_html_website)
+    elif Uib.createHtmlWebsite == 'n' or Uib.createHtmlWebsite == 'N':
+        create_html_website = False
+        print('create_html_website: ', create_html_website)
+    else:
+        print('Incorrect option format for html website - create html website set to True')
+        create_html_website = True
+    
+    if Uib.createPythonPlots == "":
+        print('No plot option given - create python plots set to True')
+        create_python_plots = True
+    elif Uib.createPythonPlots == 'y' or Uib.createPythonPlots == 'Y':
+        create_python_plots = True
+        print('create_python_plots: ', create_python_plots)
+    elif Uib.createPythonPlots == 'n' or Uib.createPythonPlots == 'N':
+        create_python_plots = False
+        print('create_python_plots: ', create_python_plots)
+    else:
+        print('Incorrect option format for plots - create python plots set to True')
+        create_python_plots = True
+
+        
+
+    # exit(-1)
     # Solving parameters:
     # 'default' quality will use the default for the type of instance (if it comes from the literature, for example)
     # quality_measure = 'paper' # 'default', 'paper', 'mankowska', 'ait_h', 'workload_balance'
     # ds_skill_type = 'strictly-shared'
     # max_time_seconds = 5
     # verbose_level = 1
-    create_python_plots = True
+    # create_python_plots = True
     # create_html_website = False
-    create_html_website = True
-    area = 'Hampshire'
-    tw_interval = 15
+    # create_html_website = True
+    # area = 'Hampshire'
+    # tw_interval = 15
     # input_filename = 'all_inst_Aldershot.p'
     # results_filename = '02_Nov_Hampshire_results.txt'
     # results_filename = 'test_02_Nov_Hampshire_results.txt'
@@ -45,126 +136,77 @@ def main():
     random_seed = 13027 # NOTE: used for testing only. #35807 600seconds 13027
 
     options_vector = ihd.default_options_vector() 
-    # options_vector[1] = 1.0 # Two-opt active
-    # options_vector[3] = 0.0 # Nurse order change active (neighbourhood in local search)
-    # # options_vector[3] = 1.0 # Nurse order change active (neighbourhood in local search)
-    # options_vector[4] = 0.5 # -   GRASP: Delta low
-    # options_vector[5] = 0.48 # -   GRASP: Delta range
-    # options_vector[6] = 1.0 # Nurse order change active (In GRASP, between calls)
-    # options_vector[7] = 1.0 # deprecated
-    # options_vector[8] = 20.0 # Solutions in pool
-    # options_vector[9] = 3.0 # PR_STRATEGY
-    # options_vector[10] = 2.0 # RCL Strategy
-    # options_vector[11] = 2.0 # PR_DIRECTION
-    # options_vector[12] = 0 # -   Use gap (1) or precedence (0)
-    # options_vector[50] = 0 # 1 if tardiness and overtime are infeasible, 0 if feasible
-    # options_vector[51] = -1/3*60 # alpha_1 Travel time
-    # options_vector[52] = 0.0 # alpha_2 Waiting time
-    # options_vector[53] = -1/3*60 # alpha_3 Tardiness
-    # options_vector[54] = 0.0 # alpha_4 Overtime
-    # options_vector[55] = 0.00 # alpha_5 Workload balance
-    # options_vector[56] = 0 # alpha_6 Preference score
-    # options_vector[57] = -1/3*60 # Max tardiness (allowed)
-    # options_vector[99] = 0 # -   print all inputs
 
-    # big_m = 10000000
-    ####-------------------------- START CODE --------------------------####
-
-    
-
-    client_df, carershift_df, carerday_df = rdi.retrieve_dfs(area, tw_interval, print_statements=False)
+    # client_df, carershift_df, carerday_df = rdi.retrieve_dfs(area, tw_interval, print_statements=False)
+    client_df, carershift_df, carerday_df = gdd.get_info_create_dfs(area, tw_interval, print_statements=False)
+    exit(-1)
+    # client_df['new'] = pd.Series()
     # print(client_df)
     # print(carershift_df)
     # print(carerday_df)
+    # exit(-1)
     # print('Len client_df:', len(client_df))
     # print('Len carershift_df:', len(carershift_df))
     # print('Len carerday_df:', len(carerday_df))
 
     
     # exit(-1)
-
-    
-
-    # all_instances = pickle.load(open('tools_and_scripts/' + input_filename, 'rb'))
-    # idict_index = 7
-    # idict = 7th instance in all_instances, which is 08-Nov-2020 in Salisbury. Chose this inst as it is the only one which has all postcodes for carers and clients. ncarers = 12, ntasks = 100.
-    # idict = all_instances[idict_index]
-    # Assign client 16 a different postcode (sp27tq) as its original postcode (sp27xx) is missing from codepoint open. This is just so we can use this instance for a test.
-    # idict = cdi.assign_missing_postcode(idict)
-    # results_filename = idict['fname'] + '_results_test.txt'
-    # results_filename = 'test' + '_results_test.txt'
-    results_filename = 'test_Hampshire.txt'
-    f = open(results_filename, 'a')
-    f.write('------------------------------------------------------------\n')
-    f.write('Date: ' + str(datetime.now()) + '\n')
-    f.write("Instance\tCquality")
-    f.write("\tMeasure")
-    f.write("\ttotalTravelTime")
-    f.write("\ttotalTardiness")
-    f.write("\tmaxTardiness")
-    f.write("\telapsed_time")
-    f.write("\trandom_seed\n")
-    f.close()
+    # NOTE: altering workload balance from 0.5 to 1
+    # options_vector[55] = 1 # alpha_5 Workload balance
+    options_vector[55] = wb_balance # alpha_5 Workload balance
 
     print('\n-------------------------------------------------------')
     #print('Running program for instance ' + str(idict_index) + ' in ' + str(input_filename) + ', ' + str(idict['date']))
     stt_time = time.perf_counter()
 
     # inst = hhc.create_solve_inst(idict, options_vector, random_seed) # old, for idict
-    inst = ihd.create_solve_inst(client_df, carershift_df, carerday_df, options_vector, random_seed) # new, for dfs
+    inst = ihd.create_solve_inst(client_df, carershift_df, carerday_df, options_vector, quality_measure, max_time_seconds, random_seed) # new, for dfs
 
-    quality = inst.Cquality
+    # quality = inst.Cquality
 
-    print('Finshed.\nQuality: ' + str(quality))
-
-    # i.post_process_solution() # NOTE: This is already called in def solve in instane_handler.py, does it need to be called again here?
-    # i.full_solution_report(report=0, doPlots=create_python_plots)
+    print('Finshed.\nQuality: ' + str(inst.Cquality))
 
     end_time = time.perf_counter()
     elapsed_time = end_time - stt_time
-    # print('Those were results for instance ' + str(idict_index) + ' in ' + str(idict['area']) + ', ' + str(idict['date']))
     print('Those were results for instance ' + str(inst.fname) + ' in ' + str(inst.area) + ', ' + str(inst.date))
     print('Total running time: ' + str(np.round(elapsed_time, 1)) + ' seconds.')
-    f = open(results_filename, 'a')
-    # f.write(str(idict_index)+ '\t' + str(inst.Cquality))
-    f.write(str(inst.fname)+ '\t' + str(inst.Cquality))
-    f.write("\t" + str(inst.algorithmOptions[0]))
-    f.write("\t" + str(inst.totalTravelTime))
-    f.write("\t" + str(inst.totalTardiness))
-    f.write("\t" + str(inst.maxTardiness))
-    f.write("\t" + str(elapsed_time))
-    f.write("\t" + str(random_seed) + "\n")
-    f.close()
-
-    # inst.full_solution_report(report=0)
-
-    # if create_python_plots:
-    #     print('About to plot')
-    #     inst.simple_solution_plot()
-    #     plt.show()
-
-    # result = messagebox.askquestion("Results", "Generate website?", icon='question')
-    # if result == "yes":
+    
     if create_html_website:
         print('Generating website...')
+        # inst.old_full_solution_report(report=0, doPlots=create_python_plots)
         inst.full_solution_report(report=0, doPlots=create_python_plots)
-        # inst.full_solution_report(report=0, doPlots=False)
-        inst.solution_to_website_dst()
-        print('totaldistance: ', inst.totalDistance)
-        print('totaldistancekm: ', inst.totalDistance/1000)
-        print('totaldistancejobs: ', inst.totalDistanceJobsOnly)
-        print('totaldistancejobskm: ', inst.totalDistanceJobsOnly/1000)
-        print('distNurses: ', inst.distNurses)
-        # print(inst.distNurses)
-        print('distNursesJobsOnly: ', inst.distNursesJobsOnly)
-        # print(inst.distNursesJobsOnly)
-    print('Done.')       
-    # print('\n-------------------------------------------------------\n')
-   
+        inst.solution_to_website_dst(add_plots=create_python_plots)
+        inst.totalTravelCost = sum(inst.nurseTravelCost)
+        inst.totalMileage = sum(inst.nurseMileage)
+        inst.totalMileageCost = sum(inst.nurseMileageCost)
+        inst.totalCost = inst.totalTravelCost + inst.totalMileageCost
+        print('totalTravelCost: ', inst.totalTravelCost)
+        print('totalMileageCost: ', inst.totalMileageCost)
+        print('totalCost: ', inst.totalCost)
+    print('Done.') 
+
+    # Put results in results_area_date.txt file
+    results_filename = 'results_' + area + '.txt'
     f = open(results_filename, 'a')
-    f.write('\nRun finished at: ' + str(datetime.now()))
-    f.write('\n------------------------------------------------------------\n')
+    f.write('------------------------------------------------------------\n')
+    f.write('Date: ' + str(datetime.now()) + '\n')
+    f.write('Quality: ' + str(inst.Cquality) + '\n')
+    f.write('Measure: ' + str(inst.quality_measure) + '\n')
+    f.write('Carers: ' + str(inst.nNurses) + '\n')
+    f.write('Jobs: ' + str(inst.nJobs) + '\n')
+    f.write('Total Time: ' + str(inst.timemins_to_string(inst.totalTime)) + '\n')
+    f.write('Total Service Time: ' + str(inst.timemins_to_string(inst.totalServiceTime)) + '\n')
+    f.write('Total Travel Time: ' + str(inst.timemins_to_string(inst.totalTravelTime)) + '\n')
+    f.write('Total Waiting Time: ' + str(inst.timemins_to_string(inst.totalWaitingTime)) + '\n')
+    f.write('Total Tardiness: ' + str(inst.timemins_to_string(inst.totalTardiness)) + '\n')
+    f.write('Total Overtime: ' + str(inst.timemins_to_string(inst.totalOvertime)) + '\n')
+    f.write('Total Mileage: ' + str(inst.totalMileage) + '\n')
+    f.write('Total Cost (£): ' + str(inst.totalCost) + '\n')
+    f.write('Elapsed Time (s): ' + str(elapsed_time) + '\n')
+    f.write('------------------------------------------------------------\n')
     f.close()
+
+    inst.add_solution_to_df(client_df)
 ### --- End def main --- ###
 
 def main_prev():
