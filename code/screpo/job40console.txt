@@ -1,0 +1,941 @@
+
+C:\Users\ah4c20\Asyl\PostDoc
+λ cd SOCIALCARE\code\screpo\
+
+C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo (master)
+λ python constructive_wrapper.py
+constructive_wrapper.py:531: DtypeWarning: Columns (15) have mixed types.Specify dtype option on import or set low_memory=False.
+  main()
+C:\Users\ah4c20\Anaconda3\lib\site-packages\pyproj\crs\crs.py:53: FutureWarning: '+init=<authority>:<code>' syntax is deprecated. '<authority>:<code>' is the preferred initialization method. When making the change, be mindful of axis order changes: https://pyproj4.github.io/pyproj/stable/gotchas.html#axis-order-changes-in-proj-6
+  return _prepare_from_string(" ".join(pjargs))
+   client_id postcode       area        date   start  duration     end  \
+0   ha050145  rg215hh  Hampshire  2021-03-01   510.0        30   540.0
+1   ha050145  rg215hh  Hampshire  2021-03-01  1230.0        30  1260.0
+2   ha050159  rg218ay  Hampshire  2021-03-01   540.0        30   570.0
+3   ha050159  rg218ay  Hampshire  2021-03-01   780.0        30   810.0
+4   ha050168  rg249st  Hampshire  2021-03-01   525.0        60   585.0
+5   ha050168  rg249st  Hampshire  2021-03-01   765.0        30   795.0
+6   ha050168  rg249st  Hampshire  2021-03-01  1005.0        30  1035.0
+7   ha050168  rg249st  Hampshire  2021-03-01  1245.0        30  1275.0
+8   ha050184  rg215ts  Hampshire  2021-03-01   570.0        30   600.0
+9   ha050184  rg215ts  Hampshire  2021-03-01   810.0        30   840.0
+10  ha050184  rg215ts  Hampshire  2021-03-01  1050.0        30  1080.0
+11  ha050184  rg215ts  Hampshire  2021-03-01  1230.0        30  1260.0
+12  ha050146  rg265ht  Hampshire  2021-03-01   510.0        30   540.0
+13  ha050146  rg265ht  Hampshire  2021-03-01   750.0        30   780.0
+14  ha050146  rg265ht  Hampshire  2021-03-01   990.0        30  1020.0
+15  ha050146  rg265ht  Hampshire  2021-03-01  1170.0        30  1200.0
+16  ha050191  rg247wu  Hampshire  2021-03-01   570.0        30   600.0
+17  ha050155  rg238en  Hampshire  2021-03-01   630.0        60   690.0
+18  ha050155  rg238en  Hampshire  2021-03-01   975.0        60  1035.0
+19  ha050179  rg248ex  Hampshire  2021-03-01   570.0        30   600.0
+20  ha050179  rg248ex  Hampshire  2021-03-01  1020.0        30  1050.0
+21  ha050163  rg249gb  Hampshire  2021-03-01   510.0        30   540.0
+22  ha050163  rg249gb  Hampshire  2021-03-01  1140.0        30  1170.0
+23  ha050195  rg249dh  Hampshire  2021-03-01   450.0        45   495.0
+24  ha050195  rg249dh  Hampshire  2021-03-01   735.0        30   765.0
+25  ha050195  rg249dh  Hampshire  2021-03-01  1035.0        30  1065.0
+26  ha050176  rg248rt  Hampshire  2021-03-01   600.0        15   615.0
+27  ha050176  rg248rt  Hampshire  2021-03-01  1020.0        15  1035.0
+28  ha050176  rg248rt  Hampshire  2021-03-01   630.0        30   660.0
+29  ha050183  rg224bq  Hampshire  2021-03-01   510.0        60   570.0
+30  ha050183  rg224bq  Hampshire  2021-03-01   570.0       210   780.0
+31  ha050183  rg224bq  Hampshire  2021-03-01  1050.0        30  1080.0
+32  ha050034  rg248lz  Hampshire  2021-03-01   450.0        30   480.0
+33  ha050034  rg248lz  Hampshire  2021-03-01   690.0        30   720.0
+34  ha050034  rg248lz  Hampshire  2021-03-01   930.0        30   960.0
+35  ha050034  rg248lz  Hampshire  2021-03-01  1185.0        15  1200.0
+36  ha050148  rg226ly  Hampshire  2021-03-01   540.0        45   585.0
+37  ha050148  rg226ly  Hampshire  2021-03-01  1140.0        30  1170.0
+38  ha050156  rg249eq  Hampshire  2021-03-01   495.0        30   525.0
+39  ha050156  rg249eq  Hampshire  2021-03-01   780.0        45   825.0
+40  ha050156  rg249eq  Hampshire  2021-03-01   960.0        30   990.0
+41  ha050156  rg249eq  Hampshire  2021-03-01  1170.0        30  1200.0
+42  ha050189  rg224le  Hampshire  2021-03-01   450.0        30   480.0
+43  ha050189  rg224le  Hampshire  2021-03-01  1170.0        30  1200.0
+44  ha050112  rg213hu  Hampshire  2021-03-01   750.0        45   795.0
+45  ha050175  rg215qn  Hampshire  2021-03-01   540.0        30   570.0
+46  ha050175  rg215qn  Hampshire  2021-03-01  1200.0        30  1230.0
+47  ha050131  rg249rg  Hampshire  2021-03-01   540.0        30   570.0
+48  ha050131  rg249rg  Hampshire  2021-03-01   810.0        30   840.0
+49  ha050131  rg249rg  Hampshire  2021-03-01  1050.0        30  1080.0
+50  ha050180  rg224dx  Hampshire  2021-03-01   495.0        30   525.0
+51  ha050180  rg224dx  Hampshire  2021-03-01   840.0        30   870.0
+52  ha050180  rg224dx  Hampshire  2021-03-01  1155.0        30  1185.0
+53  ha050137  rg226jx  Hampshire  2021-03-01   525.0        30   555.0
+54  ha050137  rg226jx  Hampshire  2021-03-01  1200.0        30  1230.0
+55  ha050057  rg213qx  Hampshire  2021-03-01   569.0        60   629.0
+56  ha050057  rg213qx  Hampshire  2021-03-01   735.0        15   750.0
+57  ha050057  rg213qx  Hampshire  2021-03-01  1020.0        15  1035.0
+58  ha050057  rg213qx  Hampshire  2021-03-01  1260.0        30  1290.0
+59  ha050106  rg226tn  Hampshire  2021-03-01   540.0        45   585.0
+60  ha050106  rg226tn  Hampshire  2021-03-01   855.0        30   885.0
+61  ha050106  rg226tn  Hampshire  2021-03-01  1125.0        30  1155.0
+62  ha050141  rg218yy  Hampshire  2021-03-01   630.0        30   660.0
+63  ha050141  rg218yy  Hampshire  2021-03-01   990.0        30  1020.0
+64  ha050171  rg226tt  Hampshire  2021-03-01   660.0       180   840.0
+65  ha050164  rg226qa  Hampshire  2021-03-01   480.0        45   525.0
+66  ha050164  rg226qa  Hampshire  2021-03-01   990.0        60  1050.0
+67  ha050164  rg226qa  Hampshire  2021-03-01  1260.0        30  1290.0
+
+    tw_start  tw_end  longitude   latitude  eastings  northings start_time  \
+0      495.0   525.0  -1.080572  51.271117    464237     152842   08:30:00
+1     1215.0  1245.0  -1.080572  51.271117    464237     152842   20:30:00
+2      525.0   555.0  -1.099398  51.262110    462936     151824   09:00:00
+3      765.0   795.0  -1.099398  51.262110    462936     151824   13:00:00
+4      510.0   540.0  -1.119595  51.279195    461504     153707   08:45:00
+5      750.0   780.0  -1.119595  51.279195    461504     153707   12:45:00
+6      990.0  1020.0  -1.119595  51.279195    461504     153707   16:45:00
+7     1230.0  1260.0  -1.119595  51.279195    461504     153707   20:45:00
+8      555.0   585.0  -1.098123  51.274536    463008     153207   09:30:00
+9      795.0   825.0  -1.098123  51.274536    463008     153207   13:30:00
+10    1035.0  1065.0  -1.098123  51.274536    463008     153207   17:30:00
+11    1215.0  1245.0  -1.098123  51.274536    463008     153207   20:30:00
+12     495.0   525.0  -1.130357  51.305263    460719     156597   08:30:00
+13     735.0   765.0  -1.130357  51.305263    460719     156597   12:30:00
+14     975.0  1005.0  -1.130357  51.305263    460719     156597   16:30:00
+15    1155.0  1185.0  -1.130357  51.305263    460719     156597   19:30:00
+16     555.0   585.0  -1.046532  51.272940    466609     153075   09:30:00
+17     615.0   645.0  -1.125924  51.266762    461079     152319   10:30:00
+18     960.0   990.0  -1.125924  51.266762    461079     152319   16:15:00
+19     555.0   585.0  -1.054264  51.294350    466039     155449   09:30:00
+20    1005.0  1035.0  -1.054264  51.294350    466039     155449   17:00:00
+21     495.0   525.0  -1.081011  51.282882    464190     154150   08:30:00
+22    1125.0  1155.0  -1.081011  51.282882    464190     154150   19:00:00
+23     435.0   465.0  -1.082604  51.280656    464082     153901   07:30:00
+24     720.0   750.0  -1.082604  51.280656    464082     153901   12:15:00
+25    1020.0  1050.0  -1.082604  51.280656    464082     153901   17:15:00
+26     585.0   615.0  -1.060439  51.279203    465630     153759   10:00:00
+27    1005.0  1035.0  -1.060439  51.279203    465630     153759   17:00:00
+28     615.0   645.0  -1.060439  51.279203    465630     153759   10:30:00
+29     495.0   525.0  -1.110850  51.247216    462157     150158   08:30:00
+30     555.0   585.0  -1.110850  51.247216    462157     150158   09:30:00
+31    1035.0  1065.0  -1.110850  51.247216    462157     150158   17:30:00
+32     435.0   465.0  -1.055321  51.288937    465973     154846   07:30:00
+33     675.0   705.0  -1.055321  51.288937    465973     154846   11:30:00
+34     915.0   945.0  -1.055321  51.288937    465973     154846   15:30:00
+35    1170.0  1200.0  -1.055321  51.288937    465973     154846   19:45:00
+36     525.0   555.0  -1.126554  51.251678    461055     150641   09:00:00
+37    1125.0  1155.0  -1.126554  51.251678    461055     150641   19:00:00
+38     480.0   510.0  -1.092986  51.279145    463360     153724   08:15:00
+39     765.0   795.0  -1.092986  51.279145    463360     153724   13:00:00
+40     945.0   975.0  -1.092986  51.279145    463360     153724   16:00:00
+41    1155.0  1185.0  -1.092986  51.279145    463360     153724   19:30:00
+42     435.0   465.0  -1.114003  51.239687    461947     149318   07:30:00
+43    1155.0  1185.0  -1.114003  51.239687    461947     149318   19:30:00
+44     735.0   765.0  -1.090292  51.250736    463587     150567   12:30:00
+45     525.0   555.0  -1.087177  51.276357    463769     153419   09:00:00
+46    1185.0  1215.0  -1.087177  51.276357    463769     153419   20:00:00
+47     525.0   555.0  -1.119044  51.281745    461539     153991   09:00:00
+48     795.0   825.0  -1.119044  51.281745    461539     153991   13:30:00
+49    1035.0  1065.0  -1.119044  51.281745    461539     153991   17:30:00
+50     480.0   510.0  -1.104389  51.248624    462606     150320   08:15:00
+51     825.0   855.0  -1.104389  51.248624    462606     150320   14:00:00
+52    1140.0  1170.0  -1.104389  51.248624    462606     150320   19:15:00
+53     510.0   540.0  -1.122354  51.251745    461348     150652   08:45:00
+54    1185.0  1215.0  -1.122354  51.251745    461348     150652   20:00:00
+55     554.0   584.0  -1.067611  51.260602    465156     151684   09:29:00
+56     720.0   750.0  -1.067611  51.260602    465156     151684   12:15:00
+57    1005.0  1035.0  -1.067611  51.260602    465156     151684   17:00:00
+58    1245.0  1275.0  -1.067611  51.260602    465156     151684   21:00:00
+59     525.0   555.0  -1.123012  51.257829    461294     151328   09:00:00
+60     840.0   870.0  -1.123012  51.257829    461294     151328   14:15:00
+61    1110.0  1140.0  -1.123012  51.257829    461294     151328   18:45:00
+62     615.0   645.0  -1.102889  51.260212    462695     151610   10:30:00
+63     975.0  1005.0  -1.102889  51.260212    462695     151610   16:30:00
+64     645.0   675.0  -1.121913  51.259889    461368     151558   11:00:00
+65     465.0   495.0  -1.116577  51.259345    461741     151502   08:00:00
+66     975.0  1005.0  -1.116577  51.259345    461741     151502   16:30:00
+67    1245.0  1275.0  -1.116577  51.259345    461741     151502   21:00:00
+
+    end_time      exception     county                       job_function
+0   09:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+1   21:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+2   09:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+3   13:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+4   09:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+5   13:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+6   17:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+7   21:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+8   10:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+9   14:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+10  18:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+11  21:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+12  09:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+13  13:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+14  17:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+15  20:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+16  10:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+17  11:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+18  17:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+19  10:00:00  No Allocation        NaN        Hampshire - B.stoke Central
+20  17:30:00  No Allocation        NaN        Hampshire - B.stoke Central
+21  09:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+22  19:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+23  08:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+24  12:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+25  17:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+26  10:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+27  17:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+28  11:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+29  09:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+30  13:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+31  18:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+32  08:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+33  12:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+34  16:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+35  20:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+36  09:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+37  19:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+38  08:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+39  13:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+40  16:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+41  20:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+42  08:00:00  No Allocation  Hampshire  Hampshire - B.stoke Brighton Hill
+43  20:00:00  No Allocation  Hampshire  Hampshire - B.stoke Brighton Hill
+44  13:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+45  09:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+46  20:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+47  09:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+48  14:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+49  18:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+50  08:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+51  14:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+52  19:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+53  09:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+54  20:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+55  10:29:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+56  12:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+57  17:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+58  21:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+59  09:45:00  No Allocation  Hampshire         Hampshire - B.stoke Tadley
+60  14:45:00  No Allocation  Hampshire         Hampshire - B.stoke Tadley
+61  19:15:00  No Allocation  Hampshire         Hampshire - B.stoke Tadley
+62  11:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+63  17:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+64  14:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+65  08:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+66  17:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+67  21:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+     unique_id   carer postcode       area  shift   start  duration     end  \
+0   209615___1  209615  rg225an  Hampshire      1   420.0       900  1320.0
+1   209592___1  209592  rg218up  Hampshire      1   420.0       465   885.0
+2   209592___2  209592  rg218up  Hampshire      2   945.0       165  1110.0
+3   209599___1  209599  rg218ue  Hampshire      1   510.0       780  1290.0
+4   209565___1  209565  rg213bq  Hampshire      1   420.0       420   840.0
+5   209381___1  209381  rg224bb  Hampshire      1   420.0       330   750.0
+6   209609___1  209609  rg249py  Hampshire      1   480.0       510   990.0
+7   209499___1  209499  rg226af  Hampshire      1  1020.0       300  1320.0
+8   209585___1  209585  rg249de  Hampshire      1   555.0       285   840.0
+9   209598___1  209598  rg265fz  Hampshire      1   360.0      1050  1410.0
+10  502300___1  502300  so249px  Hampshire      1   360.0      1050  1410.0
+11  209591___1  209591  rg224hh  Hampshire      1   360.0      1050  1410.0
+12  209538___1  209538  rg249pj  Hampshire      1   420.0       420   840.0
+13  209538___2  209538  rg249pj  Hampshire      2   960.0       360  1320.0
+14  209515___1  209515  rg224hu  Hampshire      1   420.0       420   840.0
+15  209515___2  209515  rg224hu  Hampshire      2   930.0       390  1320.0
+16  209595___1  209595  rg249dp  Hampshire      1   900.0       225  1125.0
+17  209586___1  209586  rg249fa  Hampshire      1   360.0      1050  1410.0
+18  209575___1  209575  rg226qn  Hampshire      1   420.0       900  1320.0
+19  209521___1  209521  rg224ne  Hampshire      1   420.0       900  1320.0
+20  209608___1  209608  rg238dz  Hampshire      1   420.0       450   870.0
+21  209608___2  209608  rg238dz  Hampshire      2   960.0       360  1320.0
+22  209568___1  209568  rg237fd  Hampshire      1   360.0      1050  1410.0
+23  209559___1  209559  rg225du  Hampshire      1   420.0       540   960.0
+
+    longitude   latitude  eastings  northings start_time  end_time  grade  \
+0   -1.132282  51.254913    460651     150996   07:00:00  22:00:00  Carer
+1   -1.093271  51.262440    463363     151866   07:00:00  14:45:00  Carer
+2   -1.093271  51.262440    463363     151866   15:45:00  18:30:00  Carer
+3   -1.091650  51.261807    463477     151797   08:30:00  21:30:00  Carer
+4   -1.080127  51.256772    464288     151247   07:00:00  14:00:00  Carer
+5   -1.101858  51.249845    462781     150458   07:00:00  12:30:00    NaN
+6   -1.087828  51.284761    463712     154353   08:00:00  16:30:00  Carer
+7   -1.109849  51.260436    462209     151629   17:00:00  22:00:00    NaN
+8   -1.080455  51.279848    464233     153813   09:15:00  14:00:00    NaN
+9   -1.056439  51.324662    465844     158818   06:00:00  23:30:00  Carer
+10  -1.166914  51.081939    458452     131732   06:00:00  23:30:00    NaN
+11  -1.117716  51.244769    461681     149880   06:00:00  23:30:00  Carer
+12  -1.079823  51.287081    464267     154618   07:00:00  14:00:00  Carer
+13  -1.079823  51.287081    464267     154618   16:00:00  22:00:00  Carer
+14  -1.110219  51.240558    462210     149418   07:00:00  14:00:00    NaN
+15  -1.110219  51.240558    462210     149418   15:30:00  22:00:00    NaN
+16  -1.077629  51.282793    464426     154143   15:00:00  18:45:00  Carer
+17  -1.082291  51.283423    464100     154209   06:00:00  23:30:00    NaN
+18  -1.117576  51.255828    461676     151110   07:00:00  22:00:00    NaN
+19  -1.121682  51.241157    461409     149475   07:00:00  22:00:00    NaN
+20  -1.120016  51.269883    461487     152671   07:00:00  14:30:00  Carer
+21  -1.120016  51.269883    461487     152671   16:00:00  22:00:00  Carer
+22  -1.145374  51.223483    459778     147490   06:00:00  23:30:00  Carer
+23  -1.140237  51.257858    460092     151317   07:00:00  16:00:00  Carer
+
+                         job_function  not_on_rota  driver
+0   Hampshire - B.stoke Brighton Hill          0.0     1.0
+1                                 NaN          0.0     0.0
+2                                 NaN          0.0     0.0
+3                                 NaN          0.0     1.0
+4         Hampshire - B.stoke Central          1.0     1.0
+5   Hampshire - B.stoke Brighton Hill          0.0     0.0
+6                                 NaN          0.0     1.0
+7   Hampshire - B.stoke Brighton Hill          0.0     0.0
+8                                 NaN          0.0     1.0
+9                                 NaN          0.0     0.0
+10        Hampshire - B.stoke Central          0.0     0.0
+11                                NaN          0.0     0.0
+12         Hampshire - B.stoke Tadley          0.0     1.0
+13         Hampshire - B.stoke Tadley          0.0     1.0
+14  Hampshire - B.stoke Brighton Hill          0.0     1.0
+15  Hampshire - B.stoke Brighton Hill          0.0     1.0
+16                                NaN          0.0     0.0
+17        Hampshire - B.stoke Central          0.0     0.0
+18        Hampshire - B.stoke Central          0.0     0.0
+19  Hampshire - B.stoke Brighton Hill          0.0     1.0
+20        Hampshire - B.stoke Central          0.0     0.0
+21        Hampshire - B.stoke Central          0.0     0.0
+22        Hampshire - B.stoke Central          1.0     1.0
+23                          Aldershot          1.0     1.0
+     carer postcode       area   start  duration     end  longitude  \
+0   209615  rg225an  Hampshire   420.0     900.0  1320.0  -1.132282
+1   209592  rg218up  Hampshire   420.0     690.0  1110.0  -1.093271
+2   209599  rg218ue  Hampshire   510.0     780.0  1290.0  -1.091650
+3   209565  rg213bq  Hampshire   420.0     420.0   840.0  -1.080127
+4   209381  rg224bb  Hampshire   420.0     330.0   750.0  -1.101858
+5   209609  rg249py  Hampshire   480.0     510.0   990.0  -1.087828
+6   209499  rg226af  Hampshire  1020.0     300.0  1320.0  -1.109849
+7   209585  rg249de  Hampshire   555.0     285.0   840.0  -1.080455
+8   209598  rg265fz  Hampshire   360.0    1050.0  1410.0  -1.056439
+9   502300  so249px  Hampshire   360.0    1050.0  1410.0  -1.166914
+10  209591  rg224hh  Hampshire   360.0    1050.0  1410.0  -1.117716
+11  209538  rg249pj  Hampshire   420.0     900.0  1320.0  -1.079823
+12  209515  rg224hu  Hampshire   420.0     900.0  1320.0  -1.110219
+13  209595  rg249dp  Hampshire   900.0     225.0  1125.0  -1.077629
+14  209586  rg249fa  Hampshire   360.0    1050.0  1410.0  -1.082291
+15  209575  rg226qn  Hampshire   420.0     900.0  1320.0  -1.117576
+16  209521  rg224ne  Hampshire   420.0     900.0  1320.0  -1.121682
+17  209608  rg238dz  Hampshire   420.0     900.0  1320.0  -1.120016
+18  209568  rg237fd  Hampshire   360.0    1050.0  1410.0  -1.145374
+19  209559  rg225du  Hampshire   420.0     540.0   960.0  -1.140237
+
+     latitude  eastings  northings start_time  end_time  grade  \
+0   51.254913    460651     150996   07:00:00  22:00:00  Carer
+1   51.262440    463363     151866   07:00:00  18:30:00  Carer
+2   51.261807    463477     151797   08:30:00  21:30:00  Carer
+3   51.256772    464288     151247   07:00:00  14:00:00  Carer
+4   51.249845    462781     150458   07:00:00  12:30:00    NaN
+5   51.284761    463712     154353   08:00:00  16:30:00  Carer
+6   51.260436    462209     151629   17:00:00  22:00:00    NaN
+7   51.279848    464233     153813   09:15:00  14:00:00    NaN
+8   51.324662    465844     158818   06:00:00  23:30:00  Carer
+9   51.081939    458452     131732   06:00:00  23:30:00    NaN
+10  51.244769    461681     149880   06:00:00  23:30:00  Carer
+11  51.287081    464267     154618   07:00:00  22:00:00  Carer
+12  51.240558    462210     149418   07:00:00  22:00:00    NaN
+13  51.282793    464426     154143   15:00:00  18:45:00  Carer
+14  51.283423    464100     154209   06:00:00  23:30:00    NaN
+15  51.255828    461676     151110   07:00:00  22:00:00    NaN
+16  51.241157    461409     149475   07:00:00  22:00:00    NaN
+17  51.269883    461487     152671   07:00:00  22:00:00  Carer
+18  51.223483    459778     147490   06:00:00  23:30:00  Carer
+19  51.257858    460092     151317   07:00:00  16:00:00  Carer
+
+                         job_function  not_on_rota  driver
+0   Hampshire - B.stoke Brighton Hill          0.0     1.0
+1                                 NaN          0.0     0.0
+2                                 NaN          0.0     1.0
+3         Hampshire - B.stoke Central          1.0     1.0
+4   Hampshire - B.stoke Brighton Hill          0.0     0.0
+5                                 NaN          0.0     1.0
+6   Hampshire - B.stoke Brighton Hill          0.0     0.0
+7                                 NaN          0.0     1.0
+8                                 NaN          0.0     0.0
+9         Hampshire - B.stoke Central          0.0     0.0
+10                                NaN          0.0     0.0
+11         Hampshire - B.stoke Tadley          0.0     1.0
+12  Hampshire - B.stoke Brighton Hill          0.0     1.0
+13                                NaN          0.0     0.0
+14        Hampshire - B.stoke Central          0.0     0.0
+15        Hampshire - B.stoke Central          0.0     0.0
+16  Hampshire - B.stoke Brighton Hill          0.0     1.0
+17        Hampshire - B.stoke Central          0.0     0.0
+18        Hampshire - B.stoke Central          1.0     1.0
+19                          Aldershot          1.0     1.0
+
+-------------------------------------------------------
+Calling C function for a max. of 60 seconds, random seed is 13027.
+THE MIN PREF OF THIS INSTANCE IS:
+<-< minPref = 0.00 >->
+
+STARTING Nurse order: (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,)
+It      0       Q -653.85       t    4.6 s
+ > Nurse order: (0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,)
+It     10       Q -644.31       t   44.3 s
+ > Nurse order: (18,12,16,7,8,0,13,1,6,5,4,15,17,2,19,3,10,9,11,14,)
+It     11       Q -624.60       t   48.1 s
+ > Nurse order: (6,12,13,9,7,4,16,15,17,14,3,1,2,19,5,18,8,10,0,11,)
+
+Time finished! (60.00 seconds)
+GRASP: Performed 15 iterations.
+Relinking all pairs of solutions in the pool.
+        Pair 9 - 10: *** achieved quality: -534.20 ***
+        best_final_quality: -624.60, relinking_quality: -534.20
+quality: -624.60, best_final_quality: -534.20
+bestRelinkedSolution quality: -534.20
+new_quality: -534.20
+-------- sol_quality(ip, 12345) --------
+
+Nurse 18. Start time: 6:0:0, End time: 23:30:0, Length of shift: 17:30:0
+        Job 50 arrives at 8:15:0, prefScore: 0.00, [TW 8:0:0 - 8:30:0], duration(ST): 0:30:0, travel(TR): 5:22 [ready at: 8:50:22]
+        Job 59 arrives at 8:50:22, prefScore: 0.00, [TW 8:45:0 - 9:15:0], duration(ST): 0:45:0, travel(TR): 7:12 [ready at: 9:42:34]
+        Job 55 arrives at 9:42:34, prefScore: 0.00, [TW 9:14:0 - 9:44:0], duration(ST): 1:0:0, travel(TR): 6:10 [ready at: 10:48:44]
+        Job 64 arrives at 10:48:44, prefScore: 0.00, [TW 10:45:0 - 11:15:0], duration(ST): 3:0:0, travel(TR): 5:38 [ready at: 13:54:22]
+        Job 51 arrives at 13:54:22, prefScore: 0.00, [TW 13:45:0 - 14:15:0], duration(ST): 0:30:0, travel(TR): 5:22 [ready at: 14:29:44]
+        Job 60 arrives at 14:29:44, prefScore: 0.00, [TW 14:0:0 - 14:30:0], duration(ST): 0:30:0, travel(TR): 8:55 [ready at: 15:8:39]
+        Job 34 arrives at 15:15:0, prefScore: 0.00, [TW 15:15:0 - 15:45:0], duration(ST): 0:30:0, travel(TR): 8:58 [ready at: 15:53:58]
+        Job 18 arrives at 16:0:0, prefScore: 0.00, [TW 16:0:0 - 16:30:0], duration(ST): 1:0:0, travel(TR): 7:5 [ready at: 17:7:5]
+        Job 25 arrives at 17:7:5, prefScore: 0.00, [TW 17:0:0 - 17:30:0], duration(ST): 0:30:0, travel(TR): 7:44 [ready at: 17:44:49]
+        Job 31 arrives at 17:44:49, prefScore: 0.00, [TW 17:15:0 - 17:45:0], duration(ST): 0:30:0, travel(TR): 7:30 [ready at: 18:22:19]
+        Job 22 arrives at 18:45:0, prefScore: 0.00, [TW 18:45:0 - 19:15:0], duration(ST): 0:30:0, travel(TR): 2:50 [ready at: 19:17:50]
+        Job 41 arrives at 19:17:50, prefScore: 0.00, [TW 19:15:0 - 19:45:0], duration(ST): 0:30:0, travel(TR): 6:11 [ready at: 19:54:0]
+        Job 35 arrives at 19:54:0, prefScore: 0.00, [TW 19:30:0 - 20:0:0], duration(ST): 0:15:0, travel(TR): 5:48 [ready at: 20:14:48]
+        Job 11 arrives at 20:15:0, prefScore: 0.00, [TW 20:15:0 - 20:45:0], duration(ST): 0:30:0, travel(TR): 4:59 [ready at: 20:49:59]
+        Job 67 arrives at 20:49:59, prefScore: 0.00, [TW 20:45:0 - 21:15:0], duration(ST): 0:30:0[ready at: 21:19:59]
+Finish time: 21:28:48, Overtime: -2:1:12, Waiting time: 0:35:16
+
+Nurse 12. Start time: 7:0:0, End time: 22:0:0, Length of shift: 15:0:0
+        Job 43 arrives at 19:30:0, prefScore: 0.00, [TW 19:15:0 - 19:45:0], duration(ST): 0:30:0[ready at: 20:0:0]
+Finish time: 20:1:38, Overtime: -1:58:22, Waiting time: 0:0:0
+
+Nurse 16. Start time: 7:0:0, End time: 22:0:0, Length of shift: 15:0:0
+        Job 0 arrives at 8:30:0, prefScore: 0.00, [TW 8:15:0 - 8:45:0], duration(ST): 0:30:0, travel(TR): 6:18 [ready at: 9:6:18]
+        Job 2 arrives at 9:6:18, prefScore: 0.00, [TW 8:45:0 - 9:15:0], duration(ST): 0:30:0, travel(TR): 6:59 [ready at: 9:43:17]
+        Job 16 arrives at 9:43:17, prefScore: 0.00, [TW 9:15:0 - 9:45:0], duration(ST): 0:30:0, travel(TR): 9:55 [ready at: 10:23:12]
+        Job 17 arrives at 10:23:12, prefScore: 0.00, [TW 10:15:0 - 10:45:0], duration(ST): 1:0:0, travel(TR): 8:29 [ready at: 11:31:41]
+        Job 56 arrives at 12:0:0, prefScore: 0.00, [TW 12:0:0 - 12:30:0], duration(ST): 0:15:0, travel(TR): 4:11 [ready at: 12:19:11]
+        Job 44 arrives at 12:19:11, prefScore: 0.00, [TW 12:15:0 - 12:45:0], duration(ST): 0:45:0[ready at: 13:4:11]
+Finish time: 13:10:25, Overtime: -8:49:35, Waiting time: 0:28:19
+
+Nurse 7. Start time: 9:15:0, End time: 14:0:0, Length of shift: 4:45:0
+        Empty route for nurse 7, setting spare time to: 285.00
+
+Nurse 8. Start time: 6:0:0, End time: 23:30:0, Length of shift: 17:30:0
+        Job 15 arrives at 19:30:0, prefScore: 0.00, [TW 19:15:0 - 19:45:0], duration(ST): 0:30:0, travel(TR): 8:14 [ready at: 20:8:14]
+        Job 46 arrives at 20:8:14, prefScore: 0.00, [TW 19:45:0 - 20:15:0], duration(ST): 0:30:0, travel(TR): 4:56 [ready at: 20:43:11]
+        Job 7 arrives at 20:43:11, prefScore: 0.00, [TW 20:30:0 - 21:0:0], duration(ST): 0:30:0[ready at: 21:13:11]
+Finish time: 21:27:17, Overtime: -2:2:43, Waiting time: 0:0:0
+
+Nurse 0. Start time: 7:0:0, End time: 22:0:0, Length of shift: 15:0:0
+        Job 36 arrives at 9:0:0, prefScore: 0.00, [TW 8:45:0 - 9:15:0], duration(ST): 0:45:0[ready at: 9:45:0]
+Finish time: 9:48:14, Overtime: -12:11:46, Waiting time: 0:0:0
+
+Nurse 13. Start time: 15:0:0, End time: 18:45:0, Length of shift: 3:45:0
+        Job 14 arrives at 16:30:0, prefScore: 0.00, [TW 16:15:0 - 16:45:0], duration(ST): 0:30:0[ready at: 17:0:0]
+Finish time: 17:8:21, Overtime: -1:36:39, Waiting time: 0:0:0
+
+Nurse 1. Start time: 7:0:0, End time: 18:30:0, Length of shift: 11:30:0
+        Job 3 arrives at 13:0:0, prefScore: 0.00, [TW 12:45:0 - 13:15:0], duration(ST): 0:30:0[ready at: 13:30:0]
+Finish time: 13:31:16, Overtime: -4:58:44, Waiting time: 0:0:0
+
+Nurse 6. Start time: 17:0:0, End time: 22:0:0, Length of shift: 5:0:0
+        Job 6 arrives at 17:0:0, prefScore: 0.00, [TW 16:30:0 - 17:0:0], duration(ST): 0:30:0, travel(TR): 1:52 [ready at: 17:31:52]
+        Job 49 arrives at 17:31:52, prefScore: 0.00, [TW 17:15:0 - 17:45:0], duration(ST): 0:30:0[ready at: 18:1:52]
+Finish time: 18:7:8, Overtime: -3:52:52, Waiting time: 0:0:0
+
+Nurse 5. Start time: 8:0:0, End time: 16:30:0, Length of shift: 8:30:0
+        Job 13 arrives at 12:30:0, prefScore: 0.00, [TW 12:15:0 - 12:45:0], duration(ST): 0:30:0[ready at: 13:0:0]
+Finish time: 13:6:57, Overtime: -3:23:3, Waiting time: 0:0:0
+
+Nurse 4. Start time: 7:0:0, End time: 12:30:0, Length of shift: 5:30:0
+        Job 29 arrives at 8:30:0, prefScore: 0.00, [TW 8:15:0 - 8:45:0], duration(ST): 1:0:0[ready at: 9:30:0]
+Finish time: 9:31:8, Overtime: -2:58:52, Waiting time: 0:0:0
+
+Nurse 15. Start time: 7:0:0, End time: 22:0:0, Length of shift: 15:0:0
+        Job 66 arrives at 16:30:0, prefScore: 0.00, [TW 16:15:0 - 16:45:0], duration(ST): 1:0:0[ready at: 17:30:0]
+Finish time: 17:32:3, Overtime: -4:27:57, Waiting time: 0:0:0
+
+Nurse 17. Start time: 7:0:0, End time: 22:0:0, Length of shift: 15:0:0
+        Job 42 arrives at 7:30:0, prefScore: 0.00, [TW 7:15:0 - 7:45:0], duration(ST): 0:30:0, travel(TR): 7:13 [ready at: 8:7:13]
+        Job 65 arrives at 8:7:13, prefScore: 0.00, [TW 7:45:0 - 8:15:0], duration(ST): 0:45:0, travel(TR): 5:38 [ready at: 8:57:52]
+        Job 4 arrives at 8:57:52, prefScore: 0.00, [TW 8:30:0 - 9:0:0], duration(ST): 1:0:0, travel(TR): 7:32 [ready at: 10:5:24]
+        Job 26 arrives at 10:5:24, prefScore: 0.00, [TW 9:45:0 - 10:15:0], duration(ST): 0:15:0, travel(TR): 9:24 [ready at: 10:29:47]
+        Job 62 arrives at 10:29:47, prefScore: 0.00, [TW 10:15:0 - 10:45:0], duration(ST): 0:30:0, travel(TR): 9:54 [ready at: 11:9:42]
+        Job 33 arrives at 11:15:0, prefScore: 0.00, [TW 11:15:0 - 11:45:0], duration(ST): 0:30:0, travel(TR): 4:20 [ready at: 11:49:20]
+        Job 24 arrives at 12:0:0, prefScore: 0.00, [TW 12:0:0 - 12:30:0], duration(ST): 0:30:0, travel(TR): 6:36 [ready at: 12:36:36]
+        Job 5 arrives at 12:36:36, prefScore: 0.00, [TW 12:30:0 - 13:0:0], duration(ST): 0:30:0, travel(TR): 3:40 [ready at: 13:10:16]
+        Job 9 arrives at 13:15:0, prefScore: 0.00, [TW 13:15:0 - 13:45:0], duration(ST): 0:30:0, travel(TR): 3:45 [ready at: 13:48:45]
+        Job 48 arrives at 13:48:45, prefScore: 0.00, [TW 13:15:0 - 13:45:0], duration(ST): 0:30:0, travel(TR): 4:17 [ready at: 14:23:2] *** Misses TW by 3:45 ***
+        Job 40 arrives at 16:0:0, prefScore: 0.00, [TW 15:45:0 - 16:15:0], duration(ST): 0:30:0, travel(TR): 6:39 [ready at: 16:36:39]
+        Job 27 arrives at 16:45:0, prefScore: 0.00, [TW 16:45:0 - 17:15:0], duration(ST): 0:15:0, travel(TR): 5:48 [ready at: 17:5:48]
+        Job 20 arrives at 17:5:48, prefScore: 0.00, [TW 16:45:0 - 17:15:0], duration(ST): 0:30:0, travel(TR): 6:25 [ready at: 17:42:13]
+        Job 10 arrives at 17:42:13, prefScore: 0.00, [TW 17:15:0 - 17:45:0], duration(ST): 0:30:0, travel(TR): 5:10 [ready at: 18:17:23]
+        Job 61 arrives at 18:30:0, prefScore: 0.00, [TW 18:30:0 - 19:0:0], duration(ST): 0:30:0, travel(TR): 2:25 [ready at: 19:2:25]
+        Job 37 arrives at 19:2:25, prefScore: 0.00, [TW 18:45:0 - 19:15:0], duration(ST): 0:30:0[ready at: 19:32:25]
+Finish time: 19:40:5, Overtime: -2:19:55, Waiting time: 2:3:38
+
+Nurse 2. Start time: 8:30:0, End time: 21:30:0, Length of shift: 13:0:0
+        Job 63 arrives at 16:30:0, prefScore: 0.00, [TW 16:15:0 - 16:45:0], duration(ST): 0:30:0, travel(TR): 6:24 [ready at: 17:6:24]
+        Job 57 arrives at 17:6:24, prefScore: 0.00, [TW 16:45:0 - 17:15:0], duration(ST): 0:15:0[ready at: 17:21:24]
+Finish time: 17:25:36, Overtime: -4:4:24, Waiting time: 0:0:0
+
+Nurse 19. Start time: 7:0:0, End time: 16:0:0, Length of shift: 9:0:0
+        Job 23 arrives at 7:30:0, prefScore: 0.00, [TW 7:15:0 - 7:45:0], duration(ST): 0:45:0, travel(TR): 8:43 [ready at: 8:23:43]
+        Job 12 arrives at 8:23:43, prefScore: 0.00, [TW 8:15:0 - 8:45:0], duration(ST): 0:30:0, travel(TR): 7:7 [ready at: 9:0:50]
+        Job 47 arrives at 9:0:50, prefScore: 0.00, [TW 8:45:0 - 9:15:0], duration(ST): 0:30:0, travel(TR): 3:57 [ready at: 9:34:47]
+        Job 8 arrives at 9:34:47, prefScore: 0.00, [TW 9:15:0 - 9:45:0], duration(ST): 0:30:0[ready at: 10:4:47]
+Finish time: 10:11:17, Overtime: -5:48:43, Waiting time: 0:0:0
+
+Nurse 3. Start time: 7:0:0, End time: 14:0:0, Length of shift: 7:0:0
+        Empty route for nurse 3, setting spare time to: 420.00
+
+Nurse 10. Start time: 6:0:0, End time: 23:30:0, Length of shift: 17:30:0
+        Job 52 arrives at 19:15:0, prefScore: 0.00, [TW 19:0:0 - 19:30:0], duration(ST): 0:30:0, travel(TR): 3:59 [ready at: 19:48:59]
+        Job 54 arrives at 19:48:59, prefScore: 0.00, [TW 19:45:0 - 20:15:0], duration(ST): 0:30:0, travel(TR): 7:32 [ready at: 20:26:31]
+        Job 1 arrives at 20:26:31, prefScore: 0.00, [TW 20:15:0 - 20:45:0], duration(ST): 0:30:0, travel(TR): 6:7 [ready at: 21:2:39]
+        Job 58 arrives at 21:2:39, prefScore: 0.00, [TW 20:45:0 - 21:15:0], duration(ST): 0:30:0[ready at: 21:32:39]
+Finish time: 21:41:5, Overtime: -1:48:55, Waiting time: 0:0:0
+
+Nurse 9. Start time: 6:0:0, End time: 23:30:0, Length of shift: 17:30:0
+        Empty route for nurse 9, setting spare time to: 1050.00
+
+Nurse 11. Start time: 7:0:0, End time: 22:0:0, Length of shift: 15:0:0
+        Job 32 arrives at 7:30:0, prefScore: 0.00, [TW 7:15:0 - 7:45:0], duration(ST): 0:30:0, travel(TR): 6:22 [ready at: 8:6:22]
+        Job 38 arrives at 8:6:22, prefScore: 0.00, [TW 8:0:0 - 8:30:0], duration(ST): 0:30:0, travel(TR): 7:39 [ready at: 8:44:0]
+        Job 53 arrives at 8:44:0, prefScore: 0.00, [TW 8:30:0 - 9:0:0], duration(ST): 0:30:0, travel(TR): 2:35 [ready at: 9:16:35]
+        Job 30 arrives at 9:16:35, prefScore: 0.00, [TW 9:15:0 - 9:45:0], duration(ST): 3:30:0, travel(TR): 6:2 [ready at: 12:52:37]
+        Job 39 arrives at 12:52:37, prefScore: 0.00, [TW 12:45:0 - 13:15:0], duration(ST): 0:45:0[ready at: 13:37:37]
+Finish time: 13:41:28, Overtime: -8:18:32, Waiting time: 0:0:0
+
+Nurse 14. Start time: 6:0:0, End time: 23:30:0, Length of shift: 17:30:0
+        Job 21 arrives at 8:30:0, prefScore: 0.00, [TW 8:15:0 - 8:45:0], duration(ST): 0:30:0, travel(TR): 3:57 [ready at: 9:3:57]
+        Job 45 arrives at 9:3:57, prefScore: 0.00, [TW 8:45:0 - 9:15:0], duration(ST): 0:30:0, travel(TR): 5:37 [ready at: 9:39:34]
+        Job 19 arrives at 9:39:34, prefScore: 0.00, [TW 9:15:0 - 9:45:0], duration(ST): 0:30:0, travel(TR): 5:49 [ready at: 10:15:23]
+        Job 28 arrives at 10:15:23, prefScore: 0.00, [TW 10:15:0 - 10:45:0], duration(ST): 0:30:0[ready at: 10:45:23]
+Finish time: 10:51:15, Overtime: -12:38:45, Waiting time: 0:0:0
+
+QUALITY MEASURE: Paper (6)
+---------------------------------
+ALG OPTIONS:
+algOp[50] = 0.00 (if 1, tardiness/overtime are infeasible)
+alpha1 [51] (totalTravelTime) = -1.00
+alpha2 [52] (totalWaitingTime) = -1.00
+alpha3 [53] (mk_allowed_tardiness) = -5.00
+alpha4 [54] (totalOvertime) = -5.00
+alpha5 [55] (minSpareTime) = 1.00
+alpha6 [56] (totPref) = 1.00
+alpha7 [57] (mk_max_tardiness) = 0.00
+
+-------------------
+
+OUTPUT VARIABLES:
+Total time (totalTime): 3252.09
+Total Travel Time (totalTravelTime) = 499.88
+Total Waiting Time (totalWaitingTime): 187.21
+Total Service Time (totalServiceTime): 2565.00
+Total Overtime (totalOvertime) = 0.00
+Total Violated TW (totalTardiness) = -11.25
+Total Violated TWMK (totalMKTardiness) = 0.00
+Total Tardiness MK (mk_allowed_tardiness) = -11.25 (totalOvertime + totalTardiness)
+Max Spare Time (maxSpareTime): 1050.00
+Min Spare Time (minSpareTime): 96.66
+Shortest Shift (shortestDay): 0.00
+Longest Shift (longestDay): 941.08
+Shift Difference (dayDiff): 941.08
+Total Preference Score (ip->totPref) = 0.00
+Quality = -534.20
+
+------------------------------
+ALL QUALITIES:
+Ait H: 112316.70
+Mankowska: -164.13
+Workload Balance: 112232.26
+Paper: -534.20
+Nurse order: ( 18,  12,  16,  7,  8,  0,  13,  1,  6,  5,  4,  15,  17,  2,  19,  3,  10,  9,  11,  14,   )
+-------- finished. sol_quality(ip, 12345) --------
+
+        PR all pairs final quality: -534.20
+Iterations performed: 15
+GRASP Finished.
+Final quality: -534.20
+Theoretical best quality: -624.60
+Iterations performed: 15
+sols_generated = 16
+local_searches_performed = 16
+solutions_relinked = 0
+total path_relinkings_performed = 0
+Elapsed time: 91.21 s (MAX: 60.00)
+Final solution quality is: -534.20
+violated TW:  [  0.           0.           0.           0.           0.
+   0.           0.           0.           0.           0.
+   0.           0.           0.           0.           0.
+   0.           0.           0.           0.           0.
+   0.           0.           0.           0.           0.
+   0.           0.           0.           0.           0.
+   0.           0.           0.           0.           0.
+   0.           0.           0.           0.           0.
+ -15.           0.           0.           0.           0.
+   0.           0.           0.           3.75333333   0.
+   0.           0.           0.           0.           0.
+   0.           0.           0.           0.           0.
+   0.           0.           0.           0.           0.
+   0.           0.           0.        ]
+Finshed.
+Quality: 534.1999999999998
+Those were results for instance inst_Hampshire_2021-03-01 in Hampshire, 2021-03-01
+Total running time: 97.7 seconds.
+Generating website...
+Website filename: C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\inst_Hampshire_2021-03-01_dst.html
+totalTravelCost:  311.2566666666667
+totalMileageCost:  38.8644254995
+totalCost:  350.1210921661667
+Done.
+   client_id postcode       area        date   start  duration     end  \
+0   ha050145  rg215hh  Hampshire  2021-03-01   510.0        30   540.0
+1   ha050145  rg215hh  Hampshire  2021-03-01  1230.0        30  1260.0
+2   ha050159  rg218ay  Hampshire  2021-03-01   540.0        30   570.0
+3   ha050159  rg218ay  Hampshire  2021-03-01   780.0        30   810.0
+4   ha050168  rg249st  Hampshire  2021-03-01   525.0        60   585.0
+5   ha050168  rg249st  Hampshire  2021-03-01   765.0        30   795.0
+6   ha050168  rg249st  Hampshire  2021-03-01  1005.0        30  1035.0
+7   ha050168  rg249st  Hampshire  2021-03-01  1245.0        30  1275.0
+8   ha050184  rg215ts  Hampshire  2021-03-01   570.0        30   600.0
+9   ha050184  rg215ts  Hampshire  2021-03-01   810.0        30   840.0
+10  ha050184  rg215ts  Hampshire  2021-03-01  1050.0        30  1080.0
+11  ha050184  rg215ts  Hampshire  2021-03-01  1230.0        30  1260.0
+12  ha050146  rg265ht  Hampshire  2021-03-01   510.0        30   540.0
+13  ha050146  rg265ht  Hampshire  2021-03-01   750.0        30   780.0
+14  ha050146  rg265ht  Hampshire  2021-03-01   990.0        30  1020.0
+15  ha050146  rg265ht  Hampshire  2021-03-01  1170.0        30  1200.0
+16  ha050191  rg247wu  Hampshire  2021-03-01   570.0        30   600.0
+17  ha050155  rg238en  Hampshire  2021-03-01   630.0        60   690.0
+18  ha050155  rg238en  Hampshire  2021-03-01   975.0        60  1035.0
+19  ha050179  rg248ex  Hampshire  2021-03-01   570.0        30   600.0
+20  ha050179  rg248ex  Hampshire  2021-03-01  1020.0        30  1050.0
+21  ha050163  rg249gb  Hampshire  2021-03-01   510.0        30   540.0
+22  ha050163  rg249gb  Hampshire  2021-03-01  1140.0        30  1170.0
+23  ha050195  rg249dh  Hampshire  2021-03-01   450.0        45   495.0
+24  ha050195  rg249dh  Hampshire  2021-03-01   735.0        30   765.0
+25  ha050195  rg249dh  Hampshire  2021-03-01  1035.0        30  1065.0
+26  ha050176  rg248rt  Hampshire  2021-03-01   600.0        15   615.0
+27  ha050176  rg248rt  Hampshire  2021-03-01  1020.0        15  1035.0
+28  ha050176  rg248rt  Hampshire  2021-03-01   630.0        30   660.0
+29  ha050183  rg224bq  Hampshire  2021-03-01   510.0        60   570.0
+30  ha050183  rg224bq  Hampshire  2021-03-01   570.0       210   780.0
+31  ha050183  rg224bq  Hampshire  2021-03-01  1050.0        30  1080.0
+32  ha050034  rg248lz  Hampshire  2021-03-01   450.0        30   480.0
+33  ha050034  rg248lz  Hampshire  2021-03-01   690.0        30   720.0
+34  ha050034  rg248lz  Hampshire  2021-03-01   930.0        30   960.0
+35  ha050034  rg248lz  Hampshire  2021-03-01  1185.0        15  1200.0
+36  ha050148  rg226ly  Hampshire  2021-03-01   540.0        45   585.0
+37  ha050148  rg226ly  Hampshire  2021-03-01  1140.0        30  1170.0
+38  ha050156  rg249eq  Hampshire  2021-03-01   495.0        30   525.0
+39  ha050156  rg249eq  Hampshire  2021-03-01   780.0        45   825.0
+40  ha050156  rg249eq  Hampshire  2021-03-01   960.0        30   990.0
+41  ha050156  rg249eq  Hampshire  2021-03-01  1170.0        30  1200.0
+42  ha050189  rg224le  Hampshire  2021-03-01   450.0        30   480.0
+43  ha050189  rg224le  Hampshire  2021-03-01  1170.0        30  1200.0
+44  ha050112  rg213hu  Hampshire  2021-03-01   750.0        45   795.0
+45  ha050175  rg215qn  Hampshire  2021-03-01   540.0        30   570.0
+46  ha050175  rg215qn  Hampshire  2021-03-01  1200.0        30  1230.0
+47  ha050131  rg249rg  Hampshire  2021-03-01   540.0        30   570.0
+48  ha050131  rg249rg  Hampshire  2021-03-01   810.0        30   840.0
+49  ha050131  rg249rg  Hampshire  2021-03-01  1050.0        30  1080.0
+50  ha050180  rg224dx  Hampshire  2021-03-01   495.0        30   525.0
+51  ha050180  rg224dx  Hampshire  2021-03-01   840.0        30   870.0
+52  ha050180  rg224dx  Hampshire  2021-03-01  1155.0        30  1185.0
+53  ha050137  rg226jx  Hampshire  2021-03-01   525.0        30   555.0
+54  ha050137  rg226jx  Hampshire  2021-03-01  1200.0        30  1230.0
+55  ha050057  rg213qx  Hampshire  2021-03-01   569.0        60   629.0
+56  ha050057  rg213qx  Hampshire  2021-03-01   735.0        15   750.0
+57  ha050057  rg213qx  Hampshire  2021-03-01  1020.0        15  1035.0
+58  ha050057  rg213qx  Hampshire  2021-03-01  1260.0        30  1290.0
+59  ha050106  rg226tn  Hampshire  2021-03-01   540.0        45   585.0
+60  ha050106  rg226tn  Hampshire  2021-03-01   855.0        30   885.0
+61  ha050106  rg226tn  Hampshire  2021-03-01  1125.0        30  1155.0
+62  ha050141  rg218yy  Hampshire  2021-03-01   630.0        30   660.0
+63  ha050141  rg218yy  Hampshire  2021-03-01   990.0        30  1020.0
+64  ha050171  rg226tt  Hampshire  2021-03-01   660.0       180   840.0
+65  ha050164  rg226qa  Hampshire  2021-03-01   480.0        45   525.0
+66  ha050164  rg226qa  Hampshire  2021-03-01   990.0        60  1050.0
+67  ha050164  rg226qa  Hampshire  2021-03-01  1260.0        30  1290.0
+
+    tw_start  tw_end  longitude   latitude  eastings  northings start_time  \
+0      495.0   525.0  -1.080572  51.271117    464237     152842   08:30:00
+1     1215.0  1245.0  -1.080572  51.271117    464237     152842   20:30:00
+2      525.0   555.0  -1.099398  51.262110    462936     151824   09:00:00
+3      765.0   795.0  -1.099398  51.262110    462936     151824   13:00:00
+4      510.0   540.0  -1.119595  51.279195    461504     153707   08:45:00
+5      750.0   780.0  -1.119595  51.279195    461504     153707   12:45:00
+6      990.0  1020.0  -1.119595  51.279195    461504     153707   16:45:00
+7     1230.0  1260.0  -1.119595  51.279195    461504     153707   20:45:00
+8      555.0   585.0  -1.098123  51.274536    463008     153207   09:30:00
+9      795.0   825.0  -1.098123  51.274536    463008     153207   13:30:00
+10    1035.0  1065.0  -1.098123  51.274536    463008     153207   17:30:00
+11    1215.0  1245.0  -1.098123  51.274536    463008     153207   20:30:00
+12     495.0   525.0  -1.130357  51.305263    460719     156597   08:30:00
+13     735.0   765.0  -1.130357  51.305263    460719     156597   12:30:00
+14     975.0  1005.0  -1.130357  51.305263    460719     156597   16:30:00
+15    1155.0  1185.0  -1.130357  51.305263    460719     156597   19:30:00
+16     555.0   585.0  -1.046532  51.272940    466609     153075   09:30:00
+17     615.0   645.0  -1.125924  51.266762    461079     152319   10:30:00
+18     960.0   990.0  -1.125924  51.266762    461079     152319   16:15:00
+19     555.0   585.0  -1.054264  51.294350    466039     155449   09:30:00
+20    1005.0  1035.0  -1.054264  51.294350    466039     155449   17:00:00
+21     495.0   525.0  -1.081011  51.282882    464190     154150   08:30:00
+22    1125.0  1155.0  -1.081011  51.282882    464190     154150   19:00:00
+23     435.0   465.0  -1.082604  51.280656    464082     153901   07:30:00
+24     720.0   750.0  -1.082604  51.280656    464082     153901   12:15:00
+25    1020.0  1050.0  -1.082604  51.280656    464082     153901   17:15:00
+26     585.0   615.0  -1.060439  51.279203    465630     153759   10:00:00
+27    1005.0  1035.0  -1.060439  51.279203    465630     153759   17:00:00
+28     615.0   645.0  -1.060439  51.279203    465630     153759   10:30:00
+29     495.0   525.0  -1.110850  51.247216    462157     150158   08:30:00
+30     555.0   585.0  -1.110850  51.247216    462157     150158   09:30:00
+31    1035.0  1065.0  -1.110850  51.247216    462157     150158   17:30:00
+32     435.0   465.0  -1.055321  51.288937    465973     154846   07:30:00
+33     675.0   705.0  -1.055321  51.288937    465973     154846   11:30:00
+34     915.0   945.0  -1.055321  51.288937    465973     154846   15:30:00
+35    1170.0  1200.0  -1.055321  51.288937    465973     154846   19:45:00
+36     525.0   555.0  -1.126554  51.251678    461055     150641   09:00:00
+37    1125.0  1155.0  -1.126554  51.251678    461055     150641   19:00:00
+38     480.0   510.0  -1.092986  51.279145    463360     153724   08:15:00
+39     765.0   795.0  -1.092986  51.279145    463360     153724   13:00:00
+40     945.0   975.0  -1.092986  51.279145    463360     153724   16:00:00
+41    1155.0  1185.0  -1.092986  51.279145    463360     153724   19:30:00
+42     435.0   465.0  -1.114003  51.239687    461947     149318   07:30:00
+43    1155.0  1185.0  -1.114003  51.239687    461947     149318   19:30:00
+44     735.0   765.0  -1.090292  51.250736    463587     150567   12:30:00
+45     525.0   555.0  -1.087177  51.276357    463769     153419   09:00:00
+46    1185.0  1215.0  -1.087177  51.276357    463769     153419   20:00:00
+47     525.0   555.0  -1.119044  51.281745    461539     153991   09:00:00
+48     795.0   825.0  -1.119044  51.281745    461539     153991   13:30:00
+49    1035.0  1065.0  -1.119044  51.281745    461539     153991   17:30:00
+50     480.0   510.0  -1.104389  51.248624    462606     150320   08:15:00
+51     825.0   855.0  -1.104389  51.248624    462606     150320   14:00:00
+52    1140.0  1170.0  -1.104389  51.248624    462606     150320   19:15:00
+53     510.0   540.0  -1.122354  51.251745    461348     150652   08:45:00
+54    1185.0  1215.0  -1.122354  51.251745    461348     150652   20:00:00
+55     554.0   584.0  -1.067611  51.260602    465156     151684   09:29:00
+56     720.0   750.0  -1.067611  51.260602    465156     151684   12:15:00
+57    1005.0  1035.0  -1.067611  51.260602    465156     151684   17:00:00
+58    1245.0  1275.0  -1.067611  51.260602    465156     151684   21:00:00
+59     525.0   555.0  -1.123012  51.257829    461294     151328   09:00:00
+60     840.0   870.0  -1.123012  51.257829    461294     151328   14:15:00
+61    1110.0  1140.0  -1.123012  51.257829    461294     151328   18:45:00
+62     615.0   645.0  -1.102889  51.260212    462695     151610   10:30:00
+63     975.0  1005.0  -1.102889  51.260212    462695     151610   16:30:00
+64     645.0   675.0  -1.121913  51.259889    461368     151558   11:00:00
+65     465.0   495.0  -1.116577  51.259345    461741     151502   08:00:00
+66     975.0  1005.0  -1.116577  51.259345    461741     151502   16:30:00
+67    1245.0  1275.0  -1.116577  51.259345    461741     151502   21:00:00
+
+    end_time      exception     county                       job_function  \
+0   09:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+1   21:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+2   09:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+3   13:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+4   09:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+5   13:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+6   17:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+7   21:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+8   10:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+9   14:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+10  18:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+11  21:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+12  09:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+13  13:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+14  17:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+15  20:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+16  10:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+17  11:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+18  17:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+19  10:00:00  No Allocation        NaN        Hampshire - B.stoke Central
+20  17:30:00  No Allocation        NaN        Hampshire - B.stoke Central
+21  09:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+22  19:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+23  08:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+24  12:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+25  17:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+26  10:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+27  17:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+28  11:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+29  09:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+30  13:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+31  18:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+32  08:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+33  12:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+34  16:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+35  20:00:00  No Allocation  Hampshire     Hampshire - B.stoke Old Basing
+36  09:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+37  19:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+38  08:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+39  13:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+40  16:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+41  20:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+42  08:00:00  No Allocation  Hampshire  Hampshire - B.stoke Brighton Hill
+43  20:00:00  No Allocation  Hampshire  Hampshire - B.stoke Brighton Hill
+44  13:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+45  09:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+46  20:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+47  09:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+48  14:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+49  18:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+50  08:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+51  14:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+52  19:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+53  09:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+54  20:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+55  10:29:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+56  12:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+57  17:15:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+58  21:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+59  09:45:00  No Allocation  Hampshire         Hampshire - B.stoke Tadley
+60  14:45:00  No Allocation  Hampshire         Hampshire - B.stoke Tadley
+61  19:15:00  No Allocation  Hampshire         Hampshire - B.stoke Tadley
+62  11:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+63  17:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+64  14:00:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+65  08:45:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+66  17:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+67  21:30:00  No Allocation  Hampshire        Hampshire - B.stoke Central
+
+   carer_id arrive_job start_job depart_job travel_time waiting_time  \
+0    209521   08:30:00  08:30:00   09:00:00    00:00:00     00:00:00
+1    209591   20:26:31  20:26:31   20:56:31    00:07:32     00:00:00
+2    209521   09:06:18  09:06:18   09:36:18    00:06:18     00:00:00
+3    209592   13:00:00  13:00:00   13:30:00    00:00:00     00:00:00
+4    209608   08:57:52  08:57:52   09:57:52    00:05:38     00:00:00
+5    209608   12:36:36  12:36:36   13:06:36    00:06:36     00:00:00
+6    209499   17:00:00  17:00:00   17:30:00    00:00:00     00:00:00
+7    209598   20:43:11  20:43:11   21:13:11    00:04:56     00:00:00
+8    209559   09:34:47  09:34:47   10:04:47    00:03:57     00:00:00
+9    209608   13:10:16  13:15:00   13:45:00    00:03:40     00:04:44
+10   209608   17:42:13  17:42:13   18:12:13    00:06:25     00:00:00
+11   209568   20:14:48  20:15:00   20:45:00    00:05:48     00:00:12
+12   209559   08:23:43  08:23:43   08:53:43    00:08:43     00:00:00
+13   209609   12:30:00  12:30:00   13:00:00    00:00:00     00:00:00
+14   209595   16:30:00  16:30:00   17:00:00    00:00:00     00:00:00
+15   209598   19:30:00  19:30:00   20:00:00    00:00:00     00:00:00
+16   209521   09:43:17  09:43:17   10:13:17    00:06:59     00:00:00
+17   209521   10:23:12  10:23:12   11:23:12    00:09:55     00:00:00
+18   209568   15:53:58  16:00:00   17:00:00    00:08:58     00:06:02
+19   209586   09:39:34  09:39:34   10:09:34    00:05:36     00:00:00
+20   209608   17:05:48  17:05:48   17:35:48    00:05:48     00:00:00
+21   209586   08:30:00  08:30:00   09:00:00    00:00:00     00:00:00
+22   209568   18:22:19  18:45:00   19:15:00    00:07:30     00:22:41
+23   209559   07:30:00  07:30:00   08:15:00    00:00:00     00:00:00
+24   209608   11:49:20  12:00:00   12:30:00    00:04:20     00:10:40
+25   209568   17:07:05  17:07:05   17:37:05    00:07:05     00:00:00
+26   209608   10:05:24  10:05:24   10:20:24    00:07:32     00:00:00
+27   209608   16:36:39  16:45:00   17:00:00    00:06:39     00:08:21
+28   209586   10:15:23  10:15:23   10:45:23    00:05:49     00:00:00
+29   209381   08:30:00  08:30:00   09:30:00    00:00:00     00:00:00
+30   209538   09:16:35  09:16:35   12:46:35    00:02:35     00:00:00
+31   209568   17:44:49  17:44:49   18:14:49    00:07:44     00:00:00
+32   209538   07:30:00  07:30:00   08:00:00    00:00:00     00:00:00
+33   209608   11:09:42  11:15:00   11:45:00    00:09:54     00:05:18
+34   209568   15:08:39  15:15:00   15:45:00    00:08:55     00:06:21
+35   209568   19:54:00  19:54:00   20:09:00    00:06:11     00:00:00
+36   209615   09:00:00  09:00:00   09:45:00    00:00:00     00:00:00
+37   209608   19:02:25  19:02:25   19:32:25    00:02:25     00:00:00
+38   209538   08:06:22  08:06:22   08:36:22    00:06:22     00:00:00
+39   209538   12:52:37  12:52:37   13:37:37    00:06:02     00:00:00
+40   209608   14:23:02  16:00:00   16:30:00    00:04:17     01:21:58
+41   209568   19:17:50  19:17:50   19:47:50    00:02:50     00:00:00
+42   209608   07:30:00  07:30:00   08:00:00    00:00:00     00:00:00
+43   209515   19:30:00  19:30:00   20:00:00    00:00:00     00:00:00
+44   209521   12:19:11  12:19:11   13:04:11    00:04:11     00:00:00
+45   209586   09:03:57  09:03:57   09:33:57    00:03:57     00:00:00
+46   209598   20:08:14  20:08:14   20:38:14    00:08:14     00:00:00
+47   209559   09:00:50  09:00:50   09:30:50    00:07:07     00:00:00
+48   209608   13:48:45  13:48:45   14:18:45    00:03:45     00:00:00
+49   209499   17:31:52  17:31:52   18:01:52    00:01:52     00:00:00
+50   209568   08:15:00  08:15:00   08:45:00    00:00:00     00:00:00
+51   209568   13:54:22  13:54:22   14:24:22    00:05:38     00:00:00
+52   209591   19:15:00  19:15:00   19:45:00    00:00:00     00:00:00
+53   209538   08:44:00  08:44:00   09:14:00    00:07:39     00:00:00
+54   209591   19:48:59  19:48:59   20:18:59    00:03:59     00:00:00
+55   209568   09:42:34  09:42:34   10:42:34    00:07:12     00:00:00
+56   209521   11:31:41  12:00:00   12:15:00    00:08:29     00:28:19
+57   209599   17:06:24  17:06:24   17:21:24    00:06:24     00:00:00
+58   209591   21:02:39  21:02:39   21:32:39    00:06:07     00:00:00
+59   209568   08:50:22  08:50:22   09:35:22    00:05:22     00:00:00
+60   209568   14:29:44  14:29:44   14:59:44    00:05:22     00:00:00
+61   209608   18:17:23  18:30:00   19:00:00    00:05:10     00:12:37
+62   209608   10:29:47  10:29:47   10:59:47    00:09:24     00:00:00
+63   209599   16:30:00  16:30:00   17:00:00    00:00:00     00:00:00
+64   209568   10:48:44  10:48:44   13:48:44    00:06:10     00:00:00
+65   209608   08:07:13  08:07:13   08:52:13    00:07:13     00:00:00
+66   209575   16:30:00  16:30:00   17:30:00    00:00:00     00:00:00
+67   209568   20:49:59  20:49:59   21:19:59    00:04:59     00:00:00
+
+    tardiness
+0    0.000000
+1    0.000000
+2    0.000000
+3    0.000000
+4    0.000000
+5    0.000000
+6    0.000000
+7    0.000000
+8    0.000000
+9    0.000000
+10   0.000000
+11   0.000000
+12   0.000000
+13   0.000000
+14   0.000000
+15   0.000000
+16   0.000000
+17   0.000000
+18   0.000000
+19   0.000000
+20   0.000000
+21   0.000000
+22   0.000000
+23   0.000000
+24   0.000000
+25   0.000000
+26   0.000000
+27   0.000000
+28   0.000000
+29   0.000000
+30   0.000000
+31   0.000000
+32   0.000000
+33   0.000000
+34   0.000000
+35   0.000000
+36   0.000000
+37   0.000000
+38   0.000000
+39   0.000000
+40 -15.000000
+41   0.000000
+42   0.000000
+43   0.000000
+44   0.000000
+45   0.000000
+46   0.000000
+47   0.000000
+48   3.753333
+49   0.000000
+50   0.000000
+51   0.000000
+52   0.000000
+53   0.000000
+54   0.000000
+55   0.000000
+56   0.000000
+57   0.000000
+58   0.000000
+59   0.000000
+60   0.000000
+61   0.000000
+62   0.000000
+63   0.000000
+64   0.000000
+65   0.000000
+66   0.000000
+67   0.000000
+
+C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo (master)
+λ
