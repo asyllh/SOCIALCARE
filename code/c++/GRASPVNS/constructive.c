@@ -105,6 +105,7 @@ MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, 
     // exit(-1);
     // printf("In C.\nReading input...\n");
     struct INSTANCE inst = instance_from_python(nJobs_data, nNurses_data, nSkills_data, verbose_data, MAX_TIME_SECONDS, tw_interval_data, exclude_nurse_travel_data, od_data, nurse_travel_from_depot_data, nurse_travel_to_depot_data,
+                                                unavail_matrix_data, nurse_unavail_data,
                                                 nurseWorkingTimes_data, jobTimeInfo_data, jobRequirements_data, nurseSkills_data, doubleService_data, dependsOn_data, mk_mind_data, mk_maxd_data,
                                                 capabilityOfDoubleServices,
                                                 prefScore, algorithmOptions_data);
@@ -175,7 +176,7 @@ MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, 
     double int_tol = 0.0001;
     if(ip->algorithmOptions[98] >= -int_tol && ip->algorithmOptions[98] <= int_tol){
         // Solve with GRASP
-        retvalue = main_with_output(ip, solMatrixPointer, od_data);
+        retvalue = main_with_output(ip, solMatrixPointer, od_data, exclude_nurse_travel_data);
     }
     else if(ip->algorithmOptions[98] >= 1 - int_tol && ip->algorithmOptions[98] <= 1 + int_tol){
         // Evaluate solMatrix only
@@ -232,7 +233,7 @@ int evaluate_given_solution(struct INSTANCE* ip, int* solMatrixPointer, double* 
     return 0;
 }
 
-int main_with_output(struct INSTANCE* ip, int* solMatrixPointer, double* odmat_pointer){
+int main_with_output(struct INSTANCE* ip, int* solMatrixPointer, double* odmat_pointer, bool exclude_nurse_travel_data){
 
     // Call the GRASP algorithm
     GRASP(ip);
@@ -268,7 +269,7 @@ int main_with_output(struct INSTANCE* ip, int* solMatrixPointer, double* odmat_p
 
     solmatrix_to_python_format(ip, solMatrixPointer);
 
-
+    exclude_nurse_travel_data = false;
 
     // solMatrixPointer = ip->solMatrix;
     if(ip->verbose > 5)
@@ -696,6 +697,19 @@ void print_solmatrix(struct INSTANCE* ip){
                 printf("%2d\t", ip->solMatrix[i][j]);
             else
                 printf(" .\t", ip->solMatrix[i][j]);
+
+        }
+        printf("\t\\\\\n");
+    }
+}
+
+void print_allNurseRoutes(struct INSTANCE* ip){
+    for(int i = 0; i < ip->nNurses; ++i){
+        for(int j = 0; j < ip->nJobs; ++j){
+            if(ip->allNurseRoutes[i][j] > -1)
+                printf("%2d\t", ip->allNurseRoutes[i][j]);
+            else
+                printf(" .\t", ip->allNurseRoutes[i][j]);
 
         }
         printf("\t\\\\\n");
@@ -1890,7 +1904,7 @@ void print_nurse_route(struct INSTANCE* ip, int ni, int* nurseRoute){
     printf("\n--\n");
 }
 
-void set_nurse_time(struct INSTANCE* ip, int nursei){
+void old_set_nurse_time(struct INSTANCE* ip, int nursei){
 
     // This function goes through the route of 'nursei' from the first job (position 0) in nursei's route to the final job (last position) in nurse i's route,
     // including to and from the depot (nursei's home) and calculates the time that each job in nursei's route starts and finishes.
@@ -2047,25 +2061,49 @@ void set_nurse_time(struct INSTANCE* ip, int nursei){
 
 } //END OF set_nurse_time function
 
-void new_set_nurse_time(struct INSTANCE* ip, int nursei){
+void set_nurse_time(struct INSTANCE* ip, int nursei){
 
     /** NEW_SET_NURSE_TIME FUNCTION **/
-
+    int report = -1;
+    /*if(nursei == 0){
+        report = 1;
+    }*/
+    //printf("Here set_nurse_time, nursei: %d.\n", nursei);
+    if(report == 1){
+        printf("Start, nursei : %d\t", nursei);
+    }
     int prevPoint = -1; // previous job
     double tTime; // travel time
     double arriveAt = 0; // Keep up current time, and the time nursei arrives at a job
     double currentTime = (double) ip->nurseWorkingTimes[nursei][0]; // The start time of nursei (for the whole day)
-
+    if(report == 1){
+        printf("currentTime: %.2f\t", currentTime);
+    }
     ip->nurseWaitingTime[nursei] = 0; // Reset waiting time for nursei
     ip->nurseTravelTime[nursei] = 0; // Reset travel time for nursei
+    if(report == 1){
+        printf("After waitingTime and travelTime\t");
+    }
 
     // Reset timeMatrix for nursei (time at which nursei does job j - if nursei does not do job j then timeMatrix[nursei][j] = -1)
     for(int j = 0; j < ip->nJobs; ++j){
         ip->timeMatrix[nursei][j] = -1;
     }
+    if(report == 1){
+        printf("after timeMatrix\n");
+    }
 
     // Determine the number of unavailable 'shifts' for nursei
+    if(report == 1){
+        for(int i = 0; i < ip->nNurses; ++i){
+            printf("%d, ", ip->nurseUnavail[i]);
+        }
+        printf("\n");
+    }
     int numUnavail = ip->nurseUnavail[nursei];
+    if(report == 1){
+        printf("numUnavail: %d\n", numUnavail);
+    }
 
     // Main for loop:
     for(int j = 0; j < ip->nJobs; ++j){ // Main for loop of function, going through all POSITIONS j=0,...,nJobs.
@@ -2074,7 +2112,7 @@ void new_set_nurse_time(struct INSTANCE* ip, int nursei){
         }
 
         int job = ip->allNurseRoutes[nursei][j]; // job = the job in position j of nursei's route.
-
+        //printf("nursei: %d, j: %d, job: %d.\n", nursei, j, job);
         // NB: PART ONE: determine 'currentTime' and 'arriveAt', which is the time the nurse is at the location for 'job'
         if(prevPoint < -0.5){ // 'job' is the first job in nursei's route - there is no previous job, so prevPoint = -1.
             tTime = get_travel_time_from_depot(ip, nursei, job); // get_travel_time_from_depot = ip->nurse_travel_from_depot[nursei][job]
@@ -2116,7 +2154,7 @@ void new_set_nurse_time(struct INSTANCE* ip, int nursei){
 
         int considerDependency = -1;
 
-        // TODO: Dependent jobs, need to update to consider unavailable shifts.
+        // Dependent jobs:
         if(ip->dependsOn[job] > -1){
             int otherJob = ip->dependsOn[job];
             for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){
@@ -2144,7 +2182,7 @@ void new_set_nurse_time(struct INSTANCE* ip, int nursei){
             }
         }
 
-        // TODO: Double service jobs, need to update to consider unavailable shifts.
+        // Double service jobs:
         if(ip->doubleService[job] > 0){
             for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){
                 int prevNurse = ip->nurseOrder[prevNurseInd];
@@ -2161,27 +2199,6 @@ void new_set_nurse_time(struct INSTANCE* ip, int nursei){
 
         double waitingTime = 0;
         double tardiness = 0;
-        // Checking unavailable shifts.
-        if(numUnavail > 0){
-            for(int i = 0; i < numUnavail; ++i){
-                // If currentTime is BEFORE the start of unavailable shift and 'job' ENDS after the start of the unavailable shift (so finished either during or after unavailable shift), then we need to move the
-                // job so that it starts after the unavailable shift ends.
-                if(currentTime < ip->unavailMatrix[i][1][nursei] && currentTime+ip->jobTimeInfo[job][2] > ip->unavailMatrix[i][1][nursei]){
-                    waitingTime = ip->unavailMatrix[i][1][nursei] - currentTime; //waiting time = time from currentTime to the start of the unavailable shift
-                    currentTime = ip->unavailMatrix[i][2][nursei]; // update currentTime to be the end of the unavailable shift.
-                    tardiness = currentTime - endTW; // tardiness is how late the nurse is to the job, so how long after the end of the job TW does the nurse start the job.
-                    break; //don't check for further unavailable shifts (may need to change this in case there is another unavailable shift that the job would violate
-                }
-                // Else if currentTime is at or AFTER the start of an unavailable shift (and could end within or after the unavailable shift ends (doesn't matter)), then we need to move the job so that it starts after
-                // the unavailable shift ends.
-                else if(currentTime >= ip->unavailMatrix[i][1][nursei]){
-                    // no waiting time
-                    currentTime = ip->unavailMatrix[i][2][nursei]; // update currentTime to be the end of the unavailable shift.
-                    tardiness = currentTime - endTW; //tardiness is how late the nurse is to the job, so how long after the end of the job TW does the nurse start the job.
-                    break;
-                }
-            }
-        }
 
         // NB: PART TWO: Update arriveAt to be after waitingTime (if there is any) and calculate tardiness.
         //double waitingTime = 0;
@@ -2207,9 +2224,37 @@ void new_set_nurse_time(struct INSTANCE* ip, int nursei){
         }
         ip->violatedTW[job] += tardiness; // Updated violated TW for 'job'
 
+
+        if(numUnavail > 0){
+            for(int i = 0; i < numUnavail; ++i){
+                // If currentTime is BEFORE the start of unavailable shift and 'job' ENDS after the start of the unavailable shift (so finished either during or after unavailable shift), then we need to move the
+                // job so that it starts after the unavailable shift ends.
+                if(arriveAt < ip->unavailMatrix[i][1][nursei] && arriveAt + ip->jobTimeInfo[job][2] > ip->unavailMatrix[i][1][nursei]){
+                    waitingTime = ip->unavailMatrix[i][1][nursei] - arriveAt; //waiting time = time from currentTime to the start of the unavailable shift
+                    ip->nurseWaitingTime[nursei] += waitingTime;
+                    arriveAt = ip->unavailMatrix[i][2][nursei]; // update currentTime to be the end of the unavailable shift.
+                    ip->timeMatrix[nursei][job] = arriveAt;
+                    tardiness = arriveAt - endTW; // tardiness is how late the nurse is to the job, so how long after the end of the job TW does the nurse start the job.
+                    ip->violatedTW[job] = tardiness; // Updated violated TW for 'job'
+                    //break; //don't check for further unavailable shifts (may need to change this in case there is another unavailable shift that the job would violate)
+                }
+                // Else if currentTime is at or AFTER the start of an unavailable shift (and before the end of the unavailable shift) (and could end within or after the unavailable shift ends (doesn't matter)),
+                // then we need to move the job so that it starts after the unavailable shift ends.
+                else if(arriveAt >= ip->unavailMatrix[i][1][nursei] && arriveAt < ip->unavailMatrix[i][2][nursei]){
+                    // no waiting time
+                    arriveAt = ip->unavailMatrix[i][2][nursei]; // update currentTime to be the end of the unavailable shift.
+                    ip->timeMatrix[nursei][job] = arriveAt;
+                    tardiness = arriveAt - endTW; //tardiness is how late the nurse is to the job, so how long after the end of the job TW does the nurse start the job.
+                    ip->violatedTW[job] = tardiness; // Updated violated TW for 'job'
+                    //break;
+                }
+            }
+        }
+
         // NB: update current time to be the time after the waiting time (if any) and after the duration of the job, so currenTime is after the job has finished.
         prevPoint = job; // previous job is now set to the current job
-        currentTime = currentTime + ip->jobTimeInfo[job][2] + waitingTime; //current time = current time + time length of 'job' + waiting time, i.e. the current time is the time now after the job has been completed.
+        //currentTime = currentTime + ip->jobTimeInfo[job][2] + waitingTime; //current time = current time + time length of 'job' + waiting time, i.e. the current time is the time now after the job has been completed.
+        currentTime = arriveAt + ip->jobTimeInfo[job][2]; //current time = arriveAt (which includes waitingTime) + time length of 'job', i.e. the current time is the time now after the job has been completed.
 
     } //End of for loop (j = 0; j < ip->nJobs; ++j)
 
@@ -2218,6 +2263,7 @@ void new_set_nurse_time(struct INSTANCE* ip, int nursei){
         ip->nurseTravelTime[nursei] += get_travel_time_to_depot(ip, nursei, prevPoint); //get_travel_time_to_depot function returns ip->nurse_travel_to_depot[nursei][prevPoint].
     }
 
+    //printf("End set_nurse_time.\n");
 } //END OF new_set_nurse_time function
 
 void set_times_full(struct INSTANCE* ip){
@@ -2371,11 +2417,28 @@ double sol_quality(struct INSTANCE* ip, int report){
 
     // printf("\n\n********\nStarted sol_quality():\nSetting times...\n");
 
+    if (report == -98765){
+        printf("Initial allNurseRoutes:\n");
+        print_allNurseRoutes(ip);
+    }
+
 // printf("Solmatrix when starting sol_quality\n");
 // print_solmatrix(ip);
 
     // Set all nurse routes, as these get used multiple times in this function
     set_all_nurse_routes(ip);
+    if (report == -98765){
+        printf("After set_all_nurse_routes:\n");
+        print_allNurseRoutes(ip);
+    }
+    if(report == -98765){
+        printf("\nNurse Order:\n");
+        for(int i = 0; i < ip->nNurses; ++i){
+            int nurse = ip->nurseOrder[i];
+            printf("%d ", nurse);
+        }
+        printf("\n");
+    }
     // printf("All routes set.\n");
     set_times_full(ip);
     // if (report > 0)
