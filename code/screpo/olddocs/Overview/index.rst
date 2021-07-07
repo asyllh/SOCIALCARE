@@ -1,4 +1,0 @@
-Overview
-==================
-
-About this program.
