@@ -20,29 +20,17 @@ from math import sqrt
 from datetime import timedelta
 from numpy.ctypeslib import ndpointer
 
-import mankowska_data as Mk
-# import convert_dict_inst as cdi
-# import convert_dfs_inst as cdfi
-import tools_and_scripts.class_cpo_df as ccd
-
 # Display all rows and columns of dataframes in command prompt:
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
-def create_solve_inst(client_df, carershift_df, carerday_df, options_vector, quality_measure, max_time_seconds, random_seed): # changed from idict to client_df, carer_df.
-    #New function to call test instance
-    # inst = cdi.convert_dict_inst(idict, options_vector)
-    mkVNS = False
-    file_to_run = 'something.mat'
+def create_solve_inst(client_df, carershift_df, carerday_df, options_vector, wb_balance, quality_measure, max_time_seconds, random_seed): # changed from idict to client_df, carer_df.
     
+    # Create instance of the INSTANCE class:
     inst = INSTANCE()
-    # cpo_inst = ccd.CPO_DF() # NOTE: Not needed anymore!
-
-    if mkVNS: # For some reason an error occurs (cannot call inst.solve()) without this if statement, so just left it in.
-        inst = Mk.generate_Mk(inst, matfile=file_to_run, filetype='large_vns')
-    else:
-        # inst = convert_dict_inst(inst, idict, cpo_inst)
-        inst = convert_dfs_inst(inst, client_df, carershift_df, carerday_df)
-    
+   
+    # Build/fill inst object:
+    inst = convert_dfs_inst(inst, client_df, carershift_df, carerday_df)
+        
     inst.lambda_1 = 1
     inst.lambda_2 = 1
     inst.lambda_3 = 1
@@ -51,16 +39,25 @@ def create_solve_inst(client_df, carershift_df, carerday_df, options_vector, qua
     inst.lambda_6 = 10
     inst.quality_measure = quality_measure
     inst.MAX_TIME_SECONDS = max_time_seconds
-    inst.init_job_and_nurse_objects(client_df, carerday_df) # NOTE: DO WE NEED CARERSHIFT_DF IN THIS TOO? CHECK!!!
+    options_vector[55] = wb_balance # alpha_5 Workload balance (from user input)
+
+    # Create instances of JOB and NURSE classes for inst:
+    inst.init_job_and_nurse_objects(client_df, carerday_df)
 
     inst.algorithmOptions = options_vector
-    # inst.algorithmOptions[0] = 0.0 # ait_h
-    # inst.algorithmOptions[0] = 1.0 # mankowska
-    # inst.algorithmOptions[0] = 5.0 # workload_balance
-    if quality_measure == 'paper':
-        inst.algorithmOptions[0] = 6.0 # paper
+    if quality_measure == 'default':
+        inst.algorithmOptions[0] = 6.0 # paper (default)
+    elif quality_measure == 'ait h':
+        inst.algorithmOptions[0] = 0.0 # ait_h
+    elif quality_measure == 'mk':
+        inst.algorithmOptions[0] = 1.0 # mankowska
+    elif quality_measure == 'wb':
+        inst.algorithmOptions[0] = 5.0 # workload_balance
     else:
-        inst.algorithmOptions[0] = 6.0 # NOTE: NEED TO CHANGE THIS!!!
+        print('[ERROR]: (instance_handler.py) incorrect quality measure provided.')
+        print('Quality measure must be one of the following: default, ait h, mk, or wb.')
+        exit(-1)
+    
     saved_od_data = inst.od[0][0]
     inst.solve(randomSeed=random_seed, printAllCallData=False)
     inst.solve = []
@@ -73,20 +70,18 @@ def create_solve_inst(client_df, carershift_df, carerday_df, options_vector, qua
 ### --- End def create_solve_inst --- ###
 
 def convert_dfs_inst(inst, client_df, carershift_df, carerday_df):
-    # This function creates an instance 'inst' of the class 'INSTANCE', and initialises inst with data from our idict dictionary instance created by analyse_mileage.py.
-    # This function takes a dictionary instance 'idict' as input, and returns the object 'inst'.
-
-    inst.name = 'inst_' + str(client_df.loc[0]['area']) + '_' + str(client_df.loc[0]['date']) # name is 'inst_area_date'
+  
+    inst.name = str(client_df.loc[0]['area']) + '_' + str(client_df.loc[0]['date']) # name is 'inst_area_date'
     inst.fname = inst.name # Note: Need to change
     inst.area = client_df.loc[0]['area']
     inst.date = client_df.loc[0]['date']
-    inst.nNurses = len(carerday_df) # NOTE: need to change this to carerday_df!
+    inst.nNurses = len(carerday_df)
     inst.nJobs = len(client_df)
     inst.nShifts = len(carershift_df)
     inst.nSkills = 5 # NOTE: this is a random number just for testing.
 
     inst.nurseWorkingTimes = np.zeros((inst.nNurses, 3), dtype=np.int32) # nurseWorkingTimes is nNurses x 3, col[0] = start time, col[1] = finish time, col[2] = max working time.
-    for i in range(inst.nNurses): #range(len(idict['rota']['start']))
+    for i in range(inst.nNurses):
         inst.nurseWorkingTimes[i][0] = carerday_df.iloc[i]['start']
         inst.nurseWorkingTimes[i][1] = carerday_df.iloc[i]['end']
         inst.nurseWorkingTimes[i][2] = carerday_df.iloc[i]['duration']
@@ -94,7 +89,7 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df):
     inst.nurseSkills = np.ones((inst.nNurses, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
 
     inst.jobTimeInfo = np.zeros((inst.nJobs, 3), dtype=np.int32) # jobTimeInfo is nJobs x 3, col[0] = startTW, col[1] = endTW, col[2] = length of job (time)
-    for i in range(inst.nJobs): #range(len(idict['tasks']['duration']))
+    for i in range(inst.nJobs):
         inst.jobTimeInfo[i][0] = client_df.iloc[i]['tw_start']
         inst.jobTimeInfo[i][1] = client_df.iloc[i]['tw_end']
         inst.jobTimeInfo[i][2] = client_df.iloc[i]['duration']
@@ -859,44 +854,10 @@ class INSTANCE(object):
             
             print('\n ---------------- end of python data - start call to C ----------------\n\n\n ')
 
-        # Call:
-        # print('totalsArray before: ', self.totalsArray)
-        # print('nurseWaitingMatrix before:')
-        # for i in range(10):
-        #     for j in range(20):
-        #         print(self.nurseWaitingMatrix[i][j], end=' ')
-        #     print('\n')
-        # print('\n')
-
-        # print('nurseTravelMatrix before:')
-        # for i in range(10):
-        #     for j in range(20):
-        #         print(self.nurseTravelMatrix[i][j], end=' ')
-        #     print('\n')
-        # print('\n')
-
         self.fun(self.nJobs, self.nNurses, self.nSkills, self.verbose, self.MAX_TIME_SECONDS, self.tw_interval, self.exclude_nurse_travel, self.od, self.nurse_travel_from_depot, self.nurse_travel_to_depot,
             self.unavail_matrix, self.nurse_unavail, self.nurseWorkingTimes, self.jobTimeInfo, self.jobSkillsRequired, self.nurseSkills, self.solMatrix, self.doubleService, self.dependsOn,
             self.mk_mind, self.mk_maxd, self.capabilityOfDoubleServices, self.prefScore, self.algorithmOptions, self.timeMatrix, self.nurseWaitingTime, self.nurseTravelTime, self.violatedTW, 
             self.nurseWaitingMatrix, self.nurseTravelMatrix, self.totalsArray, randomSeed)
-
-        print('violated TW: ', self.violatedTW)
-        # exit(-1)
-
-        # print('totalsArray after: ', self.totalsArray)
-        # print('nurseWaitingMatrix after:')
-        # for i in range(20):
-        #     for j in range(40):
-        #         print(self.nurseWaitingMatrix[i][j], end=' ')
-        #     print('\n')
-        # print('\n')
-
-        # print('solMatrix after:')
-        # for i in range(10):
-        #     for j in range(20):
-        #         print(self.solMatrix[i][j], end=' ')
-        #     print('\n')
-        # print('\n')
 
         if self.verbose > 10:
             print('Returned this matrix: ')
@@ -1250,7 +1211,7 @@ class INSTANCE(object):
         plt.setp(autotexts, size=8)
 
         plt.draw()
-        plt.savefig(self.fname + '_time_info_dst' + '.png', bbox_inches='tight')
+        plt.savefig(self.fname + '_time_info' + '.png', bbox_inches='tight')
         plt.show()
     ### --- End def plot_pie_time_spent_dst --- ###
 
@@ -1284,7 +1245,7 @@ class INSTANCE(object):
         plt.legend((p1[0], p2[0], p3[0]), ('Service Time', 'Travel Time', 'Waiting Time'))
 
         plt.draw()
-        plt.savefig(self.fname + '_workload_dst' + '.png', bbox_inches='tight')
+        plt.savefig(self.fname + '_workload' + '.png', bbox_inches='tight')
         plt.show()
     ### --- End def plot_bar_time_per_nurse_dst --- ###
 
@@ -1503,7 +1464,7 @@ class INSTANCE(object):
                 else:
                     self.jobObjs[job].assignedNurse = [i]
 
-                costOfTravel = self.nurseTravelMatrix[i][job]
+                costOfTravel = get_travel_cost(self.nurseTravelMatrix[i][job])
                 self.nurseTravelCost[i] += costOfTravel
             # End for loop p
             if job > -1:
@@ -1538,7 +1499,7 @@ class INSTANCE(object):
         return self.Cquality  
     ### --- End def full_solution_report --- ###
 
-    def add_solution_to_df(self, client_df):
+    def solution_df_csv(self, client_df):
         client_df = client_df.assign(carer_id=np.nan, arrive_job=np.nan, start_job=np.nan, depart_job=np.nan, travel_time=np.nan, waiting_time=np.nan, tardiness=np.nan)
         # client_df['arrive'] = pd.Series()
         # client_df['startJob'] = pd.Series()
@@ -1562,9 +1523,13 @@ class INSTANCE(object):
                         # client_df.loc[i, 'tardiness'] = self.jobObjs[j].tardiness
                         break
         
+        output_filename = self.fname + '_solution.csv'
+    
+        client_df.to_csv(output_filename)
+        print('Saved solution to', output_filename)
         # print(client_df)
         # exit(-1)
-    ### --- End def add_solution_to_df --- ###
+    ### --- End def solution_df_csv --- ###
 ### --- End class INSTANCE --- ###
 
 def default_options_vector_type(measure=''):
