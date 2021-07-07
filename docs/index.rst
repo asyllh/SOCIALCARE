@@ -1,5 +1,5 @@
-Welcome to Scheduling and Routing DST's documentation! Welcome!
-===============================================================
+Welcome to Scheduling and Routing DST's documentation!
+======================================================
 
 What is this program.
 
