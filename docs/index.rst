@@ -3,6 +3,8 @@ Welcome to Scheduling and Routing DST's documentation!
 
 What is this program.
 
+This website is a guide.
+
 Contents:
 
 .. toctree::
