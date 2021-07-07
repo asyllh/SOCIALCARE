@@ -11,6 +11,7 @@ full_codepoint.csv
 # Node artifact files
 node_modules/
 dist/
+build/
 
 # Compiled Java class files
 *.class
