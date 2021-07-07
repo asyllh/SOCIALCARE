@@ -7,52 +7,14 @@
 import math
 import pickle
 import datetime
+import openpyxl
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
-import openpyxl
-# import class_cpo_df as ccd
+
+# Own modules:
 import tools_and_scripts.class_cpo_df as ccd
-# from df_to_inst_test import *
-
-# retrieve_info_dfs.py: main full codepoint analyse mileage, using abicare's data
-
-class POSTCODE_FINDER():
-    """
-    docstring
-    """
-    df = []
-    filename = []
-    def __init__(self, filename=r'data\temp\full_codepoint.csv'):
-        self.filename = filename
-        self.df = pd.read_csv(self.filename)
-        self.df['PC'] = self.df['PC'].str.replace('"', '')
-        self.df['PC'] = self.df['PC'].str.replace(' ', '') # Changed from self.adr_df['PC'].str.replace(' ', '') to self.adr_df['post'].str.replace(' ', '')
-        self.df['PC'] = self.df['PC'].str.lower()
-
-    def find_postcode_eastnorth(self, postcode): # Returns eastings and northings of given postcode
-        dfview = self.df[self.df['PC'] == postcode]
-        if dfview.empty:
-            print('ERROR Postcode does not exist:', postcode)
-            return [None, None]
-        else:
-            # Need to convert eastings and northings to lat and lon
-            return [dfview.iloc[0]['EA'], dfview.iloc[0]['NO']]
-    
-    def find_postcode_n_addresses(self, postcode): # Returns number of registered properties at a given postcode.
-        dfview = self.df[self.df['PC'] == postcode]
-        if dfview.empty:
-            return -1
-        else:
-            return dfview.iloc[0]['RP']
-
-def time_dif_to_minutes(endtime, starttime, round=True):
-    mins = (endtime - starttime).seconds/60
-    if round:
-        return np.round(mins, 0)
-    else:
-        return mins
 
 def inst_dicts_to_dfs(inst):
     inst['rota'] = pd.DataFrame(inst['rota'])
@@ -89,6 +51,13 @@ def print_inst(inst):
         print('\n--  ', k, ' --')
         print(inst[k])
 
+def time_dif_to_minutes(endtime, starttime, round=True):
+    mins = (endtime - starttime).seconds/60
+    if round:
+        return np.round(mins, 0)
+    else:
+        return mins
+
 def carer_works_this_slot(slot): # Function finds out whether there is 'Unavailable' in the given cell 'slot' in Carer Availability
     works = True
     if type(slot) == str: # If there is the string 'Unavailable' in the given 'slot', then the carer does not work that time
@@ -99,12 +68,14 @@ def carer_works_this_slot(slot): # Function finds out whether there is 'Unavaila
 
 # filename = 'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\abicare\clientcarerdetails.xlsx' #File from Abicare
 
-def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
+def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True, filename='None', foldername='None'):
 
     # pdfinder = POSTCODE_FINDER() # Instantiate object
-    cpo_inst = ccd.CPO_DF()
+    # cpo_inst = ccd.CPO_DF(r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\codepo_gb')
+    cpo_inst = ccd.CPO_DF(foldername)
 
-    data_filename = r'data\abicare\clientcarerdetails.xlsx'
+    # data_filename = r'data\abicare\clientcarerdetails.xlsx'
+    data_filename = filename
     carerdetails_sheetname = 'Carer Details'
     carerhours_sheetname = 'Carer Availability'
 
@@ -166,8 +137,8 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
                 'start_time' : [], 'end_time' : [], 'exception' : [], 'county' : [], 'job_function' : []}
 
     start_of_day = clientdf_hours.iloc[0]['From'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first job.
-    print('start_of_day: ', start_of_day)
-    print('type start_of_day: ', type(start_of_day))
+    # print('start_of_day: ', start_of_day)
+    # print('type start_of_day: ', type(start_of_day))
     # exit(-1)
     # print(type(clientdf_hours['Start'][0]))
     # print(type(clientdf_hours['Duration'][0]))
@@ -231,22 +202,22 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
             client_work_date = clientdf_hours['Date'][i]
             client_work_from = clientdf_hours['From'][i] # NOTE: this will not be in the final df
             client_work_to = clientdf_hours['To'][i] # NOTE: this will not be in the final df
-            print('client-work_from: ', client_work_from, ' type: ', type(client_work_from))
-            print('client-work_to: ', client_work_to, ' type: ', type(client_work_to))
+            # print('client-work_from: ', client_work_from, ' type: ', type(client_work_from))
+            # print('client-work_to: ', client_work_to, ' type: ', type(client_work_to))
             client_work_starttime = clientdf_hours['Start Time'][i]
             client_work_duration = clientdf_hours['Duration'][i]
             client_work_endtime = clientdf_hours['End Time'][i]
-            print('client_work_starttime: ', client_work_starttime, ' type: ', type(client_work_starttime))
-            print('client_work_endtime: ', client_work_endtime, ' type: ', type(client_work_endtime))
-            print('client_work_duration: ', client_work_duration, ' type: ', type(client_work_duration))
+            # print('client_work_starttime: ', client_work_starttime, ' type: ', type(client_work_starttime))
+            # print('client_work_endtime: ', client_work_endtime, ' type: ', type(client_work_endtime))
+            # print('client_work_duration: ', client_work_duration, ' type: ', type(client_work_duration))
 
             client_work_exception = clientdf_hours['Exception'][i]
             client_work_longitude, client_work_latitude = cpo_inst.find_postcode_lonlat(client_work_postcode)
             client_work_start = time_dif_to_minutes(client_work_from, start_of_day)
             client_work_end = time_dif_to_minutes(client_work_to, start_of_day)
-            print('client_work_start: ', client_work_start, ' type: ', type(client_work_start))
-            print('client_work_end: ', client_work_end, ' type: ', type(client_work_end))
-            exit(-1)
+            # print('client_work_start: ', client_work_start, ' type: ', type(client_work_start))
+            # print('client_work_end: ', client_work_end, ' type: ', type(client_work_end))
+            # exit(-1)
             # print('from: ', client_work_from)
             # print('starttime: ', client_work_starttime)
             # print('start:', client_work_start)
@@ -343,6 +314,10 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
 
     for i in range(len(carer_id)): # For each carer id number in the Carer Availability sheet (first row, under 'Nights')
         # Extract and save carer info from the other DF:
+        if(carer_id[i] in carer_day_work['carer']):
+            print('[ERROR]: duplicate carer availability details for carer ', carer_id[i])
+            print('Skipping duplicate details.')
+            continue
         carer_details_row = carerdf_details[carerdf_details[key_carer_id] == carer_id[i]] # carer_details_row is the dataframe containing details for only the current carer_id in the Carer Details sheet
         carer_work_grade = np.nan
         carer_work_job_function = np.nan
@@ -511,4 +486,33 @@ def retrieve_dfs(area = 'None', tw_interval = 15, print_statements=True):
     # print(carershift_df)
 ### --- End of def retrieve_info_dfs --- ###
 
+# class POSTCODE_FINDER():
+#     """
+#     docstring
+#     """
+#     df = []
+#     filename = []
+#     def __init__(self, filename=r'data\temp\full_codepoint.csv'):
+#         self.filename = filename
+#         self.df = pd.read_csv(self.filename)
+#         self.df['PC'] = self.df['PC'].str.replace('"', '')
+#         self.df['PC'] = self.df['PC'].str.replace(' ', '') # Changed from self.adr_df['PC'].str.replace(' ', '') to self.adr_df['post'].str.replace(' ', '')
+#         self.df['PC'] = self.df['PC'].str.lower()
+
+#     def find_postcode_eastnorth(self, postcode): # Returns eastings and northings of given postcode
+#         dfview = self.df[self.df['PC'] == postcode]
+#         if dfview.empty:
+#             print('ERROR Postcode does not exist:', postcode)
+#             return [None, None]
+#         else:
+#             # Need to convert eastings and northings to lat and lon
+#             return [dfview.iloc[0]['EA'], dfview.iloc[0]['NO']]
     
+#     def find_postcode_n_addresses(self, postcode): # Returns number of registered properties at a given postcode.
+#         dfview = self.df[self.df['PC'] == postcode]
+#         if dfview.empty:
+#             return -1
+#         else:
+#             return dfview.iloc[0]['RP']
+
+

@@ -17,7 +17,9 @@ import pandas as pd
 import geopandas
 
 class CPO_DF(): # Codepoint Open DataFrame
-    def __init__(self, foldername=r'data\codepo_gb'):
+    def __init__(self, foldername):
+    # def __init__(self, foldername=r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\codepo_gb'):
+    # def __init__(self, foldername=r'data\codepo_gb'):
     # def __init__(self, foldername=r'..\data\codepo_gb'):
         self.foldername = foldername # CP_Open_Folder = r'..\data\codepo_gb'
         all_cpopen_csvs = glob.glob(os.path.join(self.foldername, 'data\\CSV', '*.csv'))
@@ -108,9 +110,3 @@ class CPO_DF(): # Codepoint Open DataFrame
     #         return dfview.iloc[0]['RP']
     ## --- End of def find_postcode_n_addresses --- #
 ### --- End of class CPO_DF --- ###
-
-
-# cpo_inst = CPO_DF()
-# lon, lat = cpo_inst.find_postcode_lonlat('rg248ex') # -1.0542636173681512 51.29435018372664
-
-# lon, lat = cpo_inst.find_postcode_lonlat('rg226ly') # -1.1265538656195921 51.25167783293762
