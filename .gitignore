@@ -12,6 +12,7 @@ full_codepoint.csv
 node_modules/
 dist/
 build/
+*.html
 
 # Compiled Java class files
 *.class
