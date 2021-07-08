@@ -1,9 +1,9 @@
-Scheduling and Routing DST documentation
-========================================
+Scheduling and Routing DST 
+==========================
 
-What is this program.
+*This program* is a schedule and route planner designed for use in the Home Health Care (HHC) sector. *This program* produces fast, feasible solutions for daily schedules and allows the user to modify the desired objective for a tailored result.
 
-This website is a guide.
+This documentation provides information on the background of *this program* and how to utilize the program and its optional features.
 
 Contents:
 
