@@ -70,6 +70,7 @@ Thumbs.db
 #VSCode
 .vs/
 *.code-workspace
+.vscode/
 
 Debug/*
 cmake-build-debug/
