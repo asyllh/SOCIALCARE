@@ -5,6 +5,8 @@ Overview
 * The algorithm used to determine a solution is a Greedy Randomised Adaptive Search Procedure (GRASP) combined with a Variable Neighbourhood Search (VNS) method, which is implemented in C. The pre- and post-processing of information is implemented in Python.
 * This program is designed for use in social care to improve schedules/routes of carers to clients.
 
-This corresponds the the function:
+.. math::
     
-    $$\max(-0.05n + 0.2, 0)$$
+    \frac{ \sum_{t=0}^{N}f(t,k) }{N}
+
+:math:`\frac{ \sum_{t=0}^{N}f(t,k) }{N}`
