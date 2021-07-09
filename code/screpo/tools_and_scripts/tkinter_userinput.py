@@ -21,7 +21,7 @@ class UserInputBox:
         self.createPythonPlots = True
         self.codepointDir = ''
         self.inputFilename = ''
-        self.inputBox = Frame(top, width=500, height=340)
+        self.inputBox = Frame(top, width=510, height=340)
         self.inputBox.pack()
         self.t_areaName = StringVar()
         self.t_twInterval = IntVar()
@@ -35,7 +35,7 @@ class UserInputBox:
         self.t_codepointDir = StringVar()
         self.t_inputFilename = StringVar()
 
-        title_label = Label(self.inputBox, text='User Input Variables')
+        title_label = Label(self.inputBox, text='User Input Parameters')
         title_label.configure(font=('Helvetica', 12))
         title_label.place(x=25, y=15)
 
@@ -43,25 +43,25 @@ class UserInputBox:
         area_label.configure(font=('Helvetica', 10))
         area_label.place(x=25, y=45)
         area_text = Entry(self.inputBox, textvariable=self.t_areaName, bg="white")
-        area_text.place(x=170, y=47, width=100, height=17)
+        area_text.place(x=180, y=47, width=100, height=17)
 
         tw_label = Label(self.inputBox, text='Time window interval')
         tw_label.configure(font=('Helvetica', 10))
         tw_label.place(x=25, y=70)
         tw_text = Entry(self.inputBox, textvariable=self.t_twInterval, bg="white")
-        tw_text.place(x=170, y=72, width=100, height=17)
+        tw_text.place(x=180, y=72, width=100, height=17)
 
         wb_label = Label(self.inputBox, text='Workload balance')
         wb_label.configure(font=('Helvetica', 10))
         wb_label.place(x=25, y=95)
         wb_text = Entry(self.inputBox, textvariable=self.t_wbBalance, bg="white")
-        wb_text.place(x=170, y=97, width=100, height=17)
+        wb_text.place(x=180, y=97, width=100, height=17)
 
         maxtime_label = Label(self.inputBox, text='Time limit (s)')
         maxtime_label.configure(font=('Helvetica', 10))
         maxtime_label.place(x=25, y=120)
         maxtime_text = Entry(self.inputBox, textvariable=self.t_maxTimeSeconds, bg="white")
-        maxtime_text.place(x=170, y=122, width=100, height=17)
+        maxtime_text.place(x=180, y=122, width=100, height=17)
 
         # quality_label = Label(self.inputBox, text='Quality measure')
         # quality_label.configure(font=('Helvetica', 10))
@@ -73,13 +73,13 @@ class UserInputBox:
         quality_label.configure(font=('Helvetica', 10))
         quality_label.place(x=25, y=145)
         quality_default = Radiobutton(self.inputBox, text='Default', variable=self.t_qualityMeasure, value='default')
-        quality_default.place(x=165, y=145)
+        quality_default.place(x=175, y=145)
         quality_aith = Radiobutton(self.inputBox, text='Ait H', variable=self.t_qualityMeasure, value='ait h')
-        quality_aith.place(x=230, y=145)
+        quality_aith.place(x=240, y=145)
         quality_mk = Radiobutton(self.inputBox, text='Mankowska', variable=self.t_qualityMeasure, value='mk')
-        quality_mk.place(x=285, y=145)
+        quality_mk.place(x=295, y=145)
         quality_wb = Radiobutton(self.inputBox, text='Workload Balance', variable=self.t_qualityMeasure, value='wb')
-        quality_wb.place(x=375, y=145)
+        quality_wb.place(x=385, y=145)
 
         # html_label = Label(self.inputBox, text='Create website')
         # html_label.configure(font=('Helvetica', 10))
@@ -91,9 +91,9 @@ class UserInputBox:
         html_label.configure(font=('Helvetica', 10))
         html_label.place(x=25, y=170)
         html_true = Radiobutton(self.inputBox, text='Yes', variable=self.t_createHtmlWebsite, value=True)
-        html_true.place(x=165, y=170)
+        html_true.place(x=175, y=170)
         html_false = Radiobutton(self.inputBox, text='No', variable=self.t_createHtmlWebsite, value=False)
-        html_false.place(x=210, y=170)
+        html_false.place(x=220, y=170)
 
         # plots_label = Label(self.inputBox, text='Create plots')
         # plots_label.configure(font=('Helvetica', 10))
@@ -105,23 +105,23 @@ class UserInputBox:
         plots_label.configure(font=('Helvetica', 10))
         plots_label.place(x=25, y=195)
         plots_true = Radiobutton(self.inputBox, text='Yes', variable=self.t_createPythonPlots, value=True)
-        plots_true.place(x=165, y=195)
+        plots_true.place(x=175, y=195)
         plots_false = Radiobutton(self.inputBox, text='No', variable=self.t_createPythonPlots, value=False)
-        plots_false.place(x=210, y=195)
+        plots_false.place(x=220, y=195)
 
-        codepoint_label1 = Label(self.inputBox, text='Select Codepoint folder')
+        codepoint_label1 = Label(self.inputBox, text='Select Code-Point folder')
         codepoint_label1.configure(font=('Helvetica', 10))
         codepoint_label1.place(x=25, y=222)
         codepoint_button = Button(self.inputBox, text='Browse', command=self.SelectCodepointDir)
         codepoint_button.configure(font=('Helvetica', 10))
-        codepoint_button.place(x=170, y=222, width=60, height=22)
+        codepoint_button.place(x=180, y=222, width=60, height=22)
 
         datafile_label1 = Label(self.inputBox, text='Select input file')
         datafile_label1.configure(font=('Helvetica', 10))
         datafile_label1.place(x=25, y=249)
         datafile_button = Button(self.inputBox, text='Browse', command=self.SelectInputFile)
         datafile_button.configure(font=('Helvetica', 10))
-        datafile_button.place(x=170, y=249, width=60, height=22)
+        datafile_button.place(x=180, y=249, width=60, height=22)
         # datafile_label2 = Label(self.inputBox, text='No file selected')
         # datafile_label2.configure(font=('Helvetica', 8))
         # datafile_label2.place(x=170, y=230)
@@ -145,7 +145,7 @@ class UserInputBox:
         self.t_codepointDir = codepoint_dir
         codepoint_label2 = Label(self.inputBox, text=just_foldername)
         codepoint_label2.configure(font=('Helvetica', 8))
-        codepoint_label2.place(x=240, y=222)
+        codepoint_label2.place(x=250, y=222)
         # datafile_label2 = Label(self.inputBox, text=just_filename)
         # datafile_label2.configure(font=('Helvetica', 8))
         # datafile_label2.place(x=170, y=245)
@@ -158,7 +158,7 @@ class UserInputBox:
         self.t_inputFilename = file
         datafile_label2 = Label(self.inputBox, text=just_filename)
         datafile_label2.configure(font=('Helvetica', 8))
-        datafile_label2.place(x=240, y=249)
+        datafile_label2.place(x=250, y=249)
         # print('self.t_inputFilename: ', self.t_inputFilename, ' type: ', type(self.t_inputFilename))
 
 
@@ -182,7 +182,7 @@ class UserInputBox:
 
 def get_user_input_variables():
     root = Tk()
-    root.title('User Input Variables')
+    root.title('User Input Parameters')
 
     Uib = UserInputBox(root)
     root.mainloop()
