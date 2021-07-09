@@ -11,3 +11,11 @@ When the program is executed, a prompt will appear in which user input values ca
 * Create website: the creation of an html website which displays the solution on a map (default: 'Yes')
 * Create plots: the creation of two plots showing the time information as a whole and the workload distribution for each carer (default: 'Yes')
 * Select file: the input file containing the carer and client details (.xlsx)
+
+The image below shows an example of the output:
+
+.. image:: ../_static/user_input_parameters.png
+   :scale: 80 %
+   :alt: User Input Screenshot
+   :align: center
+
