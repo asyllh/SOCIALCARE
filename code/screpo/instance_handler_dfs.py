@@ -79,6 +79,13 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df):
     inst.nJobs = len(client_df)
     inst.nShifts = len(carershift_df)
     inst.nSkills = 5 # NOTE: this is a random number just for testing.
+    cwd = os.getcwd()
+
+    outputfiles_path = os.path.join(cwd, 'output')
+    if not os.path.exists(outputfiles_path):
+        os.mkdir(outputfiles_path)
+    
+    # exit(-1)
 
     inst.nurseWorkingTimes = np.zeros((inst.nNurses, 3), dtype=np.int32) # nurseWorkingTimes is nNurses x 3, col[0] = start time, col[1] = finish time, col[2] = max working time.
     for i in range(inst.nNurses):
@@ -498,7 +505,7 @@ class INSTANCE(object):
         # self.odMileage = [] # NEW 11/06/2021, nJobs x nJobs, od matrix but with mileage instead od time in minutes
         # self.odMileageCost = [] # NEW 11/06/2021, nJobs x nJobs, cost of mileage for each trip, so x 0.25p per mile
         self.totalsArray = [] # NEW: 04/06/2021, keeps (in order): totalTime, totalWaitingTime, totalTravelTime, totalServiceTime, totalTardiness, maxTardiness, totalMKTardiness, mk_allowed_tardiness,
-        # totalOvertime, maxOvertime, minSpareTime, maxSpareTime, shortestDay, longestDay, ait_quality, mk_quality, wb_quality, paper_quality, quality. 
+        # totalOvertime, maxOvertime, minSpareTime, maxSpareTime, shortestDay, longestDay, ait_quality, mk_quality, wb_quality, paper_quality, quality.
 
         # Post-processed solution:
         self.nurseRoute = [] # In post_process_solution, this will become equivalent to allNurseRoutes, with dimensions nNurses x nPositions(jobs), and so nurseRoute[nurse][position] = job.
@@ -986,7 +993,9 @@ class INSTANCE(object):
         webFilename = 'unknown.html'
         if filename == 'unknown':
             webFilename = self.fname + '.html'
-        webFilename = os.path.join(os.getcwd(), webFilename)
+        cwd = os.getcwd()
+        outputfiles_path = os.path.join(cwd, 'output')
+        webFilename = os.path.join(outputfiles_path, webFilename)
         print('Website filename: '  + str(webFilename))
 
         xyRev = [] # Reverse xy list, which has coords in [lat,lon] form, whereas xy has coords in [lon, lat] form.
@@ -1211,8 +1220,13 @@ class INSTANCE(object):
         plt.setp(autotexts, size=8)
 
         plt.draw()
-        plt.savefig(self.fname + '_time_info' + '.png', bbox_inches='tight')
+        cwd = os.getcwd()
+        pie_plot_name = self.fname + '_time_info.png'
+        outputfiles_path = os.path.join(cwd, 'output')
+        # plt.savefig(self.fname + '_time_info' + '.png', bbox_inches='tight')
+        plt.savefig(outputfiles_path + '/' + pie_plot_name, bbox_inches='tight')
         plt.show()
+        # exit(-1)
     ### --- End def plot_pie_time_spent_dst --- ###
 
     def plot_bar_time_per_nurse_dst(self):
@@ -1245,7 +1259,11 @@ class INSTANCE(object):
         plt.legend((p1[0], p2[0], p3[0]), ('Service Time', 'Travel Time', 'Waiting Time'))
 
         plt.draw()
-        plt.savefig(self.fname + '_workload' + '.png', bbox_inches='tight')
+        cwd = os.getcwd()
+        bar_plot_name = self.fname + '_workload.png'
+        outputfiles_path = os.path.join(cwd, 'output')
+        # plt.savefig(self.fname + '_workload' + '.png', bbox_inches='tight')
+        plt.savefig(outputfiles_path + '/' + bar_plot_name, bbox_inches='tight')
         plt.show()
     ### --- End def plot_bar_time_per_nurse_dst --- ###
 
@@ -1523,10 +1541,12 @@ class INSTANCE(object):
                         # client_df.loc[i, 'tardiness'] = self.jobObjs[j].tardiness
                         break
         
-        output_filename = self.fname + '_solution.csv'
-    
-        client_df.to_csv(output_filename)
-        print('Saved solution to', output_filename)
+
+        cwd = os.getcwd()
+        solutiondfcsv_filename = self.fname + '_solution.csv'
+        outputfiles_path = os.path.join(cwd, 'output')    
+        client_df.to_csv(outputfiles_path + '/' + solutiondfcsv_filename)
+        print('Saved solution to', solutiondfcsv_filename)
         # print(client_df)
         # exit(-1)
     ### --- End def solution_df_csv --- ###

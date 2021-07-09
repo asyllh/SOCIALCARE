@@ -73,8 +73,12 @@ def main():
         print('Done.') 
 
     # Put results in results_area_date.txt file:
+    cwd = os.getcwd()
     results_filename = inst.fname + '_results.txt'
-    f = open(results_filename, 'a')
+    outputfiles_path = os.path.join(cwd, 'output')
+    resultsfile_path = os.path.join(outputfiles_path, results_filename)
+
+    f = open(resultsfile_path, 'a')
     f.write('------------------------------------------------------------\n')
     f.write('Date: ' + str(datetime.now()) + '\n')
     f.write('Quality: ' + str(inst.Cquality) + '\n')
