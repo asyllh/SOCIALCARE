@@ -8,7 +8,7 @@ This documentation provides information on the background of *this program* and 
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :titlesonly:
    
    Overview/index.rst
