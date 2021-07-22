@@ -1,0 +1,67 @@
+%!TEX root=./main_paper.tex
+\section{Randomly Generated Instances}\label{appendix:RandomlyGeneratedData}
+
+The generation of random data was done by creating a list of available staff and a list of tasks that required to be performed by the qualified staff. 
+For each of these, we define a number of properties that are important for our model. After identifying the structure that they follow in practice, we selected a number of values they could take and assigned a probability of occurring to each of these values, somewhat mimicking what happens in real life.
+
+The instances used in this article were generated with the parameters described in Table~\ref{Appendix:Tab:InstanceDescription}, where each combination of parameters led to one instance, a total of 216. The exact instances used are available here: \url{https://github.com/c-lamas/instances_hhcrsp}.
+
+\begin{table}[htbp!]
+	\caption{Parameters used for generating the instance set. One instance was generated for each combination of parameters.}
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		\textbf{Parameter} & \textbf{Values} \\ \hline
+		Number of nurses   &  4, 6, 8\\ \hline
+		Skill mix   &  Low, Medium, High				   \\ \hline
+		Proportion of jobs with time window & 10\%, 20\%\\ \hline
+		Time window sizes & Small, Large, Mixed \\ \hline
+		Proportion of double services & 10\%, 20\%\\ \hline
+		Proportion of jobs with interdependencies & 10\%, 20\%\\ \hline
+	\end{tabular}\label{Appendix:Tab:InstanceDescription}
+\end{table}
+
+The skill mix represented the diversity of skills in the workforce, as well as the broader or narrower range of tasks needed by patients. To mimic real settings, the workforce is organised in different bands. Each bad has at least one skill, and the probability of having further skills is higher in higher bands. The particular configuration of each skill mix used is described in Table~\ref{Appendix:Tab:SkillMixConfiguration}. The nurses were spread evenly across the bands, with more nurses in the lowest band if the total number of staff was non-divisible by the number of bands used.
+
+\begin{table}[htbp!]
+	\centering
+	\caption{Details of the parameters used for creating instances with different skill requirements.}
+	\begin{tabular}{|l|l|l|l|}
+	\hline
+		\textbf{Parameter} & \textbf{Low} & \textbf{Medium} & \textbf{High} \\
+		\hline
+		Number of skills   &  2 & 5 & 10\\ \hline
+		Service times   &  Skill 1: 10 & Skill 1: 10 &Skills 1-3: 10\\
+						&  Skill 2: 20 & Skills 2-3: 20 & Skills 4-6: 20 \\
+						&  			   & Skill 4: 30 & Skills 7-9: 30 \\
+						&  			   & Skill 5: 45 & Skill 10: 45 \\ \hline
+		Number of bands & 1 & 2 & 3 \\ \hline
+		Minimum skills & Band 1: 1 & Band 1: 1 & Band 1: 1 \\
+		in each band  & 			 & Band 2: 2 & Band 2: 2 \\
+										& 			 &  & Band 3: 3 \\ \hline
+		Probability of having & Band 1: 0 & Band 1: 0.1 & Band 1: 0.1 \\
+		an additional skill  & 			 & Band 2: 0.5 & Band 2: 0.2 \\
+										& 			 &  & Band 3: 0.5 \\ \hline
+		Probability of single & 1 Skill: 80\% & 1 Skill: 80\% & 1 Skill: 80\% \\		
+		services requiring 	 & 				 & 2 Skills: 20\% & 2 Skills: 15\% \\		
+		one or more skills   & 				 & & 3 Skills: 5\% \\ \hline
+	\end{tabular}\label{Appendix:Tab:SkillMixConfiguration}
+\end{table}
+
+We allowed for two types of nurse shifts (4 hours, 20\% or 8 hours, 80\%), which could start at time 0 (80\%) or after 2 hours (20\%).
+
+
+The number of jobs was selected to be between 9 and 11 per nurse available, a ratio similar to that in the teams we talked to. The jobs themselves were randomly assigned a location with coordinates in the square $[0, 100]^2$ and the distances calculated between them were Euclidean, with 10\% occurring at repeated locations. Dependent jobs were chosen to have a gap between them of 2, 4 or 6 hours, with equal probability.
+
+Time windows were considered either small, large or mixed, with the following characteristics:
+\begin{itemize}
+	\item Small: 60 minutes duration
+	\item Large: 180 minutes duration
+	\item Mixed: Durations of 60 min (30\%), 120 min (40\%) or 180 min (30\%)
+\end{itemize}
+The start times of the time windows (in minutes) and their probabilities of occurrence were: 0 (30\%), 60 (15\%), 360 (10\%), 480 (15\%) or 540 (30\%). 
+
+The combination of skills available and skill requirements, different shifts, time windows and working hours can result in some realisations being infeasible. When those were detected, the instance was discarded and a new one was generated; as real teams would always configure the roster in a way that it can carry out the tasks they need.
+
+% \correction{Dependency and DSs}
+

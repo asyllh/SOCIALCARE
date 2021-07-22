@@ -1,0 +1,58 @@
+%!TEX root=./main_paper.tex
+\begin{algorithm}[htbp!]
+\caption{Path relinking}
+\label{alg::path_relinking}
+\begin{algorithmic}[1]
+% \STATE \COMMENT{Driver routes}
+\State Let $\mathcal{S}_g = \{\mathcal{O}_g, \mathcal{R}_g\}$ be the guiding solution
+\State Let $\mathcal{S}_s = \{\mathcal{O}_s, \mathcal{R}_s\}$ be the starting solution
+\State Let $\mathcal{S}_w = \mathcal{S}_s$ be the working solution
+\State Let $\mathcal{S}_r = \emptyset$ be the relinked solution;  $Q(\mathcal{S}_r) = -\infty$
+\State \texttt{n\_movements} = n + m
+\While {$\mathcal{S}_w \neq \mathcal{S}_g$} \label{alg:pr:main_while}
+	\For{$h  = 1, \dots, \texttt{n\_movements}$}
+		\State $\mathcal{S}_{best} = \emptyset$; $Q(\mathcal{S}_{best}) = -\infty$
+		\For{$i  = 1, \dots, n$}
+			\State $\mathcal{S}^* = \mathcal{S}_w$
+			% Check nurse
+			% \STATE \COMMENT{Check nurse order movements}
+			\If{$\mathcal{O}^*[i] \neq \mathcal{O}_g[i]$}
+				\State Swap two elements of $\mathcal{O}^*$ such that $\mathcal{O}^*[i]$ equals $\mathcal{O}_g[i]$
+				\If{$Q(\mathcal{S}^*) \geq Q(\mathcal{S}_{best})$}
+					\State $\mathcal{S}_{best} = \mathcal{S^*}$
+				\EndIf
+			\EndIf
+		\EndFor % Finished with nurses
+		\For{$j  = 1, \dots, m$}
+			\State $\mathcal{S}^* = \mathcal{S}_w$
+			% \IF{$j \in DS$}
+			% 	\STATE Let $i^1_g$, $i^2_g$ be the routes job $j$ is assigned to in $\mathcal{S}_g$
+			% 	\STATE Let $k^2_g$, $k^2_g$ be the positions of job $j$ routes $i^1_g$ and $i^2_g$
+			% 	\STATE Remove job $j$ from $\mathcal{S^*}$
+			% 	\STATE Insert job $j$ in $\mathcal{S^*}$ in route $i^1_g$ and position $\min\{k^1_g, m_{i^1_g} - 1\}$
+			% 	\STATE Insert job $j$ in $\mathcal{S^*}$ in route $i^2_g$ and position $\min\{k^2_g, m_{i^2_g} - 1\}$
+			% \ELSE
+				% \STATE Let $i_g$ and $k_g$ nurse and position of job $j$ in $\mathcal{S}_g$
+				\State Remove job $j$ from $\mathcal{S^*}$
+				\State Re-insert job $j$ in $\mathcal{S^*}$ in the position(s) that match $\mathcal{S}_g$ \label{alg:pr:for_insertion}
+				% \FOR{($i_g, k_g$) all (nurse, position) pairs of job $j$ in $\mathcal{S}_g$} \label{alg:pr:for_insertion}
+				% 	\STATE Insert job $j$ in $\mathcal{S^*}$ in route $i_g$ and position $\min\{k_g, m_{i_g} - 1\}$ \label{alg:pr:insert_in_max}
+				% \ENDFOR
+			% \ENDIF
+			% Update the best movement
+			\If{$Q(\mathcal{S}^*) \geq Q(\mathcal{S}_{best})$}
+				\State $\mathcal{S}_{best} = \mathcal{S^*}$
+			\EndIf
+		\EndFor % Finished with jobs
+		% Apply the best movement:
+		\State $\mathcal{S}_w = \mathcal{S}_{best}$
+		\If{$Q(\mathcal{S}_w) \geq Q(\mathcal{S}_r)$}
+			\State $\mathcal{S}_r = \mathcal{S}_w$
+		\EndIf
+	\EndFor
+\EndWhile
+\State $\mathcal{S}_r = \texttt{local\_search}(\mathcal{S}_r)$
+\Return $\mathcal{S}_r$
+
+\end{algorithmic}
+\end{algorithm}
