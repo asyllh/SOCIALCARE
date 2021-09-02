@@ -55,7 +55,7 @@ struct INSTANCE {
 	int tw_interval; // Time window interval
 	bool exclude_nurse_travel; // True if excluding the nurse travel time from home to the first job when updating current time in 'set_nurse_time' function, else false.
 	// double **od_cost;
-    int*** unavailMatrix; // 10 X 4 X nNurses 3d matrix, col[0] = unavailable shift number, col[1] = start of unavailable time, col[2] = end of unavailable time, col[3] = duration of unavailable time.
+    int*** unavailMatrix; // 50 X 4 X nNurses 3d matrix, col[0] = unavailable shift number, col[1] = start of unavailable time, col[2] = end of unavailable time, col[3] = duration of unavailable time.
     int* nurseUnavail; // 1D array, size = nNurses, for each nurse contains the number of unavailable shifts.
 	int** nurseWorkingTimes; // 2D array, size = nNurses x 3. For each nurse i (row): column[0] = start time, column[1] = finish time, column[2] = max working time. (column[2] not used?)
 	int** solMatrix; // 2D array, size = nNurses x nJobs. For each nurse i (row), the element in solMatrix[i][j] gives the position in nurse i's route where nurse i visits job j.
