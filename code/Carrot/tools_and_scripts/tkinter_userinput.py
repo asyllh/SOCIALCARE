@@ -8,6 +8,7 @@ import os
 from sys import exit
 from tkinter import *
 from tkinter import filedialog
+from tkcalendar import Calendar
 
 class UserInputBox:
     def __init__(self, top):
@@ -16,25 +17,24 @@ class UserInputBox:
         self.wbBalance = 1
         self.qualityMeasure = 'default'
         self.maxTimeSeconds = 60
-        # self.createHtmlWebsite = 'y'
         self.createHtmlWebsite = True
-        # self.createPythonPlots = 'y'
         self.createPythonPlots = True
         self.codepointDir = ''
         self.inputFilename = ''
-        self.inputBox = Frame(top, width=510, height=340)
+        self.dateSelected = 0
+        self.inputBox = Frame(top, width=510, height=370)
         self.inputBox.pack()
         self.t_areaName = StringVar()
         self.t_twInterval = IntVar()
         self.t_wbBalance = DoubleVar()
         self.t_maxTimeSeconds = IntVar()
         self.t_qualityMeasure = StringVar()
-        # self.t_createHtmlWebsite = StringVar()
         self.t_createHtmlWebsite = BooleanVar()
-        # self.t_createPythonPlots = StringVar()
         self.t_createPythonPlots = BooleanVar()
         self.t_codepointDir = StringVar()
         self.t_inputFilename = StringVar()
+        self.t_dateSelected = 0
+
 
         title_label = Label(self.inputBox, text='User Input Parameters')
         title_label.configure(font=('Helvetica', 12))
@@ -127,16 +127,23 @@ class UserInputBox:
         # datafile_label2.configure(font=('Helvetica', 8))
         # datafile_label2.place(x=170, y=230)
 
+        date_label = Label(self.inputBox, text='Date')
+        date_label.configure(font=('Helvetica', 10))
+        date_label.place(x=25, y=276)
+        date_button = Button(self.inputBox, text='Calendar', command=self.ShowCal)
+        date_button.configure(font=('Helvetica', 10))
+        date_button.place(x=180, y=276, width=60, height=22)
+        # dayindex_text = Entry(self.inputBox, textvariable=self.t_dayIndex, bg="white")
+        # dayindex_text.place(x=180, y=277, width=100, height=17)
+
         ok_button = Button(self.inputBox, text='OK', command=self.GetVals)
         ok_button.configure(font=('Helvetica', 10))
-        # ok_button.place(x=85, y=235, width=50, height=25)
-        # ok_button.place(x=85, y=275, width=50, height=25)
-        ok_button.place(x=190, y=300, width=50, height=25)
+        # ok_button.place(x=190, y=300, width=50, height=25)
+        ok_button.place(x=190, y=320, width=50, height=25)
         exit_button = Button(self.inputBox, text='Exit', command=self.ExitProgram)
         exit_button.configure(font=('Helvetica', 10))
-        # exit_button.place(x=155, y=235, width=50, height=25)
-        # exit_button.place(x=155, y=275, width=50, height=25)
-        exit_button.place(x=260, y=300, width=50, height=25)
+        # exit_button.place(x=260, y=300, width=50, height=25)
+        exit_button.place(x=260, y=320, width=50, height=25)
 
     def SelectCodepointDir(self):
         curr_directory = os.getcwd()
@@ -162,6 +169,38 @@ class UserInputBox:
         datafile_label2.place(x=250, y=249)
         # print('self.t_inputFilename: ', self.t_inputFilename, ' type: ', type(self.t_inputFilename))
 
+    def ShowCal(self):
+        self.cal_root = Tk()
+        self.cal_root.title('Calendar')
+        self.cal_root.geometry("300x300")
+
+        self.cal = Calendar(self.cal_root, selectmode='day',year= 2021, month=7, day=26)
+        self.cal.pack(pady=20)
+        
+
+        #Create a button to pick the date from the calendar
+        button = Button(self.cal_root, text= "OK", command=self.PrintCal)
+        button.pack(pady=20)
+
+        self.cal_root.mainloop()
+            
+    # def ShowCal(self):
+    #     self.top = Toplevel(self.inputBox)
+    #     # cal = Calendar(self.top, font="Arial 14", selectmode='day', locale='en_US', cursor="hand1")
+    #     cal = Calendar(self.top, selectmode="day",year= 2021, month=7, day=15)
+    #     cal.pack(fill="both", expand=True)
+    #     self.t_dateSelected = cal.selection_get()
+    #     cal_button = Button(self.top, text='OK', command=self.PrintCal).pack()
+    #     # self.inputBox.quit()
+    
+    def PrintCal(self):
+        self.t_dateSelected = self.cal.selection_get()
+        print(self.t_dateSelected)
+        date_label2 = Label(self.inputBox, text=self.t_dateSelected)
+        date_label2.configure(font=('Helvetica', 8))
+        date_label2.place(x=250, y=276)
+        # self.cal_root.quit()
+
 
     def GetVals(self):
         self.areaName = self.t_areaName.get()
@@ -173,6 +212,7 @@ class UserInputBox:
         self.createPythonPlots = self.t_createPythonPlots.get()
         self.codepointDir = self.t_codepointDir
         self.inputFilename = self.t_inputFilename
+        self.dateSelected = self.t_dateSelected
         self.inputBox.quit()
 
     def ExitProgram(self):
@@ -198,6 +238,7 @@ def get_user_input_variables():
     create_python_plots = True
     input_filename = 'None'
     codepoint_directory = 'None'
+    date_selected = 0
 
     # Assign user input values:
     if Uib.areaName == "":
@@ -286,5 +327,12 @@ def get_user_input_variables():
         input_filename = Uib.inputFilename
         print('Input filename: ', input_filename)
 
-    return area, tw_interval, wb_balance, quality_measure, max_time_seconds, create_html_website, create_python_plots, codepoint_directory, input_filename
+    if Uib.dateSelected == None:
+        print('No date selected - date set to 26/07/2021')
+        date_selected = 0
+    else:
+        date_selected = Uib.dateSelected
+        print('date selected: ', date_selected)
+
+    return area, tw_interval, wb_balance, quality_measure, max_time_seconds, create_html_website, create_python_plots, codepoint_directory, input_filename, date_selected
 ### --- End def get_user_input_variables --- ###
