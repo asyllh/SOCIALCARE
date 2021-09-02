@@ -533,7 +533,7 @@ struct INSTANCE instance_from_python(int nJobs_data, int nNurses_data, int nSkil
 
     // 25. int*** unavailMatrix: 10 x 4 x nNurses (using int* unavail_matrix_data) (24/05/2021)
     int*** unavailMatrix;
-    nRows = 10; /** NEED TO CHANGE THIS **/
+    nRows = 50; /** NEED TO CHANGE THIS **/
     nCols = 4;
     // dim3 is nNurses
     unavailMatrix = malloc(nRows * sizeof(int**)); // Rows
