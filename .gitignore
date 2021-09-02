@@ -13,6 +13,8 @@ node_modules/
 dist/
 build/
 _build/
+output/
+test/
 *.html
 
 # Compiled Java class files
