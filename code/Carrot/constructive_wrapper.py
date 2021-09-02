@@ -20,12 +20,33 @@ from tkinter import *
 # import python_resources as pr
 import instance_handler_dfs as ihd
 import tools_and_scripts.retrieve_info_dfs as rdi
+import tools_and_scripts.get_data_dfs as gdd
 import tools_and_scripts.tkinter_userinput as tui
+import tools_and_scripts.week_counter as wc
 
 def main():
     
     # Get user input variables using tkinter entry box:
-    area, tw_interval, wb_balance, quality_measure, max_time_seconds, create_html_website, create_python_plots, codepoint_directory, input_filename = tui.get_user_input_variables()
+    area, tw_interval, wb_balance, quality_measure, max_time_seconds, create_html_website, create_python_plots, codepoint_directory, input_filename, date_selected = tui.get_user_input_variables()
+
+    print('date_selected: ', date_selected)
+    print('type date_selected: ', type(date_selected))
+    planning_date = pd.Timestamp(date_selected)
+    # timeStamp = datetime.timestamp(date_selected)
+    print("planning_date ts =", planning_date)
+    print("planning_date date =", pd.Timestamp.date(planning_date))
+    print("type planning_date =", type(planning_date))
+    print("planning_date day of week =", planning_date.dayofweek)
+
+    # exit(-1)
+
+
+    week_period2 = 2
+    week_period8 = 8
+    dayindex_2weeks = wc.calculate_cycle_day(planning_date, week_period2)
+    print('dayindex_2weeks:', dayindex_2weeks)
+    dayindex_8weeks = wc.calculate_cycle_day(planning_date, week_period8)
+    print('dayindex_8weeks:', dayindex_8weeks)
 
     # exit(-1)
 
@@ -35,7 +56,8 @@ def main():
     options_vector = ihd.default_options_vector() 
 
     # Create dataframes for clients and carers using information from excel file:
-    client_df, carershift_df, carerday_df = rdi.retrieve_dfs(area, tw_interval, print_statements=False, filename=input_filename, foldername=codepoint_directory)
+    # client_df, carershift_df, carerday_df = rdi.retrieve_dfs(area, tw_interval, print_statements=False, filename=input_filename, foldername=codepoint_directory)
+    client_df, carershift_df, carerday_df = gdd.get_info_create_dfs(area, tw_interval, planning_date, dayindex_2weeks, dayindex_8weeks, print_statements=False, filename=input_filename, foldername=codepoint_directory)
     # client_df, carershift_df, carerday_df = rdi.retrieve_dfs(area, tw_interval, print_statements=False, filename=input_filename, foldername=r'C:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\screpo\data\codepo_gb')
     # client_df, carershift_df, carerday_df = gdd.get_info_create_dfs(area, tw_interval, print_statements=False)
     # print(client_df)
@@ -49,7 +71,7 @@ def main():
     print('\n-------------------------------------------------------')
     start_time_program = time.perf_counter()
 
-    inst = ihd.create_solve_inst(client_df, carershift_df, carerday_df, options_vector, wb_balance, quality_measure, max_time_seconds, random_seed) # new, for dfs
+    inst = ihd.create_solve_inst(client_df, carershift_df, carerday_df, planning_date, options_vector, wb_balance, quality_measure, max_time_seconds, random_seed) # new, for dfs
     print('Finshed.\nQuality: ' + str(inst.Cquality))
 
     end_time_program = time.perf_counter()
@@ -58,7 +80,7 @@ def main():
     print('Total running time: ' + str(np.round(elapsed_time, 1)) + ' seconds.')
     
     # Create map of solution in website:
-    if create_html_website:
+    if create_html_website: # NOTE: FIX THIS, NEED TO HAVE FULL SOLUTION REPORT AND SOLUTION TO WEBSITE DST SEPARATE, ALWAYS NEED TO RUN FULL SOLN REPORT FOR CSV FILE, BUT DON'T ALWAYS NEED TO RUN WEBSITE OR CREATE PLOTS.
         print('Generating website...')
         inst.full_solution_report(report=0, doPlots=create_python_plots)
         inst.solution_to_website_dst(add_plots=create_python_plots)
@@ -73,7 +95,7 @@ def main():
 
     # Put results in results_area_date.txt file:
     cwd = os.getcwd()
-    results_filename = inst.fname + '_results.txt'
+    results_filename = inst.fname + '_results2.txt'
     outputfiles_path = os.path.join(cwd, 'output')
     resultsfile_path = os.path.join(outputfiles_path, results_filename)
 
