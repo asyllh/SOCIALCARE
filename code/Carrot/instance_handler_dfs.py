@@ -23,13 +23,13 @@ from numpy.ctypeslib import ndpointer
 # Display all rows and columns of dataframes in command prompt:
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
-def create_solve_inst(client_df, carershift_df, carerday_df, options_vector, wb_balance, quality_measure, max_time_seconds, random_seed): # changed from idict to client_df, carer_df.
+def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, options_vector, wb_balance, quality_measure, max_time_seconds, random_seed): # changed from idict to client_df, carer_df.
     
     # Create instance of the INSTANCE class:
     inst = INSTANCE()
    
     # Build/fill inst object:
-    inst = convert_dfs_inst(inst, client_df, carershift_df, carerday_df)
+    inst = convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
         
     inst.lambda_1 = 1
     inst.lambda_2 = 1
@@ -69,12 +69,12 @@ def create_solve_inst(client_df, carershift_df, carerday_df, options_vector, wb_
     return inst
 ### --- End def create_solve_inst --- ###
 
-def convert_dfs_inst(inst, client_df, carershift_df, carerday_df):
+def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date):
   
-    inst.name = str(client_df.loc[0]['area']) + '_' + str(client_df.loc[0]['date']) # name is 'inst_area_date'
+    inst.name = str(client_df.loc[0]['area']) + '_' + str(pd.Timestamp.date(planning_date)) # name is 'inst_area_date'
     inst.fname = inst.name # Note: Need to change
     inst.area = client_df.loc[0]['area']
-    inst.date = client_df.loc[0]['date']
+    inst.date = pd.Timestamp.date(planning_date)
     inst.nNurses = len(carerday_df)
     inst.nJobs = len(client_df)
     inst.nShifts = len(carershift_df)
@@ -104,6 +104,12 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df):
     inst.jobSkillsRequired = np.ones((inst.nJobs, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
     inst.prefScore = np.zeros((inst.nJobs, inst.nNurses), dtype=np.float64)
     inst.doubleService = np.zeros(inst.nJobs, dtype=np.int32)
+    for i in range(inst.nJobs):
+        if client_df.iloc[i]['num_carers'] > 1:
+            inst.doubleService[i] = 1
+    
+    # print('double service:', inst.doubleService)
+    # exit(-1)
     # inst.doubleService[2] = 1 # NOTE: just for testing, make one of the jobs a double service.
     inst.dependsOn = np.full(inst.nJobs, -1, dtype=np.int32) # Set all jobs to -1, means no jobs are dependent on one another.
     inst.algorithmOptions = np.zeros(100, dtype=np.float64)
@@ -143,10 +149,10 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df):
     numNurses = 0
     numShifts = 0
     shift_count = 0
-    inst.shift_matrix = np.full((10, 4, inst.nNurses), -1, dtype=np.int32)
+    inst.shift_matrix = np.full((50, 4, inst.nNurses), -1, dtype=np.int32)
 
     # Start with first carer 0
-    prevNurse = carershift_df.iloc[0]['carer']
+    prevNurse = carershift_df.iloc[0]['carer_id']
     inst.shift_matrix[shift_count][0][numNurses] = numShifts
     inst.shift_matrix[shift_count][1][numNurses] = carershift_df.iloc[0]['start']
     inst.shift_matrix[shift_count][2][numNurses] = carershift_df.iloc[0]['end']
@@ -154,7 +160,7 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df):
 
     # Fill shift_matrix for the rest of the nurses
     for i in range(1, len(carershift_df)):
-        currentNurse = carershift_df.iloc[i]['carer']
+        currentNurse = carershift_df.iloc[i]['carer_id']
         if prevNurse == currentNurse: # If currentNurse is the same as the previousNurse, then the nurse has another shift.
             shift_count += 1
             numShifts += 1
@@ -173,7 +179,7 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df):
             prevNurse = currentNurse
 
     # Create unavailability matrix, same format as shift_matrix
-    inst.unavail_matrix = np.full((10,4,inst.nNurses), -1, dtype=np.int32)
+    inst.unavail_matrix = np.full((50,4,inst.nNurses), -1, dtype=np.int32)
     inst.nurse_unavail = np.zeros(inst.nNurses, dtype=np.float64) # Array that hold the number of unavailble shifts for each nurse.
 
     for k in range(inst.nNurses): # For each nurse
@@ -376,7 +382,8 @@ class JOB(object):
         # Characteristics
         self.ID = ''
         self.serviceTime = 0
-        self.doubleService = False
+        # self.doubleService = False
+        self.doubleService = 0
         self.dependsOn = []
         self.postcode = 'Unknown'
         self.latlong = []
@@ -394,15 +401,17 @@ class JOB(object):
         self.maximumGap = 0
         self.location = [] # NOTE: NEW, 27/12/2020 ALH
         # Calculated (solution)
-        self.assignedNurse = -1
+        self.assignedNurse = 0
         self.nurseID = 'Unknown'
-        self.positionInSchedule = 0
-        self.tardiness = 0
-        self.waitingToStart = 0
         self.arrivalTime = 0 # time nurse arrives at job location
-        self.departureTime = 0
         self.startTime = 0 # NEW: 07/06/2021, actual time job starts
+        self.departureTime = 0
+        self.waitingToStart = 0
+        self.tardiness = 0
+        self.positionInSchedule = 0
         self.travelToJob = 0 # NEW: 09/06/2021, the travel time from the previous job/depot to this job
+        self.marked = 0 # use this to determine for DS jobs if they have already been assessed in full_solution_report, if they haven't (=0) then need to create list, else if they have been assessed (=1) then need to append to the list.
+        self.markedWebsite = 0 # use this to determine for DS jobs if they have already been assessed in solution_to_website, if they haven't (=0) then need to create list, else if they have been assessed (=1) then need to append to the list.
 ### --- End class JOB --- ###        
 
 class NURSE(object):
@@ -608,18 +617,21 @@ class INSTANCE(object):
             self.jobObjs[j].hasPreferredTimewindow = False
             self.jobObjs[j].preferredTimewindow = [0, 24*3600]
             self.jobObjs[j].skillsRequired = []
-            self.jobObjs[j].doubleService = False
+            # self.jobObjs[j].doubleService = False # commented out 01/09/2021
+            self.jobObjs[j].doubleService = self.doubleService[j] # Added 01/09/2021
             self.jobObjs[j].features = []
             self.jobObjs[j].preferences = []
             self.jobObjs[j].preferredCarers = []
             self.jobObjs[j].dependsOn = -1
             self.jobObjs[j].minimumGap = []
             self.jobObjs[j].maximumGap = []
+            self.jobObjs[j].marked = 0
+            self.jobObjs[j].markedWebsite = 0
         # End jobs
 
         for i in range(self.nNurses):
             # self.nurseObjs[i].ID = idict['rota'].loc[i, 'carer']
-            self.nurseObjs[i].ID = carerday_df.iloc[i]['carer'] # NOTE: this could also be 'carer' instead of unique_id, but unique_id has the shift number
+            self.nurseObjs[i].ID = carerday_df.iloc[i]['carer_id'] # NOTE: this could also be 'carer' instead of unique_id, but unique_id has the shift number
             # self.nurseObjs[i].postcode = idict['rota'].loc[i, 'postcode']
             self.nurseObjs[i].postcode = carerday_df.iloc[i]['postcode']
             # pcidict = idict['rota'].loc[i, 'postcode']
@@ -919,7 +931,7 @@ class INSTANCE(object):
         for ni in range(self.nNurses):
             route_colour = clusterColour(ni) #Returns a hex colour.
             # Create a FeatureGroup layer; you can put things in it and handle them as a single layer.
-            foliumRouteLayers.append(folium.map.FeatureGroup(name='Nurse ' + str(ni))) # Create FeatureGroup for the current nurse ni, add it to the list foliumRouteLayers.
+            foliumRouteLayers.append(folium.map.FeatureGroup(name='Carer ' + str(ni))) # Create FeatureGroup for the current nurse ni, add it to the list foliumRouteLayers.
             nRoute = []
             nRouteRev = []
             # nRoute.append(tuple(rxy[0]))
@@ -933,28 +945,62 @@ class INSTANCE(object):
                 nRoute.append(tuple(xyRev[job + 1])) #append as a tuple the lat/lon of job
                 nRouteRev.append(reverse_latlong(xyRev[job + 1])) # append as a list the LON/LAT of the job (reversed, so lon/lat, not lat/lon!) NOTE: Why not just use xy??
                 # Add a Marker:
-                popupVal = '<b>Client ID:</b> ' + str(self.jobObjs[job].ID)
-                popupVal = popupVal + '<br><b>Job no.:</b> ' + str(job) 
-                popupVal += '<br><b>Postcode:</b> ' + str(self.jobObjs[job].postcode) 
-                if self.jobObjs[job].doubleService:
-                    popupVal = popupVal + ' (Double service)'
-                popupVal = popupVal + '<br><b>Assigned nurse ID:</b> ' + str(self.jobObjs[job].nurseID)
-                popupVal = popupVal + '<br><b>Assigned nurse:</b> ' + str(ni)
-                popupVal = popupVal + '<br><b>Arrive:</b> ' + self.timemins_to_string(self.jobObjs[job].arrivalTime) 
-                popupVal = popupVal + '<br><b>Start:</b> ' + self.timemins_to_string(self.jobObjs[job].startTime) 
-                popupVal = popupVal + '<br><b>Depart:</b> ' + self.timemins_to_string(self.jobObjs[job].departureTime) 
-                popupVal = popupVal + '<br><b>Travel to job:</b>' + self.timemins_to_string(self.jobObjs[job].travelToJob)
-                popupVal = popupVal + '<br><b>Time Window:</b> ' + self.timemins_to_string(self.jobTimeInfo[int(job)][0]) + ' - ' + self.timemins_to_string(self.jobTimeInfo[int(job)][1])
                 border_colour = route_colour
-                if 	self.jobObjs[job].tardiness > 0:
-                    popupVal = popupVal + '<br><b>Tardiness:</b> ' + self.timemins_to_string(self.jobObjs[job].tardiness) 
-                    border_colour = '#ff0000' # red
-                if self.jobObjs[job].waitingToStart	> 0:
-                    popupVal = popupVal + '<br><b>Waiting:</b> ' + self.timemins_to_string(self.jobObjs[job].waitingToStart) 
-                popupVal = popupVal + '<br><b>Service time:</b> ' + self.timemins_to_string(self.jobObjs[job].serviceTime) 
+                popupVal = '<b>Client ID:</b> ' + str(self.jobObjs[job].ID)
+                popupVal = popupVal + '<br><b>Job #:</b> ' + str(job) 
+                popupVal += '<br><b>Postcode:</b> ' + str(self.jobObjs[job].postcode) 
+                popupVal = popupVal + '<br><b>Time Window:</b> ' + self.timemins_to_string(self.jobTimeInfo[int(job)][0]) + ' - ' + self.timemins_to_string(self.jobTimeInfo[int(job)][1])
+                popupVal = popupVal + '<br><b>Job Duration:</b> ' + self.timemins_to_string(self.jobObjs[job].serviceTime)
+                if self.jobObjs[job].doubleService == 1:
+                    if self.jobObjs[job].markedWebsite == 0:
+                        popupVal = popupVal + '<br><b>Double Service</b>'
+                        # Carer 1 information
+                        popupVal = popupVal + '<br><b>Carer 1 ID:</b> ' + str(self.jobObjs[job].nurseID[0])
+                        popupVal = popupVal + '<br><b>Carer 1 #:</b> ' + str(self.jobObjs[job].assignedNurse[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Arrive:</b> ' + self.timemins_to_string(self.jobObjs[job].arrivalTime[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Start:</b> ' + self.timemins_to_string(self.jobObjs[job].startTime[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Depart:</b> ' + self.timemins_to_string(self.jobObjs[job].departureTime[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Waiting:</b> ' + self.timemins_to_string(self.jobObjs[job].waitingToStart[0])
+                        if self.jobObjs[job].tardiness[0] > 0:
+                            popupVal = popupVal + '<br><b>Carer 1 Tardiness:</b> ' + self.timemins_to_string(self.jobObjs[job].tardiness[0])
+                            border_colour = '#ff0000'
+                        popupVal = popupVal + '<br><b>Carer 1 Position #:</b> ' + str(self.jobObjs[job].positionInSchedule[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Travel to Job:</b>' + self.timemins_to_string(self.jobObjs[job].travelToJob[0])
+                        
+                        # Carer 2 information
+                        popupVal = popupVal + '<br><b>Carer 2 ID:</b> ' + str(self.jobObjs[job].nurseID[1])
+                        popupVal = popupVal + '<br><b>Carer 2 #:</b> ' + str(self.jobObjs[job].assignedNurse[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Arrive:</b> ' + self.timemins_to_string(self.jobObjs[job].arrivalTime[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Start:</b> ' + self.timemins_to_string(self.jobObjs[job].startTime[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Depart:</b> ' + self.timemins_to_string(self.jobObjs[job].departureTime[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Waiting:</b> ' + self.timemins_to_string(self.jobObjs[job].waitingToStart[1])
+                        if self.jobObjs[job].tardiness[1] > 0:
+                            popupVal = popupVal + '<br><b>Carer 2 Tardiness:</b> ' + self.timemins_to_string(self.jobObjs[job].tardiness[1])
+                            border_colour = '#ff0000'
+                        popupVal = popupVal + '<br><b>Carer 2 Position #:</b> ' + str(self.jobObjs[job].positionInSchedule[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Travel to Job:</b>' + self.timemins_to_string(self.jobObjs[job].travelToJob[1])
+                        self.jobObjs[job].markedWebsite += 1
+                else:
+                    popupVal = popupVal + '<br><b>Carer ID:</b> ' + str(self.jobObjs[job].nurseID)
+                    popupVal = popupVal + '<br><b>Carer #:</b> ' + str(self.jobObjs[job].assignedNurse)
+                    popupVal = popupVal + '<br><b>Arrive:</b> ' + self.timemins_to_string(self.jobObjs[job].arrivalTime)
+                    popupVal = popupVal + '<br><b>Start:</b> ' + self.timemins_to_string(self.jobObjs[job].startTime)
+                    popupVal = popupVal + '<br><b>Depart:</b> ' + self.timemins_to_string(self.jobObjs[job].departureTime)
+                    popupVal = popupVal + '<br><b>Waiting:</b> ' + self.timemins_to_string(self.jobObjs[job].waitingToStart)
+                    popupVal = popupVal + '<br><b>Tardiness:</b> ' + self.timemins_to_string(self.jobObjs[job].tardiness)
+                    popupVal = popupVal + '<br><b>Position #:</b> ' + str(self.jobObjs[job].positionInSchedule)
+                    popupVal = popupVal + '<br><b>Travel to Job:</b>' + self.timemins_to_string(self.jobObjs[job].travelToJob)
+                
+                # border_colour = route_colour
+                # if self.jobObjs[job].tardiness > 0:
+                    # popupVal = popupVal + '<br><b>Tardiness:</b> ' + self.timemins_to_string(self.jobObjs[job].tardiness) 
+                    # border_colour = '#ff0000' # red
+                # if self.jobObjs[job].waitingToStart	> 0:
+                    # popupVal = popupVal + '<br><b>Waiting:</b> ' + self.timemins_to_string(self.jobObjs[job].waitingToStart) 
+                 
                 # popupVal = popupVal + '<br><b>assignedNurse:</b> ' + str(self.jobObjs[idxNRpt].assignedNurse)
-                popupVal = popupVal + '<br><b>PositionInSchedule:</b> ' + str(self.jobObjs[job].positionInSchedule)
-                popupVal = popupVal + '<br><b>SkillsRequired:</b> ' + str(self.jobObjs[job].skillsRequired)
+                # popupVal = popupVal + '<br><b>PositionInSchedule:</b> ' + str(self.jobObjs[job].positionInSchedule)
+                # popupVal = popupVal + '<br><b>SkillsRequired:</b> ' + str(self.jobObjs[job].skillsRequired)
                 # Add a circle around the area with popup:
                 foliumRouteLayers[-1].add_child(folium.Circle(xyRev[job + 1], radius=30, popup=popupVal, color=border_colour, fill_color=route_colour, fill_opacity=0.5, fill=True))
             # End for pos in range(nJobs) loop
@@ -998,9 +1044,9 @@ class INSTANCE(object):
         lht = lht + '''&nbsp; <i> - Total distance: </i>''' + str(self.totalDistance/1000) + '''<br>'''
         lht = lht + '''&nbsp; <i> - Total distance jobs: </i>''' + str(self.totalDistanceJobsOnly/1000) + '''<br><br>'''
 
-        nursePart = '''&nbsp; <b><u>Nurse breakdown:</u> </b><br>'''
+        nursePart = '''&nbsp; <b><u>Carer breakdown:</u> </b><br>'''
         for i, nn in enumerate(self.nurseObjs):
-            nursePart = nursePart + '''<br>&nbsp; <b>Nurse ''' + str(i) + ' (' + str(nn.ID) + '''):</u> </b><br>'''
+            nursePart = nursePart + '''<br>&nbsp; <b>Carer ''' + str(i) + ' (' + str(nn.ID) + '''):</u> </b><br>'''
             nursePart = nursePart + '''&nbsp; <i>Skills: </i>''' + str(nn.skills) + '''<br>'''
             nursePart = nursePart + '''&nbsp; <i>Shift start time: </i>''' + self.timemins_to_string(self.nurseWorkingTimes[i][0]) + '''<br>'''
             nursePart = nursePart + '''&nbsp; <i>Shift end time: </i>''' + self.timemins_to_string(self.nurseWorkingTimes[i][1]) + '''<br>'''
@@ -1077,7 +1123,7 @@ class INSTANCE(object):
 
         # Depot, change to one per nurse!
         for nursej in range(self.nNurses):
-            nurse_popup = 'Start location for nurse ' + str(nursej)
+            nurse_popup = 'Start location for carer ' + str(nursej)
             # print(self.nurseObjs[nursej].startLocation)
             folium.Circle(self.nurseObjs[nursej].startLocation.latlong(), radius=50, popup=nurse_popup, color='black', fill_color='black', fill_opacity=0.5, fill=True).add_to(m)
         
@@ -1255,20 +1301,50 @@ class INSTANCE(object):
                     # if p == (len(self.nurseRoute[i]) - 2):
                     # print('nextJob: ', nextJob, ' nurseTMnextJob: ', self.timemins_to_string(self.nurseTravelMatrix[i][nextJob]), 'readyToNext: ', self.timemins_to_string(readyToNext), ' leaveAt: ' , self.timemins_to_string(leaveAt), ' todepotjob: ', self.timemins_to_string(self.get_nurse_to_travel_time(i, job)), ' todepot next: ', self.timemins_to_string(self.get_nurse_to_travel_time(i, nextJob)))
                 prevJob = job
-                self.jobObjs[job].arrivalTime = arriveAt
-                self.jobObjs[job].startTime = startAt
-                self.jobObjs[job].departureTime = leaveAt
-                self.jobObjs[job].serviceTime = self.jobTimeInfo[job][2]
-                self.jobObjs[job].tardiness = self.violatedTW[job]
-                self.jobObjs[job].waitingToStart = self.nurseWaitingMatrix[i][job]
-                self.jobObjs[job].positionInSchedule = self.solMatrix[i][job]
-                self.jobObjs[job].travelToJob = self.nurseTravelMatrix[i][job]
-                self.jobObjs[job].nurseID = nurseID
-                if self.jobObjs[job].assignedNurse is list:
-                    self.jobObjs[job].assignedNurse.append(i)
-                else:
-                    self.jobObjs[job].assignedNurse = [i]
-
+                if self.doubleService[job] == 1: # job is a double service
+                    if self.jobObjs[job].marked == 0: # no information for either of the two nurses have been added to the job
+                        self.jobObjs[job].nurseID = [nurseID]
+                        self.jobObjs[job].assignedNurse = [i]
+                        self.jobObjs[job].arrivalTime = [arriveAt]
+                        self.jobObjs[job].startTime = [startAt]
+                        self.jobObjs[job].departureTime = [leaveAt]
+                        self.jobObjs[job].waitingToStart = [self.nurseWaitingMatrix[i][job]]
+                        self.jobObjs[job].tardiness = [self.violatedTW[job]]
+                        self.jobObjs[job].positionInSchedule = [self.solMatrix[i][job]]
+                        self.jobObjs[job].travelToJob = [self.nurseTravelMatrix[i][job]]
+                        self.jobObjs[job].marked += 1
+                    elif self.jobObjs[job].marked == 1: # information for one of the two nurses has already been added to the job
+                        self.jobObjs[job].nurseID.append(nurseID)
+                        self.jobObjs[job].assignedNurse.append(i)
+                        self.jobObjs[job].arrivalTime.append(arriveAt)
+                        self.jobObjs[job].startTime.append(startAt)
+                        self.jobObjs[job].departureTime.append(leaveAt)
+                        self.jobObjs[job].waitingToStart.append(self.nurseWaitingMatrix[i][job])
+                        self.jobObjs[job].tardiness.append(self.violatedTW[job])
+                        self.jobObjs[job].positionInSchedule.append(self.solMatrix[i][job])
+                        self.jobObjs[job].travelToJob.append(self.nurseTravelMatrix[i][job])
+                        self.jobObjs[job].marked += 1
+                    else:
+                        print('[ERROR]: self.jobObjs[job].marked for job ', job, ' is ', self.jobObjs[job].marked)
+                        print('Terminating program.')
+                        exit(-1)
+                else: # job is not a DS
+                    self.jobObjs[job].nurseID = nurseID
+                    self.jobObjs[job].assignedNurse = i
+                    self.jobObjs[job].arrivalTime = arriveAt
+                    self.jobObjs[job].startTime = startAt
+                    self.jobObjs[job].departureTime = leaveAt
+                    # self.jobObjs[job].serviceTime = self.jobTimeInfo[job][2] # Not needed here, this is already done in init_job_and_nurse_objects function.
+                    self.jobObjs[job].waitingToStart = self.nurseWaitingMatrix[i][job]
+                    self.jobObjs[job].tardiness = self.violatedTW[job]
+                    self.jobObjs[job].positionInSchedule = self.solMatrix[i][job]
+                    self.jobObjs[job].travelToJob = self.nurseTravelMatrix[i][job]
+                    # if self.jobObjs[job].assignedNurse is list:
+                        # self.jobObjs[job].assignedNurse.append(i)
+                        # self.jobObjs[job].assignedNurse.append(nurseID)
+                    # else:
+                        # self.jobObjs[job].assignedNurse = [i]
+                        # self.jobObjs[job].assignedNurse = [nurseID]
                 costOfTravel = get_travel_cost(self.nurseTravelMatrix[i][job])
                 self.nurseTravelCost[i] += costOfTravel
             # End for loop p
@@ -1318,15 +1394,35 @@ class INSTANCE(object):
                 if self.jobObjs[j].ID == client_df.iloc[i]['client_id']:
                     timeWindow = [client_df.iloc[i]['tw_start'], client_df.iloc[i]['tw_end']]
                     if self.jobObjs[j].timewindow == timeWindow:
-                        client_df.loc[i, 'carer_id'] = self.jobObjs[j].nurseID
-                        client_df.loc[i, 'arrive_job'] = self.timemins_to_string(self.jobObjs[j].arrivalTime)
-                        client_df.loc[i, 'start_job'] = self.timemins_to_string(self.jobObjs[j].startTime)
-                        client_df.loc[i, 'depart_job'] = self.timemins_to_string(self.jobObjs[j].departureTime)
-                        client_df.loc[i, 'travel_time'] = self.timemins_to_string(self.jobObjs[j].travelToJob)
-                        client_df.loc[i, 'waiting_time'] = self.timemins_to_string(self.jobObjs[j].waitingToStart)
-                        client_df.loc[i, 'tardiness'] = self.timemins_to_string(self.jobObjs[j].tardiness)
-                        # client_df.loc[i, 'tardiness'] = self.jobObjs[j].tardiness
-                        break
+                        if self.doubleService[j] == 1:
+                            client_df.loc[i, 'carer_id'] = self.jobObjs[j].nurseID[0]
+                            client_df.loc[i, 'arrive_job'] = self.timemins_to_string(self.jobObjs[j].arrivalTime[0])
+                            client_df.loc[i, 'start_job'] = self.timemins_to_string(self.jobObjs[j].startTime[0])
+                            client_df.loc[i, 'depart_job'] = self.timemins_to_string(self.jobObjs[j].departureTime[0])
+                            client_df.loc[i, 'waiting_time'] = self.timemins_to_string(self.jobObjs[j].waitingToStart[0])
+                            client_df.loc[i, 'tardiness'] = self.timemins_to_string(self.jobObjs[j].tardiness[0])
+                            # NOTE: ADD POSITION IN SCHEDULE
+                            client_df.loc[i, 'travel_time'] = self.timemins_to_string(self.jobObjs[j].travelToJob[0])
+
+                            client_df.loc[i, 'carer_id2'] = self.jobObjs[j].nurseID[1]
+                            client_df.loc[i, 'arrive_job2'] = self.timemins_to_string(self.jobObjs[j].arrivalTime[1])
+                            client_df.loc[i, 'start_job2'] = self.timemins_to_string(self.jobObjs[j].startTime[1])
+                            client_df.loc[i, 'depart_job2'] = self.timemins_to_string(self.jobObjs[j].departureTime[1])
+                            client_df.loc[i, 'waiting_time2'] = self.timemins_to_string(self.jobObjs[j].waitingToStart[1])
+                            client_df.loc[i, 'tardiness2'] = self.timemins_to_string(self.jobObjs[j].tardiness[1])
+                            # NOTE: ADD POSITION IN SCHEDULE
+                            client_df.loc[i, 'travel_time2'] = self.timemins_to_string(self.jobObjs[j].travelToJob[1])
+                            break
+                        else:
+                            client_df.loc[i, 'carer_id'] = self.jobObjs[j].nurseID
+                            client_df.loc[i, 'arrive_job'] = self.timemins_to_string(self.jobObjs[j].arrivalTime)
+                            client_df.loc[i, 'start_job'] = self.timemins_to_string(self.jobObjs[j].startTime)
+                            client_df.loc[i, 'depart_job'] = self.timemins_to_string(self.jobObjs[j].departureTime)
+                            client_df.loc[i, 'waiting_time'] = self.timemins_to_string(self.jobObjs[j].waitingToStart)
+                            client_df.loc[i, 'tardiness'] = self.timemins_to_string(self.jobObjs[j].tardiness)
+                            # NOTE: ADD POSITION IN SCHEDULE
+                            client_df.loc[i, 'travel_time'] = self.timemins_to_string(self.jobObjs[j].travelToJob)
+                            break
         
 
         cwd = os.getcwd()
