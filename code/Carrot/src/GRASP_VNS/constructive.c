@@ -28,12 +28,12 @@ int main(int argc, char const* argv[]){
     return main_with_output(ip, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 }
 
-MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, int tw_interval_data, bool exclude_nurse_travel_data,
-                            double* od_data, double* nurse_travel_from_depot_data, double* nurse_travel_to_depot_data, int* unavail_matrix_data, int* nurse_unavail_data,
-                            int* nurseWorkingTimes_data, int* jobTimeInfo_data, int* jobRequirements_data, int* nurseSkills_data, int* solMatrixPointer,
+MODULE_API int python_entry(int nJobs_data, int nCarers_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, int tw_interval_data, bool exclude_carer_travel_data,
+                            double* od_data, double* carer_travel_from_depot, double* carer_travel_to_depot, int* unavail_matrix_data, int* carer_unavail_data,
+                            int* carerWorkingTimes_data, int* jobTimeInfo_data, int* jobRequirements_data, int* carerSkills_data, int* solMatrixPointer,
                             int* doubleService_data, int* dependsOn_data, int* mk_mind_data, int* mk_maxd_data, int* capabilityOfDoubleServices, double* prefScore,
-                            double* algorithmOptions_data, double* timeMatrixPointer, double* nurseWaitingTimePointer, double* nurseTravelTimePointer, double* violatedTWPointer,
-                            double* nurseWaitingMatrixPointer, double* nurseTravelMatrixPointer, double* totalsArrayPointer, int randomSeed){
+                            double* algorithmOptions_data, double* timeMatrixPointer, double* carerWaitingTimePointer, double* carerTravelTimePointer, double* violatedTWPointer,
+                            double* carerWaitingMatrixPointer, double* carerTravelMatrixPointer, double* totalsArrayPointer, int randomSeed){
 
     // printf("Inside C function. Random seed = %d.\n", randomSeed);
 
@@ -70,27 +70,27 @@ MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, 
 
     if(printInputData > 0){
         printf("nJobs_data = %d\n", nJobs_data);
-        printf("nNurses_data = %d\n", nNurses_data);
+        printf("nCarers_data = %d\n", nCarers_data);
         printf("nSkills_data = %d\n", nSkills_data);
         printf("verbose_data = %d\n", verbose_data);
         printf("MAX_TIME_SECONDS = %.2f\n", MAX_TIME_SECONDS);
         printf("randomSeed = %d\n", randomSeed);;
         printf("od_data = \n");
         print_double_matrix_one(od_data, nJobs_data + 1, nJobs_data + 1);
-        printf("nurse_travel_from_depot_data = \n");
-        print_double_matrix_one(nurse_travel_from_depot_data, nNurses_data, nJobs_data);
-        printf("nurse_travel_to_depot_data = \n");
-        print_double_matrix_one(nurse_travel_to_depot_data, nNurses_data, nJobs_data);
-        printf("nurseWorkingTimes_data = \n");
-        print_int_matrix_one(nurseWorkingTimes_data, nNurses_data, 3);
+        printf("carer_travel_from_depot = \n");
+        print_double_matrix_one(carer_travel_from_depot, nCarers_data, nJobs_data);
+        printf("carer_travel_to_depot = \n");
+        print_double_matrix_one(carer_travel_to_depot, nCarers_data, nJobs_data);
+        printf("carerWorkingTimes_data = \n");
+        print_int_matrix_one(carerWorkingTimes_data, nCarers_data, 3);
         printf("jobTimeInfo_data = \n");
         print_int_matrix_one(jobTimeInfo_data, nJobs_data, 3);
         printf("jobRequirements_data = \n");
         print_int_matrix_one(jobRequirements_data, nJobs_data, nSkills_data);
-        printf("nurseSkills_data = \n");
-        print_int_matrix_one(nurseSkills_data, nNurses_data, nSkills_data);
+        printf("carerSkills_data = \n");
+        print_int_matrix_one(carerSkills_data, nCarers_data, nSkills_data);
         printf("solMatrixPointer = \n");
-        print_int_matrix_one(solMatrixPointer, nNurses_data, nJobs_data);
+        print_int_matrix_one(solMatrixPointer, nCarers_data, nJobs_data);
         printf("mk_mind_data = \n");
         print_int_matrix_one(mk_mind_data, 1, nJobs_data);
         printf("mk_maxd_data = \n");
@@ -104,23 +104,23 @@ MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, 
             nDS += doubleService_data[i];
         }
         printf("capabilityOfDoubleServices (only first nurses*nurses, jobs)= \n");
-        print_int_matrix_one(capabilityOfDoubleServices, nDS, nNurses_data*nNurses_data);
+        print_int_matrix_one(capabilityOfDoubleServices, nDS, nCarers_data*nCarers_data);
         printf("prefScore = \n");
-        print_double_matrix_one(prefScore, nJobs_data, nNurses_data);
+        print_double_matrix_one(prefScore, nJobs_data, nCarers_data);
         printf("algorithmOptions_data = \n");
         print_double_matrix_one(algorithmOptions_data, 1, 100);
     }
 
     // exit(-1);
     // printf("In C.\nReading input...\n");
-    struct INSTANCE inst = instance_from_python(nJobs_data, nNurses_data, nSkills_data, verbose_data, MAX_TIME_SECONDS, tw_interval_data, exclude_nurse_travel_data, od_data, nurse_travel_from_depot_data,
-                                                nurse_travel_to_depot_data, unavail_matrix_data, nurse_unavail_data, nurseWorkingTimes_data, jobTimeInfo_data, jobRequirements_data, nurseSkills_data,
+    struct INSTANCE inst = instance_from_python(nJobs_data, nCarers_data, nSkills_data, verbose_data, MAX_TIME_SECONDS, tw_interval_data, exclude_carer_travel_data, od_data, carer_travel_from_depot,
+                                                carer_travel_to_depot, unavail_matrix_data, carer_unavail_data, carerWorkingTimes_data, jobTimeInfo_data, jobRequirements_data, carerSkills_data,
                                                 doubleService_data, dependsOn_data, mk_mind_data, mk_maxd_data, capabilityOfDoubleServices, prefScore, algorithmOptions_data);
 
     // printf("Done.\nBack in python_entry()\n");
     if(printInputData > 0){
-        printf("nurseSkilled = \n");
-        print_int_matrix(inst.nurseSkilled, nNurses_data, nJobs_data);
+        printf("carerSkilled = \n");
+        print_int_matrix(inst.carerSkilled, nCarers_data, nJobs_data);
         printf("\n---------------  end of input data in C  ---------------\n\n");
     }
 
@@ -133,7 +133,7 @@ MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, 
             continue;
 
         double best_a = MMM;
-        for(int j = 0; j < inst.nNurses; ++j){
+        for(int j = 0; j < inst.nCarers; ++j){
             if(check_skills(&inst, i, j)){
                 if(inst.prefScore[i][j] < best_a)
                     best_a = inst.prefScore[i][j];
@@ -147,8 +147,8 @@ MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, 
             continue;
 
         double best_a = MMM;
-        for(int j = 0; j < inst.nNurses; ++j){
-            for(int k = 0; k < inst.nNurses; ++k){
+        for(int j = 0; j < inst.nCarers; ++j){
+            for(int k = 0; k < inst.nCarers; ++k){
                 if(check_skills_ds(&inst, i, j, k)){
                     double comb_pref = inst.prefScore[i][j] + inst.prefScore[i][k];
                     if(comb_pref < best_a)
@@ -183,7 +183,7 @@ MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, 
     double int_tol = 0.0001;
     if(ip->algorithmOptions[98] >= -int_tol && ip->algorithmOptions[98] <= int_tol){
         // Solve with GRASP
-        retvalue = main_with_output(ip, od_data, solMatrixPointer, timeMatrixPointer, nurseWaitingTimePointer, nurseTravelTimePointer, violatedTWPointer, nurseWaitingMatrixPointer, nurseTravelMatrixPointer, totalsArrayPointer);
+        retvalue = main_with_output(ip, od_data, solMatrixPointer, timeMatrixPointer, carerWaitingTimePointer, carerTravelTimePointer, violatedTWPointer, carerWaitingMatrixPointer, carerTravelMatrixPointer, totalsArrayPointer);
     }
     else if(ip->algorithmOptions[98] >= 1 - int_tol && ip->algorithmOptions[98] <= 1 + int_tol){
         // Evaluate solMatrix only
@@ -221,8 +221,8 @@ int evaluate_given_solution(struct INSTANCE* ip, int* solMatrixPointer, double* 
 
     //start populating
     int ct = 0;
-    for(int i = 0; i < ip->nNurses; ++i){
-        ip->nurseOrder[i] = i;
+    for(int i = 0; i < ip->nCarers; ++i){
+        ip->carerOrder[i] = i;
         for(int j = 0; j < ip->nJobs; ++j){
             ip->solMatrix[i][j] = solMatrixPointer[ct];
             ct++;
@@ -241,8 +241,8 @@ int evaluate_given_solution(struct INSTANCE* ip, int* solMatrixPointer, double* 
     return 0;
 }
 
-int main_with_output(struct INSTANCE* ip, double* odmat_pointer, int* solMatrixPointer, double* timeMatrixPointer, double* nurseWaitingTimePointer, double* nurseTravelTimePointer, double* violatedTWPointer,
-                    double* nurseWaitingMatrixPointer, double* nurseTravelMatrixPointer, double* totalsArrayPointer){
+int main_with_output(struct INSTANCE* ip, double* odmat_pointer, int* solMatrixPointer, double* timeMatrixPointer, double* carerWaitingTimePointer, double* carerTravelTimePointer, double* violatedTWPointer,
+                     double* carerWaitingMatrixPointer, double* carerTravelMatrixPointer, double* totalsArrayPointer){
 
     // Call the GRASP algorithm
     GRASP(ip);
@@ -277,7 +277,7 @@ int main_with_output(struct INSTANCE* ip, double* odmat_pointer, int* solMatrixP
         printf("Finishing stuff...\n");
 
     //solmatrix_to_python_format(ip, solMatrixPointer);
-    solution_to_python_format(ip, solMatrixPointer, timeMatrixPointer, nurseWaitingTimePointer, nurseTravelTimePointer, violatedTWPointer, nurseWaitingMatrixPointer, nurseTravelMatrixPointer, totalsArrayPointer);
+    solution_to_python_format(ip, solMatrixPointer, timeMatrixPointer, carerWaitingTimePointer, carerTravelTimePointer, violatedTWPointer, carerWaitingMatrixPointer, carerTravelMatrixPointer, totalsArrayPointer);
 
     //exclude_nurse_travel_data = false;
 
@@ -298,7 +298,7 @@ void solmatrix_to_python_format(struct INSTANCE* ip, int* solMatrixPointer){
             printf("Allocating stuff back to python\n");
         }
 
-        for(int i = 0; i < ip->nNurses; ++i){
+        for(int i = 0; i < ip->nCarers; ++i){
             for(int j = 0; j < ip->nJobs; ++j){
                 solMatrixPointer[ct] = ip->solMatrix[i][j];
                 ct++;
@@ -310,8 +310,8 @@ void solmatrix_to_python_format(struct INSTANCE* ip, int* solMatrixPointer){
     }
 }
 
-void solution_to_python_format(struct INSTANCE* ip, int* solMatrixPointer, double* timeMatrixPointer, double* nurseWaitingTimePointer, double* nurseTravelTimePointer, double* violatedTWPointer,
-                                double* nurseWaitingMatrixPointer, double* nurseTravelMatrixPointer, double* totalsArrayPointer){
+void solution_to_python_format(struct INSTANCE* ip, int* solMatrixPointer, double* timeMatrixPointer, double* carerWaitingTimePointer, double* carerTravelTimePointer, double* violatedTWPointer,
+                               double* carerWaitingMatrixPointer, double* carerTravelMatrixPointer, double* totalsArrayPointer){
 
     //solMatrix (nNursesxnJobs)
     int ct = 0;
@@ -319,7 +319,7 @@ void solution_to_python_format(struct INSTANCE* ip, int* solMatrixPointer, doubl
         if(ip->verbose > 10){
             printf("Allocating solMatrix back to python\n");
         }
-        for(int i = 0; i < ip->nNurses; ++i){
+        for(int i = 0; i < ip->nCarers; ++i){
             for(int j = 0; j < ip->nJobs; ++j){
                 solMatrixPointer[ct] = ip->solMatrix[i][j];
                 ct++;
@@ -336,7 +336,7 @@ void solution_to_python_format(struct INSTANCE* ip, int* solMatrixPointer, doubl
         if(ip->verbose > 10){
             printf("Allocating timeMatrix back to python\n");
         }
-        for(int i = 0; i < ip->nNurses; ++i){
+        for(int i = 0; i < ip->nCarers; ++i){
             for(int j = 0; j < ip->nJobs; ++j){
                 timeMatrixPointer[ct] = ip->timeMatrix[i][j];
                 ct++;
@@ -347,14 +347,14 @@ void solution_to_python_format(struct INSTANCE* ip, int* solMatrixPointer, doubl
         }
     }
 
-    //nurseWaitingTime (1xnNurses)
+    //carerWaitingTime (1xnNurses)
     ct = 0;
-    if(nurseWaitingTimePointer != NULL){
+    if(carerWaitingTimePointer != NULL){
         if(ip->verbose > 10){
-            printf("Allocating nurseWaitingTime back to python");
+            printf("Allocating carerWaitingTime back to python");
         }
-        for(int i = 0; i < ip->nNurses; ++i){
-            nurseWaitingTimePointer[ct] = ip->nurseWaitingTime[i];
+        for(int i = 0; i < ip->nCarers; ++i){
+            carerWaitingTimePointer[ct] = ip->carerWaitingTime[i];
             ct++;
         }
         if(ip->verbose > 10){
@@ -362,14 +362,14 @@ void solution_to_python_format(struct INSTANCE* ip, int* solMatrixPointer, doubl
         }
     }
 
-    //nurseTravelTime (1xnNurses)
+    //carerTravelTime (1xnNurses)
     ct = 0;
-    if(nurseTravelTimePointer != NULL){
+    if(carerTravelTimePointer != NULL){
         if(ip->verbose > 10){
-            printf("Allocating nurseTravelTime back to python");
+            printf("Allocating carerTravelTime back to python");
         }
-        for(int i = 0; i < ip->nNurses; ++i){
-            nurseTravelTimePointer[ct] = ip->nurseTravelTime[i];
+        for(int i = 0; i < ip->nCarers; ++i){
+            carerTravelTimePointer[ct] = ip->carerTravelTime[i];
             ct++;
         }
         if(ip->verbose > 10){
@@ -392,15 +392,15 @@ void solution_to_python_format(struct INSTANCE* ip, int* solMatrixPointer, doubl
         }
     }
 
-    //nurseWaitingMatrix (nNursesxnJobs)
+    //carerWaitingMatrix (nNursesxnJobs)
     ct = 0;
-    if(nurseWaitingMatrixPointer != NULL){
+    if(carerWaitingMatrixPointer != NULL){
         if(ip->verbose > 10){
-            printf("Allocating nurseWaitingMatrix back to python\n");
+            printf("Allocating carerWaitingMatrix back to python\n");
         }
-        for(int i = 0; i < ip->nNurses; ++i){
+        for(int i = 0; i < ip->nCarers; ++i){
             for(int j = 0; j < ip->nJobs; ++j){
-                nurseWaitingMatrixPointer[ct] = ip->nurseWaitingMatrix[i][j];
+                carerWaitingMatrixPointer[ct] = ip->carerWaitingMatrix[i][j];
                 ct++;
             }
             if(ip->verbose > 10){
@@ -409,15 +409,15 @@ void solution_to_python_format(struct INSTANCE* ip, int* solMatrixPointer, doubl
         }
     }
 
-    //nurseTravelMatrix (nNursesxnJobs)
+    //carerTravelMatrix (nNursesxnJobs)
     ct = 0;
-    if(nurseTravelMatrixPointer != NULL){
+    if(carerTravelMatrixPointer != NULL){
         if(ip->verbose > 10){
-            printf("Allocating nurseTravelMatrix back to python\n");
+            printf("Allocating carerTravelMatrix back to python\n");
         }
-        for(int i = 0; i < ip->nNurses; ++i){
+        for(int i = 0; i < ip->nCarers; ++i){
             for(int j = 0; j < ip->nJobs; ++j){
-                nurseTravelMatrixPointer[ct] = ip->nurseTravelMatrix[i][j];
+                carerTravelMatrixPointer[ct] = ip->carerTravelMatrix[i][j];
                 ct++;
             }
             if(ip->verbose > 10){
@@ -457,12 +457,12 @@ void constructive_basic(struct INSTANCE* ip){
 
     if(ip->verbose > 1){
         printf("Generated instance!\n");
-        printf("Read data for %d nurses and %d jobs. \n", ip->nNurses, ip->nJobs);
+        printf("Read data for %d nurses and %d jobs. \n", ip->nCarers, ip->nJobs);
     }
 
     int oldAssignment = 0;
     if(oldAssignment > 0){
-        nCols = ip->nNurses;
+        nCols = ip->nCarers;
 
         int* jobsCount = malloc(nCols*sizeof(int));
         for(int i = 0; i < nCols; ++i)
@@ -475,7 +475,7 @@ void constructive_basic(struct INSTANCE* ip){
         // First fit
         int jobsAssigned = 0;
         int chosenNurse = 0;
-        float balancedTarget = (float) ip->nJobs/(float) ip->nNurses;
+        float balancedTarget = (float) ip->nJobs/(float) ip->nCarers;
         int* jobPermutation = malloc(ip->nJobs*sizeof(int));
         for(int i = 0; i < ip->nJobs; ++i){
             jobPermutation[i] = i;
@@ -496,11 +496,11 @@ void constructive_basic(struct INSTANCE* ip){
         for(int ii = 0; ii < ip->nJobs; ++ii){
             int i = jobPermutation[ii];
             // int i = ii;
-            for(int nCount = 0; nCount < ip->nNurses; ++nCount){
-                int nursej = (chosenNurse + nCount)%(ip->nNurses);
+            for(int nCount = 0; nCount < ip->nCarers; ++nCount){
+                int nursej = (chosenNurse + nCount)%(ip->nCarers);
                 // printf("Chosen nurse: %d", nursej);
                 // Check if nurse nursej can do job i:
-                if(ip->nurseSkilled[nursej][i] > 0 || ip->doubleService[i] > 0){
+                if(ip->carerSkilled[nursej][i] > 0 || ip->doubleService[i] > 0){
                     // ip->solMatrix[nursej][i] = jobsCount[nursej];
                     best_job_insertion(ip, i, nursej);
                     // printf("Job %d assigned to nurse %d in position %d\n", i, j, jobsCount[nursej]);
@@ -508,14 +508,14 @@ void constructive_basic(struct INSTANCE* ip){
                     jobsAssigned = jobsAssigned + 1;
                     chosenNurse++;
                     // if ((float) jobsCount[j] > balancedTarget)
-                    // 	chosenNurse = (chosenNurse + 1) % ip->nNurses;
+                    // 	chosenNurse = (chosenNurse + 1) % ip->nCarers;
                     // ip->doubleService[i] = -1;
                     // printf("About to check DS...\n");
                     if(ip->doubleService[i] > 0){
-                        best_job_insertion(ip, i, ((nursej + 1)%ip->nNurses));
-                        jobsCount[((nursej + 1)%ip->nNurses)] = jobsCount[((nursej + 1)%ip->nNurses)] + 1;
+                        best_job_insertion(ip, i, ((nursej + 1)%ip->nCarers));
+                        jobsCount[((nursej + 1)%ip->nCarers)] = jobsCount[((nursej + 1)%ip->nCarers)] + 1;
                         if(ip->verbose > 2)
-                            printf("Double service %d assigned to nurse %d\n", i, ((nursej + 1)%ip->nNurses));
+                            printf("Double service %d assigned to nurse %d\n", i, ((nursej + 1)%ip->nCarers));
 
                     }
                     // printf("Done.\n");
@@ -539,14 +539,14 @@ void constructive_basic(struct INSTANCE* ip){
                     printf("%d, ", i);
             printf("\n");
 
-            printf("nurseSkilled: \n");
-            print_int_matrix(ip->nurseSkilled, ip->nNurses, ip->nJobs);
+            printf("carerSkilled: \n");
+            print_int_matrix(ip->carerSkilled, ip->nCarers, ip->nJobs);
 
             printf("jobRequirements: \n");
             print_int_matrix(ip->jobRequirements, ip->nJobs, ip->nSkills);
 
-            printf("nurseSkills: \n");
-            print_int_matrix(ip->nurseSkills, ip->nNurses, ip->nSkills);
+            printf("carerSkills: \n");
+            print_int_matrix(ip->carerSkills, ip->nCarers, ip->nSkills);
 
         }
         else if(ip->verbose > 2){
@@ -561,31 +561,31 @@ void constructive_basic(struct INSTANCE* ip){
 
 }
 
-int check_skills(struct INSTANCE* ip, int job, int nurse){
-    //This function returns 1 if nurse is skilled to do the job, and returns 0 otherwise.
+int check_skills(struct INSTANCE* ip, int job, int carer){
+    //This function returns 1 if carer is skilled to do the job, and returns 0 otherwise.
 
-    return ip->nurseSkilled[nurse][job];
+    return ip->carerSkilled[carer][job];
 }
 
-int check_skills_ds_first(struct INSTANCE* ip, int job, int nursei){
+int check_skills_ds_first(struct INSTANCE* ip, int job, int careri){
 
     // This function checks to see if there is another nurse that can do the double service with nurse i.
     // Function returns 1 if there is another nurse, and 0 if there is not.
 
     // This for loop is to count up the number of double service jobs up to our current one, 'job'.
-    // This is because the capabilityOfDoubleServices 3d matrix is nNurses x nNurses x nDoubleServices! So we need to find out what number of double service our 'job' is.
+    // This is because the capabilityOfDoubleServices 3d matrix is nCarers x nCarers x nDoubleServices! So we need to find out what number of double service our 'job' is.
     int jobdsindex = 0;
     for(int i = 0; i < job; ++i){ // Only count up to (but not including) our 'job', this ensures that jobdsindex is correct and not out of bounds.
         jobdsindex += ip->doubleService[i];
     }
 
-    //Now go through all nurses and try to find another nurse, i, that can do our double service job, jobdsindex, together with our current nurse, nursei.
-    for(int i = 0; i < ip->nNurses; ++i){
-        if(i==nursei){
+    //Now go through all nurses and try to find another nurse, i, that can do our double service job, jobdsindex, together with our current nurse, careri.
+    for(int i = 0; i < ip->nCarers; ++i){
+        if(i==careri){
             continue;
         }
         // Is there any other nurse that can do it?
-        if(ip->capabilityOfDoubleServices[nursei][i][jobdsindex] > 0){ // nursei and i are capable of performing the job together!
+        if(ip->capabilityOfDoubleServices[careri][i][jobdsindex] > 0){ // careri and i are capable of performing the job together!
             return 1;
         }
     }
@@ -594,19 +594,19 @@ int check_skills_ds_first(struct INSTANCE* ip, int job, int nursei){
 
 } // END OF check_skills_ds_first function.
 
-int check_skills_ds(struct INSTANCE* ip, int job, int nursei, int nursej){
+int check_skills_ds(struct INSTANCE* ip, int job, int careri, int carerj){
 
-    // This function checks whether nursei and nursej are capable of doing double service 'job' together.
+    // This function checks whether careri and carerj are capable of doing double service 'job' together.
     // Returns 1 if yes, and 0 if no (capabilityOfDoubleService 3D matrix is a 0-1 matrix).
 
     // This for loop is to count up the number of double service jobs up to our current one, 'job'.
-    // This is because the capabilityOfDoubleServices 3d matrix is nNurses x nNurses x nDoubleServices! So we need to find out what number of double service our 'job' is.
+    // This is because the capabilityOfDoubleServices 3d matrix is nCarers x nCarers x nDoubleServices! So we need to find out what number of double service our 'job' is.
     int jobdsindex = 0;
     for(int i = 0; i < job; ++i){
         jobdsindex += ip->doubleService[i];
     }
 
-    return ip->capabilityOfDoubleServices[nursei][nursej][jobdsindex];
+    return ip->capabilityOfDoubleServices[careri][carerj][jobdsindex];
 }
 
 void initial_job_assignment(struct INSTANCE* ip){
@@ -617,8 +617,8 @@ void initial_job_assignment(struct INSTANCE* ip){
     int* allocatedJobs = malloc(ip->nJobs*sizeof(int));
     for(int i = 0; i < ip->nJobs; ++i)
         allocatedJobs[i] = 0;
-    int* nurseSeed = malloc(ip->nNurses*sizeof(int));
-    for(int j = 0; j < ip->nNurses; ++j)
+    int* nurseSeed = malloc(ip->nCarers*sizeof(int));
+    for(int j = 0; j < ip->nCarers; ++j)
         nurseSeed[j] = -1;
 
 
@@ -632,10 +632,10 @@ void initial_job_assignment(struct INSTANCE* ip){
     while(ajc < ip->nJobs){
         its++;
         // Doing this in parallel
-        cNurse = (cNurse + 1)%ip->nNurses;
+        cNurse = (cNurse + 1)%ip->nCarers;
 
         if(nurseSeed[cNurse] < 0){
-            nurseSeed[cNurse] = find_furthest_unallocated_point_for_nurse(ip, allocatedJobs, cNurse);
+            nurseSeed[cNurse] = find_furthest_unallocated_point_for_carer(ip, allocatedJobs, cNurse);
             if(nurseSeed[cNurse] > -1 && best_job_insertion(ip, nurseSeed[cNurse], cNurse) > -1){
                 allocatedJobs[nurseSeed[cNurse]] = 1;
                 ajc++;
@@ -649,7 +649,7 @@ void initial_job_assignment(struct INSTANCE* ip){
             }
         }
         else{
-            int nextPoint = find_closest_unallocated_point_for_nurse(ip, allocatedJobs, nurseSeed[cNurse], cNurse);
+            int nextPoint = find_closest_unallocated_point_for_carer(ip, allocatedJobs, nurseSeed[cNurse], cNurse);
             int wentWrong = 0;
             if(nextPoint < 0){
                 wentWrong = 1;
@@ -663,8 +663,8 @@ void initial_job_assignment(struct INSTANCE* ip){
                     if(ip->doubleService[nextPoint]){
                         printf("Job is a DS\n");
                     }
-                    printf("ip->nurseSkills:\n");
-                    print_int_matrix(ip->nurseSkills, ip->nNurses, ip->nSkills);
+                    printf("ip->carerSkills:\n");
+                    print_int_matrix(ip->carerSkills, ip->nCarers, ip->nSkills);
                     printf("ip->jobRequirements:\n");
                     print_int_matrix(ip->jobRequirements, ip->nJobs, ip->nSkills);
 
@@ -696,7 +696,7 @@ void initial_job_assignment(struct INSTANCE* ip){
             continue;
         double bestTravel = bigM;
         int toThisNurse = -1;
-        for(int j = 0; j < ip->nNurses; ++j){
+        for(int j = 0; j < ip->nCarers; ++j){
             double intTravel = get_travel_time(ip, nurseSeed[j], i);
 
             if(intTravel < get_travel_time(ip, i, nurseSeed[j]))
@@ -727,7 +727,7 @@ void initial_job_assignment(struct INSTANCE* ip){
 
 }
 
-int find_closest_unallocated_point_for_nurse(struct INSTANCE* ip, int* allocatedJobs, int job, int nurse){
+int find_closest_unallocated_point_for_carer(struct INSTANCE* ip, int* allocatedJobs, int job, int carer){
     int closestPoint = -1;
     double bestDistance = bigM;
     double cdist;
@@ -735,13 +735,13 @@ int find_closest_unallocated_point_for_nurse(struct INSTANCE* ip, int* allocated
         if(allocatedJobs[i] > 0){
             continue;
         }
-        if((ip->doubleService[i] < 1 && check_skills(ip, i, nurse) < 1)){
+        if((ip->doubleService[i] < 1 && check_skills(ip, i, carer) < 1)){
             continue;
         }
 
         // debug : speed // these could be two separate loops, so the if-statement is only made once
         if(job < -0.5)
-            cdist = get_travel_time_from_depot(ip, nurse, i);
+            cdist = get_travel_time_from_depot(ip, carer, i);
         else{
             cdist = get_travel_time(ip, job, i);
             if(cdist < get_travel_time(ip, i, job))
@@ -759,7 +759,7 @@ int find_closest_unallocated_point_for_nurse(struct INSTANCE* ip, int* allocated
     return closestPoint;
 }
 
-int find_furthest_unallocated_point_for_nurse(struct INSTANCE* ip, int* allocatedJobs, int nurse){
+int find_furthest_unallocated_point_for_carer(struct INSTANCE* ip, int* allocatedJobs, int carer){
     // Furthest from all unallocated + DEPOT
     int furthestPoint = -1;
     double bestDistance = -1;
@@ -775,15 +775,15 @@ int find_furthest_unallocated_point_for_nurse(struct INSTANCE* ip, int* allocate
         for(int i = 0; i < ip->nJobs; ++i){
             if(allocatedJobs[i] > 0)
                 continue;
-            if(ip->doubleService[i] < 1 && check_skills(ip, i, nurse) < 0){
+            if(ip->doubleService[i] < 1 && check_skills(ip, i, carer) < 0){
                 continue;
-                printf("\tSkipping job %d, because nurse %d is unskilled!\n", i, nurse);
+                printf("\tSkipping job %d, because nurse %d is unskilled!\n", i, carer);
             }
 
 
             // debug : speed // these could be two separate loops, so the if-statement is only made once
             if(job < -0.5)
-                cdist = get_travel_time_from_depot(ip, nurse, i);
+                cdist = get_travel_time_from_depot(ip, carer, i);
             else{
                 cdist = get_travel_time(ip, job, i);
                 if(cdist > get_travel_time(ip, i, job))
@@ -843,7 +843,7 @@ void print_double_matrix(double** matrix, int nRows, int nCols){
 }
 
 void print_solmatrix(struct INSTANCE* ip){
-    for(int i = 0; i < ip->nNurses; ++i){
+    for(int i = 0; i < ip->nCarers; ++i){
         for(int j = 0; j < ip->nJobs; ++j){
             if(ip->solMatrix[i][j] > -1)
                 printf("%2d\t", ip->solMatrix[i][j]);
@@ -855,13 +855,13 @@ void print_solmatrix(struct INSTANCE* ip){
     }
 }
 
-void print_allNurseRoutes(struct INSTANCE* ip){
-    for(int i = 0; i < ip->nNurses; ++i){
+void print_allCarerRoutes(struct INSTANCE* ip){
+    for(int i = 0; i < ip->nCarers; ++i){
         for(int j = 0; j < ip->nJobs; ++j){
-            if(ip->allNurseRoutes[i][j] > -1)
-                printf("%2d\t", ip->allNurseRoutes[i][j]);
+            if(ip->allCarerRoutes[i][j] > -1)
+                printf("%2d\t", ip->allCarerRoutes[i][j]);
             else
-                printf(" .\t", ip->allNurseRoutes[i][j]);
+                printf(" .\t", ip->allCarerRoutes[i][j]);
 
         }
         printf("\t\\\\\n");
@@ -869,7 +869,7 @@ void print_allNurseRoutes(struct INSTANCE* ip){
 }
 
 void print_timeMatrix(struct INSTANCE* ip){
-    for(int i = 0; i < ip->nNurses; ++i){
+    for(int i = 0; i < ip->nCarers; ++i){
         for(int j = 0; j < ip->nJobs; ++j){
             printf("%.2f\t", ip->timeMatrix[i][j]);
         }
@@ -888,32 +888,32 @@ double get_travel_time(struct INSTANCE* ip, int jobi, int jobj){
     return ip->od[jobi + 1][jobj + 1];
 }
 
-double get_travel_time_from_depot(struct INSTANCE* ip, int nurse, int job){
-    if(ip->nurse_travel_from_depot[nurse][job] > 100000000000)
-        printf("\nError! when calling with FROM nurse %d job %d, travel reported is %.3f", nurse, job, ip->nurse_travel_from_depot[nurse][job]);
-    return ip->nurse_travel_from_depot[nurse][job];
+double get_travel_time_from_depot(struct INSTANCE* ip, int carer, int job){
+    if(ip->carer_travel_from_depot[carer][job] > 100000000000)
+        printf("\nError! when calling with FROM nurse %d job %d, travel reported is %.3f", carer, job, ip->carer_travel_from_depot[carer][job]);
+    return ip->carer_travel_from_depot[carer][job];
 }
 
-double get_travel_time_to_depot(struct INSTANCE* ip, int nurse, int job){
-    if(ip->nurse_travel_to_depot[nurse][job] > 100000000000)
-        printf("\nError! when calling with TO nurse %d job %d, travel reported is %.3f", nurse, job, ip->nurse_travel_to_depot[nurse][job]);
-    return ip->nurse_travel_to_depot[nurse][job];
+double get_travel_time_to_depot(struct INSTANCE* ip, int carer, int job){
+    if(ip->carer_travel_to_depot[carer][job] > 100000000000)
+        printf("\nError! when calling with TO nurse %d job %d, travel reported is %.3f", carer, job, ip->carer_travel_to_depot[carer][job]);
+    return ip->carer_travel_to_depot[carer][job];
 }
 
 double get_travel_time_bnc(struct INSTANCE* ip, int nodei, int nodej){
-    // The difference here is that the first ip->nNurses indices
+    // The difference here is that the first ip->nCarers indices
     // correspond to nurse depots, the rest are jobs
-    if(nodei < ip->nNurses && nodej < ip->nNurses){
+    if(nodei < ip->nCarers && nodej < ip->nCarers){
         printf("\nWARNING: Trying to access distance between two nurse depots in 'get_travel_time_bnc(...)', which is not defined.\n");
         return -1;  //	This is not defined
     }
 
-    if(nodei < ip->nNurses)
-        return get_travel_time_from_depot(ip, nodei, nodej - ip->nNurses);
-    else if(nodej < ip->nNurses)
-        return get_travel_time_from_depot(ip, nodej, nodei - ip->nNurses);
+    if(nodei < ip->nCarers)
+        return get_travel_time_from_depot(ip, nodei, nodej - ip->nCarers);
+    else if(nodej < ip->nCarers)
+        return get_travel_time_from_depot(ip, nodej, nodei - ip->nCarers);
     else
-        return get_travel_time(ip, nodei - ip->nNurses, nodej - ip->nNurses);
+        return get_travel_time(ip, nodei - ip->nCarers, nodej - ip->nCarers);
 }
 
 int report_solution(struct INSTANCE* ip){
@@ -921,29 +921,29 @@ int report_solution(struct INSTANCE* ip){
     return 0;
 }
 
-int swap_points(struct INSTANCE* ip, int ni, int nj, int pi, int pj){
+int swap_points(struct INSTANCE* ip, int ci, int cj, int pi, int pj){
     // Swap the point pi from nurse ni by the point pj from nurse nj
-    if(ip->solMatrix[ni][pi] < 0 || ip->solMatrix[nj][pj] < 0){
+    if(ip->solMatrix[ci][pi] < 0 || ip->solMatrix[cj][pj] < 0){
         printf("Jobs not assigned\n");
         return -1; // Nothing to swap
     }
 
-    if(ip->nurseSkilled[ni][pj] < 1 || ip->nurseSkilled[nj][pi] < 1){
+    if(ip->carerSkilled[ci][pj] < 1 || ip->carerSkilled[cj][pi] < 1){
         printf("Not skilled\n");
         return -1; // Nothing to swap
     }
 
-    int posi = ip->solMatrix[ni][pi];
-    int posj = ip->solMatrix[nj][pj];
-    ip->solMatrix[ni][pi] = -1;
-    ip->solMatrix[nj][pj] = -1;
-    ip->solMatrix[ni][pj] = posi;
-    ip->solMatrix[nj][pi] = posj;
+    int posi = ip->solMatrix[ci][pi];
+    int posj = ip->solMatrix[cj][pj];
+    ip->solMatrix[ci][pi] = -1;
+    ip->solMatrix[cj][pj] = -1;
+    ip->solMatrix[ci][pj] = posi;
+    ip->solMatrix[cj][pi] = posj;
     return 0;
 }
 
-int remove_job(struct INSTANCE* ip, int job, int ni){
-    if(ip->solMatrix[ni][job] < 0){
+int remove_job(struct INSTANCE* ip, int job, int ci){
+    if(ip->solMatrix[ci][job] < 0){
         return -1; // Job isn't here
     }
 
@@ -951,24 +951,24 @@ int remove_job(struct INSTANCE* ip, int job, int ni){
         if(job==i){
             continue;
         }
-        if(ip->solMatrix[ni][i] > ip->solMatrix[ni][job]){
-            --ip->solMatrix[ni][i];
+        if(ip->solMatrix[ci][i] > ip->solMatrix[ci][job]){
+            --ip->solMatrix[ci][i];
         }
     }
-    ip->solMatrix[ni][job] = -1;
+    ip->solMatrix[ci][job] = -1;
 
     // printf("Removing job %d from nurse %d\n", job, ni);
-    set_nurse_route(ip, ni);
-    set_times_from(ip, ni);
+    set_carer_route(ip, ci);
+    set_times_from(ip, ci);
 
     return 0;
 }
 
-int job_insertion_last(struct INSTANCE* ip, int job, int ni){
+int job_insertion_last(struct INSTANCE* ip, int job, int ci){
     double baseQuality = -1*bigM;
     // int nurse_job_count = get_nurse_job_count(ip, ni);
 
-    if(insert_job_at_position(ip, job, ni, 0) < 0){
+    if(insert_job_at_position(ip, job, ci, 0) < 0){
         return -1;
     }
     else{
@@ -978,7 +978,7 @@ int job_insertion_last(struct INSTANCE* ip, int job, int ni){
 
 }
 
-int best_job_insertion(struct INSTANCE* ip, int job, int ni){
+int best_job_insertion(struct INSTANCE* ip, int job, int ci){
     // This function starts at position 0 of nurse ni's route, and trials adding 'job' into each position 0,...,nJobs + 10, calculating the quality of each solution created using the job in the new position.
     // Note that a job is inserted into a position, the quality is calculated, and then the job is removed from that position (i.e. the solution is returned to the original) before the function attempts to
     // insert the job into the next position.
@@ -991,9 +991,9 @@ int best_job_insertion(struct INSTANCE* ip, int job, int ni){
     double bestQuality = -1*bigM;
     int firstSwitch = 0; // Is this needed?
 
-    if(insert_job_at_position(ip, job, ni, 0) < 0){ // Position = 0, if job cannot be inserted into nurse ni's route in position 0.
-        if(ip->solMatrix[ni][job] < 0){ //If the job cannot be inserted into position 0 and the job is NOT already assigned to nurse ni, then print debug statement
-            printf("ERROR: Job %d cannot be inserted into nurse %d in position 0, but job is NOT in nurse's route!\n", job, ni);
+    if(insert_job_at_position(ip, job, ci, 0) < 0){ // Position = 0, if job cannot be inserted into nurse ni's route in position 0.
+        if(ip->solMatrix[ci][job] < 0){ //If the job cannot be inserted into position 0 and the job is NOT already assigned to nurse ni, then print debug statement
+            printf("ERROR: Job %d cannot be inserted into nurse %d in position 0, but job is NOT in nurse's route!\n", job, ci);
         }
         return -1;
         //printf("WARNING / DEBUG / position 0 failed. Job: %d, Nurse: %d\n", job, ni);
@@ -1006,7 +1006,7 @@ int best_job_insertion(struct INSTANCE* ip, int job, int ni){
         printf("\n");*/
         bestPosition = 0;
         bestQuality = sol_quality_light(ip); // Solution quality of ip with new job insertion
-        remove_job(ip, job, ni); // Reverse job insertion, go back to original solution
+        remove_job(ip, job, ci); // Reverse job insertion, go back to original solution
         //printf("Insertion into position 0 successful. Job: %d, Nurse: %d\n", job, ni);
     }
 
@@ -1015,7 +1015,7 @@ int best_job_insertion(struct INSTANCE* ip, int job, int ni){
     // Changing this so that bestPosition = -1*bigM at the start of the function, and is set to =0 if insertion into position =0 is successful
     double propQuality = -1;
     for(int j = 1; j < ip->nJobs; ++j){ // Why nJobs + 10? start from j=1 because we've already done position 0 (above).
-        if(insert_job_at_position(ip, job, ni, j) < 0){ // If job cannot be inserted into nurse ni's route in position j, exit for loop.
+        if(insert_job_at_position(ip, job, ci, j) < 0){ // If job cannot be inserted into nurse ni's route in position j, exit for loop.
             break;
         }
         else{
@@ -1027,7 +1027,7 @@ int best_job_insertion(struct INSTANCE* ip, int job, int ni){
                     return 0;
                 }
             }
-            remove_job(ip, job, ni); //Reverse job insertion, go back to original solution.
+            remove_job(ip, job, ci); //Reverse job insertion, go back to original solution.
         }
     }
 
@@ -1035,7 +1035,7 @@ int best_job_insertion(struct INSTANCE* ip, int job, int ni){
     //insert_job_at_position(ip, job, ni, bestPosition);
     //return 0;
     if(bestPosition >= 0){
-        insert_job_at_position(ip, job, ni, bestPosition);
+        insert_job_at_position(ip, job, ci, bestPosition);
         return 0;
     }
     else{
@@ -1045,19 +1045,19 @@ int best_job_insertion(struct INSTANCE* ip, int job, int ni){
 
 } //END OF best_job_insertion function.
 
-int insert_job_at_position(struct INSTANCE* ip, int job, int ni, int posi){
+int insert_job_at_position(struct INSTANCE* ip, int job, int ci, int posi){
     // This function attempts to push forward all of the positions of jobs in nurse ni's route and add a new job in a particular position, 'posi' in nurse ni's route.
     // This function returns retVal which is either 0 (job has been inserted into position 'posi' successfully) or -1 (job cannot be inserted into position 'posi').
 
     // Check the job is not there
-    if(ip->solMatrix[ni][job] > -1){ //The job is already assigned to that nurse.
+    if(ip->solMatrix[ci][job] > -1){ //The job is already assigned to that nurse.
         //printf(" <> Job there. job: %d, nurse: %d, solMatrix position: %d, posi: %d <>\n", job, ni, ip->solMatrix[ni][job], posi);
         return -1;
     }
 
     // Check nurse can do the job
-    if(check_skills(ip, job, ni) < 1 && ip->doubleService[job] < 0.5){ //why 0.5? doubleService is an int array.
-        printf(" <> Unskilled <>\n"); //Nurse is not skilled to do the job (nurseSkilled[ni][job] = 0) and the job is not a double service.
+    if(check_skills(ip, job, ci) < 1 && ip->doubleService[job] < 0.5){ //why 0.5? doubleService is an int array.
+        printf(" <> Unskilled <>\n"); //Nurse is not skilled to do the job (carerSkilled[ni][job] = 0) and the job is not a double service.
         return -1;
     }
 
@@ -1066,26 +1066,26 @@ int insert_job_at_position(struct INSTANCE* ip, int job, int ni, int posi){
     //This for loop checks which jobs are already in nurse ni's route, and push each of these jobs forward one position IF they are positioned later in the nurse's route than position 'posi', so that the 'job' can
     //be inserted into the position 'posi'.
     for(int i = 0; i < ip->nJobs; ++i){ //Go through all jobs i = 0,...,nJobs-1
-        if(ip->solMatrix[ni][i] > -1){ //If nurse ni has been assigned job i, i.e. job i is in nurse ni's route
+        if(ip->solMatrix[ci][i] > -1){ //If nurse ni has been assigned job i, i.e. job i is in nurse ni's route
             avJobs++; //Is this right to check >-1 when this has been done at the beginning of the function and return -1?
         }
         else{ //Otherwise, if the nurse has not been assigned job i, skip to the next job
             continue;
         }
         //solMatrix[ni][i] contains the position of the i'th job in nurse ni's route.
-        if(ip->solMatrix[ni][i] >= posi){ //If the position of job i in nurse ni's route is >= posi, i.e. job i is positioned later in the route than posi
+        if(ip->solMatrix[ci][i] >= posi){ //If the position of job i in nurse ni's route is >= posi, i.e. job i is positioned later in the route than posi
             retVal = 0;
-            ip->solMatrix[ni][i]++; //Increase the position of job i in nurse ni's route by one, so push forward job i in the route.
+            ip->solMatrix[ci][i]++; //Increase the position of job i in nurse ni's route by one, so push forward job i in the route.
         }
     }
 
     if((retVal==0) || (avJobs==posi)){
-        ip->solMatrix[ni][job] = posi; //Put job in position 'posi' in nurse ni's route.
-        set_nurse_route(ip, ni); //Update allNurseRoutes for nurse ni.
-        set_times_from(ip, ni);
+        ip->solMatrix[ci][job] = posi; //Put job in position 'posi' in nurse ni's route.
+        set_carer_route(ip, ci); //Update allCarerRoutes for nurse ni.
+        set_times_from(ip, ci);
         return 0;
     }
-    set_nurse_route(ip, ni); // Update allNurseRoutes for nurse ni.
+    set_carer_route(ip, ci); // Update allCarerRoutes for nurse ni.
 
     return retVal;
 }
@@ -1112,7 +1112,7 @@ int best_sync_double_switch(struct INSTANCE* ip){
 	*/
     int firstSwitch = 1;
     double TOL = 0.0001;
-    int nRows = ip->nNurses;
+    int nRows = ip->nCarers;
     int nCols = ip->nJobs;
     double baseQuality = sol_quality(ip, DEBUG_PRINT - 30); //original solution quality of ip
     double overAllBestFitness = -1*bigM;
@@ -1136,7 +1136,7 @@ int best_sync_double_switch(struct INSTANCE* ip){
         int posJobB = -1;
         if(ip->doubleService[i] > 0){ //If job i is a doubleService
             considerJob = 1;
-            for(int nu = 0; nu < ip->nNurses; ++nu){ //For each nurse nu=0,...,nNurses
+            for(int nu = 0; nu < ip->nCarers; ++nu){ //For each nurse nu=0,...,nCarers
                 if(ip->solMatrix[nu][i] > -1){ //If job i is in nurse nu's route
                     if(nurseA < 0){ //If nurseA has not yet been set
                         nurseA = nu; //set nurseA
@@ -1153,7 +1153,7 @@ int best_sync_double_switch(struct INSTANCE* ip){
         else if(ip->dependsOn[i] >= i){ // If job i depends on another job, consider only one of these
             jobB = ip->dependsOn[i]; //jobB = the job that job i depends on
             considerJob = 1;
-            for(int nu = 0; nu < ip->nNurses; ++nu){ //For each nurse nu=0,...,nNurses
+            for(int nu = 0; nu < ip->nCarers; ++nu){ //For each nurse nu=0,...,nCarers
                 if(ip->solMatrix[nu][jobA] > -1){ //If jobA (job i) is in nurse nu's route
                     nurseA = nu; //set nurseA to nurse nu
                     posJobA = ip->solMatrix[nu][jobA]; //posJobA = position of jobA (job i) in nurseA's route.
@@ -1211,7 +1211,7 @@ int best_sync_double_switch(struct INSTANCE* ip){
             continue;
         }
 
-        for(int tn = 0; tn < ip->nNurses; ++tn){ //For each nurse tn=0,...,nNurses
+        for(int tn = 0; tn < ip->nCarers; ++tn){ //For each nurse tn=0,...,nCarers
             if(DEBUG_PRINT > 0){
                 printf("Testing job A (%d) in nurse %d\n", jobA, tn);
             }
@@ -1225,7 +1225,7 @@ int best_sync_double_switch(struct INSTANCE* ip){
                 }
             }
             else{ //If jobA is not a double service
-                if(check_skills(ip, jobA, tn) < 1){ //If nurse tn is not skilled to do jobA (nurseSkilled[tn][jobA] = 0)
+                if(check_skills(ip, jobA, tn) < 1){ //If nurse tn is not skilled to do jobA (carerSkilled[tn][jobA] = 0)
                     if(DEBUG_PRINT > 0){
                         printf("\t(!) Not possible, unskilled.\n");
                     }
@@ -1269,7 +1269,7 @@ int best_sync_double_switch(struct INSTANCE* ip){
                 if(DEBUG_PRINT > 0){
                     printf("\tStart checks for Position B\n");
                 }
-                for(int tnb = 0; tnb < ip->nNurses; ++tnb){ //For each nurse tnb = 0,...,nNurses
+                for(int tnb = 0; tnb < ip->nCarers; ++tnb){ //For each nurse tnb = 0,...,nCarers
                     if(DEBUG_PRINT > 0){
                         printf("\tTesting job B (%d) in nurse %d\n", jobB, tnb);
                     }
@@ -1309,7 +1309,7 @@ int best_sync_double_switch(struct INSTANCE* ip){
                         printf("\ttnb = %d\n", tnb);
                         printf("\tip->solMatrix[tnb][jobB] = %d\n", ip->solMatrix[tnb][jobB]);
                     }
-                } //End for (int tnb = 0; tnb < ip->nNurses; ++tnb)
+                } //End for (int tnb = 0; tnb < ip->nCarers; ++tnb)
 
                 if(bPossible < 1){
                     printf("WARNING: It was not possible to insert the second part of the job anywhere. Strange...\n");
@@ -1355,7 +1355,7 @@ int best_sync_double_switch(struct INSTANCE* ip){
             if(getOut > 0){ //If solution found with better quality
                 break;
             }
-        } //End for (int tn = 0; tn < ip->nNurses; ++tn)
+        } //End for (int tn = 0; tn < ip->nCarers; ++tn)
 
         if(bestJobPosQuality > overAllBestFitness + TOL){
             overAllBestFitness = bestJobPosQuality;
@@ -1433,7 +1433,7 @@ int best_sync_double_switch(struct INSTANCE* ip){
         }
 
         // First find them and remove them:
-        for(int nn = 0; nn < ip->nNurses; ++nn){
+        for(int nn = 0; nn < ip->nCarers; ++nn){
             if(ip->solMatrix[nn][overall_bestA] > -1){
                 remove_job(ip, overall_bestA, nn);
             }
@@ -1489,16 +1489,16 @@ int route_two_exchange(struct INSTANCE* ip, int firstImprovement){
     double iniQuality = sol_quality(ip, -12121);
     double currentQuality = iniQuality;
 
-    for(int ni = 0; ni < ip->nNurses - 1; ++ni){ //For each nurse ni 0,...,nNurses-1
+    for(int ni = 0; ni < ip->nCarers - 1; ++ni){ //For each nurse ni 0,...,nCarers-1
         for(int job_from_ni = 0; job_from_ni < ip->nJobs; ++job_from_ni){ //For each job_from_ni 0,...,nJobs
             if(ip->solMatrix[ni][job_from_ni] < 0){ //If job_from_ni is not in ni's route, go to next job_from_ni (++job_from_ni)
                 continue;
             }
             secondNurseI = -1;
             if(ip->doubleService[job_from_ni]){ //If job_from_ni is a doubleService, find the other nurse (secondNurseI) that does the job with nurse ni.
-                secondNurseI = find_second_nurse_ds(ip, job_from_ni, ni);
+                secondNurseI = find_second_carer_ds(ip, job_from_ni, ni);
             }
-            for(int nj = ni + 1; nj < ip->nNurses; ++nj){ //For each nurse nj = ni+1,..., nNurses
+            for(int nj = ni + 1; nj < ip->nCarers; ++nj){ //For each nurse nj = ni+1,..., nCarers
                 if(nj==secondNurseI){ // nj is the same nurse as secondNurseI, so nurse nj is already doing the job, go to next nurse nj (++nj)
                     continue;
                 }
@@ -1510,7 +1510,7 @@ int route_two_exchange(struct INSTANCE* ip, int firstImprovement){
                         continue;
                     }
                 }
-                else if(check_skills(ip, job_from_ni, nj) < 1){ // If ip->nurseSkilled[nj][job_from_ni] <1, nurse nj is not skilled to do job_from_ni, go to next nurse nj (++nj)
+                else if(check_skills(ip, job_from_ni, nj) < 1){ // If ip->carerSkilled[nj][job_from_ni] <1, nurse nj is not skilled to do job_from_ni, go to next nurse nj (++nj)
                     continue;
                 }
 
@@ -1525,7 +1525,7 @@ int route_two_exchange(struct INSTANCE* ip, int firstImprovement){
 
                     int secondNurseJ = -1;
                     if(ip->doubleService[job_from_nj]){ //If job_from_nj is a double service, find the other nurse (secondNurseJ) that does the job with nurse nj
-                        secondNurseJ = find_second_nurse_ds(ip, job_from_nj, nj);
+                        secondNurseJ = find_second_carer_ds(ip, job_from_nj, nj);
                     }
 
                     //NEW: FIXED BUG - need to check that secondNurseJ isn't actually the nurse ni that's already doing the job!
@@ -1539,7 +1539,7 @@ int route_two_exchange(struct INSTANCE* ip, int firstImprovement){
                             continue;
                         }
                     }
-                    else if(check_skills(ip, job_from_nj, ni) < 1){ // If ip->nurseSkilled[ni][job_from_nj] < 1, nurse ni is not skilled to do job_from_nj, go to next job_from_nj
+                    else if(check_skills(ip, job_from_nj, ni) < 1){ // If ip->carerSkilled[ni][job_from_nj] < 1, nurse ni is not skilled to do job_from_nj, go to next job_from_nj
                         continue;
                     }
 
@@ -1584,41 +1584,41 @@ int route_two_exchange(struct INSTANCE* ip, int firstImprovement){
 
 } //END OF route_two_exchange function.
 
-int exchange_jobs_in_route(struct INSTANCE* ip, int ni, int job_from_ni, int nj, int job_from_nj){
+int exchange_jobs_in_route(struct INSTANCE* ip, int ci, int job_from_ci, int cj, int job_from_cj){
 
     //This function removes job_from_nj from nj's route and inserts job_from_ni into nj's route in the same position that job_from_nj was in, and
     //removes job_from_ni from ni's route and inserts job_from_nj into ni's route in the same position that job_from_ni was in.
     /// Maybe we should check ip->solMatrix[nj][job_from_ni] and ip->solMatrix[ni][job_from_nj] at the same time at the beginning of the function instead?
 
     //1. Put job_from_ni in nurse nj's route in the same position that job_from_nj was in, and remove job_from_nj from nj's route.
-    int aux = ip->solMatrix[nj][job_from_ni]; //Position of job_from_ni in nj's route, should be =-1 as job_from_ni shouldn't be in nj's route!
+    int aux = ip->solMatrix[cj][job_from_ci]; //Position of job_from_ni in nj's route, should be =-1 as job_from_ni shouldn't be in nj's route!
 
     if(aux > -1){ // If job_from_ni is already in nj's route, then there's an error - we shouldn't do the swap.
         printf("\n---\n---\nWARNING: Exchanging a job maybe we should not????\n");
-        printf("ip->solMatrix[%d][%d] = %d\n", nj, job_from_ni, aux);
-        printf("\tTrying to exchange (n%d, j%d) with (n%d, j%d).\nSolmatrix:\n", ni, job_from_ni, nj, job_from_nj);
+        printf("ip->solMatrix[%d][%d] = %d\n", cj, job_from_ci, aux);
+        printf("\tTrying to exchange (n%d, j%d) with (n%d, j%d).\nSolmatrix:\n", ci, job_from_ci, cj, job_from_cj);
         print_solmatrix(ip);
         exit(-123424);
     }
 
     //Set position of job_from_ni in nj's route to be the same position as job_from_nj in nurse nj's route
-    ip->solMatrix[nj][job_from_ni] = ip->solMatrix[nj][job_from_nj]; //e.g if job_from_nj is in position 3 in nj's route, now job_from_ni is set as position 3 in nurse nj's route.
-    ip->solMatrix[nj][job_from_nj] = aux; //Then, set position of job_from_nj in nurse nj's route to be aux (which should be -1), so essentially removing job_from_nj from nj's route.
+    ip->solMatrix[cj][job_from_ci] = ip->solMatrix[cj][job_from_cj]; //e.g if job_from_nj is in position 3 in nj's route, now job_from_ni is set as position 3 in nurse nj's route.
+    ip->solMatrix[cj][job_from_cj] = aux; //Then, set position of job_from_nj in nurse nj's route to be aux (which should be -1), so essentially removing job_from_nj from nj's route.
 
     //2. Put job_from_ni in nurse nj's route in the same position that job_from_nj was in, and remove job_from_nj from nj's route.
-    aux = ip->solMatrix[ni][job_from_nj]; //Position of job_from_nj in nurse ni's route, should be =-1 as job_from_nj shouldn't be in ni's route!
+    aux = ip->solMatrix[ci][job_from_cj]; //Position of job_from_nj in nurse ni's route, should be =-1 as job_from_nj shouldn't be in ni's route!
 
     if(aux > -1){ //If job_from_nj is already in ni's route, then there's an error - we shouldn't do the swap.
         printf("\n---\n---\nWARNING: Exchanging a job maybe we should not????\n");
-        printf("ip->solMatrix[%d][%d] = %d\n", ni, job_from_nj, aux);
-        printf("\tTrying to exchange (n%d, j%d) with (n%d, j%d).\nSolmatrix:\n", ni, job_from_ni, nj, job_from_nj);
+        printf("ip->solMatrix[%d][%d] = %d\n", ci, job_from_cj, aux);
+        printf("\tTrying to exchange (n%d, j%d) with (n%d, j%d).\nSolmatrix:\n", ci, job_from_ci, cj, job_from_cj);
         print_solmatrix(ip);
         exit(-123424);
     }
 
     //Set position of job_from_nj in ni's route to be the same position as job_from_ni in nurse ni's route.
-    ip->solMatrix[ni][job_from_nj] = ip->solMatrix[ni][job_from_ni]; //e.g. if job_from_ni is in position 5 in nurse ni's route, now job_from_nj is set as position 5 in nurse ni's route.
-    ip->solMatrix[ni][job_from_ni] = aux; //Then, set position of job_from_ni in nurse ni's route to be aux (which should be -1), removing job_from_ni from ni's route.
+    ip->solMatrix[ci][job_from_cj] = ip->solMatrix[ci][job_from_ci]; //e.g. if job_from_ni is in position 5 in nurse ni's route, now job_from_nj is set as position 5 in nurse ni's route.
+    ip->solMatrix[ci][job_from_ci] = aux; //Then, set position of job_from_ni in nurse ni's route to be aux (which should be -1), removing job_from_ni from ni's route.
 
     return 0;
 
@@ -1635,7 +1635,7 @@ int best_switch(struct INSTANCE* ip, int onlyInfeasible, double MAX_TIME){
     double elapsedTime = 0;
     int firstSwitch = 1;
     double TOL = 0.0001;
-    int nRows = ip->nNurses;
+    int nRows = ip->nCarers;
     int nCols = ip->nJobs;
 
     int** solMatrixInitial = malloc(nRows*sizeof(int*)); // Rows
@@ -1656,7 +1656,7 @@ int best_switch(struct INSTANCE* ip, int onlyInfeasible, double MAX_TIME){
     int bestj = -1; //Records best nurse nj
     int best_job = -1; //Records best job job_from_ni
 
-    for(int ni = 0; ni < ip->nNurses; ++ni){
+    for(int ni = 0; ni < ip->nCarers; ++ni){
         end = clock();
         elapsedTime = (float) (end - start)/CLOCKS_PER_SEC;
         if(elapsedTime > MAX_TIME){ //Exceeded time limit, exit for loop
@@ -1669,9 +1669,9 @@ int best_switch(struct INSTANCE* ip, int onlyInfeasible, double MAX_TIME){
             if((onlyInfeasible > 0.5) && (ip->violatedTW[job_from_ni] < TOL)){
                 continue;
             }
-            for(int nj = 0; nj < ip->nNurses; ++nj){
+            for(int nj = 0; nj < ip->nCarers; ++nj){
                 //Note: job can be inserted into a better position in the SAME nurse!
-                if(switch_nurse(ip, ni, nj, job_from_ni) > -1){ //switch_nurse attempts to remove job_from_ni from ni's route and insert it into nj's route. If successful, =0, else = -1.
+                if(switch_carer(ip, ni, nj, job_from_ni) > -1){ //switch_nurse attempts to remove job_from_ni from ni's route and insert it into nj's route. If successful, =0, else = -1.
                     double propQuality = sol_quality(ip, -7);
                     // printf("\tTested switching job %d from nurse %d to nurse %d\n", job_from_i, ni, nj);
                     // printf("\tOriginal position (n%d, p%d) new position (n%d, p%d)\n", ni, solMatrixInitial[ni][job_from_i], nj,  ip->solMatrix[nj][job_from_i]);
@@ -1703,14 +1703,14 @@ int best_switch(struct INSTANCE* ip, int onlyInfeasible, double MAX_TIME){
     } //End of for ni loop
 
 
-    free_matrix_int(solMatrixInitial, ip->nNurses);
+    free_matrix_int(solMatrixInitial, ip->nCarers);
     // printf("Finished best switch, with quality %d\n", baseQuality);
 
     // Finished, perform the best switch:
     if(besti > -1){
         // printf("Switched job %d from nurse %d to nurse %d.\n-------\n\n", best_job, besti, bestj);
         if(firstSwitch < 1){ //This is never true!
-            switch_nurse(ip, besti, bestj, best_job);
+            switch_carer(ip, besti, bestj, best_job);
         }
         return 0;
     }
@@ -1741,20 +1741,20 @@ int copy_int_matrix(int** source, int** destination, int nRows, int nCols){
 
 int nurse_two_exchange(struct INSTANCE* ip){
 
-    //This function swaps positions of pairs of nurses in nurseOrder array and evaluates solution quality
+    //This function swaps positions of pairs of nurses in carerOrder array and evaluates solution quality
     //Returns 1 if solution has improved by swapping two nurses, otherwise returns -1.
 
     double cq = sol_quality(ip, -66643);
 
-    for(int i = 0; i < ip->nNurses - 1; ++i){ //For all nurses i=0,...,nNurses-1
-        for(int j = i + 1; j < ip->nNurses; ++j){ //For all nurses j=i+1,...,nNurses (so never swapping a nurse with itself)
-            two_exchange(ip->nurseOrder, i, j); //Swap the order of nurses in indicies i and j in nurseOrder array: int t = array[j]; array[j]=array[i]; array[i] = t
+    for(int i = 0; i < ip->nCarers - 1; ++i){ //For all nurses i=0,...,nCarers-1
+        for(int j = i + 1; j < ip->nCarers; ++j){ //For all nurses j=i+1,...,nCarers (so never swapping a nurse with itself)
+            two_exchange(ip->carerOrder, i, j); //Swap the order of nurses in indicies i and j in carerOrder array: int t = array[j]; array[j]=array[i]; array[i] = t
             double tentQ = sol_quality(ip, -66644);
             if(tentQ > cq){ //If quality of solution with order of nurses i and j swapped is better than previous solution
                 return 1; //successful, exit
             }
             else{ //If quality of solution is not better with order of nurses i and j swapped, then swap the nurses back.
-                two_exchange(ip->nurseOrder, j, i);
+                two_exchange(ip->carerOrder, j, i);
             }
         }
     }
@@ -1762,7 +1762,7 @@ int nurse_two_exchange(struct INSTANCE* ip){
 
 }
 
-int two_opt_move(struct INSTANCE* ip, int ni, int pos1, int pos2){
+int two_opt_move(struct INSTANCE* ip, int ci, int pos1, int pos2){
 
     //This function takes two positions pos1 and pos2 in a nurse ni's route and reverses the order of the jobs between and including those positions.
     //Returns 0 if successful (i.e. managed to reverse order of jobs) and -1 otherwise.
@@ -1783,7 +1783,7 @@ int two_opt_move(struct INSTANCE* ip, int ni, int pos1, int pos2){
     }
 
     int* nurseRoute = malloc(ip->nJobs*sizeof(int)); //size = 1 x nJobs (positions)
-    get_nurse_route(ip, ni, nurseRoute); //Fills array nurseRoute[position] = job for nurse ni's route
+    get_carer_route(ip, ci, nurseRoute); //Fills array carerRoute[position] = job for nurse ni's route
 
     if(nurseRoute[pos2] < 0){ // There's no job in position 2, so clearly not enough jobs in the route for this move
         free(nurseRoute);
@@ -1793,12 +1793,12 @@ int two_opt_move(struct INSTANCE* ip, int ni, int pos1, int pos2){
     // Start move:
     int* nurseRouteAux = malloc(ip->nJobs*sizeof(int));
 
-    for(int i = 0; i < ip->nJobs; i++){ //nurseRouteAux = nurseRoute
+    for(int i = 0; i < ip->nJobs; i++){ //nurseRouteAux = carerRoute
         nurseRouteAux[i] = nurseRoute[i];
     }
 
-    nurseRouteAux[pos2] = nurseRoute[pos1]; //Job that was in pos1 in nurseRoute is now in pos2 in nurseRouteAux
-    nurseRouteAux[pos1] = nurseRoute[pos2]; //Job that was in pos2 in nurseRoute is now in pos1 in nurseRouteAux
+    nurseRouteAux[pos2] = nurseRoute[pos1]; //Job that was in pos1 in carerRoute is now in pos2 in nurseRouteAux
+    nurseRouteAux[pos1] = nurseRoute[pos2]; //Job that was in pos2 in carerRoute is now in pos1 in nurseRouteAux
 
     int revCounter = 0;
     for(int i = pos1; i < pos2; i++){ //For all positions between pos1 and pos2 (this loop also includes pos1 again), reverse the order of the jobs in the route (reverse the positions of the jobs)
@@ -1811,7 +1811,7 @@ int two_opt_move(struct INSTANCE* ip, int ni, int pos1, int pos2){
         if(nurseRouteAux[j] < 0){ //If no job in position j of route, exit, no more jobs in route (end of positions)
             break;
         }
-        ip->solMatrix[ni][nurseRouteAux[j]] = j; //solMatrix[ni][job in position j of nurseRouteAux] = position j.
+        ip->solMatrix[ci][nurseRouteAux[j]] = j; //solMatrix[ni][job in position j of nurseRouteAux] = position j.
 
     }
     free(nurseRoute);
@@ -1821,13 +1821,13 @@ int two_opt_move(struct INSTANCE* ip, int ni, int pos1, int pos2){
 
 } //END OF two_opt_move function.
 
-int find_second_nurse_ds(struct INSTANCE* ip, int job, int currentNurse){
+int find_second_carer_ds(struct INSTANCE* ip, int job, int currentCarer){
 
     //For a 'job' that is a double service which currentNurse is assigned to, this function finds the other nurse, 'secondNurse', that is also assigned to 'job' with 'currentNurse'.
 
     int secondNurse = -1;
-    for(int prevNurse = 0; prevNurse < ip->nNurses; ++prevNurse){
-        if((ip->solMatrix[prevNurse][job] > -1) && (prevNurse!=currentNurse)){
+    for(int prevNurse = 0; prevNurse < ip->nCarers; ++prevNurse){
+        if((ip->solMatrix[prevNurse][job] > -1) && (prevNurse!=currentCarer)){
             secondNurse = prevNurse;
             break;
         }
@@ -1836,7 +1836,7 @@ int find_second_nurse_ds(struct INSTANCE* ip, int job, int currentNurse){
     return secondNurse;
 }
 
-int switch_nurse(struct INSTANCE* ip, int ni, int nj, int pi){
+int switch_carer(struct INSTANCE* ip, int ci, int cj, int pi){
 
     //This function takes a job 'pi' out of nurse ni's route and attempts to put the job 'pi' into nurse nj's route.
     //If it's not possible to put 'pi' into nurse nj's route, then 'pi' is just put back into nurse ni's route in its original position.
@@ -1844,34 +1844,34 @@ int switch_nurse(struct INSTANCE* ip, int ni, int nj, int pi){
 
     /// Surely need to check that nurse ni and nurse nj are not the same nurse? Perhaps do this in best_switch function before this switch_nurse function is called?
 
-    if(ip->solMatrix[ni][pi] < 0){ //Job pi is not assigned to nurse ni
+    if(ip->solMatrix[ci][pi] < 0){ //Job pi is not assigned to nurse ni
         return -1; // Nothing to switch
     }
 
-    if(ip->nurseSkilled[nj][pi] < 1 && ip->doubleService[pi] < 1){ //Nurse ni is not skilled to do job pi, and job pi is not a double service
+    if(ip->carerSkilled[cj][pi] < 1 && ip->doubleService[pi] < 1){ //Nurse ni is not skilled to do job pi, and job pi is not a double service
         return -1; // Nothing to switch
     }
 
     if(ip->doubleService[pi] > 0){ // If job pi is a double service
-        int secondNurse = find_second_nurse_ds(ip, pi, ni); //secondNurse = the other nurse that is assigned to job 'pi' along with nurse 'ni'.
+        int secondNurse = find_second_carer_ds(ip, pi, ci); //secondNurse = the other nurse that is assigned to job 'pi' along with nurse 'ni'.
 
         if(secondNurse==-1){ //If there is no other nurse that has been assigned to do job 'pi' with nurse 'ni'
-            printf("ERROR: When attempting to switch job %d from nurse %d to nurse %d\n", pi, ni, nj);
+            printf("ERROR: When attempting to switch job %d from nurse %d to nurse %d\n", pi, ci, cj);
             printf("-> Double service was not found in any other nurse.\n");
             exit(-1);
         }
         // If secondNurse and nurse 'nj' are not capable of doing the double service 'pi' together
-        if(check_skills_ds(ip, pi, secondNurse, nj) < 1){ //returns ip->capabilityOfDoubleServices[secondNurse][nj][jobdsindex];
+        if(check_skills_ds(ip, pi, secondNurse, cj) < 1){ //returns ip->capabilityOfDoubleServices[secondNurse][nj][jobdsindex];
             return -1;
         }
 
     }
-    int oldPos = ip->solMatrix[ni][pi]; //oldPos = position of job pi in nurse ni's route (in current solution before it gets modified below)
+    int oldPos = ip->solMatrix[ci][pi]; //oldPos = position of job pi in nurse ni's route (in current solution before it gets modified below)
 
-    remove_job(ip, pi, ni); //Remove job pi from nurse ni's route.
+    remove_job(ip, pi, ci); //Remove job pi from nurse ni's route.
 
-    if(best_job_insertion(ip, pi, nj) < 0){ //If job pi has NOT been inserted in nurse nj's route.
-        insert_job_at_position(ip, pi, ni, oldPos); //Then insert job back into nurse ni's route in it's previous position.
+    if(best_job_insertion(ip, pi, cj) < 0){ //If job pi has NOT been inserted in nurse nj's route.
+        insert_job_at_position(ip, pi, ci, oldPos); //Then insert job back into nurse ni's route in it's previous position.
         return -1;
     }
 
@@ -1880,18 +1880,18 @@ int switch_nurse(struct INSTANCE* ip, int ni, int nj, int pi){
     return 0;
 }
 
-int repair(struct INSTANCE* ip, int ni){
+int repair(struct INSTANCE* ip, int ci){
     // Try to fix waiting times and missed time windows
     // Find what the nurse is doing:
     int* nurseRoute = malloc(ip->nJobs*sizeof(int));
-    get_nurse_route(ip, ni, nurseRoute);
+    get_carer_route(ip, ci, nurseRoute);
 
     // Find first missing time window or waiting time:
     int tardiness = 0;
     int waitingTime = 0;
     int problemAt = -1;
     int prevPoint = 0;
-    int currentTime = ip->nurseWorkingTimes[ni][0];
+    int currentTime = ip->carerWorkingTimes[ci][0];
     int job;
     int routePos = -1;
     for(int i = 0; i < ip->nJobs; ++i){
@@ -1902,7 +1902,7 @@ int repair(struct INSTANCE* ip, int ni){
             if(prevPoint > -0.5)
                 currentTime += get_travel_time(ip, prevPoint, job);// ip->od[prevPoint][job];
             else
-                currentTime += get_travel_time_from_depot(ip, ni, job);
+                currentTime += get_travel_time_from_depot(ip, ci, job);
         }
 
         int arriveAt = currentTime;
@@ -1939,7 +1939,7 @@ int repair(struct INSTANCE* ip, int ni){
 
     // Repair it:
     if(tardiness > 0){
-        if(swap_points(ip, ni, ni, job, prevPoint) < 0)
+        if(swap_points(ip, ci, ci, job, prevPoint) < 0)
             printf("Failed repairing tardiness\n");
         else
             return 0;
@@ -1950,7 +1950,7 @@ int repair(struct INSTANCE* ip, int ni){
     }
 
     if(waitingTime > 0 && routePos > 0 && routePos < (ip->nJobs - 1) && nurseRoute[routePos + 1] > 0){
-        if(swap_points(ip, ni, ni, job, nurseRoute[routePos + 1]) < 0)
+        if(swap_points(ip, ci, ci, job, nurseRoute[routePos + 1]) < 0)
             printf("Failed repairing waitingTime\n");
         else
             return 0;
@@ -1964,27 +1964,27 @@ int repair(struct INSTANCE* ip, int ni){
     return 0;
 }
 
-int get_job_count(struct INSTANCE* ip, int ni){
+int get_job_count(struct INSTANCE* ip, int ci){
 
     //This function returns the number of jobs in nurse ni's route
     // +1 because if nurse has jobs in positons 0,1,2,3,4,5 then the highest position is 5 but the number of jobs is 6 (because of 0 index)
 
     int maxE = -1;
     for(int i = 0; i < ip->nJobs; ++i){
-        if(ip->solMatrix[ni][i] > maxE)
-            maxE = ip->solMatrix[ni][i];
+        if(ip->solMatrix[ci][i] > maxE)
+            maxE = ip->solMatrix[ci][i];
     }
     return (maxE + 1);
 
 } //END OF get_job_count function.
 
-int get_nurse_job_count(struct INSTANCE* ip, int nurse){
+int get_carer_job_count(struct INSTANCE* ip, int carer){
 
     //This function returns the number of jobs that are in nurse's route
 
     int count = 0;
     for(int i = 0; i < ip->nJobs; i++){
-        if(ip->solMatrix[nurse][i] > -0.5){
+        if(ip->solMatrix[carer][i] > -0.5){
             count++;
         }
     }
@@ -1993,55 +1993,55 @@ int get_nurse_job_count(struct INSTANCE* ip, int nurse){
 
 } //END OF get_nurse_job_count function.
 
-void set_all_nurse_routes(struct INSTANCE* ip){
+void set_all_carer_routes(struct INSTANCE* ip){
     // printf("Setting all -1\n");
-    for(int ni = 0; ni < ip->nNurses; ni++){
-        set_nurse_route(ip, ni);
+    for(int ni = 0; ni < ip->nCarers; ni++){
+        set_carer_route(ip, ni);
     }
 
 }
 
-void set_nurse_route(struct INSTANCE* ip, int ni){
+void set_carer_route(struct INSTANCE* ip, int ci){
     // Same code as "get nurse route"
-    //This function updates allNurseRoutes for nurse ni.
+    //This function updates allCarerRoutes for nurse ni.
 
-    //For nurse ni, set all jobs j in allNurseRoutes to -1
+    //For nurse ni, set all jobs j in allCarerRoutes to -1
     for(int j = 0; j < ip->nJobs; ++j){
-        ip->allNurseRoutes[ni][j] = -1;
+        ip->allCarerRoutes[ci][j] = -1;
     }
 
-    //Then, set allNurseRoutes for nurse ni and position to job index
+    //Then, set allCarerRoutes for nurse ni and position to job index
     for(int j = 0; j < ip->nJobs; ++j){
-        if(ip->solMatrix[ni][j] >= 0){
-            ip->allNurseRoutes[ni][ip->solMatrix[ni][j]] = j;
+        if(ip->solMatrix[ci][j] >= 0){
+            ip->allCarerRoutes[ci][ip->solMatrix[ci][j]] = j;
         }
     }
 }
 
-void access_nurse_route(struct INSTANCE* ip, int ni, int* nurseRoute){
+void access_carer_route(struct INSTANCE* ip, int ci, int* carerRoute){
 
-    nurseRoute = ip->allNurseRoutes[ni];
-    // printf("nuseRoute ACCESSED: value 0: %d, coming from %d\n", nurseRoute[0], ip->allNurseRoutes[ni][0]);
-    // if (nurseRoute[0] > -1)
+    carerRoute = ip->allCarerRoutes[ci];
+    // printf("nuseRoute ACCESSED: value 0: %d, coming from %d\n", carerRoute[0], ip->allCarerRoutes[ni][0]);
+    // if (carerRoute[0] > -1)
     // {
     // 	printf("Accessing...");
-    // 	print_nurse_route(ip, ni, nurseRoute);
+    // 	print_nurse_route(ip, ni, carerRoute);
     // }
 
 }
 
-void get_nurse_route(struct INSTANCE* ip, int ni, int* nurseRoute){
+void get_carer_route(struct INSTANCE* ip, int ci, int* carerRoute){
     int achange = 0; //what's this for?
 
     // NURSE ROUTE:
     for(int ii = 0; ii < ip->nJobs; ++ii){
-        nurseRoute[ii] = -1;
+        carerRoute[ii] = -1;
     }
 
     for(int ii = 0; ii < ip->nJobs; ++ii){
-        if(ip->solMatrix[ni][ii] >= 0){
-            nurseRoute[ip->solMatrix[ni][ii]] = ii;
-            // printf("Set nurseRoute[ip->solMatrix[ni][ii]] = nurseRoute[%d] to ii = %d\n", ip->solMatrix[ni][ii], ii);
+        if(ip->solMatrix[ci][ii] >= 0){
+            carerRoute[ip->solMatrix[ci][ii]] = ii;
+            // printf("Set carerRoute[ip->solMatrix[ni][ii]] = carerRoute[%d] to ii = %d\n", ip->solMatrix[ni][ii], ii);
             achange = 1;
             // if (ip->solMatrix[ni][ii] > max)
             // 	max = ip->solMatrix[ni][ii];
@@ -2049,10 +2049,10 @@ void get_nurse_route(struct INSTANCE* ip, int ni, int* nurseRoute){
     }
 }
 
-void print_nurse_route(struct INSTANCE* ip, int ni, int* nurseRoute){
+void print_carer_route(struct INSTANCE* ip, int ci, int* carerRoute){
 
-    printf("\n--\nNurse route for nurse: %d\n", ni);
-    print_int_matrix_one(nurseRoute, 1, ip->nJobs);
+    printf("\n--\nNurse route for nurse: %d\n", ci);
+    print_int_matrix_one(carerRoute, 1, ip->nJobs);
     printf("\n--\n");
 }
 
@@ -2065,10 +2065,10 @@ void old_set_nurse_time(struct INSTANCE* ip, int nursei){
     int prevPoint = -1;
     double tTime; // Travel time for nursei from depot (their house) to the job or from a previous job to the job
     double arriveAt = 0; //This is used to keep up the current time, and the time that nursei arrives at a job
-    double currentTime = (double) ip->nurseWorkingTimes[nursei][0]; // The start time of nursei (for the whole day)
+    double currentTime = (double) ip->carerWorkingTimes[nursei][0]; // The start time of nursei (for the whole day)
 
-    ip->nurseWaitingTime[nursei] = 0; // Reset total waiting time for nursei to 0.
-    ip->nurseTravelTime[nursei] = 0; // Reset total travel time for nursei to 0.
+    ip->carerWaitingTime[nursei] = 0; // Reset total waiting time for nursei to 0.
+    ip->carerTravelTime[nursei] = 0; // Reset total travel time for nursei to 0.
 
     // Reset all times for nursei for all jobs to -1. Recall that timeMatrix stores time at which each nurse i (row) does each job j (column). If i doesn't do job j, then =-1.
     for(int j = 0; j < ip->nJobs; ++j){
@@ -2076,22 +2076,22 @@ void old_set_nurse_time(struct INSTANCE* ip, int nursei){
     }
 
     for(int j = 0; j < ip->nJobs; ++j){ // Main for loop of function, going through all POSITIONS j=0,...,nJobs.
-        /**CHECK THIS IF STATEMENT: if j= 0 then yes, the nurse isn't being used at all, otherwise if j > 0 and allNurseRoutes < 0 it doesn't mean the nurse isn't being used at all, just that there's no job in position j! **/
-        if(ip->allNurseRoutes[nursei][j] < 0){ // If there is no job in position j of nursei's route, exit for loop. This means that nursei is not being used, as if it was, it should have a job in the first position of the route.
+        /**CHECK THIS IF STATEMENT: if j= 0 then yes, the nurse isn't being used at all, otherwise if j > 0 and allCarerRoutes < 0 it doesn't mean the nurse isn't being used at all, just that there's no job in position j! **/
+        if(ip->allCarerRoutes[nursei][j] < 0){ // If there is no job in position j of nursei's route, exit for loop. This means that nursei is not being used, as if it was, it should have a job in the first position of the route.
             break;
         }
-        int job = ip->allNurseRoutes[nursei][j]; // job= = the job in position j of nursei's route.
+        int job = ip->allCarerRoutes[nursei][j]; // job= = the job in position j of nursei's route.
 
         if(prevPoint < -0.5){ //If this 'job' is the first job in nursei's route, then calculate the distance from nursei's home to the 'job'.
-            tTime = get_travel_time_from_depot(ip, nursei, job); //get_travel_time_from_depot function returns ip->nurse_travel_from_depot[nursei][job].
-            if(ip->exclude_nurse_travel){ // If we're NOT including the travel time from nursei's home to the first job to update the currentTime (i.e. we want the arrival time of the nurse to be the start of the job)
-                if(ip->jobTimeInfo[job][0] > ip->nurseWorkingTimes[nursei][0] - 0.001){ // If the start time (start of time window) of 'job' is LATER than 'nursei's start timefor the day
+            tTime = get_travel_time_from_depot(ip, nursei, job); //get_travel_time_from_depot function returns ip->carer_travel_from_depot[nursei][job].
+            if(ip->exclude_carer_travel){ // If we're NOT including the travel time from nursei's home to the first job to update the currentTime (i.e. we want the arrival time of the nurse to be the start of the job)
+                if(ip->jobTimeInfo[job][0] > ip->carerWorkingTimes[nursei][0] - 0.001){ // If the start time (start of time window) of 'job' is LATER than 'nursei's start timefor the day
                     currentTime = ip->jobTimeInfo[job][0]; // Set the current time in the route to be the start time (start of time window) of 'job' (rather than add the tTime it takes to travel to first job)
                     currentTime = currentTime + ip->tw_interval; // Add the time window interval so that the job starts on time rather than at the start of the time window. DEBUG : HARDCODED, NEEDS TO BE PARAMETER (DONE)
                 }
                 else{
                     // TODO: Start of nurse's day (shift) is LATER than the start of the time window, should we check for this?
-                     currentTime = ip->nurseWorkingTimes[nursei][0]; // NEW: 22/05/2021
+                     currentTime = ip->carerWorkingTimes[nursei][0]; // NEW: 22/05/2021
                 }
             }
             else{
@@ -2103,7 +2103,7 @@ void old_set_nurse_time(struct INSTANCE* ip, int nursei){
             currentTime = currentTime + tTime; //The current time is set as the current time plus the time taken for nursei to travel to the job.
         }
 
-        ip->nurseTravelTime[nursei] += tTime; // Updated nursei's travel time to include the time taken to travel from previous job/home to this 'job'
+        ip->carerTravelTime[nursei] += tTime; // Updated nursei's travel time to include the time taken to travel from previous job/home to this 'job'
 
         arriveAt = currentTime;
         ip->timeMatrix[nursei][job] = currentTime; //Set time at which nursei does job 'job' to the current time.
@@ -2125,8 +2125,8 @@ void old_set_nurse_time(struct INSTANCE* ip, int nursei){
 
         if(ip->dependsOn[job] > -1){ // If 'job' depends on another job
             int otherJob = ip->dependsOn[job]; //otherJob = the job that 'job' depends on.
-            for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){ // for each nurse index 0,...,nNurses
-                int prevNurse = ip->nurseOrder[prevNurseInd]; //prevNurse = the number of the nurse in the nurseOrder array.
+            for(int prevNurseInd = 0; prevNurseInd < ip->nCarers; ++prevNurseInd){ // for each nurse index 0,...,nCarers
+                int prevNurse = ip->carerOrder[prevNurseInd]; //prevNurse = the number of the nurse in the carerOrder array.
                 if(prevNurse==nursei){ // If prevNurse is nursei
                     considerDependency = -1; //do not consider dependency, break out of for loop.
                     break;
@@ -2156,8 +2156,8 @@ void old_set_nurse_time(struct INSTANCE* ip, int nursei){
 
         if(ip->doubleService[job] > 0){ //If 'job' is a double service, i.e. doubleService[job] == 1
             // Check previous nurses, is anyone serving this patient already?
-            for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){ // for each nurse index 0,...,nNurses
-                int prevNurse = ip->nurseOrder[prevNurseInd]; //prevNurse = the number of the nurse in the nurseOrder array
+            for(int prevNurseInd = 0; prevNurseInd < ip->nCarers; ++prevNurseInd){ // for each nurse index 0,...,nCarers
+                int prevNurse = ip->carerOrder[prevNurseInd]; //prevNurse = the number of the nurse in the carerOrder array
                 if(prevNurse==nursei){ // If prevNurse is nursei, break out of for loop.
                     break;
                 }
@@ -2177,7 +2177,7 @@ void old_set_nurse_time(struct INSTANCE* ip, int nursei){
 
         if(arriveAt < worstStart){ //If arrival time is earlier than worst start time
             waitingTime = worstStart - arriveAt; //waiting time = time nurse has to wait from arriving at the job to starting the job.
-            ip->nurseWaitingTime[nursei] += waitingTime; // update nurseWaitingTime for nursei
+            ip->carerWaitingTime[nursei] += waitingTime; // update carerWaitingTime for nursei
             ip->timeMatrix[nursei][job] += waitingTime; //update timeMatrix for nursei and 'job' so that the time nursei actually starts 'job' isn't just the arrival time, it's after the waiting time.
             arriveAt += waitingTime; //update current time to start of job.
         }
@@ -2208,12 +2208,12 @@ void old_set_nurse_time(struct INSTANCE* ip, int nursei){
 
     // Return to depot:
     if(prevPoint > -1){ // If a previous job is set, calculate the time it takes for the nurse to go from the last job (prevPoint) back to the depot (their home).
-        ip->nurseTravelTime[nursei] += get_travel_time_to_depot(ip, nursei, prevPoint); //get_travel_time_to_depot function returns ip->nurse_travel_to_depot[nursei][prevPoint].
+        ip->carerTravelTime[nursei] += get_travel_time_to_depot(ip, nursei, prevPoint); //get_travel_time_to_depot function returns ip->carer_travel_to_depot[nursei][prevPoint].
     }
 
 } //END OF set_nurse_time function
 
-void set_nurse_time(struct INSTANCE* ip, int nursei){
+void set_carer_time(struct INSTANCE* ip, int carerj){
 
     /** NEW_SET_NURSE_TIME FUNCTION **/
 
@@ -2222,66 +2222,66 @@ void set_nurse_time(struct INSTANCE* ip, int nursei){
     int prevPoint = -1; // previous job
     double tTime; // travel time
     double arriveAt = 0; // Keep up current time, and the time nursei arrives at a job
-    double currentTime = (double) ip->nurseWorkingTimes[nursei][0]; // The start time of nursei (for the whole day)
+    double currentTime = (double) ip->carerWorkingTimes[carerj][0]; // The start time of nursei (for the whole day)
 
-    ip->nurseWaitingTime[nursei] = 0; // Reset waiting time for nursei
-    ip->nurseTravelTime[nursei] = 0; // Reset travel time for nursei
+    ip->carerWaitingTime[carerj] = 0; // Reset waiting time for nursei
+    ip->carerTravelTime[carerj] = 0; // Reset travel time for nursei
 
     //NB: violatedTW is reset to all 0's in set_times_full function or set_times_from function
 
     // Reset timeMatrix for nursei (time at which nursei does job j - if nursei does not do job j then timeMatrix[nursei][j] = -1)
     for(int j = 0; j < ip->nJobs; ++j){
-        ip->timeMatrix[nursei][j] = -1;
+        ip->timeMatrix[carerj][j] = -1;
     }
 
-    // Reset nurseWaitingMatrix for nursei (waiting time for nursei doing job j - if nursei does not do job j or there is no waiting time then nurseWaitingMatrix[nursei][j] = 0)
+    // Reset carerWaitingMatrix for nursei (waiting time for nursei doing job j - if nursei does not do job j or there is no waiting time then carerWaitingMatrix[nursei][j] = 0)
     for(int j = 0; j < ip->nJobs; ++j){
-        ip->nurseWaitingMatrix[nursei][j] = 0;
+        ip->carerWaitingMatrix[carerj][j] = 0;
     }
 
-    // Reset nurseTravelMatrix for nursei (travel time for nursei going to job j - if nursei does not do job j or there is no travel time then nurseTravelMatrix[nursei][j] = 0)
+    // Reset carerTravelMatrix for nursei (travel time for nursei going to job j - if nursei does not do job j or there is no travel time then carerTravelMatrix[nursei][j] = 0)
     for(int j = 0; j < ip->nJobs; ++j){
-        ip->nurseTravelMatrix[nursei][j] = 0;
+        ip->carerTravelMatrix[carerj][j] = 0;
     }
 
     // Determine the number of unavailable 'shifts' for nursei
-    int numUnavail = ip->nurseUnavail[nursei];
+    int numUnavail = ip->carerUnavail[carerj];
 
     // Main for loop:
     for(int j = 0; j < ip->nJobs; ++j){ // Main for loop of function, going through all POSITIONS j=0,...,nJobs.
-        if(ip->allNurseRoutes[nursei][j] < 0){ // If there is no job in position j of nursei's route, then we have reached the final position of nursei, break out of for loop.
+        if(ip->allCarerRoutes[carerj][j] < 0){ // If there is no job in position j of nursei's route, then we have reached the final position of nursei, break out of for loop.
             break;
         }
 
-        int job = ip->allNurseRoutes[nursei][j]; // job = the job in position j of nursei's route.
+        int job = ip->allCarerRoutes[carerj][j]; // job = the job in position j of nursei's route.
         //printf("nursei: %d, j: %d, job: %d.\n", nursei, j, job);
         // NB: PART ONE: determine 'currentTime' and 'arriveAt', which is the time the nurse is at the location for 'job'
         if(prevPoint < -0.5){ // 'job' is the first job in nursei's route - there is no previous job, so prevPoint = -1.
-            tTime = get_travel_time_from_depot(ip, nursei, job); // get_travel_time_from_depot = ip->nurse_travel_from_depot[nursei][job]
-            if(ip->exclude_nurse_travel){ // Exclude tTime (from nursei's home to this first job) when updating currentTime, but still include tTime when updating ip->nurseTravelTime[nursei]
-                if(ip->jobTimeInfo[job][0] > ip->nurseWorkingTimes[nursei][0] - 0.001){ // If the start TW of 'job' is LATER than the start time of nursei's shift for the day
+            tTime = get_travel_time_from_depot(ip, carerj, job); // get_travel_time_from_depot = ip->carer_travel_from_depot[nursei][job]
+            if(ip->exclude_carer_travel){ // Exclude tTime (from nursei's home to this first job) when updating currentTime, but still include tTime when updating ip->carerTravelTime[nursei]
+                if(ip->jobTimeInfo[job][0] > ip->carerWorkingTimes[carerj][0] - 0.001){ // If the start TW of 'job' is LATER than the start time of nursei's shift for the day
                     currentTime = ip->jobTimeInfo[job][0]; // currentTime is updated to be the start of the TW for 'job'
                     currentTime = currentTime + ip->tw_interval; // currentTime is updated to be the actual start time of the job (this is done by moving the currentTime forward by the TW interval)
                 }
                 else{ // TODO: If the start time of nursei's day is LATER than the start of the TW for 'job', should we check for this?
-                    currentTime = ip->nurseWorkingTimes[nursei][0];
+                    currentTime = ip->carerWorkingTimes[carerj][0];
                 }
             }
-            else{ // Include tTime (from nursei's home to 'job') when updating currentTime and when updating ip->nurseTravelTime[nursei]
-                ip->nurseTravelMatrix[nursei][job] = tTime;
+            else{ // Include tTime (from nursei's home to 'job') when updating currentTime and when updating ip->carerTravelTime[nursei]
+                ip->carerTravelMatrix[carerj][job] = tTime;
                 currentTime = currentTime + tTime; // currentTime is updated to be the time that nursei arrives at 'job'
             }
         }
         else if(prevPoint > -0.5){ // 'job' is NOT the first job in nursei's route
             tTime = get_travel_time(ip, prevPoint, job); // get_travel_time = ip->od[prevPoint+1][job+1]
-            ip->nurseTravelMatrix[nursei][job] = tTime;
+            ip->carerTravelMatrix[carerj][job] = tTime;
             currentTime = currentTime + tTime; // currentTime is updated to be the time that nursei arrives at 'job'
         }
 
-        ip->nurseTravelTime[nursei] += tTime; // Update the total travel time for nursei.
+        ip->carerTravelTime[carerj] += tTime; // Update the total travel time for nursei.
 
         arriveAt = currentTime; //arriveAt is updated to be the currentTime, i.e. the time that the nurse is ready at the location of the job.
-        ip->timeMatrix[nursei][job] = currentTime; // Update timeMatrix for nursei and job to be the current time that the nurse is at the location of the job.
+        ip->timeMatrix[carerj][job] = currentTime; // Update timeMatrix for nursei and job to be the current time that the nurse is at the location of the job.
         // End part one
 
         double startTW = ip->jobTimeInfo[job][0]; // Start of TW for job
@@ -2301,9 +2301,9 @@ void set_nurse_time(struct INSTANCE* ip, int nursei){
         // Dependent jobs:
         if(ip->dependsOn[job] > -1){
             int otherJob = ip->dependsOn[job];
-            for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){
-                int prevNurse = ip->nurseOrder[prevNurseInd];
-                if(prevNurse==nursei){
+            for(int prevNurseInd = 0; prevNurseInd < ip->nCarers; ++prevNurseInd){
+                int prevNurse = ip->carerOrder[prevNurseInd];
+                if(prevNurse==carerj){
                     considerDependency = -1;
                     break;
                 }
@@ -2328,9 +2328,9 @@ void set_nurse_time(struct INSTANCE* ip, int nursei){
 
         // Double service jobs:
         if(ip->doubleService[job] > 0){
-            for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){
-                int prevNurse = ip->nurseOrder[prevNurseInd];
-                if(prevNurse==nursei){
+            for(int prevNurseInd = 0; prevNurseInd < ip->nCarers; ++prevNurseInd){
+                int prevNurse = ip->carerOrder[prevNurseInd];
+                if(prevNurse==carerj){
                     break;
                 }
                 if(ip->timeMatrix[prevNurse][job] > 0){
@@ -2351,9 +2351,9 @@ void set_nurse_time(struct INSTANCE* ip, int nursei){
 
         if(arriveAt < worstStart){ // arriveAt is EARLIER than the latest start time
             waitingTime = worstStart - arriveAt; // waiting time is incurred
-            //ip->nurseWaitingTime[nursei] += waitingTime;
-            ip->nurseWaitingMatrix[nursei][job] = waitingTime;
-            ip->timeMatrix[nursei][job] += waitingTime; // Update timeMatrix for nursei and 'job' so that the time nursei actually starts 'job' isn't just the arrival time, it's after the waiting time.
+            //ip->carerWaitingTime[nursei] += waitingTime;
+            ip->carerWaitingMatrix[carerj][job] = waitingTime;
+            ip->timeMatrix[carerj][job] += waitingTime; // Update timeMatrix for nursei and 'job' so that the time nursei actually starts 'job' isn't just the arrival time, it's after the waiting time.
             arriveAt += waitingTime; // Update arriveAt to be the start time of the actual job (start of time window)
         }
 
@@ -2372,26 +2372,26 @@ void set_nurse_time(struct INSTANCE* ip, int nursei){
             for(int i = 0; i < numUnavail; ++i){
                 // If currentTime is BEFORE the start of unavailable shift and 'job' ENDS after the start of the unavailable shift (so finished either during or after unavailable shift), then we need to move the
                 // job so that it starts after the unavailable shift ends.
-                if(arriveAt < ip->unavailMatrix[i][1][nursei] && arriveAt + ip->jobTimeInfo[job][2] > ip->unavailMatrix[i][1][nursei]){
-                    waitingTime = ip->unavailMatrix[i][1][nursei] - arriveAt; //waiting time = time from currentTime to the start of the unavailable shift
-                    //ip->nurseWaitingTime[nursei] += waitingTime;
-                    ip->nurseWaitingMatrix[nursei][job] += waitingTime;
-                    arriveAt = ip->unavailMatrix[i][2][nursei]; // update currentTime to be the end of the unavailable shift.
-                    ip->timeMatrix[nursei][job] = arriveAt;
+                if(arriveAt < ip->unavailMatrix[i][1][carerj] && arriveAt + ip->jobTimeInfo[job][2] > ip->unavailMatrix[i][1][carerj]){
+                    waitingTime = ip->unavailMatrix[i][1][carerj] - arriveAt; //waiting time = time from currentTime to the start of the unavailable shift
+                    //ip->carerWaitingTime[nursei] += waitingTime;
+                    ip->carerWaitingMatrix[carerj][job] += waitingTime;
+                    arriveAt = ip->unavailMatrix[i][2][carerj]; // update currentTime to be the end of the unavailable shift.
+                    ip->timeMatrix[carerj][job] = arriveAt;
                     tardiness = arriveAt - endTW; // tardiness is how late the nurse is to the job, so how long after the end of the job TW does the nurse start the job.
                     ip->violatedTW[job] = tardiness; // Updated violated TW for 'job'
                     first = 1;
                 }
                 // Else if currentTime is at or AFTER the start of an unavailable shift (and before the end of the unavailable shift) (and could end within or after the unavailable shift ends (doesn't matter)),
                 // then we need to move the job so that it starts after the unavailable shift ends.
-                else if(arriveAt >= ip->unavailMatrix[i][1][nursei] && arriveAt < ip->unavailMatrix[i][2][nursei]){
-                    if(first == 0 && currentTime < ip->unavailMatrix[i][1][nursei]){
-                        waitingTime = ip->unavailMatrix[i][1][nursei] - currentTime;
-                        ip->nurseWaitingMatrix[nursei][job] = waitingTime;
+                else if(arriveAt >= ip->unavailMatrix[i][1][carerj] && arriveAt < ip->unavailMatrix[i][2][carerj]){
+                    if(first == 0 && currentTime < ip->unavailMatrix[i][1][carerj]){
+                        waitingTime = ip->unavailMatrix[i][1][carerj] - currentTime;
+                        ip->carerWaitingMatrix[carerj][job] = waitingTime;
                         first = 1;
                     }
-                    arriveAt = ip->unavailMatrix[i][2][nursei]; // update currentTime to be the end of the unavailable shift.
-                    ip->timeMatrix[nursei][job] = arriveAt;
+                    arriveAt = ip->unavailMatrix[i][2][carerj]; // update currentTime to be the end of the unavailable shift.
+                    ip->timeMatrix[carerj][job] = arriveAt;
                     if(arriveAt > endTW){ // Only calculate tardiness if the job is actually late, i.e. nursei arrives at job after the time window
                         tardiness = arriveAt - endTW; //tardiness is how late the nurse is to the job, so how long after the end of the job TW does the nurse start the job.
                     }
@@ -2413,15 +2413,15 @@ void set_nurse_time(struct INSTANCE* ip, int nursei){
 
     // Return to depot:
     if(prevPoint > -1){ // If a previous job is set, calculate the time it takes for the nurse to go from the last job (prevPoint) back to the depot (their home).
-        double tTime2 = get_travel_time_to_depot(ip, nursei, prevPoint); //get_travel_time_to_depot function returns ip->nurse_travel_to_depot[nursei][prevPoint].
-        //ip->nurseTravelTime[nursei] += get_travel_time_to_depot(ip, nursei, prevPoint); //get_travel_time_to_depot function returns ip->nurse_travel_to_depot[nursei][prevPoint].
-        ip->nurseTravelTime[nursei] += tTime2; //get_travel_time_to_depot function returns ip->nurse_travel_to_depot[nursei][prevPoint].
-        //ip->nurseTravelMatrix[nursei][prevPoint] = tTime2;
+        double tTime2 = get_travel_time_to_depot(ip, carerj, prevPoint); //get_travel_time_to_depot function returns ip->carer_travel_to_depot[nursei][prevPoint].
+        //ip->carerTravelTime[nursei] += get_travel_time_to_depot(ip, nursei, prevPoint); //get_travel_time_to_depot function returns ip->carer_travel_to_depot[nursei][prevPoint].
+        ip->carerTravelTime[carerj] += tTime2; //get_travel_time_to_depot function returns ip->carer_travel_to_depot[nursei][prevPoint].
+        //ip->carerTravelMatrix[nursei][prevPoint] = tTime2;
     }
 
-    // Update nurseWaitingTime for nursei to be the sum of all waiting times for nursei in nurseWaitingMatrix
+    // Update carerWaitingTime for nursei to be the sum of all waiting times for nursei in carerWaitingMatrix
     for(int j = 0; j < ip->nJobs; ++j){
-        ip->nurseWaitingTime[nursei] += ip->nurseWaitingMatrix[nursei][j];
+        ip->carerWaitingTime[carerj] += ip->carerWaitingMatrix[carerj][j];
     }
 
     //printf("End set_nurse_time.\n");
@@ -2432,31 +2432,31 @@ void set_times_full(struct INSTANCE* ip){
         ip->violatedTW[i] = 0;
         ip->violatedTWMK[i] = 0;
     }
-    for(int j = 0; j < ip->nNurses; ++j){
-        int nurse = ip->nurseOrder[j];
+    for(int j = 0; j < ip->nCarers; ++j){
+        int nurse = ip->carerOrder[j];
         // printf("Setting nurse time of: %d", nurse);
-        set_nurse_time(ip, nurse);
+        set_carer_time(ip, nurse);
     }
 }
 
-void set_times_from(struct INSTANCE* ip, int first_nurse){
+void set_times_from(struct INSTANCE* ip, int first_carer){
 
     int has_appeared = -1;
     int nurse = -1;
     int jobdue = -1;
 
-    for(int i = 0; i < ip->nNurses; ++i){ //For each nurse i = 0,...,nNurses
-        nurse = ip->nurseOrder[i]; //nurse = nurse i in nurseOrder array
+    for(int i = 0; i < ip->nCarers; ++i){ //For each nurse i = 0,...,nCarers
+        nurse = ip->carerOrder[i]; //nurse = nurse i in carerOrder array
         if(has_appeared < 0){ //If we have not yet assessed first_nurse
-            if(nurse==first_nurse){ //if the current nurse we are assessing is also first_nurse (nurse ni)
+            if(nurse==first_carer){ //if the current nurse we are assessing is also first_nurse (nurse ni)
                 has_appeared = 1; //then first_nurse has appeared
             }
-            else{ //move on to next nurse in nurseOrder
+            else{ //move on to next nurse in carerOrder
                 continue;
             }
         }
         for(int j = 0; j < ip->nJobs; ++j){ //for all POSITIONS j=0,...,nJobs
-            jobdue = ip->allNurseRoutes[nurse][j]; //jobdue = the job in position j of the nurse's route
+            jobdue = ip->allCarerRoutes[nurse][j]; //jobdue = the job in position j of the nurse's route
             /** CHECK THIS IF STATEMENT! If j = 0 and jobdue < 0, then the nurse isn't being used, BUT if j > 0 and jobdue < 0, surely this just means that the nurse doesn't have a job in that position, but could still
              * have jobs before hand and is therefore still being used!**/
             if(jobdue < 0){ //If there is no job scheduled in position j of the nurses's route, then this means that nurse isn't being used.
@@ -2467,27 +2467,27 @@ void set_times_from(struct INSTANCE* ip, int first_nurse){
             ip->violatedTWMK[jobdue] = 0; //"lateness" of jobdue is 0 (not late, set to start on time).
         }
 
-        set_nurse_time(ip, nurse); //Note that this set_nurse_time function also checks to make sure that nurse is being used.
+        set_carer_time(ip, nurse); //Note that this set_nurse_time function also checks to make sure that nurse is being used.
     }
 }
 
-int synchronise_job_i(struct INSTANCE* ip, int job, int nurse1, int nurse2){
+int synchronise_job_i(struct INSTANCE* ip, int job, int carer1, int carer2){
     // Make nurse1 the early one:
-    if(ip->timeMatrix[nurse1][job] > ip->timeMatrix[nurse2][job]){
-        int temp = nurse1;
-        nurse1 = nurse2;
-        nurse2 = temp;
+    if(ip->timeMatrix[carer1][job] > ip->timeMatrix[carer2][job]){
+        int temp = carer1;
+        carer1 = carer2;
+        carer2 = temp;
     }
 
-    double timeDiff = ip->timeMatrix[nurse2][job] - ip->timeMatrix[nurse1][job];
+    double timeDiff = ip->timeMatrix[carer2][job] - ip->timeMatrix[carer1][job];
     printf("Nurse %d arrives at %.2f, and nurse %d at %.2f to job %d, so nurse %d needs to wait for %.2f\n",
-           nurse2, ip->timeMatrix[nurse2][job], nurse1, ip->timeMatrix[nurse1][job], job, nurse1, timeDiff);
+           carer2, ip->timeMatrix[carer2][job], carer1, ip->timeMatrix[carer1][job], job, carer1, timeDiff);
 
-    ip->nurseWaitingTime[nurse1] += timeDiff;
-    get_nurse_route(ip, nurse1, ip->nurseRoute);
+    ip->carerWaitingTime[carer1] += timeDiff;
+    get_carer_route(ip, carer1, ip->carerRoute);
     int afterThis = -1;
     for(int i = 0; i < ip->nJobs; ++i){
-        int ji = ip->nurseRoute[i];
+        int ji = ip->carerRoute[i];
         if(ji < -0.1)
             break;
 
@@ -2495,11 +2495,11 @@ int synchronise_job_i(struct INSTANCE* ip, int job, int nurse1, int nurse2){
             afterThis = 1;
 
         if(afterThis > 0){
-            ip->timeMatrix[nurse1][ji] += timeDiff;
-            printf("\tIncreased job %d in nurse %d by %.2f\n", ji, nurse1, timeDiff);
+            ip->timeMatrix[carer1][ji] += timeDiff;
+            printf("\tIncreased job %d in nurse %d by %.2f\n", ji, carer1, timeDiff);
         }
     }
-    printf("Now nurse %d arrives at %.2f\n", nurse1, ip->timeMatrix[nurse1][job]);
+    printf("Now nurse %d arrives at %.2f\n", carer1, ip->timeMatrix[carer1][job]);
     return 0;
 }
 
@@ -2510,7 +2510,7 @@ double sol_quality_global(struct INSTANCE* ip, int report){
 		to 1 or 2 nurses. See sol_quality_optimised below
 	*/
     // Set all nurse routes, as these get used multiple times in this function
-    set_all_nurse_routes(ip);
+    set_all_carer_routes(ip);
     set_times_full(ip);
 
     return -1;
@@ -2527,7 +2527,7 @@ double sol_quality_light(struct INSTANCE* ip){
 
     // printf("\n\n----------------------- Before recalc -----------------------\n");
     // obj_from_times(ip, 12);
-    // print_int_matrix(ip->allNurseRoutes, ip->nNurses, ip->nJobs);
+    // print_int_matrix(ip->allCarerRoutes, ip->nCarers, ip->nJobs);
 
     double light_quality = obj_from_times(ip, -1);
     // printf("\n\n-----------------------|||||||||||||||-----------------------\n");
@@ -2537,7 +2537,7 @@ double sol_quality_light(struct INSTANCE* ip){
     // obj_from_times(ip, 21);
     // printf("\n\n-----------------------^^^^^^^^^^^^^^-----------------------\n");
 
-    // print_int_matrix(ip->allNurseRoutes, ip->nNurses, ip->nJobs);
+    // print_int_matrix(ip->allCarerRoutes, ip->nCarers, ip->nJobs);
     // printf("Sol matrix:\n");
     // print_solmatrix(ip);
 
@@ -2557,10 +2557,10 @@ double sol_quality_optimised(struct INSTANCE* ip, int n1, int n2){
 		Calculate the quality of the solution based only
 		on a change in nurses n1 and n2
 	*/
-    set_nurse_route(ip, n1);
+    set_carer_route(ip, n1);
 
     if((n2 > -1) && (n1!=n2)){
-        set_nurse_route(ip, n2);
+        set_carer_route(ip, n2);
         // n1 = min(n1, n2);
         if(n2 < n1)
             n1 = n2;
@@ -2579,23 +2579,23 @@ double sol_quality(struct INSTANCE* ip, int report){
     // printf("\n\n********\nStarted sol_quality():\nSetting times...\n");
 
     if (report == -98765){
-        printf("Initial allNurseRoutes:\n");
-        print_allNurseRoutes(ip);
+        printf("Initial allCarerRoutes:\n");
+        print_allCarerRoutes(ip);
     }
 
 // printf("Solmatrix when starting sol_quality\n");
 // print_solmatrix(ip);
 
     // Set all nurse routes, as these get used multiple times in this function
-    set_all_nurse_routes(ip);
+    set_all_carer_routes(ip);
     if (report == -98765){
         printf("After set_all_nurse_routes:\n");
-        print_allNurseRoutes(ip);
+        print_allCarerRoutes(ip);
     }
     if(report == -98765){
         printf("\nNurse Order:\n");
-        for(int i = 0; i < ip->nNurses; ++i){
-            int nurse = ip->nurseOrder[i];
+        for(int i = 0; i < ip->nCarers; ++i){
+            int nurse = ip->carerOrder[i];
             printf("%d ", nurse);
         }
         printf("\n");
@@ -2612,8 +2612,8 @@ double sol_quality(struct INSTANCE* ip, int report){
 
     if(report > 0){
         printf("Nurse order: ( ");
-        for(int i = 0; i < ip->nNurses; ++i){
-            printf("%d,  ", ip->nurseOrder[i]);
+        for(int i = 0; i < ip->nCarers; ++i){
+            printf("%d,  ", ip->carerOrder[i]);
         }
         printf(" )\n");
         // printf("Done.\nFinished. sol_quality().\n********\n\n");
@@ -2646,7 +2646,7 @@ int synchronise_jobs(struct INSTANCE* ip){
         double timeN2 = -1;
         int nurse1 = -1;
         int nurse2 = -1;
-        for(int j = 0; j < ip->nNurses; ++j){
+        for(int j = 0; j < ip->nCarers; ++j){
             if(ip->timeMatrix[j][job] > -0.5){
                 if(timeN1 < -0.1){
                     timeN1 = ip->timeMatrix[j][job];
@@ -2748,29 +2748,29 @@ double obj_from_times(struct INSTANCE* ip, int report){
         totalServiceTime += ip->jobTimeInfo[j][2];
     }
 
-    for(int i = 0; i < ip->nNurses; ++i){ // For each index i in nurseOrder
-        int ni = ip->nurseOrder[i]; //ni - nurse[i] in nurseOrder
-        totalTravelTime += ip->nurseTravelTime[ni]; //Add (total) travel time for nurse ni to total travel time (for all nurses).
-        totalWaitingTime += ip->nurseWaitingTime[ni]; // Add (total) waiting time for nurse ni to total waiting time (for all nurses)
+    for(int i = 0; i < ip->nCarers; ++i){ // For each index i in carerOrder
+        int ni = ip->carerOrder[i]; //ni - nurse[i] in carerOrder
+        totalTravelTime += ip->carerTravelTime[ni]; //Add (total) travel time for nurse ni to total travel time (for all nurses).
+        totalWaitingTime += ip->carerWaitingTime[ni]; // Add (total) waiting time for nurse ni to total waiting time (for all nurses)
         if(report > 0){
             int* timeNWTStart;
-            timeNWTStart = mins_to_time((double) (ip->nurseWorkingTimes[ni][0]));
-            // printf("Nurse %d. Start time: %.2f\t", ni, (double)(ip->nurseWorkingTimes[ni][0]));
+            timeNWTStart = mins_to_time((double) (ip->carerWorkingTimes[ni][0]));
+            // printf("Nurse %d. Start time: %.2f\t", ni, (double)(ip->carerWorkingTimes[ni][0]));
             printf("Nurse %d. Start time: %d:%d:%d, ", ni, *timeNWTStart, *(timeNWTStart + 1), *(timeNWTStart + 2));
             int* timeNWTEnd;
-            timeNWTEnd = mins_to_time((double) (ip->nurseWorkingTimes[ni][1]));
+            timeNWTEnd = mins_to_time((double) (ip->carerWorkingTimes[ni][1]));
             printf("End time: %d:%d:%d, ", *timeNWTEnd, *(timeNWTEnd + 1), *(timeNWTEnd + 2));
             int* timeNWTShift;
-            timeNWTShift = mins_to_time((double) (ip->nurseWorkingTimes[ni][2]));
+            timeNWTShift = mins_to_time((double) (ip->carerWorkingTimes[ni][2]));
             printf("Length of shift: %d:%d:%d\n", *timeNWTShift, *(timeNWTShift + 1), *(timeNWTShift + 2));
         }
 
         // If the nurse route is empty:
-        if(ip->allNurseRoutes[ni][0] < -0.5){ //If there is no job in position 0 (first position) of nurse ni's route (therefore [ni][0] = -1)
+        if(ip->allCarerRoutes[ni][0] < -0.5){ //If there is no job in position 0 (first position) of nurse ni's route (therefore [ni][0] = -1)
             // Spare time is whole day:
-            sparetime = (double) ip->nurseWorkingTimes[ni][1] - (double) ip->nurseWorkingTimes[ni][0]; // = finish time of nurse ni - start time of nurse ni
+            sparetime = (double) ip->carerWorkingTimes[ni][1] - (double) ip->carerWorkingTimes[ni][0]; // = finish time of nurse ni - start time of nurse ni
             avgSpare += sparetime;
-            finishTime = (double) ip->nurseWorkingTimes[ni][0]; // = start time of nurse ni, since ni doen't have any jobs so finish time is the same as start time
+            finishTime = (double) ip->carerWorkingTimes[ni][0]; // = start time of nurse ni, since ni doen't have any jobs so finish time is the same as start time
             /*if (shortestDay > finishTime) {
 				shortestDay = finishTime;
 			}*/
@@ -2793,11 +2793,11 @@ double obj_from_times(struct INSTANCE* ip, int report){
                 job = -1; // We always need to identify a "-1" to understand that's the end of the route
             }
             else{
-                job = ip->allNurseRoutes[ni][p]; // job = job # at position p in ni's route
+                job = ip->allCarerRoutes[ni][p]; // job = job # at position p in ni's route
             }
             if(job < -0.1){ // if job = -1 then end of route
                 if(p > 0){ //If p > 0 then not first position in route
-                    lastPosition = ip->allNurseRoutes[ni][p-1]; //last position = job at the last position of ni's route (p-1 since job = -1 so p is out of bounds, need to go to previous position for last job)
+                    lastPosition = ip->allCarerRoutes[ni][p-1]; //last position = job at the last position of ni's route (p-1 since job = -1 so p is out of bounds, need to go to previous position for last job)
                 }
                 else{ //position = 0, so there is no job before in the route.
                     lastPosition = -1;
@@ -2855,13 +2855,13 @@ double obj_from_times(struct INSTANCE* ip, int report){
                 timeDuration = mins_to_time((double) (ip->jobTimeInfo[job][2]));
                 // printf("duration(ST): %.d ", ip->jobTimeInfo[job][2]);
                 printf("duration(ST): %d:%d:%d", *timeDuration, *(timeDuration + 1), *(timeDuration + 2));
-                if((p < ip->nJobs - 1) && (ip->allNurseRoutes[ni][p + 1] > -1)){
+                if((p < ip->nJobs - 1) && (ip->allCarerRoutes[ni][p + 1] > -1)){
                     int* timeTR;
-                    double travelTime = get_travel_time(ip, ip->allNurseRoutes[ni][p], ip->allNurseRoutes[ni][p + 1]);
+                    double travelTime = get_travel_time(ip, ip->allCarerRoutes[ni][p], ip->allCarerRoutes[ni][p + 1]);
                     timeTR = mins_to_minsecs(travelTime);
-                    // printf("travel(TR): %.2f ", get_travel_time(ip, ip->allNurseRoutes[ni][p], ip->allNurseRoutes[ni][p + 1]));
+                    // printf("travel(TR): %.2f ", get_travel_time(ip, ip->allCarerRoutes[ni][p], ip->allCarerRoutes[ni][p + 1]));
                     printf(", travel(TR): %d:%d ", *timeTR, *(timeTR + 1));
-                    readyToNext += get_travel_time(ip, ip->allNurseRoutes[ni][p], ip->allNurseRoutes[ni][p + 1]);
+                    readyToNext += get_travel_time(ip, ip->allCarerRoutes[ni][p], ip->allCarerRoutes[ni][p + 1]);
                 }
                 int* timeRTN;
                 timeRTN = mins_to_time(readyToNext);
@@ -2888,13 +2888,13 @@ double obj_from_times(struct INSTANCE* ip, int report){
             tTime = (double) get_travel_time_to_depot(ip, ni, lastPosition);
             tTime += (double) ip->jobTimeInfo[lastPosition][2];
             finishTime = (double) (ip->timeMatrix[ni][lastPosition] + tTime);
-            dayWork = (double) finishTime - (double) ip->nurseWorkingTimes[ni][0];
+            dayWork = (double) finishTime - (double) ip->carerWorkingTimes[ni][0];
             if(shortestDay > dayWork){
                 shortestDay = dayWork;
             }
         }
 
-        overtime = finishTime - (double) ip->nurseWorkingTimes[ni][1];
+        overtime = finishTime - (double) ip->carerWorkingTimes[ni][1];
         sparetime = max(0.0, -1*overtime);
         //totalTime += dayWork;
 
@@ -2921,7 +2921,7 @@ double obj_from_times(struct INSTANCE* ip, int report){
         if(report > 0){
             int* timeFinish;
             timeFinish = mins_to_time(finishTime);
-            // printf("Finishes: %.2f Overtime: %.2f Waiting time: %.2f\n", finishTime, overtime, ip->nurseWaitingTime[ni]);
+            // printf("Finishes: %.2f Overtime: %.2f Waiting time: %.2f\n", finishTime, overtime, ip->carerWaitingTime[ni]);
             printf("Finish time: %d:%d:%d, ", *timeFinish, *(timeFinish + 1), *(timeFinish + 2));
             if(overtime < 0){
                 double overtimePositive = overtime*-1;
@@ -2938,11 +2938,11 @@ double obj_from_times(struct INSTANCE* ip, int report){
                 printf("Overtime: %.2f, ", overtime);
             }
             int* timeWaiting;
-            timeWaiting = mins_to_time(ip->nurseWaitingTime[ni]);
+            timeWaiting = mins_to_time(ip->carerWaitingTime[ni]);
             printf("Waiting time: %d:%d:%d\n\n", *timeWaiting, *(timeWaiting + 1), *(timeWaiting + 2));
         }
 
-    } // End for (int i = 0; i < ip->nNurses; ++i) loop
+    } // End for (int i = 0; i < ip->nCarers; ++i) loop
 
     /*
 		Mankowska objective: Z = A*D + B*T + C*Tmax
@@ -2969,8 +2969,8 @@ double obj_from_times(struct INSTANCE* ip, int report){
     double wb_quality = 0.0;
     double paper_quality = 0.0;
     int qualityType = ip->quality_measure;
-    double infeasibility_M1 = ip->nNurses*12*60; // Multiplier
-    double infeasibility_M2 = ip->nNurses*12*60; // Chunk sum
+    double infeasibility_M1 = ip->nCarers*12*60; // Multiplier
+    double infeasibility_M2 = ip->nCarers*12*60; // Chunk sum
 
     //Ait H.
     ait_quality = -1*(0.3*totalTravelTime + ip->totPref); // Real obj
@@ -3033,8 +3033,8 @@ double obj_from_times(struct INSTANCE* ip, int report){
 
 
     if(report==12345){
-        double infeasibility_M1 = ip->nNurses*12*60; // Multiplier
-        double infeasibility_M2 = ip->nNurses*12*60; // Chunk sum
+        double infeasibility_M1 = ip->nCarers*12*60; // Multiplier
+        double infeasibility_M2 = ip->nCarers*12*60; // Chunk sum
         double dayDiff = longestDay - shortestDay;
 
         if(qualityType == 0){
@@ -3125,23 +3125,23 @@ double obj_from_times(struct INSTANCE* ip, int report){
 double alternative_quality(struct INSTANCE* ip, int report){
     double totalTardiness = 0;
     double totalTime = 0;
-    // int * nurseRoute = ip->nurseRoute; // malloc(ip->nJobs * sizeof(int));
+    // int * carerRoute = ip->carerRoute; // malloc(ip->nJobs * sizeof(int));
     double onlyTravelTime = 0;
     double arriveAt, leaveAt;
     double tTime = -1;
     double finishShiftAt = -1;
-    for(int j = 0; j < ip->nNurses; ++j){
+    for(int j = 0; j < ip->nCarers; ++j){
         int prevPoint = -1;
-        double currentTime = (double) ip->nurseWorkingTimes[j][0];
+        double currentTime = (double) ip->carerWorkingTimes[j][0];
         if(report > 0 && ip->verbose > 1)
             printf("Nurse %d starts at %.2f\n", j, currentTime);
 
-        get_nurse_route(ip, j, ip->nurseRoute);
+        get_carer_route(ip, j, ip->carerRoute);
 
         for(int i = 0; i < ip->nJobs; ++i){
-            if(ip->nurseRoute[i] < 0)
+            if(ip->carerRoute[i] < 0)
                 break;
-            int job = ip->nurseRoute[i];
+            int job = ip->carerRoute[i];
             // Trip from depot:
             if(prevPoint > -0.5)
                 tTime = get_travel_time(ip, prevPoint, job);
@@ -3175,8 +3175,8 @@ double alternative_quality(struct INSTANCE* ip, int report){
                     printf("\t\t*** Misses the time window by %.2f! ***\n", tardiness);
             }
         }
-        if(ip->nurseRoute[0] > -1){
-            totalTime += (leaveAt - ip->nurseWorkingTimes[j][0]);
+        if(ip->carerRoute[0] > -1){
+            totalTime += (leaveAt - ip->carerWorkingTimes[j][0]);
 
             // Return to depot:
             tTime = get_travel_time_to_depot(ip, j, prevPoint);
@@ -3186,16 +3186,16 @@ double alternative_quality(struct INSTANCE* ip, int report){
             finishShiftAt = leaveAt + tTime;
         }
         else
-            finishShiftAt = ip->nurseWorkingTimes[j][0];
+            finishShiftAt = ip->carerWorkingTimes[j][0];
 
         if(report > 0 && ip->verbose > 1){
             printf("\tFinishes at the depot at %.2f.\n", finishShiftAt);
-            if(finishShiftAt > ip->nurseWorkingTimes[j][1]){
-                printf("\t\t*** This nurse is finishing late (by %.2f)\n", finishShiftAt - (double) ip->nurseWorkingTimes[j][1]);
+            if(finishShiftAt > ip->carerWorkingTimes[j][1]){
+                printf("\t\t*** This nurse is finishing late (by %.2f)\n", finishShiftAt - (double) ip->carerWorkingTimes[j][1]);
             }
             // else
             // {
-            // 	printf("\t\t Finishing before %.2f (end of shift)\n", (double)ip->nurseWorkingTimes[j][1]);
+            // 	printf("\t\t Finishing before %.2f (end of shift)\n", (double)ip->carerWorkingTimes[j][1]);
             // }
 
         }
@@ -3205,10 +3205,10 @@ double alternative_quality(struct INSTANCE* ip, int report){
         printf("\nTotal travel time: %.2f", onlyTravelTime);
         printf("\n");
     }
-    // free(nurseRoute);
+    // free(carerRoute);
     double quality = -100000*totalTardiness - totalTime;
     // int MAX_ALLOWED_WORKING = 100000;
-    // int quality = ip->nNurses*MAX_ALLOWED_WORKING - totalTime;
+    // int quality = ip->nCarers*MAX_ALLOWED_WORKING - totalTime;
     if(totalTardiness > 0)
         ip->isFeasible = 0;
     else
@@ -3223,7 +3223,7 @@ int random_integer(int min_val, int max_val){
     return min_val + (rand()%(max_val + 1));
 }
 
-void two_exchange(int* array, int i, int j){ //In GRASP: two_exchange(ip->nurseOrder, exch1, exch2), and random_two_exchange: two_exchange(array, (*i), (*j))
+void two_exchange(int* array, int i, int j){ //In GRASP: two_exchange(ip->carerOrder, exch1, exch2), and random_two_exchange: two_exchange(array, (*i), (*j))
 
     //This function swaps the elements in array[i] and array[j] (element that was in array[i] is now in array [j] and vice vera)
 
@@ -3233,15 +3233,15 @@ void two_exchange(int* array, int i, int j){ //In GRASP: two_exchange(ip->nurseO
 
 } //END OF two_exchange.
 
-void random_two_exchange(int* array, size_t n, int* i, int* j){ //In GRASP: random_two_exchange(ip->nurseOrder, ip->nNurses, &exch1, &exch2)
+void random_two_exchange(int* array, size_t n, int* i, int* j){ //In GRASP: random_two_exchange(ip->carerOrder, ip->nCarers, &exch1, &exch2)
 
-    if(n < 2){ //If nNurses < 2, then &exch1 and &exch2 = 0, and exit.
+    if(n < 2){ //If nCarers < 2, then &exch1 and &exch2 = 0, and exit.
         i = 0;
         j = 0;
         return;
     }
 
-    //Otherwise, if nNurses >=2, then use random_integer function to set *i and *j to random ints between 0 and n-1
+    //Otherwise, if nCarers >=2, then use random_integer function to set *i and *j to random ints between 0 and n-1
     (*i) = random_integer(0, n - 1);
     (*j) = random_integer(0, n - 1);
 
@@ -3253,13 +3253,13 @@ void random_two_exchange(int* array, size_t n, int* i, int* j){ //In GRASP: rand
     two_exchange(array, (*i), (*j));
 }
 
-void shuffle(int* array, size_t n){ //In GRASP: shuffle(ip->nurseOrder, (size_t)ip->nNurses)
+void shuffle(int* array, size_t n){ //In GRASP: shuffle(ip->carerOrder, (size_t)ip->nCarers)
 
     // Based on the idea from: https://benpfaff.org/writings/clc/shuffle.html
     // Or from: https://stackoverflow.com/questions/6127503/shuffle-array-in-c
     // (Ben Pfaff's Writings)
 
-    //Randomly shuffle elements of the array (nurseOrder)
+    //Randomly shuffle elements of the array (carerOrder)
     if(n > 1){
         size_t i;
         for(i = 0; i < n - 1; i++){
