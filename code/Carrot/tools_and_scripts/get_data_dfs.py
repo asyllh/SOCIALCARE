@@ -258,8 +258,7 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
     # Get information from excel data
     carer_id = carerdf_xl['Carer ID']
     for i in range(len(carer_id)):
-        # if carer_id[i] == None:
-        if np.isnan(carer_id[i]):
+        if np.isnan(carer_id[i]): # if carer_id[i] == None
             print('[WARNING]: Entry number ', i, ' for ', area, 'has no Carer ID.')
             print('Skipping entry.')
             continue
@@ -282,7 +281,7 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
         carer_id_rows = carerdf_xl[carerdf_xl['Carer ID'] == carer_id[i]] # carer_id_rows is a df that only contains information for the current carer_id[i]
         # Check there is no missing information
         if len(carer_id_rows) < 1:
-            print('[ERROR]: No shifts available for carer ', carer_id[i])
+            print('[ERROR]: No shifts available for Carer ', carer_id[i])
             print('Terminating program.')
             exit(-1)
         # Now in this truncated df (carer_id_rows), we need to go down the 'Available Day' column and find the highest number (0-55)
@@ -310,6 +309,8 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
         # print('i: ', i, 'carer_id[i]: ', carer_id[i], 'j: ', j)
         # print(carer_shift_rows)
         # exit(-1)
+        #NOTE: NEW - remove duplicate rows 06/09/2021
+        carer_shift_rows.drop_duplicates(inplace=True)
         if len(carer_shift_rows) < 1: # No shifts for dayindex_weeks for this carer
             continue
         elif len(carer_shift_rows) == 1: # this carer has only one shift on dayindex_weeks
