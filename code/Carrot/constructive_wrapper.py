@@ -79,23 +79,24 @@ def main():
     print('Those were results for instance ' + str(inst.fname) + ' in ' + str(inst.area) + ', ' + str(inst.date))
     print('Total running time: ' + str(np.round(elapsed_time, 1)) + ' seconds.')
     
+    inst.full_solution_report(report=0, doPlots=create_python_plots)
     # Create map of solution in website:
-    if create_html_website: # NOTE: FIX THIS, NEED TO HAVE FULL SOLUTION REPORT AND SOLUTION TO WEBSITE DST SEPARATE, ALWAYS NEED TO RUN FULL SOLN REPORT FOR CSV FILE, BUT DON'T ALWAYS NEED TO RUN WEBSITE OR CREATE PLOTS.
+    if create_html_website:
         print('Generating website...')
-        inst.full_solution_report(report=0, doPlots=create_python_plots)
         inst.solution_to_website_dst(add_plots=create_python_plots)
-        inst.totalTravelCost = sum(inst.nurseTravelCost)
-        inst.totalMileage = sum(inst.nurseMileage)
-        inst.totalMileageCost = sum(inst.nurseMileageCost)
+        inst.totalTravelCost = sum(inst.carerTravelCost)
+        inst.totalMileage = sum(inst.carerMileage)
+        inst.totalMileageCost = sum(inst.carerMileageCost)
         inst.totalCost = inst.totalTravelCost + inst.totalMileageCost
         # print('totalTravelCost: ', inst.totalTravelCost)
         # print('totalMileageCost: ', inst.totalMileageCost)
         # print('totalCost: ', inst.totalCost)
-        print('Done.') 
+   
+    print('Done.') 
 
     # Put results in results_area_date.txt file:
     cwd = os.getcwd()
-    results_filename = inst.fname + '_results2.txt'
+    results_filename = inst.fname + '_results.txt'
     outputfiles_path = os.path.join(cwd, 'output')
     resultsfile_path = os.path.join(outputfiles_path, results_filename)
 
@@ -104,7 +105,7 @@ def main():
     f.write('Date: ' + str(datetime.now()) + '\n')
     f.write('Quality: ' + str(inst.Cquality) + '\n')
     f.write('Measure: ' + str(inst.quality_measure) + '\n')
-    f.write('Carers: ' + str(inst.nNurses) + '\n')
+    f.write('Carers: ' + str(inst.nCarers) + '\n')
     f.write('Jobs: ' + str(inst.nJobs) + '\n')
     f.write('Total Time: ' + str(inst.timemins_to_string(inst.totalTime)) + '\n')
     f.write('Total Service Time: ' + str(inst.timemins_to_string(inst.totalServiceTime)) + '\n')
