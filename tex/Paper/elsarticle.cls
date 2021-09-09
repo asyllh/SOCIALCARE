@@ -6,7 +6,7 @@
 %%
 %% elsarticle.dtx  (with options: `class')
 %% 
-%% Copyright 2007-2018 Elsevier Ltd
+%% Copyright 2007-2019 Elsevier Ltd
 %% 
 %% This file is part of the 'Elsarticle Bundle'.
 %% -------------------------------------------
@@ -25,8 +25,8 @@
 %%
 %%
  \def\RCSfile{elsarticle}%
- \def\RCSversion{3.0}%
- \def\RCSdate{2018/06/08}%
+ \def\RCSversion{3.1}%
+ \def\RCSdate{2019/01/14}%
  \def\@shortjnl{\relax}
  \def\@journal{Elsevier Ltd}
  \def\@company{Elsevier Ltd}
@@ -123,7 +123,7 @@
   \def\tnotemark[#1]{}
 \else
   \def\tnotemark[#1]{\@for\mytmark:=#1\do{%
-       \expandafter\ifcase\csname X@\mytmark\endcsname\or$^{\star}$\or
+        \expandafter\ifcase\elsRef{\mytmark}\or$^{\star}$\or
        $^{,\star\star}$\fi
     }%
 }
