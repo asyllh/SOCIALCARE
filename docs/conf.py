@@ -14,7 +14,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-import sphinx_book_theme
+import sphinx_rtd_theme
 
 
 # -- Project information -----------------------------------------------------
@@ -30,7 +30,7 @@ author = 'ALH'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx_book_theme',
+    'sphinx_rtd_theme',
     'sphinx.ext.mathjax']
 
 master_doc = 'index'
