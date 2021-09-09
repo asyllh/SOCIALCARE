@@ -904,6 +904,10 @@ class INSTANCE(object):
         # print('minutes: ', minutes)
         seconds = (mins - minsRound) * 60
         seconds = round(seconds)
+
+        if seconds == 60:
+            seconds = 0
+            minutes += 1
         # print('seconds: ', seconds)
         return('{0:0>2}:{1:0>2}:{2:0>2}'.format(int(hours), int(minutes), int(seconds)))
     ### --- End def timemins_to_string --- ###  
@@ -1044,32 +1048,32 @@ class INSTANCE(object):
         lht = lht + '''&nbsp; <i> - Total distance: </i>''' + str(self.totalDistance/1000) + '''<br>'''
         lht = lht + '''&nbsp; <i> - Total distance jobs: </i>''' + str(self.totalDistanceJobsOnly/1000) + '''<br><br>'''
 
-        nursePart = '''&nbsp; <b><u>Carer breakdown:</u> </b><br>'''
-        for i, nn in enumerate(self.carerObjs):
-            nursePart = nursePart + '''<br>&nbsp; <b>Carer ''' + str(i) + ' (' + str(nn.ID) + '''):</u> </b><br>'''
-            nursePart = nursePart + '''&nbsp; <i>Skills: </i>''' + str(nn.skills) + '''<br>'''
-            nursePart = nursePart + '''&nbsp; <i>Shift start time: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][0]) + '''<br>'''
-            nursePart = nursePart + '''&nbsp; <i>Shift end time: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][1]) + '''<br>'''
-            nursePart = nursePart + '''&nbsp; <i>Duration of shift: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][2]) + '''<br>'''
-            nursePart = nursePart + '''&nbsp; <i>Actual start time: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][0]) + '''<br>'''
-            nursePart = nursePart + '''&nbsp; <i>Actual end time: </i>''' + self.timemins_to_string(nn.finishTime) + '''<br>'''
-            nn.route = list(self.carerRoute[i][:])
-            nursePart = nursePart + '''&nbsp; <i>Number of services: </i>''' + str(len(nn.route)) + '''<br>'''
-            nursePart = nursePart + '''&nbsp; <i>Total service time: </i>''' + self.timemins_to_string(self.carerServiceTime[i]) + '''<br>'''
-            nursePart = nursePart + '''&nbsp; <i>Total travel time: </i>''' + self.timemins_to_string(self.carerTravelTime[i]) + '''<br>'''
-            nursePart = nursePart + '''&nbsp; <i>Total waiting time: </i>''' + self.timemins_to_string(self.carerWaitingTime[i]) + '''<br>'''
-            if len(nn.route) > 0:
-                nursePart = nursePart + '''&nbsp; <i>Service route: </i>[''' + str(self.jobObjs[int(nn.route[0])].ID)
-                for kkk in range(1,len(nn.route)):
-                    jobbb = self.jobObjs[int(nn.route[kkk])]
+        carerPart = '''&nbsp; <b><u>Carer breakdown:</u> </b><br>'''
+        for i, cc in enumerate(self.carerObjs):
+            carerPart = carerPart + '''<br>&nbsp; <b>Carer ''' + str(i) + ' (' + str(cc.ID) + '''):</u> </b><br>'''
+            carerPart = carerPart + '''&nbsp; <i>Skills: </i>''' + str(cc.skills) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Shift start time: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][0]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Shift end time: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][1]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Duration of shift: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][2]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Actual start time: </i>''' + self.timemins_to_string(cc.startTime) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Actual end time: </i>''' + self.timemins_to_string(cc.finishTime) + '''<br>'''
+            cc.route = list(self.carerRoute[i][:])
+            carerPart = carerPart + '''&nbsp; <i>Number of services: </i>''' + str(len(cc.route)) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Total service time: </i>''' + self.timemins_to_string(self.carerServiceTime[i]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Total travel time: </i>''' + self.timemins_to_string(self.carerTravelTime[i]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Total waiting time: </i>''' + self.timemins_to_string(self.carerWaitingTime[i]) + '''<br>'''
+            if len(cc.route) > 0:
+                carerPart = carerPart + '''&nbsp; <i>Service route: </i>[''' + str(self.jobObjs[int(cc.route[0])].ID)
+                for kkk in range(1,len(cc.route)):
+                    jobbb = self.jobObjs[int(cc.route[kkk])]
                     if jobbb.doubleService:
-                        nursePart = nursePart + ', (' + str(jobbb.ID) + ')'
+                        carerPart = carerPart + ', (' + str(jobbb.ID) + ')'
                     else:
-                        nursePart = nursePart + ', ' + str(jobbb.ID)
+                        carerPart = carerPart + ', ' + str(jobbb.ID)
 
-                nursePart = nursePart + ''']<br>'''
+                carerPart = carerPart + ''']<br>'''
     
-        lht = lht + nursePart
+        lht = lht + carerPart
 
         if add_plots == True:
             modalImages = [self.fname + '_workload_dst.png', self.fname + '_time_info_dst.png']
@@ -1122,10 +1126,10 @@ class INSTANCE(object):
         m.get_root().html.add_child(folium.Element(lht))
 
         # Depot, change to one per carer!
-        for nursej in range(self.nCarers):
-            nurse_popup = 'Start location for carer ' + str(nursej)
+        for carerj in range(self.nCarers):
+            carer_popup = 'Start location for carer ' + str(carerj)
             # print(self.carerObjs[nursej].startLocation)
-            folium.Circle(self.carerObjs[nursej].startLocation.latlong(), radius=50, popup=nurse_popup, color='black', fill_color='black', fill_opacity=0.5, fill=True).add_to(m)
+            folium.Circle(self.carerObjs[carerj].startLocation.latlong(), radius=50, popup=carer_popup, color='black', fill_color='black', fill_opacity=0.5, fill=True).add_to(m)
         
         m.add_child(folium.map.LayerControl())
         m.save(webFilename)
@@ -1401,8 +1405,8 @@ class INSTANCE(object):
                             client_df.loc[i, 'depart_job'] = self.timemins_to_string(self.jobObjs[j].departureTime[0])
                             client_df.loc[i, 'waiting_time'] = self.timemins_to_string(self.jobObjs[j].waitingToStart[0])
                             client_df.loc[i, 'tardiness'] = self.timemins_to_string(self.jobObjs[j].tardiness[0])
-                            # NOTE: ADD POSITION IN SCHEDULE
                             client_df.loc[i, 'travel_time'] = self.timemins_to_string(self.jobObjs[j].travelToJob[0])
+                            client_df.loc[i, 'position'] = self.jobObjs[j].positionInSchedule[0]
 
                             client_df.loc[i, 'carer_id2'] = self.jobObjs[j].carerID[1]
                             client_df.loc[i, 'arrive_job2'] = self.timemins_to_string(self.jobObjs[j].arrivalTime[1])
@@ -1410,8 +1414,8 @@ class INSTANCE(object):
                             client_df.loc[i, 'depart_job2'] = self.timemins_to_string(self.jobObjs[j].departureTime[1])
                             client_df.loc[i, 'waiting_time2'] = self.timemins_to_string(self.jobObjs[j].waitingToStart[1])
                             client_df.loc[i, 'tardiness2'] = self.timemins_to_string(self.jobObjs[j].tardiness[1])
-                            # NOTE: ADD POSITION IN SCHEDULE
                             client_df.loc[i, 'travel_time2'] = self.timemins_to_string(self.jobObjs[j].travelToJob[1])
+                            client_df.loc[i, 'position2'] = self.jobObjs[j].positionInSchedule[1]
                             break
                         else:
                             client_df.loc[i, 'carer_id'] = self.jobObjs[j].carerID
@@ -1420,8 +1424,8 @@ class INSTANCE(object):
                             client_df.loc[i, 'depart_job'] = self.timemins_to_string(self.jobObjs[j].departureTime)
                             client_df.loc[i, 'waiting_time'] = self.timemins_to_string(self.jobObjs[j].waitingToStart)
                             client_df.loc[i, 'tardiness'] = self.timemins_to_string(self.jobObjs[j].tardiness)
-                            # NOTE: ADD POSITION IN SCHEDULE
                             client_df.loc[i, 'travel_time'] = self.timemins_to_string(self.jobObjs[j].travelToJob)
+                            client_df.loc[i, 'position'] = self.jobObjs[j].positionInSchedule
                             break
         
 
