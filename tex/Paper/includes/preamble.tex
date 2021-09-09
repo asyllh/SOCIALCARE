@@ -1,5 +1,3 @@
-%---- PREAMBLE ----%
-
 % Allows separate files to be used in the main file
 \usepackage{subfiles}
 
@@ -61,7 +59,7 @@
 %\usepackage{fullpage}
 
 % For easy management of document margins and the document page size
-\usepackage[a4paper]{geometry}
+% \usepackage[bottom=40mm, right=25mm, left=25mm]{geometry}
 
 % Allows insertion of graphic files within a document
 \usepackage{graphicx}
@@ -90,6 +88,14 @@
 \colorlet{myPurple}{Orchid} 
 \colorlet{myPink}{Rhodamine!65!Lavender}
 \colorlet{myGray}{Gray!90!White}
+%\colorlet{myYellow}{Goldenrod}
+\definecolor{myYellow}{HTML}{F9E22E} %FFE72F
+
+\hypersetup{
+		linkcolor=myPurple,
+		citecolor=myAqua,
+		urlcolor=black
+}
 
 % The document class `elsarticle` uses the \AtBeginDocument comman to define the colour of all link types as blue, so we use the \AtBeginDocument command again to overwrite the colour settings to the colors we choose. REMEMBER TO REMOVE THIS BEFORE SUBMITTING.
 %\AtBeginDocument{% 
@@ -100,22 +106,21 @@
 %	}
 %} %end of \AtBeginDocument
 
-\newcommand{\intro}[1]{{\color{myOrange}#1}} % \intro{<text>}, makes <text> orange, use to highlight things to do, urgent, or revisit in introduction section
+\newcommand{\intro}[1]{{\color{blue}#1}}
 
-\newcommand{\ahc}[1]{{\color{myBlue}#1}} % \ahc{<text>}, makes <text> blue, use to highlight things to do, urgent, or revisit in AHC section
+\newcommand{\lit}[1]{{\color{myOrange}#1}} 
 
-\newcommand{\heur}[1]{{\color{myPink}#1}} % \scspp{<text>}, makes <text> pink, use to highlight things to do, urgent, or revisit in SCSPP section
+\newcommand{\model}[1]{{\color{myBlue}#1}}
 
-\newcommand{\ea}[1]{{\color{myRed}#1}} % \ea{<text>}, makes <text> red, use to highlight things to do, urgent, or revisit in EA section
+\newcommand{\dst}[1]{{\color{myPink}#1}}
 
-\newcommand{\cmsa}[1]{{\color{myGreen}#1}} % \cmsa{<text>}, makes <text> green, use to highlight things to do, urgent, or revisit in CMSA section
+\newcommand{\comp}[1]{{\color{myGreen}#1}} 
 
-\newcommand{\conc}[1]{{\color{myPurple}#1}} % \conc{<text>}, makes <text> purple, use to highlight things to do, urgent, or revisit in Conclusion section
+\newcommand{\conc}[1]{{\color{myPurple}#1}} 
 
-\newcommand{\note}[1]{{\color{myPurple}#1}} % \note{<text>}, makes <text> turquoise, use to highlight things to do, urgent, or revisit in any section
+\newcommand{\note}[1]{{\color{myPurple}#1}} 
 
-
-\newcommand{\alert}[1]{{\color{myRed}#1}} % \alert{<text>}, makes <text> red, use to highlight things to do, urgent, or revisit.
+\newcommand{\alert}[1]{{\color{myRed}#1}}
 
 \newcommand{\done}[1]{{\color{myGray}#1}} % \done{<text>}, makes <text> gray, use to highlight things that are not required or should be ignored.
 
@@ -135,7 +140,7 @@
 % No indentation, space between paragraphs
 %\usepackage{parskip}
 
-%\usepackage{natbib}
+\usepackage[round]{natbib}
 
 %Include standalone .tex files
 \usepackage{standalone}
@@ -155,15 +160,25 @@
 
 \usepackage{wrapfig}
 
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+
+\usepackage{lineno}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{eurosym}
+
+\newcommand{\correction}[1]{{\normalsize\textbf{\hl{[correction: #1]}}}}
+
+\newcommand{\ie}{\emph{i.e.}\ }
+\newcommand{\eg}{\emph{e.g.}\ }
+
 % Need \usepackage{mathtools} to use floor/ceil below.
 % Example: \floor*{\frac{x}{2}}, \ceil*{\frac{x}{2}}
 % The asterisk resizes floor/ceil brackets.
 \DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
-
-\newcommand{\correction}[1]{{\normalsize\textbf{\hl{[correction: #1]}}}}
-\newcommand{\ie}{\emph{i.e.}\ }
-\newcommand{\eg}{\emph{e.g.}\ }
 
 %Theorem style
 %\theoremstyle{plain}% default
