@@ -2756,7 +2756,7 @@ double obj_from_times(struct INSTANCE* ip, int report){
             int* timeNWTStart;
             timeNWTStart = mins_to_time((double) (ip->carerWorkingTimes[ni][0]));
             // printf("Nurse %d. Start time: %.2f\t", ni, (double)(ip->carerWorkingTimes[ni][0]));
-            printf("Nurse %d. Start time: %d:%d:%d, ", ni, *timeNWTStart, *(timeNWTStart + 1), *(timeNWTStart + 2));
+            printf("Carer %d. Start time: %d:%d:%d, ", ni, *timeNWTStart, *(timeNWTStart + 1), *(timeNWTStart + 2));
             int* timeNWTEnd;
             timeNWTEnd = mins_to_time((double) (ip->carerWorkingTimes[ni][1]));
             printf("End time: %d:%d:%d, ", *timeNWTEnd, *(timeNWTEnd + 1), *(timeNWTEnd + 2));
@@ -2783,7 +2783,7 @@ double obj_from_times(struct INSTANCE* ip, int report){
                 minSpareTime = sparetime;
             }
             if(report > 0){
-                printf("\tEmpty route for nurse %d, setting spare time to: %.2f\n\n", ni, sparetime);
+                printf("\tEmpty route for Carer %d, setting spare time to: %.2f\n\n", ni, sparetime);
             }
             continue;
         }
