@@ -1,15 +1,14 @@
 %!TEX root=./main_paper.tex
 \begin{algorithm}[htbp!]
 \caption{Path relinking}
-\label{alg::path_relinking}
+\label{alg:pathrelinking}
 \begin{algorithmic}[1]
-% \STATE \COMMENT{Driver routes}
-\State Let $\mathcal{S}_g = \{\mathcal{O}_g, \mathcal{R}_g\}$ be the guiding solution
-\State Let $\mathcal{S}_s = \{\mathcal{O}_s, \mathcal{R}_s\}$ be the starting solution
+\State Let $\mathcal{S}_g = \{\mathcal{R}_g, \mathcal{O}_g\}$ be the guiding solution
+\State Let $\mathcal{S}_s = \{\mathcal{R}_s, \mathcal{O}_s\}$ be the starting solution
 \State Let $\mathcal{S}_w = \mathcal{S}_s$ be the working solution
 \State Let $\mathcal{S}_r = \emptyset$ be the relinked solution;  $Q(\mathcal{S}_r) = -\infty$
 \State \texttt{n\_movements} = n + m
-\While {$\mathcal{S}_w \neq \mathcal{S}_g$} \label{alg:pr:main_while}
+\While {$\mathcal{S}_w \neq \mathcal{S}_g$} \label{alg:prmainwhile}
 	\For{$h  = 1, \dots, \texttt{n\_movements}$}
 		\State $\mathcal{S}_{best} = \emptyset$; $Q(\mathcal{S}_{best}) = -\infty$
 		\For{$i  = 1, \dots, n$}
@@ -34,7 +33,7 @@
 			% \ELSE
 				% \STATE Let $i_g$ and $k_g$ nurse and position of job $j$ in $\mathcal{S}_g$
 				\State Remove job $j$ from $\mathcal{S^*}$
-				\State Re-insert job $j$ in $\mathcal{S^*}$ in the position(s) that match $\mathcal{S}_g$ \label{alg:pr:for_insertion}
+				\State Re-insert job $j$ in $\mathcal{S^*}$ in the position(s) that match $\mathcal{S}_g$ \label{alg:prforinsertion}
 				% \FOR{($i_g, k_g$) all (nurse, position) pairs of job $j$ in $\mathcal{S}_g$} \label{alg:pr:for_insertion}
 				% 	\STATE Insert job $j$ in $\mathcal{S^*}$ in route $i_g$ and position $\min\{k_g, m_{i_g} - 1\}$ \label{alg:pr:insert_in_max}
 				% \ENDFOR
@@ -53,6 +52,5 @@
 \EndWhile
 \State $\mathcal{S}_r = \texttt{local\_search}(\mathcal{S}_r)$
 \Return $\mathcal{S}_r$
-
 \end{algorithmic}
 \end{algorithm}

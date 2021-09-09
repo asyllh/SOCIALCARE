@@ -1,10 +1,10 @@
 %!TEX root=./main_paper.tex
-\section{Randomly Generated Instances}\label{appendix:RandomlyGeneratedData}
-
-The generation of random data was done by creating a list of available staff and a list of tasks that required to be performed by the qualified staff. 
+\section{Randomly Generated Instances}
+\label{appendix:randomlygenerateddata}
+\noindent The generation of random data was done by creating a list of available staff and a list of tasks that required to be performed by the qualified staff. 
 For each of these, we define a number of properties that are important for our model. After identifying the structure that they follow in practice, we selected a number of values they could take and assigned a probability of occurring to each of these values, somewhat mimicking what happens in real life.
 
-The instances used in this article were generated with the parameters described in Table~\ref{Appendix:Tab:InstanceDescription}, where each combination of parameters led to one instance, a total of 216. The exact instances used are available here: \url{https://github.com/c-lamas/instances_hhcrsp}.
+The instances used in this article were generated with the parameters described in Table~\ref{appendix:table:instancedescription}, where each combination of parameters led to one instance, a total of 216. The exact instances used are available here: \url{https://github.com/c-lamas/instances_hhcrsp}.
 
 \begin{table}[htbp!]
 	\caption{Parameters used for generating the instance set. One instance was generated for each combination of parameters.}
@@ -18,10 +18,10 @@ The instances used in this article were generated with the parameters described 
 		Time window sizes & Small, Large, Mixed \\ \hline
 		Proportion of double services & 10\%, 20\%\\ \hline
 		Proportion of jobs with interdependencies & 10\%, 20\%\\ \hline
-	\end{tabular}\label{Appendix:Tab:InstanceDescription}
+	\end{tabular}\label{appendix:table:instancedescription}
 \end{table}
 
-The skill mix represented the diversity of skills in the workforce, as well as the broader or narrower range of tasks needed by patients. To mimic real settings, the workforce is organised in different bands. Each bad has at least one skill, and the probability of having further skills is higher in higher bands. The particular configuration of each skill mix used is described in Table~\ref{Appendix:Tab:SkillMixConfiguration}. The nurses were spread evenly across the bands, with more nurses in the lowest band if the total number of staff was non-divisible by the number of bands used.
+\noindent The skill mix represented the diversity of skills in the workforce, as well as the broader or narrower range of tasks needed by patients. To mimic real settings, the workforce is organised in different bands. Each bad has at least one skill, and the probability of having further skills is higher in higher bands. The particular configuration of each skill mix used is described in Table~\ref{appendix:table:skillmixconfiguration}. The nurses were spread evenly across the bands, with more nurses in the lowest band if the total number of staff was non-divisible by the number of bands used.
 
 \begin{table}[htbp!]
 	\centering
@@ -45,7 +45,7 @@ The skill mix represented the diversity of skills in the workforce, as well as t
 		Probability of single & 1 Skill: 80\% & 1 Skill: 80\% & 1 Skill: 80\% \\		
 		services requiring 	 & 				 & 2 Skills: 20\% & 2 Skills: 15\% \\		
 		one or more skills   & 				 & & 3 Skills: 5\% \\ \hline
-	\end{tabular}\label{Appendix:Tab:SkillMixConfiguration}
+	\end{tabular}\label{appendix:table:skillmixconfiguration}
 \end{table}
 
 We allowed for two types of nurse shifts (4 hours, 20\% or 8 hours, 80\%), which could start at time 0 (80\%) or after 2 hours (20\%).
