@@ -258,7 +258,7 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
     # Get information from excel data
     carer_id = carerdf_xl['Carer ID']
     for i in range(len(carer_id)):
-        if np.isnan(carer_id[i]): # if carer_id[i] == None
+        if math.isnan(carer_id[i]): # if carer_id[i] == None
             print('[WARNING]: Entry number ', i, ' for ', area, 'has no Carer ID.')
             print('Skipping entry.')
             continue
