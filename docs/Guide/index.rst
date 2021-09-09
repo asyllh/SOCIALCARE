@@ -1,7 +1,7 @@
 Guide
 =====
 
-To run *the program*, simpy double-click on the ``name.exe`` executable file. The OSRM server must be running prior to starting the program.
+To run CARROT, simpy double-click on the ``CARROT.exe`` executable file. The OSRM server must be running prior to starting the program.
 
 .. toctree::
     :maxdepth: 1
