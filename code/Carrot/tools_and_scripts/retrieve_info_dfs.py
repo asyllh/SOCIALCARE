@@ -1,7 +1,7 @@
 #--------------------#
 # retrieve_info_dfs.py
 # 21/04/2021
-# 
+# NOT USED
 #--------------------#
 
 import math

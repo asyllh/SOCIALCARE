@@ -1,6 +1,6 @@
 #--------------------#
+# CARROT - CARe ROuting Tool
 # class_cpo_df.py
-# 16/12/2020
 # class CPO_DF(): CodepointOpen Dataframe class
 # This class opens all csv files in codepo_gb folder, and goes through all files to find postcodes for the given CC/DC codes.
 # These dataframes are put into a dictionary, which are then put into a list and merged together into a single dataframe, df.
@@ -8,6 +8,7 @@
 # This class is used to obtain the longitudes and latitudes of any postcode in the given CC/DC areas, directly from codepoint open rather than using postcodelookup and fullcodepoint files.
 # Note: codepoint open does not contain the number of addresses per postcode (i.e. 'RP' column).
 # Used in convert_dict_inst.pu and compre_abicare_osrm.py.
+# 16/12/2020
 #--------------------#
 
 import os

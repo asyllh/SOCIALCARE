@@ -1,5 +1,7 @@
 #-----------------------#
+# CARROT - CARe ROuting Tool
 # instance_handler_dfs.py
+# main file containing functions to build and solve the instance of the problem
 # 06/05/2021
 #-----------------------#
 
@@ -9,7 +11,6 @@ import math
 import time
 import ctypes
 import folium
-import pickle
 import datetime
 import requests # For osrm API
 import subprocess
@@ -23,12 +24,12 @@ from numpy.ctypeslib import ndpointer
 # Display all rows and columns of dataframes in command prompt:
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
-def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, options_vector, wb_balance, quality_measure, max_time_seconds, random_seed): # changed from idict to client_df, carer_df.
+def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, options_vector, wb_balance, quality_measure, max_time_seconds, random_seed):
     
-    # Create instance of the INSTANCE class:
+    # Create instance of the INSTANCE class
     inst = INSTANCE()
    
-    # Build/fill inst object:
+    # Build/fill inst object
     inst = convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
         
     inst.lambda_1 = 1
@@ -41,7 +42,7 @@ def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, opti
     inst.MAX_TIME_SECONDS = max_time_seconds
     options_vector[55] = wb_balance # alpha_5 Workload balance (from user input)
 
-    # Create instances of JOB and CARER classes for inst:
+    # Create instances of JOB and CARER classes for inst
     inst.init_job_and_carer_objects(client_df, carerday_df)
 
     inst.algorithmOptions = options_vector
@@ -81,19 +82,18 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
     inst.nSkills = 5 # NOTE: this is a random number just for testing.
     cwd = os.getcwd()
 
+    # Create folder called 'output', if such a folder does not already exist.
     outputfiles_path = os.path.join(cwd, 'output')
     if not os.path.exists(outputfiles_path):
         os.mkdir(outputfiles_path)
     
-    # exit(-1)
-
+    # Create and fill arrays with data from the instance
     inst.carerWorkingTimes = np.zeros((inst.nCarers, 3), dtype=np.int32) # carerWorkingTimes is nCarers x 3, col[0] = start time, col[1] = finish time, col[2] = max working time.
     for i in range(inst.nCarers):
         inst.carerWorkingTimes[i][0] = carerday_df.iloc[i]['start']
         inst.carerWorkingTimes[i][1] = carerday_df.iloc[i]['end']
         inst.carerWorkingTimes[i][2] = carerday_df.iloc[i]['duration']
     
-    inst.carerSkills = np.ones((inst.nCarers, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
 
     inst.jobTimeInfo = np.zeros((inst.nJobs, 3), dtype=np.int32) # jobTimeInfo is nJobs x 3, col[0] = startTW, col[1] = endTW, col[2] = length of job (time)
     for i in range(inst.nJobs):
@@ -101,22 +101,16 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
         inst.jobTimeInfo[i][1] = client_df.iloc[i]['tw_end']
         inst.jobTimeInfo[i][2] = client_df.iloc[i]['duration']
 
-    inst.jobSkillsRequired = np.ones((inst.nJobs, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
-    inst.prefScore = np.zeros((inst.nJobs, inst.nCarers), dtype=np.float64)
+    
     inst.doubleService = np.zeros(inst.nJobs, dtype=np.int32)
     for i in range(inst.nJobs):
         if client_df.iloc[i]['num_carers'] > 1:
             inst.doubleService[i] = 1
+    nDS = np.sum(inst.doubleService) # Number of jobs that are double services
     
-    # print('double service:', inst.doubleService)
-    # exit(-1)
-    # inst.doubleService[2] = 1 # NOTE: just for testing, make one of the jobs a double service.
-    inst.dependsOn = np.full(inst.nJobs, -1, dtype=np.int32) # Set all jobs to -1, means no jobs are dependent on one another.
-    inst.algorithmOptions = np.zeros(100, dtype=np.float64)
 
     inst.od = np.zeros((inst.nJobs+1, inst.nJobs+1), dtype=np.float64) # TIME IN MINUTES, THIS WILL BE USED IN C
     osrm_table_request(inst, client_df, carerday_df, 'od')
-    # print(inst.od[:5,:5])
 
     inst.travelCostMatrix = np.zeros((inst.nJobs, inst.nJobs), dtype=np.float64) # NEW, OD_COST, 11/06/2021, take time in minutes and convert to cost.
     calculate_travel_cost_matrix(inst)
@@ -126,14 +120,16 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
 
     inst.carer_travel_to_depot = np.zeros((inst.nCarers, inst.nJobs), dtype=np.float64) # From job to carer's home - TIME IN MINS, THIS WILL BE USED IN C
     osrm_table_request(inst, client_df, carerday_df, 'carerto')
-    
-    #Note: this will not work as currently inst.doubleService is empty, and so nDS = 0 - third dimension of capabilityOfDS cannot be zero.
-    nDS = np.sum(inst.doubleService) # Number of jobs that are double services, NOTE: in testing, this is equal to one as we've set a job (job [2]) to be a double service.
+       
+    inst.carerSkills = np.ones((inst.nCarers, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
+    inst.jobSkillsRequired = np.ones((inst.nJobs, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
+    inst.prefScore = np.zeros((inst.nJobs, inst.nCarers), dtype=np.float64)
+    inst.dependsOn = np.full(inst.nJobs, -1, dtype=np.int32) # Set all jobs to -1, means no jobs are dependent on one another.
+    inst.algorithmOptions = np.zeros(100, dtype=np.float64)
+    # NOTE: what happens if nDS == 0, i.e. there are no double services? Cannot have third dimension of capabilityofDS matrix be zero, need to make it one.
     inst.capabilityOfDoubleServices = np.ones((inst.nCarers, inst.nCarers, nDS), dtype=np.int32) # NOTE: just for testing, setting it to all ones so that every pair of nurses is capable of doing the double service.
-
     inst.mk_mind = np.zeros(inst.nJobs+1, dtype=np.int32) #nJobs+1 because that's what is taken in by C, mk_mind[i] = mk_mind_data[i+1]
     inst.mk_maxd = np.zeros(inst.nJobs+1, dtype=np.int32)
-
     inst.solMatrix = np.zeros((inst.nCarers, inst.nJobs), dtype=np.int32)
     inst.timeMatrix = np.full((inst.nCarers, inst.nJobs), -1, dtype=np.float64) # NEW 03/06/2021
     inst.carerWaitingTime = np.zeros(inst.nCarers, dtype=np.float64) # NEW 03/06/2021
@@ -143,9 +139,8 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
     inst.carerTravelMatrix = np.zeros((inst.nCarers, inst.nJobs), dtype=np.float64) # NEW 03/06/2021
     inst.totalsArray = np.zeros(19, dtype=np.float64) # NEW 04/06/2021
 
-    # Matrix of size 10 by 4 by nCarers, where number of rows = number of shifts, col[0] = shift number, col[1] = start time, col[2]= end time, col[3] = duration of shift, and third dimension is number of nurses.
-    # i.e each 2d matrix is 10x4, and there are nCarers lots of 2d matrices to form a 3d matrix.
-    # Need to change number '10' to max number of shifts of all nurses.
+    # Matrix of size 50 by 4 by nCarers, where number of rows = number of shifts, col[0] = shift number, col[1] = start time, col[2]= end time, col[3] = duration of shift, and third dimension is number of nurses.
+    # i.e each 2d matrix is 50x4, and there are nCarers lots of 2d matrices to form a 3d matrix.
     numCarers = 0
     numShifts = 0
     shift_count = 0

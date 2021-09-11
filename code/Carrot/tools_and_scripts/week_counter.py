@@ -1,3 +1,10 @@
+#--------------------#
+# CARROT - CARe ROuting Tool
+# week_counter.py
+# Functions to calculate the index value for the day of the week based on 2-week and 8-week schedules
+# 30/07/2021
+#--------------------#
+
 import pandas as pd
 
 def date_in_visit_cycle(given_date, ref_date, week_cycle):

@@ -1,7 +1,8 @@
 #--------------------#
+# CARROT - CARe ROuting Tool
 # get_data_dfs.py
-# 25/06/2021
 # Retrieve information about carers and clients from abicare's new dataset format (client_carers_details.xlsx)
+# 25/06/2021
 #--------------------#
 
 import math
@@ -24,7 +25,7 @@ def time_dif_to_minutes(endtime, starttime, round=True):
     else:
         return mins
 
-def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, dayindex_2weeks=None, dayindex_8weeks=None, print_statements=True, filename='None', foldername='None'):
+def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, dayindex_2weeks=None, dayindex_8weeks=None, print_statements=False, filename='None', foldername='None'):
 
     if planning_date == None or dayindex_2weeks == None or dayindex_8weeks == None:
         print('[ERROR]: invalid timestamp for dayindex_2weeks and dayindex_8weeks.')
@@ -258,7 +259,7 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
     # Get information from excel data
     carer_id = carerdf_xl['Carer ID']
     for i in range(len(carer_id)):
-        if math.isnan(carer_id[i]): # if carer_id[i] == None
+        if pd.isnull(carer_id[i]): # if carer_id[i] == None
             print('[WARNING]: Entry number ', i, ' for ', area, 'has no Carer ID.')
             print('Skipping entry.')
             continue

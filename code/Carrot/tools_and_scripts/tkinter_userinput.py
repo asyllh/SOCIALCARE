@@ -1,7 +1,8 @@
 #--------------------#
+# CARROT - CARe ROuting Tool
 # tkinter_userinput.py
+# Tkinter pop-up for users to be able to select parameter values
 # 21/06/2021
-# 
 #--------------------#
 
 import os
