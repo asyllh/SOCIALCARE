@@ -67,18 +67,18 @@ The main contribution of this article is to present a DST for the HHCRSP that is
 %----------------------------------------------------------------------------------%
 \section{Literature review}
 \label{sec:litreview}
-\noindent The generalised growth in demand and availability of home health care services of recent years has resulted in a growth in academic interest in the related scheduling problem. While the problem might be addressed by drawing from the extensive vehicle routing problem (VRP) literature (see, for example, \cite{drexl2012} for a comprehensive review of VRPs and synchronisation constraints), HHCRSP has developed its own body of literature. In particular, there are two recent review articles, \cite{cisse2017} and \cite{fikar2017}. We refer the reader to them for a broader understanding of what is meant by HHCRSP and different solving approaches. Home Health Care and Home Care services across the world operate in different ways and, as such, the related scheduling problems have different objectives and constraints. For example, it might be possible to speed up the visits to some patients \citep{mosquera2019}, to allow nurses to share a minibus for part of their route, while walking the rest of it \citep{fikar2015}, for nurses to use public transport \citep{rest2016}, or to allow time preferences for patients \citep{decerle2018}. % This variety makes difficult comparing approaches and translating the findings from one application to another.
+\noindent The generalised growth in demand and availability of home health care services of recent years has resulted in a growth in academic interest in the related scheduling problem. While the problem might be addressed by drawing from the extensive vehicle routing problem (VRP) literature (see, for example, \cite{drexl2012} for a comprehensive review of VRPs and synchronisation constraints), HHCRSP has developed its own body of literature. In particular, there are recent review articles: \cite{cisse2017}, \cite{fikar2017}, \citet{dimascolo2021}, and \citet{grieco2020}. We refer the reader to them for a broader understanding of what is meant by HHCRSP and different solving approaches. Home Health Care and Home Care services across the world operate in different ways and, as such, the related scheduling problems have different objectives and constraints. For example, it might be possible to speed up the visits to some patients \citep{mosquera2019}, to allow nurses to share a minibus for part of their route, while walking the rest of it \citep{fikar2015}, for nurses to use public transport \citep{rest2016}, or to allow time preferences for patients \citep{decerle2018}. % This variety makes difficult comparing approaches and translating the findings from one application to another.
 
 
 In this section we review only articles that tackle problems that are similar to those occurring in the service we model, or that are especially relevant for our research, particularly those that tackle the synchronisation of patient visits.  
 
 % Exact methods
-Several articles propose exact methods. These are usually based on a Mixed Integer Linear Program (MILP) formulation that is solved with the help of a commercial solver \citep{bredstrom2008,bachouch2011, mankowska2014, aithaddadene2016}. Typically, these formulations are three index formulations that involve two types of variables: $x_{ijk}$ binary variables that indicate if carer $k$ traverses the arc $i$ and $j$; and $t_{ik}$ real variables that determine at what time carer $k$ starts performing job $i$. These formulations are limited in practice and can only solve to optimality small problems (e.g. 45 patients in \cite{aithaddadene2016} or 10 in \cite{mankowska2014}). In order to address this, some researchers propose to decompose the problem in a column generation scheme. For example, \cite{rasmussen2012} tackles the HHCRSP problem in Denmark. They propose a branch-and-price scheme where generalised synchronisation constraints are relaxed and dealt with in the branching. % \correction{Only Rasmussen?}
+Several articles propose exact methods. These are usually based on a Mixed Integer Linear Program (MILP) formulation that is solved with the help of a commercial solver \citep{bredstrom2008,bachouch2011, mankowska2014, aithaddadene2016}. Typically, these formulations are three index formulations that involve two types of variables: $x_{ijk}$ binary variables that indicate if carer $k$ traverses the arc $i$ and $j$; and $t_{ik}$ real variables that determine at what time carer $k$ starts performing job $i$. These formulations are limited in practice and can only solve to optimality small problems (e.g. 45 patients in \cite{aithaddadene2016} or 10 in \cite{mankowska2014}). In order to address this, some researchers propose to decompose the problem in a column generation scheme. For example, \cite{rasmussen2012} tackles the HHCRSP problem in Denmark. They propose a branch-and-price scheme where generalised synchronisation constraints are relaxed and dealt with in the branching.% \correction{Only Rasmussen?}
  % \correction{Cite relevant papers here}. The ILP formulations work well for small problems, but are often not practical to solve for problems with a significant number of patients. %around 50
 
-Often, in order to tackle larger instances, the MILPs are solved in a restricted manner and, while they do not guarantee optimality, they might provide feasible solutions suitable for day to day planning. This is often referred to as a matheuristic algorithm and can be done by reducing the size of the original problem by fixing some aspects and solving it again. One example of this technique is given in \cite{rasmussen2012} that also proposes clustering strategies to reduce the size of the problem, which allows them to solve problems with up to $150$ patients, although no longer proving optimality. Another is \cite{bredstrom2008}, where they propose a heuristic that iteratively allows or forbids assignments between patients and carers in order to generate a series of restricted MILPs that can be solved in a short time.
+Often, in order to tackle larger instances, the MILPs are solved in a restricted manner and, while they do not guarantee optimality, they might provide feasible solutions suitable for day to day planning. This is often referred to as a matheuristic algorithm and can be done by reducing the size of the original problem by fixing some aspects and solving it again. One example of this technique is given in \cite{rasmussen2012} that also proposes clustering strategies to reduce the size of the problem, which allows them to solve problems with up to $150$ patients, although no longer proving optimality. Another is \cite{bredstrom2008}, where they propose a heuristic that iteratively allows or forbids assignments between patients and carers in order to generate a series of restricted MILPs that can be solved in a short time. In addition, \citet{nikzad2021} considers a four-phase matheuristic that calls upon a variety of mixed integer models.
 
-Another approach, which is the one we use in this article, is to propose a metaheuristic algorithm independent of a mathematical solver. \cite{mankowska2014} and \cite{aithaddadene2016} propose an Adaptive Large Neighbourhood search and a hybrid GRASP combined with Iterated Local Search respectively. One advantage of the use of heuristic algorithms is that they do not require availability of a (often commercial) MILP solver, which is unlikely to be available to health care professionals. 
+Another approach, which is the one we use in this article, is to propose a metaheuristic algorithm independent of a mathematical solver. Various metaheuristic approaches have been widely studied in the literature: \citet{manavizadeh2020} considers a simulated annealing (SA) algorithm, whilst \citet{nasir2020} investigates the effectiveness of a hybrid genetic algorithm (GA). Furthermore, a memetic algorithm is proposed by \citet{shahnejat2021}, and four hybrid metaheuristics including combinations of GA and variable neighbourhood search (VNS) and SA with local search (LS) are developed by \citet{liu2021}. \cite{mankowska2014} and \cite{aithaddadene2016} propose an Adaptive Large Neighbourhood search and a hybrid GRASP combined with Iterated Local Search respectively. One advantage of the use of heuristic algorithms is that they do not require availability of a (often commercial) MILP solver, which is unlikely to be available to health care professionals. 
 
 Finally, we look at the literature that discusses the software implementation of the solution approaches in practice. One of the earliest works is due to \cite{begur1997}, who developed a decision support system based on the Clarke and Wright algorithm \citep{clarke1964} for vehicle routing and then relied on integration with a Geographic Information System (GIS), an interactive user interface and a human planner to alter the routes as necessary. The Laps Care system \citep{eveborn2006, eveborn2009} is a Swedish software for the HHCRSP, based on a repeated matching algorithm has been shown to be successful in saving planning time, minimising travel times and even reducing the number of missed visits. The authors estimated annual savings in 2009 of up to \euro 120 million across teams in Norway, Finland and Sweden \citep{eveborn2009}. Another software is Parpap \citep{bertels2006}, which proposes various approaches combining constraint programming and metaheuristics. A common claim in all these implementation-oriented works is that the software needs to be flexible enough to allow for real-world constraints to be implemented and offers interaction with mapping software.
 
@@ -95,7 +95,7 @@ After a schedule is generated, for each job $j \in J$ we denote by $t_j$ its sta
 In the rest of the section, we formally define the constraints and objectives that commonly apply in practice and relate to the skill mix of the workforce, the preferences of some assignments, travel times and synchronisation, visits with two staff members and quality of the schedule.
 
 %----------------------------------------------------------------------------------%
-\subsection{Skill mix}
+\subsection{Skill Mix}
 \label{sub:skillmix}
 \noindent Some jobs might require a specialised nurse to be performed, and nurses might only perform jobs that they are qualified to do. To model this, we define a function $S_1: N\times J \rightarrow \{0,1\}$, that takes value $1$ if nurse $i$ is skilled to perform job $j$, $S_1(i,j) = 1$ and $0$ otherwise. 
 Naturally, for double service jobs, no single nurse is skilled to perform them $S_1(i,j) = 0, \forall i \in N, \forall j \in DS$. To account for this, we define a second function $S_2: N\times N\times J \rightarrow \{0,1\}$, that takes value $S_2(i_1,i_2,j) = 1$ if the combination of nurses $i_1$ and $i_2$ is sufficiently skilled to perform job $j$ and $0$ otherwise. 
@@ -122,7 +122,7 @@ It is not uncommon in the literature to model the skills of the workforce as hie
 \noindent It is not uncommon in practice that district nurses do their planning using preferences. These might arise from multiple reasons, such as a preserving continuity of care, gender preference, patients and nurses speaking the same language, previous conflicts between a patient and a staff member, \model{etc}. We model this with a preference function, $P: N\times J \rightarrow \mathbb{R}$, such that $P(i,j)$ represents the preference score of assigning job $i$ to staff member $j$. The function $P$ should assign a higher (positive) score to preferred patient-nurse assignments and a lower (negative) score to assignments that are better avoided. We give an indication on how to choose the specific values of the function in Section~\ref{subsub:adequateweights}.
 
 %----------------------------------------------------------------------------------%
-\subsection{Travel times}
+\subsection{Travel Times}
 \label{sub:traveltimes}
 \noindent To describe travel times, for each nurse we define $N$ functions $T_i: J\cup\{k^i_0\} \times J\cup\{k^i_0\} \rightarrow \mathbb{R}$, $i \in N$, where $T_i(j_1, j_2)$ indicates the time it takes nurse $i$ to travel from job $j_1$ to job $j_2$, where $k^i_0$ refers to the start and end location of the nurse $i$. Each nurse might start from a different depot (typically, their own home), a fact that is accounted for in these functions. Note that with this definition we allow to have different travel times between jobs for different nurses, and this can be used to model, for example, different means of transport. In our observations, however, all nurses used their own vehicles, so we assume that $T_i$ returns driving times for all nurses and, in particular, that:
 \begin{equation}
@@ -134,7 +134,7 @@ It is not uncommon in the literature to model the skills of the workforce as hie
 % For simplicity, we also assume this in our experiments, although a more complex function could be provided without modifying the DST.
 
 %----------------------------------------------------------------------------------%
-\subsection{Temporal constraints}
+\subsection{Temporal Constraints}
 \label{sub:temporalconstraints}
 \noindent Each job $j$ has a service time $s_j$ and a time window $t_j$ that is defined by its earliest start time, $e_j$ and the latest start time $l_j$. It is a hard constraint that jobs cannot start before their earliest start time:
 \begin{align}
@@ -210,14 +210,14 @@ and
 % The objective function is based on the quality of a solution, which consists on a few measures of interest that are added together with different weights. Performance measures to be maximised have positive weights, while those to be minimised have negative weights.
 \noindent We consider a weighted objective function that includes waiting time, travel time, tardiness, maximum tardiness, overtime, workload balance and preferences. The measures to be maximised have positive weights, while those to be minimised have negative weights.
 
-\paragraph{Total waiting time}\ \\
-The total waiting time in a solution $\bar{W}$, calculated as:
+\subsubsection*{1. Total waiting time}
+\noindent The total waiting time in a solution $\bar{W}$, calculated as:
 \begin{equation}
      \bar{W} = \sum_{i \in N} \sum_{j \in r_i \subset \mathcal{S}} w_{ij}.
 \end{equation}
 
-\paragraph{Total travel time}\ \\
-If we denote by $TR(r_i)$ travel time associated with a route $r_i$, such that:
+\subsubsection*{2. Total travel time}
+\noindent If we denote by $TR(r_i)$ travel time associated with a route $r_i$, such that:
 \begin{equation}
     TR(r_i) =  \sum_{h = 0}^{m_i - 1} T_i(k^i_h, k^i_{h + 1}),
 \end{equation}
@@ -226,20 +226,20 @@ then the total travel time in $\mathcal{S}$, $\bar{T}$, is calculated as:
      \bar{T} = \sum_{i \in N}  TR(r_i).
 \end{equation}
 
-\paragraph{Total tardiness}\ \\
-The total tardiness in a solution, $\bar{Z}$, is simply the sum of the tardiness across all jobs:
+\subsubsection*{3. Total tardiness}
+\noindent The total tardiness in a solution, $\bar{Z}$, is simply the sum of the tardiness across all jobs:
 \begin{equation}
     \bar{Z} = \sum_{j \in J} z_j.
 \end{equation}
 
-\paragraph{Maximum tardiness}\ \\
-The maximum tardiness in a solution, $Z_{max}$, is given by:
+\subsubsection*{4. Maximum tardiness}
+\noindent The maximum tardiness in a solution, $Z_{max}$, is given by:
 \begin{equation}
-    Z_{max} = \max_{j \in J} z_j
+    Z_{max} = \max_{j \in J} z_j.
 \end{equation}
 
-\paragraph{Total Overtime}\ \\
-The total overtime in the solution, $\bar{O}$, is calculated as the sum of the overtime of all nurses, where the overtime for each nurse represents the time by which their finish time exceeds their end of shift time, $en(i)$. If we denote the arrival of a nurse $i$ to its end point by $arr(i)$:
+\subsubsection*{5. Total overtime}
+\noindent The total overtime in the solution, $\bar{O}$, is calculated as the sum of the overtime of all nurses, where the overtime for each nurse represents the time by which their finish time exceeds their end of shift time, $en(i)$. If we denote the arrival of a nurse $i$ to its end point by $arr(i)$:
 \begin{equation}
 	arr(i) = st(i) + TR(r_i) + \sum_{k \in r_i} w_k + s_k,
 \end{equation}
@@ -248,14 +248,14 @@ then the total overtime can be calculated as:
      \bar{O} = \sum_{i \in N} \max \{0, arr(i) - en(i)\}.
 \end{equation}
 
-\paragraph{Workload balance}\ \\
-In order to produce practical solutions, maintaining a balance in the workload is fundamental. To achieve this, we quantify the minimum spare time on any nurse route in the schedule, $\bar{B}$. If $\bar{B}$ is minimised, we favour solutions in which the lowest spare time of any given nurse is as large as possible, hence removing imbalance when possible.
+\subsubsection*{6. Workload balance}
+\noindent In order to produce practical solutions, maintaining a balance in the workload is fundamental. To achieve this, we quantify the minimum spare time on any nurse route in the schedule, $\bar{B}$. If $\bar{B}$ is minimised, we favour solutions in which the lowest spare time of any given nurse is as large as possible, hence removing imbalance when possible.
 \begin{equation}
     \bar{B} = \min_{i \in N} \left\{\max \{0, en(i) - arr(i)\} \right\}.
 \end{equation}
 
-\paragraph{Total preference score}\ \\
-The total preference score in the solution, $\bar{P}$, is computed as:
+\subsubsection*{7. Total preference score}
+\noindent The total preference score in the solution, $\bar{P}$, is computed as:
 \begin{equation}
     \bar{P} = \sum_{i \in N} \sum_{j \in r_i \subset \mathcal{R}} P(i,j).
 \end{equation}
@@ -301,9 +301,9 @@ The weights we propose for the Decision Support Tool are listed in Table~\ref{ta
     \centering
     \caption{Weights proposed for the objective function of the DST}
     \begin{tabular}{ccc}
-    \hline
+    \toprule
     \textbf{Weight}  & \textbf{Value} & \textbf{Description} \\
-    \hline
+    \midrule
     $\alpha_1$      &   -1   &   Travel time \\
     $\alpha_2$      &   -1   &   Waiting time \\
     $\alpha_3$      &   -15   &   Tardiness \\
@@ -311,7 +311,7 @@ The weights we propose for the Decision Support Tool are listed in Table~\ref{ta
     $\alpha_5$      &   $\frac{1}{2}$   &   Workload balance \\       
     $\alpha_6$      &   1   &   Preference score \\    
     $\alpha_7$      &   0   &   Maximum tardiness\\    
-    \hline
+    \bottomrule
     \end{tabular}
     \label{table:adequateweights}
 \end{table}
@@ -463,9 +463,9 @@ In our experiments setting a dissimilarity threshold of $5$ proved sufficient to
 \label{subsub:typepathrelinking}
 \noindent Path relinking is performed at the end of the algorithm between all pairs of solutions in the pool. However, it is also possible to perform path relinking at intermediate steps of the algorithm too, each time a new solution is generated. Since this is potentially very time consuming, we have we have investigated the following three strategies for relinking intermediate solutions:
 \begin{itemize}
-    \item PR01 Perform path relinking between every generated solution and another solution selected randomly from the pool.
-    \item PR02 Perform path relinking between every new solution and all solutions in the pool.
-    \item PR03 Do not perform path relinking during the algorithm.
+    \item PR01: Perform path relinking between every generated solution and another solution selected randomly from the pool.
+    \item PR02: Perform path relinking between every new solution and all solutions in the pool.
+    \item PR03: Do not perform path relinking during the algorithm.
 \end{itemize}
 
 \noindent Finally, another important parameter of PR is the direction. In forward path relinking, the quality of the starting solution is less or equal than the quality of the guiding solution. In backward path relinking, the quality of the guiding solution is lower. In order to determine the choice of direction, we use the parameter \texttt{pr\_direction}, which represents the choice of direction of path relinking in each iteration: backward, forward, backward and forward or a random pick between them. For relinking at the end of the algorithm we always use both, forward path relinking and backward path relinking, between all pairs of solutions.
@@ -477,12 +477,12 @@ Both a suitable strategy and direction for PR are determined in Section~\ref{sub
 \label{sec:computationalexperiments}
 
 %----------------------------------------------------------------------------------%
-\subsection{Testing data}
+\subsection{Testing Data}
 \label{sub:testing}
 \noindent For our experiments, we use three datasets. Two are from two similar problems in the literature, presented in \cite{mankowska2014} and \cite{aithaddadene2016}, and are used to evaluate the algorithm performance in Section~\ref{sub:algorithmperformance}. The third dataset is composed of randomly generated instances based on road distances in the city of Southampton. This dataset is used for tuning the algorithm parameters in Section~\ref{sub:parametertuning} and to explore different weights of the objective function in Section~\ref{sub:exploringobjfunction}. Details on the instances and the process for generating them are detailed in \ref{appendix:randomlygenerateddata}.
 
 %----------------------------------------------------------------------------------%
-\subsection{Parameter tuning}
+\subsection{Parameter Tuning}
 \label{sub:parametertuning}
 \noindent The GRASP algorithm is made up of several components, for each of which we have identified various potential configurations. %For example, we can choose whether to use or not some of the neighbourhoods described in Section~\ref{subseq:local_search}.
 In order to select the best possible configuration automatically and in a statistically sound manner, we used the software package \texttt{irace} \citep{lopez2016} with a budget of 1000 runs. Table~\ref{table:parameters} shows a list of the hyper-parameters and solving strategies tested. In the first column we show the name of the hyper-parameter, in the second column a brief description, in the third column the type of variable we used for testing it, in the fourth column the values that were tested and in the fifth column the best value found by \texttt{irace}.
@@ -492,19 +492,19 @@ In order to select the best possible configuration automatically and in a statis
     \centering
     \caption{Parameters tested for configuring the GRASP algorithm, along with their type, values tested and the best configuration found by \texttt{irace}. Variable types used are binary (B), Categorical (C), Integer (I) and Real (R).}
     \begin{tabular}{cp{5.5cm}ccc}
-    \hline
+    \toprule
     \textbf{Parameter}& \textbf{Explanation}  & \textbf{Type} & \textbf{Tested} & \textbf{Best} \\
-    \hline
-    NE03                    & Use a local search neighbourhood to change nurse order & B & Yes, No               &  Yes  \\ % no_change_ls
-    NE05                    &   Use the two opt neighbourhood & B & Yes, No                           & No   \\ % do_twopt
-    NurseChange             &   Change nurse order between GRASP iterations & B & Yes, No                        &  Yes  \\ % no_change_grasp
-    \texttt{pr\_strategy}   &  Path relinking strategy, as listed in Section~\ref{sub:pathrelinking}& C & 1, 2, 3   &   1 \\ %  
-    \texttt{pr\_direction}  &   Path relinking direction: forward (1), backward (2), forward and backward (3), chosen randomly at each iteration (4).& C & 1, 2, 3, 4       &   1 \\ % performPathRelinking
-    \texttt{pool\_size}     &  Number of solutions in pool & I & [1,100]                                            & 19    \\ % sols_in_pool
-    \texttt{grasp\_dl}              & Minimum value of $\delta$ &   R & [0,0.5]                                     & 0.25  \\ % grasp_dl
-    \texttt{grasp\_dr}              & Range of $\delta$ &   R & [0,1]                                               & 0.81\\ % grasp_dr
-    \texttt{rcl\_strategy}          & Strategy for generating the reduced candidate list & C & 1,2          & 2 \\ % rcl_strategy    
-    \hline
+    \midrule
+    NE03 & Use a local search neighbourhood to change nurse order & B & Yes, No & Yes \\ % no_change_ls
+    NE05 & Use the two opt neighbourhood & B & Yes, No & No \\ % do_twopt
+    NurseChange & Change nurse order between GRASP iterations & B & Yes, No & Yes \\ % no_change_grasp
+    \texttt{pr\_strategy} & Path relinking strategy, as listed in Section~\ref{sub:pathrelinking} & C & 1, 2, 3 & 1 \\ %  
+    \texttt{pr\_direction} & Path relinking direction: forward (1), backward (2), forward and backward (3), chosen randomly at each iteration (4) & C & 1, 2, 3, 4 & 1 \\ % performPathRelinking
+    \texttt{pool\_size} & Number of solutions in pool & I & [1,100] & 19 \\ % sols_in_pool
+    \texttt{grasp\_dl} & Minimum value of $\delta$ & R & [0,0.5] & 0.25 \\ % grasp_dl
+    \texttt{grasp\_dr} & Range of $\delta$ & R & [0,1] & 0.81 \\ % grasp_dr
+    \texttt{rcl\_strategy} & Strategy for generating the reduced candidate list & C & 1,2 & 2 \\ % rcl_strategy    
+    \bottomrule
     \end{tabular}
     \label{table:parameters}
 \end{table}
@@ -514,11 +514,11 @@ For the remainder of the section we use the parameters found by \texttt{irace} i
 %----------------------------------------------------------------------------------%
 \subsection{Variations in the Literature}
 \label{sub:literaturedata}
-\noindent While the problems reported by \cite{mankowska2014} and \cite{aithaddadene2016} are very similar to the one we describe, there are slight variations in how the problem is modelled that need to considered. \cite{mankowska2014} describes the following objective function:
+\noindent While the problems reported by \cite{mankowska2014} and \cite{aithaddadene2016} are very similar to the one we describe, there are slight variations in how the problem is modelled that need to be considered. \cite{mankowska2014} describes the following objective function:
 \begin{equation}
     \min \lambda_1 Dist + \lambda_2 Travel + \lambda_3 Travel^{max},
 \end{equation}
-where $Dist$ denotes the distance travelled by all nurses, $Travel$ denotes the total tardiness and $Travel^{max}$ denotes the maximum tardiness. For \cite{mankowska2014} tardiness refers to the time between the end of its time window and the actual start time of a job. Tardiness is not allowed for interdependent jobs, where the dependency gap is a hard constraint. Further, the synchronisation is simplified for jobs with two skills, where the skill with the lower index must always be performed earlier than the skill with the largest index.
+where $Dist$ denotes the distance travelled by all nurses, $Travel$ denotes the total tardiness and $Travel^{max}$ denotes the maximum tardiness. For \cite{mankowska2014} tardiness refers to the time between the end of its time window and the actual start time of a job. Tardiness is not allowed for interdependent jobs, where the dependency gap is a hard constraint. Furthermore, the synchronisation is simplified for jobs with two skills, where the skill with the lower index must always be performed earlier than the skill with the higher index.
 Tardiness does not include overtime for the workers either, which is not mentioned in the model, so we have not set a limit for working hours of staff when solving these instances.
 
 The lambda values are weights to determine the importance of each factor, and the values they chose for their experiments are $\lambda_1 = \lambda_2 = \lambda_3 = \frac{1}{3}$.
@@ -532,11 +532,11 @@ In Table~\ref{table:adaptedobjvalues} we specify the weights used in the objecti
 
 \begin{table}[htbp!]
     \centering
-    \caption{Weights used in the objective function to match those used in the methods from  \cite{aithaddadene2016} (AH) and \cite{mankowska2014} (MK). A weight of zero indicates that the measure is not considered, while a dash indicates that those measures that were considered infeasible, i.e. they contribute to $I(S)$.}
+    \caption{Weights used in the objective function to match those used in the methods from  \citet{aithaddadene2016} (AH) and \citet{mankowska2014} (MK). A weight of zero indicates that the measure is not considered, while a dash indicates that those measures that were considered infeasible, i.e. they contribute to $I(S)$.}
     \begin{tabular}{ccc}
-    \hline
+    \toprule
     \textbf{Weight}  & \textbf{Values for AH} & \textbf{Values for MK} \\
-    \hline
+    \midrule
     $\alpha_1$      &   $-0.3\times60$          &  $-\frac{1}{3}\times60$   \\
     $\alpha_2$      &   $0$                     &  $0$                      \\
     $\alpha_3$      &   -                       &  $-\frac{1}{3}\times60$   \\
@@ -544,7 +544,7 @@ In Table~\ref{table:adaptedobjvalues} we specify the weights used in the objecti
     $\alpha_5$      &   $0$                     &  $0$                      \\       
     $\alpha_6$      &   $-1$                    &  $0$                      \\    
     $\alpha_7$      &   -                       &  $-\frac{1}{3}\times60$             \\    
-    \hline
+    \bottomrule
     \end{tabular}
     \label{table:adaptedobjvalues}
 \end{table}
@@ -556,46 +556,43 @@ Another difference between \cite{aithaddadene2016} and our model is that for tim
 %----------------------------------------------------------------------------------%
 \subsection{Algorithm Performance}
 \label{sub:algorithmperformance}
-\noindent While the problem description of our DST is slightly different from the examples seen in Section~\ref{sub:literaturedata}, we test the performance of GRASP algorithm, with the required modifications, in the instances provided by \cite{aithaddadene2016} and \cite{mankowska2014}.
+\noindent While the problem description of our DST is slightly different from the examples seen in Section~\ref{sub:literaturedata}, we test the performance of the GRASP algorithm, with the required modifications, in the instances provided by \cite{aithaddadene2016} and \cite{mankowska2014}. For all the instances, we perform 5 runs and report the best and the average result. The full computational results and solving times are listed in the Appendix tables \ref{table:mkresults}, \ref{table:aithresults}, and \ref{table:longerexperiments}. 
 
-For all the instances, we perform 5 runs and report the best and the average result. The full computational results and solving times are listed in the Appendix tables \ref{table:mkresults}, \ref{table:aithresults} and \ref{table:longerexperiments}. 
-
-In Table~\ref{table:grouptableaithcombined} we present a summary of the results found by our DST for the three instance groups presented in \cite{AitHaddadene2016}. The results are the average of the best and average results found for the instances of the three instance groups \emph{G1}, \emph{G2} and \emph{G3}. We have allowed a time of 5 seconds for instances in the group \emph{G1}, 5 minutes for those in \emph{G2} and three hours for the instances in \emph{G3}. See \ref{appendix:allowingextratime} for a note on how solution quality varies when increasing solving time.
+In Table~\ref{table:grouptableaithcombined} we present a summary of the results found by our DST for the three instance groups presented in \cite{aithaddadene2016}. The results are the average of the best and average results found for the instances of the three instance groups \emph{G1}, \emph{G2} and \emph{G3}. We have allowed a time of 5 seconds for instances in the group \emph{G1}, 5 minutes for those in \emph{G2} and three hours for the instances in \emph{G3}. See \ref{appendix:allowingextratime} for a note on how solution quality varies when increasing solving time.
 
 \input{combined_table_aith_results.tex}
 
-\noindent These results suggest that our DST can find better objective values within reasonable planning times. Further, we are able to replicate the 23 optimal solutions provided in the paper. The average results show that GRASP is also consistent across runs, finding the optimal solutions for all runs in group \emph{G1} and in most of the runs in group \emph{G2}.
+\noindent These results suggest that our DST can find better objective values within reasonable planning times. In addition, we are able to replicate the 23 optimal solutions provided in the paper. The average results show that \comp{GRASP} is also consistent across runs, finding the optimal solutions for all runs in group \emph{G1} and in most of the runs in group \emph{G2}.
 
-Similarly, in Table~\ref{table:grouptablemkavgbest} we present the comparison of our DST against the performance of the AVNS algorithm presented in \cite{mankowska2014}.
+Similarly, in Table~\ref{table:grouptablemkavgbest} we present the comparison of our DST against the performance of the AVNS algorithm presented in \citet{mankowska2014}.
 
 \begin{table}
 	\centering
-	\caption{Performance of the GRASP algorithm (average of best and average results) compared to the AVNS algorithm presented in \cite{mankowska2014} (\emph{mk\_avns}) for the instance groups \emph{A} -- \emph{G}}
+	\caption{Performance of the \comp{GRASP algorithm} (average of best and average results) compared to the AVNS algorithm presented in \citet{mankowska2014} (\emph{mk\_avns}) for the instance groups \emph{A} -- \emph{G}. Figures in bold indicate the best results for each instance group. \comp{mk only 2dp, why?}}
 	\begin{tabular}{c|c|ccc}
-		\hline
+		\toprule
 		        &  \emph{mk\_avns}    &   \multicolumn{3}{c}{GRASP} \\
-		Group   &   Result    &   Best        &   Avg         &   Time limit\\ \hline
+		Group   &   Result    &   Best        &   Avg         &   Time limit\\
+		\midrule
 		\emph{A}    &   \textbf{225.6}  &   226.41  &   226.41      &   5 s\\
 		\emph{B}    &   475.1   &   \textbf{408.25} &   408.31      &   30 s\\
 		\emph{C}    &   713.6   &   \textbf{628.15} &   637.59      &   1 min\\
-		\emph{D}    &   930.3   &   \textbf{798.8}  &   814.53      &   5 min\\
-		\emph{E}    &   1064.7  &   \textbf{880.06} &   901         &   15 min\\
-		\emph{F}    &   1588    &   \textbf{1405.68}&   1491.09     &   30 min\\
-		\emph{G}    &   2161.2  &   \textbf{2042.1} &   2341.89     &   3 h\\
-
-		\hline
+		\emph{D}    &   930.3   &   \textbf{798.80}  &   814.53      &   5 min\\
+		\emph{E}    &   1064.7  &   \textbf{880.06} &   901.00       &   15 min\\
+		\emph{F}    &   1588.0    &   \textbf{1405.68}&   1491.09     &   30 min\\
+		\emph{G}    &   2161.2  &   \textbf{2042.10} &   2341.89     &   3 h\\
+		\bottomrule
 	\end{tabular}
 	\label{table:grouptablemkavgbest}
 \end{table}
 
-GRASP clearly outperforms AVNS in the majority of instances, especially on those of larger sizes.
-Further, our algorithm is able to replicate most of the proven optimal solutions (9 of the 10 instances for which \cite{mankowska2014} provides an optimal solution). In the instance group A, where the AVNS finds all optimal solutions for the problem, GRASP fails to replicate one of these solutions, hence increasing the average. This is one of the cases where the assumption that a start time of a job should be as early as possible for the first nurse arriving \eqref{eqn:earliestpossiblestartassumption2} proves to be too restrictive and removes the optimal solution from the search space of the metaheuristic. Nevertheless, the loss in quality is under $5\%$ and the route itself found by the two algorithms is the same (but not the scheduled start times). While this effect might still occur in larger instances, it is not evident from our results, suggesting that the efficiency gains seem to outweigh the potential decrease in quality.
+\comp{GRASP} clearly outperforms AVNS in the majority of instances, especially on those of larger sizes.
+Further, our algorithm is able to replicate most of the proven optimal solutions (9 of the 10 instances for which \cite{mankowska2014} provides an optimal solution). In the instance group A, where the AVNS finds all optimal solutions for the problem, GRASP fails to replicate one of these solutions, hence increasing the average. This is one of the cases where the assumption that a start time of a job should be as early as possible for the first nurse arriving \eqref{eqn:earliestpossiblestartassumption2} proves to be too restrictive and removes the optimal solution from the search space of the metaheuristic. Nevertheless, the loss in quality is under $5\%$ and the route itself found by the two algorithms is the same (but not the scheduled start times). While this effect may still occur in larger instances, it is not evident from our results, suggesting that the efficiency gains seem to outweigh the potential decrease in quality.
 
 %----------------------------------------------------------------------------------%
 \subsection{Trade-offs in Solution Quality}
 \label{sub:exploringobjfunction}
-\noindent While the previous section sheds some light on the algorithmic performance of the GRASP algorithm and, in general, of our ability to solve efficiently HHCRSP problems of size similar to those faced by district nursing teams in the UK, it does not provide any insight on the actual applicability of these solutions.
-In this section we focus on the instances from \cite{aithaddadene2016} that are solved to optimality (with up to 45 patients) and analyse how these solutions would look like from the perspective of a team of nurses undertaking the job. This means asking questions like: Is the workload fairly distributed? How long does it take to complete the shift? Are patients seeing their preferred carers (or vice versa)?
+\noindent While the previous section sheds some light on the algorithmic performance of the GRASP algorithm and, in general, of our ability to solve efficiently HHCRSP problems of size similar to those faced by district nursing teams in the UK, it does not provide any insight on the actual applicability of these solutions. In this section, we focus on the instances from \cite{aithaddadene2016} that are solved to optimality (with up to 45 patients) and analyse how these solutions would appear from the perspective of a team of nurses undertaking the task. This involves asking questions such as: Is the workload fairly distributed? How long does it take to complete the shift? Are patients seeing their preferred carers (or vice versa)?
 
 In order to answer these questions, we examine closely the values of a few key indicators of the quality of a solution: \emph{Total time}, \emph{Travel time}, \emph{Waiting time}, \emph{Preferences} and \emph{Longest Day}, which is the time it takes to perform the longest shift in the solution. We compare the indicators found by using the original objective function (listed in Table~\ref{table:adaptedobjvalues}) with those found by using our proposed objective function (the values listed in Table~\ref{table:adequateweights}, but with preferences being negative and time quantities scaled by $-0.3\times60$, in order to scale them to the data). The result of this comparison is shown in Table~\ref{table:comparisonofqualities}.
 
@@ -606,9 +603,9 @@ The comparison clearly indicates that there is a significant amount of waiting t
 %----------------------------------------------------------------------------------%
 \section{Conclusion}
 \label{sec:conclusion}
-\noindent In this article we propose a Decision Support Tool for the Home Health Care Routing and Scheduling Problem that is daily faced by district nursing teams. We propose a model that includes the most common constraints observed in practice (skills, time windows, synchronisation, double services) and objectives (travel time, waiting time, assignment preferences, workload balance, tardiness, overtime). This comprehensive approach provides flexibility in the modelling of the working environment in order to be applicable in general real settings. This allows for modelling a variety of situations, for example, teams with large workloads might find that overtime and tardiness are acceptable but should be penalised, while other teams with less workload might find those solutions infeasible and prefer to weight more patient preferences instead.
-At the core of the DST is a GRASP algorithm with Path Relinking that is capable to solve the underlying NP-Hard problem successfully for the usual instance sizes observed in practice. We show that the DST is competitive and outperforms other methods in the state-of-the-art literature, and it is able to identify most of the optimal solutions known for the problem. 
-Furthermore, we show that current literature ignores route aspects that are important to decision makers, such as waiting time. By including waiting times, we can reduce total operation times by up to 19\% when compared to optimal solutions in the literature that minimise travel times only.
+\noindent In this article we propose a Decision Support Tool for the Home Health Care Routing and Scheduling Problem that is faced daily by district nursing teams. We propose a model that includes the most common constraints observed in practice (skills, time windows, synchronisation, double services) and objectives (travel time, waiting time, assignment preferences, workload balance, tardiness, overtime). This comprehensive approach provides flexibility in the modelling of the working environment in order to be applicable in general real settings. This allows for modelling a variety of situations, for example, teams with large workloads might find that overtime and tardiness are acceptable but should be penalised, whilst other teams with less workload might find those solutions infeasible and prefer to weight more patient preferences instead.
+
+At the core of the DST is a GRASP algorithm with Path Relinking that is capable of solving the underlying NP-hard problem successfully for the usual instance sizes observed in practice. We show that the DST is competitive and outperforms other methods in the state-of-the-art literature, and is able to identify most of the optimal solutions known for the problem. Furthermore, we show that current literature ignores route aspects that are important to decision makers, such as waiting time. By including waiting times, we can reduce total operation times by up to 19\% when compared to optimal solutions in the literature that minimise travel times only.
 
 %----------------------------------------------------------------------------------%
 \section{Funding}
