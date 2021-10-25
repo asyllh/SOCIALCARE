@@ -91,20 +91,20 @@
 %\colorlet{myYellow}{Goldenrod}
 \definecolor{myYellow}{HTML}{F9E22E} %FFE72F
 
-\hypersetup{
-		linkcolor=myPurple,
-		citecolor=myAqua,
-		urlcolor=black
-}
-
-% The document class `elsarticle` uses the \AtBeginDocument comman to define the colour of all link types as blue, so we use the \AtBeginDocument command again to overwrite the colour settings to the colors we choose. REMEMBER TO REMOVE THIS BEFORE SUBMITTING.
-%\AtBeginDocument{% 
-%	\hypersetup{
+%\hypersetup{
 %		linkcolor=myPurple,
 %		citecolor=myAqua,
 %		urlcolor=black
-%	}
-%} %end of \AtBeginDocument
+%}
+
+% The document class `elsarticle` uses the \AtBeginDocument comman to define the colour of all link types as blue, so we use the \AtBeginDocument command again to overwrite the colour settings to the colors we choose. REMEMBER TO REMOVE THIS BEFORE SUBMITTING.
+\AtBeginDocument{% 
+	\hypersetup{
+		linkcolor=myPurple,
+		citecolor=myAqua,
+		urlcolor=black
+	}
+} %end of \AtBeginDocument
 
 \newcommand{\intro}[1]{{\color{blue}#1}}
 
