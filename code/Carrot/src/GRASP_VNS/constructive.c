@@ -2301,25 +2301,25 @@ void set_carer_time(struct INSTANCE* ip, int carerj){
         // Dependent jobs:
         if(ip->dependsOn[job] > -1){
             int otherJob = ip->dependsOn[job];
-            for(int prevNurseInd = 0; prevNurseInd < ip->nCarers; ++prevNurseInd){
-                int prevNurse = ip->carerOrder[prevNurseInd];
-                if(prevNurse==carerj){
+            for(int prevCarerInd = 0; prevCarerInd < ip->nCarers; ++prevCarerInd){
+                int prevCarer = ip->carerOrder[prevCarerInd];
+                if(prevCarer==carerj){
                     considerDependency = -1;
                     break;
                 }
-                if(ip->timeMatrix[prevNurse][otherJob] > 0){
+                if(ip->timeMatrix[prevCarer][otherJob] > 0){
                     if(aitOnly > 0){
                         ip->MK_mind[job] = abs(ip->MK_mind[job]);
                         ip->MK_maxd[job] = abs(ip->MK_maxd[job]);
 
-                        double laa = ip->timeMatrix[prevNurse][otherJob] - ip->MK_maxd[job];
+                        double laa = ip->timeMatrix[prevCarer][otherJob] - ip->MK_maxd[job];
                         if((laa >= startTW) && (arriveAt <= laa)){ //NB: arrive at is used here!
                             ip->MK_mind[job] = -1*ip->MK_mind[job];
                             ip->MK_maxd[job] = -1*ip->MK_maxd[job];
                         }
                     }
-                    startTWMK = ip->timeMatrix[prevNurse][otherJob] + ip->MK_mind[job];
-                    endTWMK = ip->timeMatrix[prevNurse][otherJob] + ip->MK_maxd[job];
+                    startTWMK = ip->timeMatrix[prevCarer][otherJob] + ip->MK_mind[job];
+                    endTWMK = ip->timeMatrix[prevCarer][otherJob] + ip->MK_maxd[job];
                     considerDependency = 1;
                     break;
                 }
@@ -2328,14 +2328,14 @@ void set_carer_time(struct INSTANCE* ip, int carerj){
 
         // Double service jobs:
         if(ip->doubleService[job] > 0){
-            for(int prevNurseInd = 0; prevNurseInd < ip->nCarers; ++prevNurseInd){
-                int prevNurse = ip->carerOrder[prevNurseInd];
-                if(prevNurse==carerj){
+            for(int prevCarerInd = 0; prevCarerInd < ip->nCarers; ++prevCarerInd){
+                int prevCarer = ip->carerOrder[prevCarerInd];
+                if(prevCarer==carerj){
                     break;
                 }
-                if(ip->timeMatrix[prevNurse][job] > 0){
-                    startTWMK = ip->timeMatrix[prevNurse][job];
-                    endTWMK = ip->timeMatrix[prevNurse][job];
+                if(ip->timeMatrix[prevCarer][job] > 0){
+                    startTWMK = ip->timeMatrix[prevCarer][job];
+                    endTWMK = ip->timeMatrix[prevCarer][job];
                     break;
                 }
             }
@@ -2383,7 +2383,7 @@ void set_carer_time(struct INSTANCE* ip, int carerj){
                     first = 1;
                 }
                 // Else if currentTime is at or AFTER the start of an unavailable shift (and before the end of the unavailable shift) (and could end within or after the unavailable shift ends (doesn't matter)),
-                // then we need to move the job so that it starts after the unavailable shift ends.
+                // then we need to move the job so that it starts when the unavailable shift ends.
                 else if(arriveAt >= ip->unavailMatrix[i][1][carerj] && arriveAt < ip->unavailMatrix[i][2][carerj]){
                     if(first == 0 && currentTime < ip->unavailMatrix[i][1][carerj]){
                         waitingTime = ip->unavailMatrix[i][1][carerj] - currentTime;
