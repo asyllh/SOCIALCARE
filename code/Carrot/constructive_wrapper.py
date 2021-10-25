@@ -46,8 +46,6 @@ def main():
     # Main function of program: create the instance from the client and carer dataframes, and call the C program to run GRASP-VNS
     inst = ihd.create_solve_inst(client_df, carershift_df, carerday_df, planning_date, options_vector, wb_balance, quality_measure, max_time_seconds, random_seed)
 
-    print('Finshed.\nQuality: ' + str(inst.Cquality))
-
     # End time of program
     end_time_program = time.perf_counter()
     elapsed_time = end_time_program - start_time_program
@@ -57,44 +55,15 @@ def main():
 
     # Create map of solution in website
     if create_html_website:
-        print('Generating website...')
-        inst.solution_to_website_dst(add_plots=create_python_plots)
-        inst.totalTravelCost = sum(inst.carerTravelCost)
-        inst.totalMileage = sum(inst.carerMileage)
-        inst.totalMileageCost = sum(inst.carerMileageCost)
-        inst.totalCost = inst.totalTravelCost + inst.totalMileageCost   
-    print('Done.') 
+        inst.solution_to_website_dst(add_plots=create_python_plots)    
 
     # Put results in results_area_date.txt file
-    cwd = os.getcwd()
-    results_filename = inst.fname + '_results.txt'
-    outputfiles_path = os.path.join(cwd, 'output')
-    resultsfile_path = os.path.join(outputfiles_path, results_filename)
-
-    f = open(resultsfile_path, 'a')
-    f.write('------------------------------------------------------------\n')
-    f.write('Date: ' + str(datetime.now()) + '\n')
-    f.write('Quality: ' + str(inst.Cquality) + '\n')
-    f.write('Measure: ' + str(inst.quality_measure) + '\n')
-    f.write('Carers: ' + str(inst.nCarers) + '\n')
-    f.write('Jobs: ' + str(inst.nJobs) + '\n')
-    f.write('Total Time: ' + str(inst.timemins_to_string(inst.totalTime)) + '\n')
-    f.write('Total Service Time: ' + str(inst.timemins_to_string(inst.totalServiceTime)) + '\n')
-    f.write('Total Travel Time: ' + str(inst.timemins_to_string(inst.totalTravelTime)) + '\n')
-    f.write('Total Waiting Time: ' + str(inst.timemins_to_string(inst.totalWaitingTime)) + '\n')
-    f.write('Total Tardiness: ' + str(inst.timemins_to_string(inst.totalTardiness)) + '\n')
-    f.write('Total Overtime: ' + str(inst.timemins_to_string(inst.totalOvertime)) + '\n')
-    f.write('Total Mileage: ' + str(inst.totalMileage) + '\n')
-    f.write('Total Cost (£): ' + str(inst.totalCost) + '\n')
-    f.write('Elapsed Time (s): ' + str(elapsed_time) + '\n')
-    f.write('------------------------------------------------------------\n')
-    f.close()
-    print('Stored output values to', results_filename)
-
+    inst.output_results_file(elapsed_time)
+    
     # Output solution into client_df and save as csv
     inst.solution_df_csv(client_df)
 
-    print('End of program.')
+    print('\nEnd of program.')
 ### --- End def main --- ###
 
 if __name__ == '__main__':

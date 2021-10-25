@@ -241,6 +241,8 @@ def get_user_input_variables():
     codepoint_directory = 'None'
     date_selected = 0
 
+    print('\nUser Input Variables\n-----------------')
+
     # Assign user input values:
     if Uib.areaName == "":
         # set default
@@ -248,28 +250,28 @@ def get_user_input_variables():
         area = 'Hampshire'
     else:
         area = Uib.areaName
-        print('area: ', area)
+        print('Area: ', area)
 
     if Uib.twInterval == 0:
         print('No time window interval given - time window interval set to 15 minutes')
         tw_interval = 15
     else:
         tw_interval = Uib.twInterval
-        print('time window interval: ', tw_interval)
+        print('Time window interval: ', tw_interval)
 
     if Uib.wbBalance == 0:
         print('No workload balance coefficient given - coefficient set to 1')
         wb_balance = 1
     else:
         wb_balance = Uib.wbBalance
-        print('workload balance coefficient: ', wb_balance)
+        print('Workload balance coefficient: ', wb_balance)
 
     if Uib.maxTimeSeconds == 0:
         print('No time limit given - time limit set to 60 seconds')
         max_time_seconds = 60
     else:
         max_time_seconds = Uib.maxTimeSeconds
-        print('time limit: ', max_time_seconds)
+        print('Time limit: ', max_time_seconds)
 
 
     if Uib.qualityMeasure == "":
@@ -278,7 +280,7 @@ def get_user_input_variables():
         quality_measure = 'default'
     elif Uib.qualityMeasure == 'default' or Uib.qualityMeasure == 'ait h' or Uib.qualityMeasure == 'mk' or Uib.qualityMeasure == 'wb':
         quality_measure = Uib.qualityMeasure
-        print('quality measure: ', quality_measure)
+        print('Quality measure: ', quality_measure)
     else:
         print('[ERROR]: (constructive_wrapper.py) incorrect quality measure provided.')
         print('Quality measure must be one of the following: default, ait h, mk, or wb.')
@@ -288,27 +290,21 @@ def get_user_input_variables():
     if Uib.createHtmlWebsite == "":
         print('No html website option given - create html website set to True')
         create_html_website = True
-    elif Uib.createHtmlWebsite == True:
-        create_html_website = True
-        print('create_html_website: ', create_html_website)
-    elif Uib.createHtmlWebsite == False:
-        create_html_website = False
-        print('create_html_website: ', create_html_website)
+    elif Uib.createHtmlWebsite == True or Uib.createHtmlWebsite == False:
+        create_html_website = Uib.createHtmlWebsite
+        print('Create HTML Website: ', create_html_website)
     else:
-        print('Incorrect option format for html website - create html website set to True')
+        print('Incorrect option format for HTML website - create HTML website set to True')
         create_html_website = True
     
     if Uib.createPythonPlots == "":
         print('No plot option given - create python plots set to True')
         create_python_plots = True
-    elif Uib.createPythonPlots == True:
-        create_python_plots = True
-        print('create_python_plots: ', create_python_plots)
-    elif Uib.createPythonPlots == False:
-        create_python_plots = False
-        print('create_python_plots: ', create_python_plots)
+    elif Uib.createPythonPlots == True or Uib.createPythonPlots == False:
+        create_python_plots = Uib.createPythonPlots
+        print('Create Python plots: ', create_python_plots)
     else:
-        print('Incorrect option format for plots - create python plots set to True')
+        print('Incorrect option format for plots - create Python plots set to True')
         create_python_plots = True
 
     if Uib.codepointDir == "":
@@ -333,7 +329,9 @@ def get_user_input_variables():
         date_selected = 0
     else:
         date_selected = Uib.dateSelected
-        print('date selected: ', date_selected)
+        print('Date selected: ', date_selected)
+
+    print('--------------------\n')
 
     return area, tw_interval, wb_balance, quality_measure, max_time_seconds, create_html_website, create_python_plots, codepoint_directory, input_filename, date_selected
 ### --- End def get_user_input_variables --- ###

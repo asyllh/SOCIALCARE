@@ -43,7 +43,7 @@ def calculate_cycle_day(planning_date, week_period, ref_date=pd.Timestamp("2021-
     week_period - integer containing the week period (2 will return day 0 to 13, 8 will return 0 to 55)
     ref_date    - Must be a date in what is considered "Week 1"
     """
-    print('planning_date: ', planning_date, ' week_period: ', week_period, ' ref_date: ', ref_date)
+    # print('planning_date: ', planning_date, ' week_period: ', week_period, ' ref_date: ', ref_date)
     weeks_diff = calculate_week_difference(planning_date, ref_date)
     # print('weeks_diff: ', weeks_diff)
     weeks_off_cycle = weeks_diff % week_period

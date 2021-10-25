@@ -43,7 +43,7 @@ def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, opti
     options_vector[55] = wb_balance # alpha_5 Workload balance (from user input)
 
     # Create instances of JOB and CARER classes for inst
-    inst.init_job_and_carer_objects(client_df, carerday_df)
+    inst.instantiate_job_carer_objects(client_df, carerday_df)
 
     inst.algorithmOptions = options_vector
     if quality_measure == 'default':
@@ -66,6 +66,8 @@ def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, opti
     inst.fun = []
     inst.Cquality = -1*inst.od[0][0] # Cquality = solution quality from C program, it's stored in od[0][0] (shortcut, should probably change this!)
     inst.od[0][0] = saved_od_data
+
+    print('\n------------------------\n\nC program finished - back in Python.\nQuality: ' + str(inst.Cquality))
 
     return inst
 ### --- End def create_solve_inst --- ###
@@ -109,11 +111,11 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
     nDS = np.sum(inst.doubleService) # Number of jobs that are double services
     
 
-    inst.od = np.zeros((inst.nJobs+1, inst.nJobs+1), dtype=np.float64) # TIME IN MINUTES, THIS WILL BE USED IN C
+    inst.od = np.zeros((inst.nJobs+1, inst.nJobs+1), dtype=np.float64) # Time in minutes
     osrm_table_request(inst, client_df, carerday_df, 'od')
 
-    inst.travelCostMatrix = np.zeros((inst.nJobs, inst.nJobs), dtype=np.float64) # NEW, OD_COST, 11/06/2021, take time in minutes and convert to cost.
-    calculate_travel_cost_matrix(inst)
+    # inst.travelCostMatrix = np.zeros((inst.nJobs, inst.nJobs), dtype=np.float64) # NEW, OD_COST, 11/06/2021, take time in minutes and convert to cost.
+    # calculate_travel_cost_matrix(inst)
     
     inst.carer_travel_from_depot = np.zeros((inst.nCarers, inst.nJobs), dtype=np.float64) # From carer's home to job - TIME IN MINS, THIS WILL BE USED IN C
     osrm_table_request(inst, client_df, carerday_df, 'carerfrom')
@@ -377,12 +379,11 @@ class JOB(object):
         # Characteristics
         self.ID = ''
         self.serviceTime = 0
-        # self.doubleService = False
         self.doubleService = 0
         self.dependsOn = []
         self.postcode = 'Unknown'
-        self.latlong = []
-        self.priority = 0
+        # self.latlon = []
+        # self.priority = 0
         self.hasTimewindow = False
         self.timewindow = [0,86400]
         self.hasPreferredTimewindow = False
@@ -394,7 +395,7 @@ class JOB(object):
         self.dependsOn = -1
         self.minimumGap = 0
         self.maximumGap = 0
-        self.location = [] # NOTE: NEW, 27/12/2020 ALH
+        # self.location = [] # NOTE: NEW, 27/12/2020 ALH
         # Calculated (solution)
         self.assignedCarer = 0
         self.carerID = 'Unknown'
@@ -480,7 +481,7 @@ class INSTANCE(object):
         self.violatedTW = [] # NEW 03/06/2021
         self.carerWaitingMatrix = [] # NEW 03/06/2021
         self.carerTravelMatrix = [] # NEW 03/06/2021
-        self.travelCostMatrix = [] # NEW 11/06/2021, cost of each trip for each pair of jobs, nJobs x nJobs, use od matrix, cost in pounds. (could also be called od_cost!)
+        # self.travelCostMatrix = [] # NEW 11/06/2021, cost of each trip for each pair of jobs, nJobs x nJobs, use od matrix, cost in pounds. (could also be called od_cost!)
         # self.odMileage = [] # NEW 11/06/2021, nJobs x nJobs, od matrix but with mileage instead od time in minutes
         # self.odMileageCost = [] # NEW 11/06/2021, nJobs x nJobs, cost of mileage for each trip, so x 0.25p per mile
         self.totalsArray = [] # NEW: 04/06/2021, keeps (in order): totalTime, totalWaitingTime, totalTravelTime, totalServiceTime, totalTardiness, maxTardiness, totalMKTardiness, mk_allowed_tardiness,
@@ -579,8 +580,8 @@ class INSTANCE(object):
                         ctypes.c_int] # Random seed
     ### --- End def  __init__ --- ### 
 
-    def init_job_and_carer_objects(self, client_df, carerday_df):
-        # Create two lists containing objects of the classes JOBS and NURSES respectively.
+    def instantiate_job_carer_objects(self, client_df, carerday_df):
+        # Create two lists containing objects of the classes JOB and CARER respectively.
         self.jobObjs = []
         for ii in range(self.nJobs):
             self.jobObjs.append(JOB())
@@ -591,29 +592,21 @@ class INSTANCE(object):
             self.carerObjs.append(CARER())
             self.carerObjs[-1].ID = ii # Set the ID for the object just added to carerObjs to be the index of the object (its position in the carerObjs list).
         
-        # Start with jobs:
+        # 1. Jobs:
         for j in range(self.nJobs):
-            # self.jobObjs[j].ID = idict['tasks'].loc[j, 'client']
             self.jobObjs[j].ID = client_df.iloc[j]['client_id']
-            # self.jobObjs[j].postcode = idict['tasks'].loc[j, 'postcode']
             self.jobObjs[j].postcode = client_df.iloc[j]['postcode']
-            # pcidict = idict['tasks'].loc[j, 'postcode']
-            # latlon = cpo_inst.find_postcode_latlon(pcidict)
             latlon = [client_df.iloc[j]['latitude'], client_df.iloc[j]['longitude']]
             self.jobObjs[j].location = GEOPOINT(float(latlon[0]), float(latlon[1]))
-            # self.jobObjs[j].serviceTime = idict['tasks'].loc[j, 'duration']
             self.jobObjs[j].serviceTime = client_df.iloc[j]['duration']
             self.jobObjs[j].hasTimewindow = True
-            # jtw_start = idict['tasks'].loc[j, 'tw_start']
-            # jtw_end = idict['tasks'].loc[j, 'tw_end']
             jtw_start = client_df.iloc[j]['tw_start']
             jtw_end = client_df.iloc[j]['tw_end']
             self.jobObjs[j].timewindow = [jtw_start, jtw_end]
             self.jobObjs[j].hasPreferredTimewindow = False
             self.jobObjs[j].preferredTimewindow = [0, 24*3600]
             self.jobObjs[j].skillsRequired = []
-            # self.jobObjs[j].doubleService = False # commented out 01/09/2021
-            self.jobObjs[j].doubleService = self.doubleService[j] # Added 01/09/2021
+            self.jobObjs[j].doubleService = self.doubleService[j]
             self.jobObjs[j].features = []
             self.jobObjs[j].preferences = []
             self.jobObjs[j].preferredCarers = []
@@ -624,21 +617,13 @@ class INSTANCE(object):
             self.jobObjs[j].markedWebsite = 0
         # End jobs
 
+        # 2. Carers:
         for i in range(self.nCarers):
-            # self.carerObjs[i].ID = idict['rota'].loc[i, 'carer']
             self.carerObjs[i].ID = carerday_df.iloc[i]['carer_id'] # NOTE: this could also be 'carer' instead of unique_id, but unique_id has the shift number
-            # self.carerObjs[i].postcode = idict['rota'].loc[i, 'postcode']
             self.carerObjs[i].postcode = carerday_df.iloc[i]['postcode']
-            # pcidict = idict['rota'].loc[i, 'postcode']
-            # print(i, ': ', pcidict)
             latlon = [carerday_df.iloc[i]['latitude'], carerday_df.iloc[i]['longitude']]
-            # print('latlon', latlon)
-            # print(i, ': ', latlon)
             self.carerObjs[i].startLocation = GEOPOINT(float(latlon[0]), float(latlon[1]))
-            # print('self.carerObjs[i].startLocation', self.carerObjs[i].startLocation)
             self.carerObjs[i].transportMode = 'car'
-            # istart = idict['rota'].loc[i, 'start']
-            # ifinish = idict['rota'].loc[i, 'finish']
             istart = carerday_df.iloc[i]['start']
             ifinish = carerday_df.iloc[i]['end']
             self.carerObjs[i].shiftTimes = [float(istart), float(ifinish)]
@@ -648,16 +633,14 @@ class INSTANCE(object):
             self.carerObjs[i].preferences = []
             self.carerObjs[i].preferredJobs = []
             self.carerObjs[i].jobsToAvoid = []
-        # exit(-1)
+        # End carers
+
+        # Locations:
         self.xy = []
         self.xy.append(self.carerObjs[0].startLocation.longlat()) # why only the first carer [0] location? Note that coords appended are lon/lat, not lat/lon!
         for job in self.jobObjs:
             self.xy.append(job.location.longlat()) # Append all job coordinates - lon/lat, not lat/lon!
-
-        # for j in range(self.nJobs):
-        #     print('j: ', j, ' client_id: ', self.jobObjs[j].ID, ' tw: ', self.jobObjs[j].timewindow)
-        # exit(-1)
-    ### --- End def init_job_and_nurse_objects --- ###
+    ### --- End def instantiate_job_carer_objects --- ###
 
     def fill_preferences(self):
         self.prefScore = np.zeros((self.nJobs, self.nCarers), dtype=np.float64) # Matrix, nJobs x nCarers (note that this is the only variable with jobxnurse, not nursexjob dimensions).
@@ -711,9 +694,6 @@ class INSTANCE(object):
     ### --- End def preference_score --- ###    
                
     def solve(self, randomSeed=0, printAllCallData=False):
-        if self.verbose > 0:
-            print('Calling C function for a max. of ' + str(self.MAX_TIME_SECONDS) + ' seconds, random seed is ' + str(randomSeed) + '.')
-
         # Prepare some data: 
         self.mk_mind = np.asarray(self.mk_mind, dtype=np.int32)
         self.mk_maxd = np.asarray(self.mk_maxd, dtype=np.int32)
@@ -781,25 +761,21 @@ class INSTANCE(object):
             print('jobTimeInfo (type ' + str(type(self.jobTimeInfo)) + ')')
             print('dtype = ' + str(self.jobTimeInfo.dtype))
             print('Shape = ' + str(self.jobTimeInfo.shape))
-
             print(self.jobTimeInfo)
             
             print('jobSkillsRequired (type ' + str(type(self.jobSkillsRequired)) + ')')
             print('dtype = ' + str(self.jobSkillsRequired.dtype))
             print('Shape = ' + str(self.jobSkillsRequired.shape))
-
             print(self.jobSkillsRequired)
             
             print('carerSkills (type ' + str(type(self.carerSkills)) + ')')
             print('dtype = ' + str(self.carerSkills.dtype))
             print('Shape = ' + str(self.carerSkills.shape))
-
             print(self.carerSkills)
             
             print('solMatrix (type ' + str(type(self.solMatrix)) + ')')
             print('dtype = ' + str(self.solMatrix.dtype))
             print('Shape = ' + str(self.solMatrix.shape))
-
             print(self.solMatrix)
             
             print('doubleService (type ' + str(type(self.doubleService)) + ')')
@@ -815,19 +791,16 @@ class INSTANCE(object):
             print('mk_mind (type ' + str(type(self.mk_mind)) + ')')
             print('dtype = ' + str(self.mk_mind.dtype))
             print('Shape = ' + str(self.mk_mind.shape))
-
             print(self.mk_mind)
             
             print('mk_maxd (type ' + str(type(self.mk_maxd)) + ')')
             print('dtype = ' + str(self.mk_maxd.dtype))
             print('Shape = ' + str(self.mk_maxd.shape))
-
             print(self.mk_maxd)
 
             print('capabilityOfDoubleServices (type ' + str(type(self.capabilityOfDoubleServices)) + ')')
             print('dtype = ' + str(self.capabilityOfDoubleServices.dtype))
             print('Shape = ' + str(self.capabilityOfDoubleServices.shape))
-
             print(self.capabilityOfDoubleServices)
             
             print('prefScore (type ' + str(type(self.prefScore)) + ')')
@@ -840,7 +813,9 @@ class INSTANCE(object):
             print('Shape = ' + str(self.algorithmOptions.shape))
             print(self.algorithmOptions)
             
-            print('\n ---------------- End of python data - start call to C ----------------\n\n\n ')
+        print('\nEnd of Python program - calling C program (GRASP-VNS)')
+        print('Max time: ' + str(self.MAX_TIME_SECONDS) + ' seconds, Random seed: ' + str(randomSeed))
+        print('-------------------------------------------------\n')
 
         self.fun(self.nJobs, self.nCarers, self.nSkills, self.verbose, self.MAX_TIME_SECONDS, self.tw_interval, self.exclude_carer_travel, self.od, self.carer_travel_from_depot, self.carer_travel_to_depot,
             self.unavail_matrix, self.carer_unavail, self.carerWorkingTimes, self.jobTimeInfo, self.jobSkillsRequired, self.carerSkills, self.solMatrix, self.doubleService, self.dependsOn,
@@ -871,10 +846,8 @@ class INSTANCE(object):
         self.carerTravelCost = np.zeros(self.nCarers, dtype=np.float64) # NEW 11/06/2021, initialise the carerTravelCost array to 1 x nCarers
         self.carerMileage = np.zeros(self.nCarers, dtype=np.float64) # NEW 11/06/2021, initialise the carerMileage array to 1 x nCarers
         self.carerMileageCost = np.zeros(self.nCarers, dtype=np.float64) # NEW 11/06/2021, initialise the carerMileageCost array to 1 x nCarers
-        # self.c_quality = np.min(self.solMatrix)
 
         for carer in range(self.nCarers):
-            # howMany = 0
             try:
                 howMany = max(self.solMatrix[carer]) + 1 # howMany = largest value in self.solMatrix[carer], which is equivalent to the number of jobs in the carer's route. Add one because job positions start at 0.
             except Exception as e:
@@ -883,31 +856,28 @@ class INSTANCE(object):
                 print('Nurse: ' + str(carer))
                 print('solMatrix: \n' + str(self.solMatrix))
             
-            # self.carerRoute.append(np.zeros(howMany)) # add array of size 'number of jobs' containing all zeros to the carerRoute list.
             self.carerRoute.append(np.full(howMany, -1)) # add array of size 'number of jobs' containing all -1 to the carerRoute list.
             for i,sp in enumerate(self.solMatrix[carer,:]): # For each index, value in solMatrix[carer], all jobs
                 if sp > -1: # If > -1 then job i is in position sp of carer's route
                     self.carerRoute[carer][sp] = i # set carerRoute[carer][position] = job (like allNurseRoutes)
     ### --- End def post_process_solution --- ###
 
-    def timemins_to_string(self, mins):
+    def convert_minutes_to_hhmmss(self, mins):
+        # Convert time in minutes (decimal) to time in hh:mm:ss
         minsRound = math.floor(mins)
-        # print('minsRound: ', minsRound)
         hours = mins // 60
-        # print('hours:', hours)
         minutes = (minsRound % 60)
-        # print('minutes: ', minutes)
         seconds = (mins - minsRound) * 60
         seconds = round(seconds)
-
         if seconds == 60:
             seconds = 0
             minutes += 1
-        # print('seconds: ', seconds)
+
         return('{0:0>2}:{1:0>2}:{2:0>2}'.format(int(hours), int(minutes), int(seconds)))
-    ### --- End def timemins_to_string --- ###  
+    ### --- End def convert_minutes_to_hhmmss --- ###  
 
     def solution_to_website_dst(self, filename='unknown', add_plots=True):
+        print('Generating website...')
         # Check if website generation is available:
         if (self.carerObjs[0].startLocation == []):
             print('[WARNING]: Website generation is not available for this instance.')
@@ -935,7 +905,7 @@ class INSTANCE(object):
             nRouteRev = []
             # nRoute.append(tuple(rxy[0]))
 
-            niRoute = self.get_nurse_route_dst(ni) # carer route for carer ni, niRoute[position] = job.
+            niRoute = self.get_carer_route_dst(ni) # carer route for carer ni, niRoute[position] = job.
             # print(niRoute)
             for pos in range(self.nJobs):
                 job = int(niRoute[pos]) #job = the job at position pos in carer ni's route.
@@ -948,58 +918,48 @@ class INSTANCE(object):
                 popupVal = '<b>Client ID:</b> ' + str(self.jobObjs[job].ID)
                 popupVal = popupVal + '<br><b>Job #:</b> ' + str(job) 
                 popupVal += '<br><b>Postcode:</b> ' + str(self.jobObjs[job].postcode) 
-                popupVal = popupVal + '<br><b>Time Window:</b> ' + self.timemins_to_string(self.jobTimeInfo[int(job)][0]) + ' - ' + self.timemins_to_string(self.jobTimeInfo[int(job)][1])
-                popupVal = popupVal + '<br><b>Job Duration:</b> ' + self.timemins_to_string(self.jobObjs[job].serviceTime)
+                popupVal = popupVal + '<br><b>Time Window:</b> ' + self.convert_minutes_to_hhmmss(self.jobTimeInfo[int(job)][0]) + ' - ' + self.convert_minutes_to_hhmmss(self.jobTimeInfo[int(job)][1])
+                popupVal = popupVal + '<br><b>Job Duration:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].serviceTime)
                 if self.jobObjs[job].doubleService == 1:
                     if self.jobObjs[job].markedWebsite == 0:
                         popupVal = popupVal + '<br><b>Double Service</b>'
                         # Carer 1 information
                         popupVal = popupVal + '<br><b>Carer 1 ID:</b> ' + str(self.jobObjs[job].carerID[0])
                         popupVal = popupVal + '<br><b>Carer 1 #:</b> ' + str(self.jobObjs[job].assignedCarer[0])
-                        popupVal = popupVal + '<br><b>Carer 1 Arrive:</b> ' + self.timemins_to_string(self.jobObjs[job].arrivalTime[0])
-                        popupVal = popupVal + '<br><b>Carer 1 Start:</b> ' + self.timemins_to_string(self.jobObjs[job].startTime[0])
-                        popupVal = popupVal + '<br><b>Carer 1 Depart:</b> ' + self.timemins_to_string(self.jobObjs[job].departureTime[0])
-                        popupVal = popupVal + '<br><b>Carer 1 Waiting:</b> ' + self.timemins_to_string(self.jobObjs[job].waitingToStart[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Arrive:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].arrivalTime[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Start:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].startTime[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Depart:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].departureTime[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Waiting:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].waitingToStart[0])
                         if self.jobObjs[job].tardiness[0] > 0:
-                            popupVal = popupVal + '<br><b>Carer 1 Tardiness:</b> ' + self.timemins_to_string(self.jobObjs[job].tardiness[0])
+                            popupVal = popupVal + '<br><b>Carer 1 Tardiness:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].tardiness[0])
                             border_colour = '#ff0000'
                         popupVal = popupVal + '<br><b>Carer 1 Position #:</b> ' + str(self.jobObjs[job].positionInSchedule[0])
-                        popupVal = popupVal + '<br><b>Carer 1 Travel to Job:</b>' + self.timemins_to_string(self.jobObjs[job].travelToJob[0])
+                        popupVal = popupVal + '<br><b>Carer 1 Travel to Job:</b>' + self.convert_minutes_to_hhmmss(self.jobObjs[job].travelToJob[0])
                         
                         # Carer 2 information
                         popupVal = popupVal + '<br><b>Carer 2 ID:</b> ' + str(self.jobObjs[job].carerID[1])
                         popupVal = popupVal + '<br><b>Carer 2 #:</b> ' + str(self.jobObjs[job].assignedCarer[1])
-                        popupVal = popupVal + '<br><b>Carer 2 Arrive:</b> ' + self.timemins_to_string(self.jobObjs[job].arrivalTime[1])
-                        popupVal = popupVal + '<br><b>Carer 2 Start:</b> ' + self.timemins_to_string(self.jobObjs[job].startTime[1])
-                        popupVal = popupVal + '<br><b>Carer 2 Depart:</b> ' + self.timemins_to_string(self.jobObjs[job].departureTime[1])
-                        popupVal = popupVal + '<br><b>Carer 2 Waiting:</b> ' + self.timemins_to_string(self.jobObjs[job].waitingToStart[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Arrive:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].arrivalTime[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Start:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].startTime[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Depart:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].departureTime[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Waiting:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].waitingToStart[1])
                         if self.jobObjs[job].tardiness[1] > 0:
-                            popupVal = popupVal + '<br><b>Carer 2 Tardiness:</b> ' + self.timemins_to_string(self.jobObjs[job].tardiness[1])
+                            popupVal = popupVal + '<br><b>Carer 2 Tardiness:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].tardiness[1])
                             border_colour = '#ff0000'
                         popupVal = popupVal + '<br><b>Carer 2 Position #:</b> ' + str(self.jobObjs[job].positionInSchedule[1])
-                        popupVal = popupVal + '<br><b>Carer 2 Travel to Job:</b>' + self.timemins_to_string(self.jobObjs[job].travelToJob[1])
+                        popupVal = popupVal + '<br><b>Carer 2 Travel to Job:</b>' + self.convert_minutes_to_hhmmss(self.jobObjs[job].travelToJob[1])
                         self.jobObjs[job].markedWebsite += 1
                 else:
                     popupVal = popupVal + '<br><b>Carer ID:</b> ' + str(self.jobObjs[job].carerID)
                     popupVal = popupVal + '<br><b>Carer #:</b> ' + str(self.jobObjs[job].assignedCarer)
-                    popupVal = popupVal + '<br><b>Arrive:</b> ' + self.timemins_to_string(self.jobObjs[job].arrivalTime)
-                    popupVal = popupVal + '<br><b>Start:</b> ' + self.timemins_to_string(self.jobObjs[job].startTime)
-                    popupVal = popupVal + '<br><b>Depart:</b> ' + self.timemins_to_string(self.jobObjs[job].departureTime)
-                    popupVal = popupVal + '<br><b>Waiting:</b> ' + self.timemins_to_string(self.jobObjs[job].waitingToStart)
-                    popupVal = popupVal + '<br><b>Tardiness:</b> ' + self.timemins_to_string(self.jobObjs[job].tardiness)
+                    popupVal = popupVal + '<br><b>Arrive:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].arrivalTime)
+                    popupVal = popupVal + '<br><b>Start:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].startTime)
+                    popupVal = popupVal + '<br><b>Depart:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].departureTime)
+                    popupVal = popupVal + '<br><b>Waiting:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].waitingToStart)
+                    popupVal = popupVal + '<br><b>Tardiness:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].tardiness)
                     popupVal = popupVal + '<br><b>Position #:</b> ' + str(self.jobObjs[job].positionInSchedule)
-                    popupVal = popupVal + '<br><b>Travel to Job:</b>' + self.timemins_to_string(self.jobObjs[job].travelToJob)
-                
-                # border_colour = route_colour
-                # if self.jobObjs[job].tardiness > 0:
-                    # popupVal = popupVal + '<br><b>Tardiness:</b> ' + self.timemins_to_string(self.jobObjs[job].tardiness) 
-                    # border_colour = '#ff0000' # red
-                # if self.jobObjs[job].waitingToStart	> 0:
-                    # popupVal = popupVal + '<br><b>Waiting:</b> ' + self.timemins_to_string(self.jobObjs[job].waitingToStart) 
-                 
-                # popupVal = popupVal + '<br><b>assignedCarer:</b> ' + str(self.jobObjs[idxNRpt].assignedCarer)
-                # popupVal = popupVal + '<br><b>PositionInSchedule:</b> ' + str(self.jobObjs[job].positionInSchedule)
-                # popupVal = popupVal + '<br><b>SkillsRequired:</b> ' + str(self.jobObjs[job].skillsRequired)
+                    popupVal = popupVal + '<br><b>Travel to Job:</b>' + self.convert_minutes_to_hhmmss(self.jobObjs[job].travelToJob)
+
                 # Add a circle around the area with popup:
                 foliumRouteLayers[-1].add_child(folium.Circle(xyRev[job + 1], radius=30, popup=popupVal, color=border_colour, fill_color=route_colour, fill_opacity=0.5, fill=True))
             # End for pos in range(nJobs) loop
@@ -1007,9 +967,6 @@ class INSTANCE(object):
                 continue 
 
             # Obtain the routeList, which is a list of coordinates of the route ([lat,lon]), and the duration (SECONDS) and distance (METRES) of the route.
-            # print('self.carerObjs[ni].startLocation.longlat()', self.carerObjs[ni].startLocation.longlat())
-            # print('self.carerObjs[ni].startLocation.longlat()', self.carerObjs[ni].startLocation.longlat())
-            # print('nRouteRev', nRouteRev)
             routeList, dist, dur, distjobs, durjobs = route_points_osrm(self.carerObjs[ni].startLocation.longlat(), self.carerObjs[ni].startLocation.longlat(), goingThrough=nRouteRev)
             distJobsMiles = metres_to_miles(distjobs) # get distance for this carer in miles, not metres
             self.carerMileage[ni] = distJobsMiles
@@ -1032,14 +989,11 @@ class INSTANCE(object):
                             overflow: auto;
                             ">              
                 '''
-                # &nbsp; Cool Legend <br>
-                #               &nbsp; East &nbsp; <i class="fa fa-map-marker fa-2x" style="color:green"></i><br>
-                #               &nbsp; West &nbsp; <i class="fa fa-map-marker fa-2x" style="color:red"></i>
         lht = lht + '''&nbsp; <b><u>Solution Summary: DST</u></b><br>'''
-        lht = lht + '''&nbsp; <b>Total time: </b>''' + self.timemins_to_string(self.totalTime) + ''', of which:<br>'''
-        lht = lht + '''&nbsp; <i> - Service time: </i>''' + self.timemins_to_string(self.totalServiceTime) + '''<br>'''
-        lht = lht + '''&nbsp; <i> - Travel time: </i>''' + self.timemins_to_string(self.totalTravelTime) + '''<br>'''
-        lht = lht + '''&nbsp; <i> - Waiting time: </i>''' + self.timemins_to_string(self.totalWaitingTime) + '''<br>'''
+        lht = lht + '''&nbsp; <b>Total time: </b>''' + self.convert_minutes_to_hhmmss(self.totalTime) + ''', of which:<br>'''
+        lht = lht + '''&nbsp; <i> - Service time: </i>''' + self.convert_minutes_to_hhmmss(self.totalServiceTime) + '''<br>'''
+        lht = lht + '''&nbsp; <i> - Travel time: </i>''' + self.convert_minutes_to_hhmmss(self.totalTravelTime) + '''<br>'''
+        lht = lht + '''&nbsp; <i> - Waiting time: </i>''' + self.convert_minutes_to_hhmmss(self.totalWaitingTime) + '''<br>'''
         lht = lht + '''&nbsp; <i> - Total distance: </i>''' + str(self.totalDistance/1000) + '''<br>'''
         lht = lht + '''&nbsp; <i> - Total distance jobs: </i>''' + str(self.totalDistanceJobsOnly/1000) + '''<br><br>'''
 
@@ -1047,16 +1001,16 @@ class INSTANCE(object):
         for i, cc in enumerate(self.carerObjs):
             carerPart = carerPart + '''<br>&nbsp; <b>Carer ''' + str(i) + ' (' + str(cc.ID) + '''):</u> </b><br>'''
             carerPart = carerPart + '''&nbsp; <i>Skills: </i>''' + str(cc.skills) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Shift start time: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][0]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Shift end time: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][1]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Duration of shift: </i>''' + self.timemins_to_string(self.carerWorkingTimes[i][2]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Actual start time: </i>''' + self.timemins_to_string(cc.startTime) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Actual end time: </i>''' + self.timemins_to_string(cc.finishTime) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Shift start time: </i>''' + self.convert_minutes_to_hhmmss(self.carerWorkingTimes[i][0]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Shift end time: </i>''' + self.convert_minutes_to_hhmmss(self.carerWorkingTimes[i][1]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Duration of shift: </i>''' + self.convert_minutes_to_hhmmss(self.carerWorkingTimes[i][2]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Actual start time: </i>''' + self.convert_minutes_to_hhmmss(cc.startTime) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Actual end time: </i>''' + self.convert_minutes_to_hhmmss(cc.finishTime) + '''<br>'''
             cc.route = list(self.carerRoute[i][:])
             carerPart = carerPart + '''&nbsp; <i>Number of services: </i>''' + str(len(cc.route)) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Total service time: </i>''' + self.timemins_to_string(self.carerServiceTime[i]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Total travel time: </i>''' + self.timemins_to_string(self.carerTravelTime[i]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Total waiting time: </i>''' + self.timemins_to_string(self.carerWaitingTime[i]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Total service time: </i>''' + self.convert_minutes_to_hhmmss(self.carerServiceTime[i]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Total travel time: </i>''' + self.convert_minutes_to_hhmmss(self.carerTravelTime[i]) + '''<br>'''
+            carerPart = carerPart + '''&nbsp; <i>Total waiting time: </i>''' + self.convert_minutes_to_hhmmss(self.carerWaitingTime[i]) + '''<br>'''
             if len(cc.route) > 0:
                 carerPart = carerPart + '''&nbsp; <i>Service route: </i>[''' + str(self.jobObjs[int(cc.route[0])].ID)
                 for kkk in range(1,len(cc.route)):
@@ -1128,6 +1082,14 @@ class INSTANCE(object):
         
         m.add_child(folium.map.LayerControl())
         m.save(webFilename)
+
+        # Calculate travel variables (moved here from c_w.py 27/09/2021)
+        self.totalTravelCost = sum(self.carerTravelCost)
+        self.totalMileage = sum(self.carerMileage)
+        self.totalMileageCost = sum(self.carerMileageCost)
+        self.totalCost = self.totalTravelCost + self.totalMileageCost
+
+        print('Website generated successfully.')
     ### --- End def solution_to_website_dst --- ###
 
     def hovering_image(self, imName, altText, idd):
@@ -1149,7 +1111,7 @@ class INSTANCE(object):
         # times = [self.totalTravelTime, self.totalWaitingTime, self.totalServiceTime]
         # colours = ['#98d4f9', '#a6e781', '#f998c5'] ##a6e781 ##eeee76
         # plt.pie(times, labels=labels, colors=colours, autopct='%1.1f%%')
-        # plt.title('Total time for ' + str(self.nCarers) + ' nurses: ' + self.timemins_to_string(self.totalTime))
+        # plt.title('Total time for ' + str(self.nCarers) + ' nurses: ' + self.convert_minutes_to_hhmmss(self.totalTime))
         # plt.axis('equal')
         # plt.draw()
 
@@ -1157,8 +1119,8 @@ class INSTANCE(object):
         fig.suptitle(self.area + ' ' + str(self.date) + ': DST', fontsize=13, fontweight='bold')
         ax = fig.add_subplot(111)
         # fig.subplots_adjust(top=0.72)
-        subtitle = 'Total time for ' + str(self.nCarers) + ' carers: ' + self.timemins_to_string(self.totalTime)
-        subtitle = '\nTravel Time: ' + self.timemins_to_string(self.totalTravelTime) + '  Service Time: ' + self.timemins_to_string(self.totalServiceTime) + '  Waiting Time: ' + self.timemins_to_string(self.totalWaitingTime)
+        subtitle = 'Total time for ' + str(self.nCarers) + ' carers: ' + self.convert_minutes_to_hhmmss(self.totalTime)
+        subtitle = '\nTravel Time: ' + self.convert_minutes_to_hhmmss(self.totalTravelTime) + '  Service Time: ' + self.convert_minutes_to_hhmmss(self.totalServiceTime) + '  Waiting Time: ' + self.convert_minutes_to_hhmmss(self.totalWaitingTime)
         ax.set_title(subtitle, fontsize=8)
 
         labels = 'Travel', 'Waiting', 'Service'
@@ -1186,7 +1148,7 @@ class INSTANCE(object):
         # exit(-1)
     ### --- End def plot_pie_time_spent_dst --- ###
 
-    def plot_bar_time_per_nurse_dst(self):
+    def plot_bar_time_per_carer_dst(self):
         xpos = np.arange(self.nCarers)
         width = 0.35
 
@@ -1224,7 +1186,7 @@ class INSTANCE(object):
         plt.show()
     ### --- End def plot_bar_time_per_nurse_dst --- ###
 
-    def get_nurse_route_dst(self, ni):
+    def get_carer_route_dst(self, ni):
         # carerRoute = array, all -1s, then if index p has value j, it means that job j is in position p in carer's route.
         carerRoute = np.zeros(self.nJobs)
         for ii in range(self.nJobs):
@@ -1241,11 +1203,11 @@ class INSTANCE(object):
         return(self.od[int(i + 1)][int(j + 1)])
     ### --- End def get_travel_time --- ###
 
-    def get_nurse_from_travel_time(self, i, j):
+    def get_carer_from_travel_time(self, i, j):
         return(self.carer_travel_from_depot[int(i)][int(j)])
     ### --- End def get_travel_time --- ###
 
-    def get_nurse_to_travel_time(self, i, j):
+    def get_carer_to_travel_time(self, i, j):
         return(self.carer_travel_to_depot[int(i)][int(j)])
     ### --- End def get_travel_time --- ###
 
@@ -1298,7 +1260,7 @@ class INSTANCE(object):
                     nextJob = self.carerRoute[i][p+1]
                     readyToNext = leaveAt + self.carerTravelMatrix[i][nextJob] #time at which carer i arrives at the next job
                     # if p == (len(self.carerRoute[i]) - 2):
-                    # print('nextJob: ', nextJob, ' nurseTMnextJob: ', self.timemins_to_string(self.carerTravelMatrix[i][nextJob]), 'readyToNext: ', self.timemins_to_string(readyToNext), ' leaveAt: ' , self.timemins_to_string(leaveAt), ' todepotjob: ', self.timemins_to_string(self.get_nurse_to_travel_time(i, job)), ' todepot next: ', self.timemins_to_string(self.get_nurse_to_travel_time(i, nextJob)))
+                    # print('nextJob: ', nextJob, ' nurseTMnextJob: ', self.convert_minutes_to_hhmmss(self.carerTravelMatrix[i][nextJob]), 'readyToNext: ', self.convert_minutes_to_hhmmss(readyToNext), ' leaveAt: ' , self.convert_minutes_to_hhmmss(leaveAt), ' todepotjob: ', self.convert_minutes_to_hhmmss(self.get_nurse_to_travel_time(i, job)), ' todepot next: ', self.convert_minutes_to_hhmmss(self.get_nurse_to_travel_time(i, nextJob)))
                 prevJob = job
                 if self.doubleService[job] == 1: # job is a double service
                     if self.jobObjs[job].markedReport == 0: # no information for either of the two nurses have been added to the job
@@ -1333,22 +1295,15 @@ class INSTANCE(object):
                     self.jobObjs[job].arrivalTime = arriveAt
                     self.jobObjs[job].startTime = startAt
                     self.jobObjs[job].departureTime = leaveAt
-                    # self.jobObjs[job].serviceTime = self.jobTimeInfo[job][2] # Not needed here, this is already done in init_job_and_nurse_objects function.
                     self.jobObjs[job].waitingToStart = self.carerWaitingMatrix[i][job]
                     self.jobObjs[job].tardiness = self.violatedTW[job]
                     self.jobObjs[job].positionInSchedule = self.solMatrix[i][job]
                     self.jobObjs[job].travelToJob = self.carerTravelMatrix[i][job]
-                    # if self.jobObjs[job].assignedCarer is list:
-                        # self.jobObjs[job].assignedCarer.append(i)
-                        # self.jobObjs[job].assignedCarer.append(carerID)
-                    # else:
-                        # self.jobObjs[job].assignedCarer = [i]
-                        # self.jobObjs[job].assignedCarer = [carerID]
                 costOfTravel = get_travel_cost(self.carerTravelMatrix[i][job])
                 self.carerTravelCost[i] += costOfTravel
             # End for loop p
             if job > -1:
-                travelTime = self.get_nurse_to_travel_time(i, job)
+                travelTime = self.get_carer_to_travel_time(i, job)
                 finishShiftAt = leaveAt + travelTime
             else:
                 finishShiftAt = self.carerWorkingTimes[i][0]
@@ -1374,7 +1329,7 @@ class INSTANCE(object):
 
         if doPlots:
             self.plot_pie_time_spent_dst()
-            self.plot_bar_time_per_nurse_dst()
+            self.plot_bar_time_per_carer_dst()
             
         return self.Cquality  
     ### --- End def full_solution_report --- ###
@@ -1395,124 +1350,68 @@ class INSTANCE(object):
                     if self.jobObjs[j].timewindow == timeWindow:
                         if self.doubleService[j] == 1:
                             client_df.loc[i, 'carer_id'] = self.jobObjs[j].carerID[0]
-                            client_df.loc[i, 'arrive_job'] = self.timemins_to_string(self.jobObjs[j].arrivalTime[0])
-                            client_df.loc[i, 'start_job'] = self.timemins_to_string(self.jobObjs[j].startTime[0])
-                            client_df.loc[i, 'depart_job'] = self.timemins_to_string(self.jobObjs[j].departureTime[0])
-                            client_df.loc[i, 'waiting_time'] = self.timemins_to_string(self.jobObjs[j].waitingToStart[0])
-                            client_df.loc[i, 'tardiness'] = self.timemins_to_string(self.jobObjs[j].tardiness[0])
-                            client_df.loc[i, 'travel_time'] = self.timemins_to_string(self.jobObjs[j].travelToJob[0])
+                            client_df.loc[i, 'arrive_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].arrivalTime[0])
+                            client_df.loc[i, 'start_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].startTime[0])
+                            client_df.loc[i, 'depart_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].departureTime[0])
+                            client_df.loc[i, 'waiting_time'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].waitingToStart[0])
+                            client_df.loc[i, 'tardiness'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].tardiness[0])
+                            client_df.loc[i, 'travel_time'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].travelToJob[0])
                             client_df.loc[i, 'position'] = self.jobObjs[j].positionInSchedule[0]
 
                             client_df.loc[i, 'carer_id2'] = self.jobObjs[j].carerID[1]
-                            client_df.loc[i, 'arrive_job2'] = self.timemins_to_string(self.jobObjs[j].arrivalTime[1])
-                            client_df.loc[i, 'start_job2'] = self.timemins_to_string(self.jobObjs[j].startTime[1])
-                            client_df.loc[i, 'depart_job2'] = self.timemins_to_string(self.jobObjs[j].departureTime[1])
-                            client_df.loc[i, 'waiting_time2'] = self.timemins_to_string(self.jobObjs[j].waitingToStart[1])
-                            client_df.loc[i, 'tardiness2'] = self.timemins_to_string(self.jobObjs[j].tardiness[1])
-                            client_df.loc[i, 'travel_time2'] = self.timemins_to_string(self.jobObjs[j].travelToJob[1])
+                            client_df.loc[i, 'arrive_job2'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].arrivalTime[1])
+                            client_df.loc[i, 'start_job2'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].startTime[1])
+                            client_df.loc[i, 'depart_job2'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].departureTime[1])
+                            client_df.loc[i, 'waiting_time2'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].waitingToStart[1])
+                            client_df.loc[i, 'tardiness2'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].tardiness[1])
+                            client_df.loc[i, 'travel_time2'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].travelToJob[1])
                             client_df.loc[i, 'position2'] = self.jobObjs[j].positionInSchedule[1]
                             break
                         else:
                             client_df.loc[i, 'carer_id'] = self.jobObjs[j].carerID
-                            client_df.loc[i, 'arrive_job'] = self.timemins_to_string(self.jobObjs[j].arrivalTime)
-                            client_df.loc[i, 'start_job'] = self.timemins_to_string(self.jobObjs[j].startTime)
-                            client_df.loc[i, 'depart_job'] = self.timemins_to_string(self.jobObjs[j].departureTime)
-                            client_df.loc[i, 'waiting_time'] = self.timemins_to_string(self.jobObjs[j].waitingToStart)
-                            client_df.loc[i, 'tardiness'] = self.timemins_to_string(self.jobObjs[j].tardiness)
-                            client_df.loc[i, 'travel_time'] = self.timemins_to_string(self.jobObjs[j].travelToJob)
+                            client_df.loc[i, 'arrive_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].arrivalTime)
+                            client_df.loc[i, 'start_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].startTime)
+                            client_df.loc[i, 'depart_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].departureTime)
+                            client_df.loc[i, 'waiting_time'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].waitingToStart)
+                            client_df.loc[i, 'tardiness'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].tardiness)
+                            client_df.loc[i, 'travel_time'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].travelToJob)
                             client_df.loc[i, 'position'] = self.jobObjs[j].positionInSchedule
                             break
         
-
         cwd = os.getcwd()
         solutiondfcsv_filename = self.fname + '_solution.csv'
         outputfiles_path = os.path.join(cwd, 'output')    
         client_df.to_csv(outputfiles_path + '/' + solutiondfcsv_filename)
         print('Saved solution to', solutiondfcsv_filename)
-        # print(client_df)
-        # exit(-1)
     ### --- End def solution_df_csv --- ###
+
+    def output_results_file(self, elapsed_time):
+        cwd = os.getcwd()
+        results_filename = self.fname + '_results.txt'
+        outputfiles_path = os.path.join(cwd, 'output')
+        resultsfile_path = os.path.join(outputfiles_path, results_filename)
+
+        f = open(resultsfile_path, 'a')
+        f.write('------------------------------------------------------------\n')
+        f.write('Date: ' + str(datetime.datetime.now()) + '\n')
+        f.write('Quality: ' + str(self.Cquality) + '\n')
+        f.write('Measure: ' + str(self.quality_measure) + '\n')
+        f.write('Carers: ' + str(self.nCarers) + '\n')
+        f.write('Jobs: ' + str(self.nJobs) + '\n')
+        f.write('Total Time: ' + str(self.convert_minutes_to_hhmmss(self.totalTime)) + '\n')
+        f.write('Total Service Time: ' + str(self.convert_minutes_to_hhmmss(self.totalServiceTime)) + '\n')
+        f.write('Total Travel Time: ' + str(self.convert_minutes_to_hhmmss(self.totalTravelTime)) + '\n')
+        f.write('Total Waiting Time: ' + str(self.convert_minutes_to_hhmmss(self.totalWaitingTime)) + '\n')
+        f.write('Total Tardiness: ' + str(self.convert_minutes_to_hhmmss(self.totalTardiness)) + '\n')
+        f.write('Total Overtime: ' + str(self.convert_minutes_to_hhmmss(self.totalOvertime)) + '\n')
+        f.write('Total Mileage: ' + str(self.totalMileage) + '\n')
+        f.write('Total Cost (£): ' + str(self.totalCost) + '\n')
+        f.write('Elapsed Time (s): ' + str(elapsed_time) + '\n')
+        f.write('------------------------------------------------------------\n')
+        f.close()
+        print('Stored output values to', results_filename)
+    ### --- End def output_results_file --- ###
 ### --- End class INSTANCE --- ###
-
-def default_options_vector_type(measure=''):
-    ov = np.zeros(100, dtype=np.float64)
-    ov[1] = 0.0 # Quality meausre (might be modified automatically for MK, default: Ait H.)
-    ov[1] = 1.0 # Two-opt active
-    ov[2] = 1.0 # 2 exchange active
-    ov[3] = 0.0 # Nurse order change active (neighbourhood in local search)
-    ov[4] = 0.05 # GRASP delta low
-    ov[5] = 0.25 # GRASP delta range
-    ov[6] = 1.0 # Nurse order change active (In GRASP, between calls)
-    ov[7] = 1.0 # performPathRelinking
-    ov[8] = 10.0 # Solutions in pool
-    ov[9] = 1.0 # Binary, perform path relinking for every solution with one random solution in the pool
-    ov[10] = 1.0 # GRASP: RCL strategy (1 or 2)
-
-    # Weights of objective function (for "paper" measure)  
-    # $\alpha_1$: Travel Time:
-    # ait_h: -0.3*60, mk: -1/3*60, paper: -1
-    # $\alpha_2$: Waiting Time:
-    # ait_h: 0, mk: 0, paper: -1
-    # $\alpha_3$: Tardiness:
-    # ait_h: INF, mk: -1/3*60, paper: -5
-    # $\alpha_4$: Overtime:
-    # ait_h: INF, mk: 0, paper: -5
-    # $\alpha_5$: Workload Balance:
-    # ait_h: 0, mk: 0, paper: 0.5
-    # $\alpha_6$: Preference Score:
-    # ait_h: -1, mk: 0, paper: 1
-    # $\alpha_7$: Maximum Tardiness
-    # ait_h: INF, mk: -1/3*60, paper: 0
-
-    if measure == 'ait_h':
-        ov[0] = 0.0
-        ov[50] = 1 # 1 if tardiness and overtime are infeasible, 0 if feasible
-        ov[51] = -0.3*60 # alpha_1 Travel time
-        ov[52] = 0 # alpha_2 Waiting time
-        ov[53] = 0 # alpha_3 Tardiness
-        ov[54] = 0 # alpha_4 Overtime
-        ov[55] = 0 # alpha_5 Workload balance
-        ov[56] = -1 # alpha_6 Preference score
-        ov[57] = 0 # alpha_7 Max tardiness (allowed))
-    elif measure == 'mankowska':
-        ov[0] = 1.0
-        ov[50] = 0 # 1 if tardiness and overtime are infeasible, 0 if feasible
-        ov[51] = -1/3*60 # alpha_1 Travel time
-        ov[52] = 0 # alpha_2 Waiting time
-        ov[53] = -1/3*60 # alpha_3 Tardiness
-        ov[54] = 0 # alpha_4 Overtime
-        ov[55] = 0 # alpha_5 Workload balance
-        ov[56] = 0 # alpha_6 Preference score
-        ov[57] = -1/3*60 # alpha_7 Max tardiness (not in paper)
-        ov[12] = 0 # Use gap (1) or precedence (0)
-    elif measure == 'workload_balance' or measure == 'balanced':
-        ov[0] = 5.0
-        ov[50] = 0 # 1 if tardiness and overtime are infeasible, 0 if feasible
-        ov[51] = -1.0 # alpha_1 Travel time
-        ov[52] = -1.0 # alpha_2 Waiting time
-        ov[53] = -5.0 # alpha_3 Tardiness
-        ov[54] = -5.0 # alpha_4 Overtime
-        ov[55] = 0.50 # alpha_5 Workload balance
-        ov[56] = 1 # alpha_6 Preference score
-        ov[57] = 0 # alpha_7 Max tardiness (not in paper)
-    elif measure == 'paper':
-        ov[0] = 6.0
-        ov[50] = 0 # 1 if tardiness and overtime are infeasible, 0 if feasible
-        ov[51] = -1.0 # alpha_1 Travel time
-        ov[52] = -1.0 # alpha_2 Waiting time
-        ov[53] = -5.0 # alpha_3 Tardiness
-        ov[54] = -5.0 # alpha_4 Overtime
-        ov[55] = 0.50 # alpha_5 Workload balance
-        ov[56] = 1 # alpha_6 Preference score
-        ov[57] = 0 # alpha_7 Max tardiness (not in paper)
-    else:
-        print('No measure type given: cannot create defaults for options_vector.')
-        print('Terminating program.')
-        exit(-1)
-
-    # ov[99] = 0.0 # print all input data
-    return ov
-### --- End def default_options_vector --- ###
 
 def default_options_vector():
     ov = np.zeros(100, dtype=np.float64)
@@ -1555,7 +1454,6 @@ def default_options_vector():
 def metres_to_miles(metres):
     #miles = metres * 0.00062137
     if np.isnan(metres):
-        # return distmiles
         return 0.0
     elif metres == 0:
         return metres
@@ -1590,9 +1488,7 @@ def create_lonlat_string(coord):
     # E.g.: coord = [-1.7, 51.2], temp_string_coord = ['-1.7', '51.2'], string_coord_reverse = '-1.7,51.2'
     
     temp_string_coord = [str(float) for float in coord]
-    # print('temp_string_coord:', temp_string_coord)
     string_coord = ','.join(temp_string_coord)
-    # print('string_coord: ', string_coord)
 
     return string_coord
 ### --- End of def create_lonlat_string --- ###  
@@ -1609,17 +1505,12 @@ def route_points_osrm(p1, p2, goingThrough=None):
     stringcoord1 = ','.join([str(p1[0]), str(p1[1])])
     stringcoord2 = ','.join([str(p2[0]), str(p2[1])])
     stringGoingThrough = ';'.join([','.join([str(i), str(j)]) for i, j in goingThrough])
-
     string_all = ';'.join([stringcoord1, stringGoingThrough, stringcoord2])
 
     server = r'localhost:5000'
     str_call = 'http://' + server + '/route/v1/driving/' + string_all + '?overview=full&geometries=geojson'
-    # print(str_call)
     r = requests.get(str_call)
     osrm_result = r.json()
-    # print(osrm_result)
-    # exit(-1)
-    # print(osrm_result)
     geoTemp = osrm_result['routes'][0]['geometry']['coordinates']
 
     routeList = []

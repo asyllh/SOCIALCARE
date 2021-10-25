@@ -27,6 +27,8 @@ def time_dif_to_minutes(endtime, starttime, round=True):
 
 def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, dayindex_2weeks=None, dayindex_8weeks=None, print_statements=False, filename='None', foldername='None'):
 
+    print('Collecting data from input file.\n')
+
     if planning_date == None or dayindex_2weeks == None or dayindex_8weeks == None:
         print('[ERROR]: invalid timestamp for dayindex_2weeks and dayindex_8weeks.')
         print('Terminating program.')
@@ -456,6 +458,7 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
     # print(carerday_df)
 
     # exit(-1)
+    print('Finished collecting data.\n')
 
     return client_df, carershift_df, carerday_df
 
