@@ -98,13 +98,13 @@
 %}
 
 % The document class `elsarticle` uses the \AtBeginDocument comman to define the colour of all link types as blue, so we use the \AtBeginDocument command again to overwrite the colour settings to the colors we choose. REMEMBER TO REMOVE THIS BEFORE SUBMITTING.
-\AtBeginDocument{% 
-	\hypersetup{
-		linkcolor=myPurple,
-		citecolor=myAqua,
-		urlcolor=black
-	}
-} %end of \AtBeginDocument
+%\AtBeginDocument{% 
+%	\hypersetup{
+%		linkcolor=myPurple,
+%		citecolor=myAqua,
+%		urlcolor=black
+%	}
+%} %end of \AtBeginDocument
 
 \newcommand{\intro}[1]{{\color{blue}#1}}
 
@@ -157,6 +157,7 @@
 
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric}
+\usetikzlibrary{patterns}
 
 \usepackage{wrapfig}
 
