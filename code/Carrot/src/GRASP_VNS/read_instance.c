@@ -7,70 +7,70 @@ UoS
 
 
 #include "constructive.h"
-void overwrite_instance(struct INSTANCE* ip, struct INSTANCE* oi) {
+void OverwriteInstance(struct INSTANCE* ip, struct INSTANCE* oi) {
 	/*
 	Copies the contents of the solution of "oi" into "ip"
 	without creating any new allocations.
 	Only copies the solution, no algorithm options or data
 	*/
 
-	for (int i = 0; i < oi->nCarers; ++i){
+	for (int i = 0; i < oi->nNurses; ++i){
         for(int j = 0; j < oi->nJobs; ++j){
             ip->solMatrix[i][j] = oi->solMatrix[i][j];
         }
     }
 
-	for (int i = 0; i < oi->nCarers; ++i){
+	for (int i = 0; i < oi->nNurses; ++i){
         for(int j = 0; j < oi->nJobs; ++j){
             ip->timeMatrix[i][j] = oi->timeMatrix[i][j];
         }
     }
 
-	for (int i = 0; i < oi->nCarers; ++i){
+	for (int i = 0; i < oi->nNurses; ++i){
         for(int j = 0; j < oi->nJobs; ++j){
-            ip->allCarerRoutes[i][j] = oi->allCarerRoutes[i][j];
+            ip->allNurseRoutes[i][j] = oi->allNurseRoutes[i][j];
         }
     }
 
-    for (int i = 0; i < oi->nCarers; ++i){ // NB: NEW: 03/06/2021
+    for (int i = 0; i < oi->nNurses; ++i){ // NB: NEW: 03/06/2021
         for(int j = 0; j < oi->nJobs; ++j){
-            ip->carerWaitingMatrix[i][j] = oi->carerWaitingMatrix[i][j];
+            ip->nurseWaitingMatrix[i][j] = oi->nurseWaitingMatrix[i][j];
         }
     }
 
-    for (int i = 0; i < oi->nCarers; ++i){ // NB: NEW: 03/06/2021
+    for (int i = 0; i < oi->nNurses; ++i){ // NB: NEW: 03/06/2021
         for(int j = 0; j < oi->nJobs; ++j){
-            ip->carerTravelMatrix[i][j] = oi->carerTravelMatrix[i][j];
+            ip->nurseTravelMatrix[i][j] = oi->nurseTravelMatrix[i][j];
         }
     }
 
-	for (int i = 0; i < oi->nCarers; ++i) {
-		ip->carerOrder[i] = oi->carerOrder[i];
-		ip->carerWaitingTime[i] = oi->carerWaitingTime[i];
-		ip->carerTravelTime[i] = oi->carerTravelTime[i];
+	for (int i = 0; i < oi->nNurses; ++i) {
+		ip->nurseOrder[i] = oi->nurseOrder[i];
+		ip->nurseWaitingTime[i] = oi->nurseWaitingTime[i];
+		ip->nurseTravelTime[i] = oi->nurseTravelTime[i];
 	}
 
 	for (int i = 0; i < oi->nJobs; ++i) {
-		ip->carerRoute[i] = oi->carerRoute[i];
+		ip->nurseRoute[i] = oi->nurseRoute[i];
 		ip->violatedTW[i] = oi->violatedTW[i];
 		ip->violatedTWMK[i] = oi->violatedTWMK[i];
 	}
 
-} //END OF overwrite_instance function.
+} //END OF OverwriteInstance function.
 
-struct INSTANCE copy_instance(struct INSTANCE* oi) {
-	int LOCAL_VERBOSE = oi->verbose;
+struct INSTANCE CopyInstance(struct INSTANCE* original_instance) {
+	int LOCAL_VERBOSE = original_instance->verbose;
 
 	int** solMatrix;
-	int nRows = oi->nCarers;
-	int nCols = oi->nJobs;
+	int nRows = original_instance->nNurses;
+	int nCols = original_instance->nJobs;
 	solMatrix = malloc(nRows * sizeof(int*)); // Rows
 	for (int i = 0; i < nRows; i++){
         solMatrix[i] = malloc(nCols*sizeof(int)); // Cols
     }
 	for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
-            solMatrix[i][j] = oi->solMatrix[i][j];
+            solMatrix[i][j] = original_instance->solMatrix[i][j];
         }
     }
 	if (LOCAL_VERBOSE > 5){
@@ -79,15 +79,15 @@ struct INSTANCE copy_instance(struct INSTANCE* oi) {
 
 
 	double** timeMatrix;
-	nRows = oi->nCarers;
-	nCols = oi->nJobs;
+	nRows = original_instance->nNurses;
+	nCols = original_instance->nJobs;
 	timeMatrix = malloc(nRows * sizeof(double*)); // Rows
 	for (int i = 0; i < nRows; i++){
         timeMatrix[i] = malloc(nCols*sizeof(double)); // Cols
     }
 	for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
-            timeMatrix[i][j] = oi->timeMatrix[i][j];
+            timeMatrix[i][j] = original_instance->timeMatrix[i][j];
         }
     }
 	if (LOCAL_VERBOSE > 5){
@@ -95,74 +95,74 @@ struct INSTANCE copy_instance(struct INSTANCE* oi) {
     }
 
 	int** allNurseRoutes;
-	nRows = oi->nCarers;
-	nCols = oi->nJobs;
+	nRows = original_instance->nNurses;
+	nCols = original_instance->nJobs;
 	allNurseRoutes = malloc(nRows * sizeof(int*)); // Rows
 	for (int i = 0; i < nRows; i++){
         allNurseRoutes[i] = malloc(nCols*sizeof(int)); // Cols
     }
 	for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
-            allNurseRoutes[i][j] = oi->allCarerRoutes[i][j];
+            allNurseRoutes[i][j] = original_instance->allNurseRoutes[i][j];
         }
     }
 	if (LOCAL_VERBOSE > 5){
-        printf("Allocated allCarerRoutes. (copying)\n");
+        printf("Allocated allNurseRoutes. (copying)\n");
     }
 
-    double** nurseWaitingMatrix; //NB: NEW: 03/06/2021
-    nRows = oi->nCarers;
-    nCols = oi->nJobs;
+    /*double** nurseWaitingMatrix; //NB: NEW: 03/06/2021
+    nRows = original_instance->nNurses;
+    nCols = original_instance->nJobs;
     nurseWaitingMatrix = malloc(nRows * sizeof(double*)); // Rows
     for (int i = 0; i < nRows; i++){
         nurseWaitingMatrix[i] = malloc(nCols*sizeof(double)); // Cols
     }
     for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
-            nurseWaitingMatrix[i][j] = oi->carerWaitingMatrix[i][j];
+            nurseWaitingMatrix[i][j] = original_instance->nurseWaitingMatrix[i][j];
         }
     }
     if (LOCAL_VERBOSE > 5){
-        printf("Allocated carerWaitingMatrix. (copying)\n");
+        printf("Allocated nurseWaitingMatrix. (copying)\n");
     }
 
     double** nurseTravelMatrix; //NB: NEW: 03/06/2021
-    nRows = oi->nCarers;
-    nCols = oi->nJobs;
+    nRows = original_instance->nNurses;
+    nCols = original_instance->nJobs;
     nurseTravelMatrix = malloc(nRows * sizeof(double*)); // Rows
     for (int i = 0; i < nRows; i++){
         nurseTravelMatrix[i] = malloc(nCols*sizeof(double)); // Cols
     }
     for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
-            nurseTravelMatrix[i][j] = oi->carerTravelMatrix[i][j];
+            nurseTravelMatrix[i][j] = original_instance->nurseTravelMatrix[i][j];
         }
     }
     if (LOCAL_VERBOSE > 5){
-        printf("Allocated carerTravelMatrix. (copying)\n");
-    }
+        printf("Allocated nurseTravelMatrix. (copying)\n");
+    }*/
 
-	// Allocate and populate vectors of size nCarers
-	double* nurseWaitingTime = malloc(oi->nCarers * sizeof(double));
-	double* nurseTravelTime = malloc(oi->nCarers * sizeof(double));
-	int* nurseOrder = malloc(oi->nCarers * sizeof(int));
-	for (int i = 0; i < oi->nCarers; ++i) {
-		nurseOrder[i] = oi->carerOrder[i];
-		nurseWaitingTime[i] = oi->carerWaitingTime[i];
-		nurseTravelTime[i] = oi->carerTravelTime[i];
+	// Allocate and populate vectors of size nNurses
+	double* nurseWaitingTime = malloc(original_instance->nNurses * sizeof(double));
+	double* nurseTravelTime = malloc(original_instance->nNurses * sizeof(double));
+	int* nurseOrder = malloc(original_instance->nNurses * sizeof(int));
+	for (int i = 0; i < original_instance->nNurses; ++i) {
+		nurseOrder[i] = original_instance->nurseOrder[i];
+		nurseWaitingTime[i] = original_instance->nurseWaitingTime[i];
+		nurseTravelTime[i] = original_instance->nurseTravelTime[i];
 	}
 	if (LOCAL_VERBOSE > 5){
-        printf("Allocated vectors of size nCarers. (copying)\n");
+        printf("Allocated vectors of size nNurses. (copying)\n");
     }
 
 	// Allocate and populate vectors of size nJobs
-	int* nurseRoute = malloc(oi->nJobs * sizeof(int));
-	double* violatedTW = malloc(oi->nJobs * sizeof(double));
-	double* violatedTWMK = malloc(oi->nJobs * sizeof(double));
-	for (int i = 0; i < oi->nJobs; ++i) {
-		nurseRoute[i] = oi->carerRoute[i];
-		violatedTW[i] = oi->violatedTW[i];
-		violatedTWMK[i] = oi->violatedTWMK[i];
+	int* nurseRoute = malloc(original_instance->nJobs * sizeof(int));
+	double* violatedTW = malloc(original_instance->nJobs * sizeof(double));
+	double* violatedTWMK = malloc(original_instance->nJobs * sizeof(double));
+	for (int i = 0; i < original_instance->nJobs; ++i) {
+		nurseRoute[i] = original_instance->nurseRoute[i];
+		violatedTW[i] = original_instance->violatedTW[i];
+		violatedTWMK[i] = original_instance->violatedTWMK[i];
 	}
 	if (LOCAL_VERBOSE > 5){
         printf("Allocated vectors of size nJobs. (copying)\n");
@@ -172,43 +172,46 @@ struct INSTANCE copy_instance(struct INSTANCE* oi) {
         printf("Creating instance struct... (copying)\n");
     }
 
-	struct INSTANCE inst = { .nJobs = oi->nJobs,
-									.nCarers = oi->nCarers,
-									.nSkills = oi->nSkills,
-									.verbose = oi->verbose,
-									.quality_measure = oi->quality_measure,
-									.MAX_TIME_SECONDS = oi->MAX_TIME_SECONDS,
-                                    .tw_interval = oi->tw_interval,
-                                    .exclude_carer_travel = oi->exclude_carer_travel,
-									.od = oi->od,
-									.carer_travel_from_depot = oi->carer_travel_from_depot,
-									.carer_travel_to_depot = oi->carer_travel_to_depot,
-                                    .unavailMatrix = oi->unavailMatrix,
-                                    .carerUnavail = oi->carerUnavail,
-									.carerWorkingTimes = oi->carerWorkingTimes,
+	struct INSTANCE inst = { .nJobs = original_instance->nJobs,
+                                    .nJobsIncDS = original_instance->nJobsIncDS, // NB: NEW 08/11/2021
+									.nNurses = original_instance->nNurses,
+									.nSkills = original_instance->nSkills,
+									.verbose = original_instance->verbose,
+									.qualityMeasure = original_instance->qualityMeasure,
+									.MAX_TIME_SECONDS = original_instance->MAX_TIME_SECONDS,
+                                    .twInterval = original_instance->twInterval,
+                                    .excludeNurseTravel = original_instance->excludeNurseTravel,
+									.od = original_instance->od,
+									.nurseTravelFromDepot = original_instance->nurseTravelFromDepot,
+									.nurseTravelToDepot = original_instance->nurseTravelToDepot,
+                                    .unavailMatrix = original_instance->unavailMatrix,
+                                    .nurseUnavail = original_instance->nurseUnavail,
+									.nurseWorkingTimes = original_instance->nurseWorkingTimes,
 									.solMatrix = solMatrix,
 									.timeMatrix = timeMatrix,
-									.jobTimeInfo = oi->jobTimeInfo,
-									.jobRequirements = oi->jobRequirements,
-									.carerSkills = oi->carerSkills,
-									.carerSkilled = oi->carerSkilled,
-									.carerRoute = nurseRoute,
-									.allCarerRoutes = allNurseRoutes,
-									.carerOrder = nurseOrder,
-									.carerWaitingTime = nurseWaitingTime,
-									.carerTravelTime = nurseTravelTime,
-									.doubleService = oi->doubleService,
-									.dependsOn = oi->dependsOn,
+									.jobTimeInfo = original_instance->jobTimeInfo,
+									.jobRequirements = original_instance->jobRequirements,
+									.nurseSkills = original_instance->nurseSkills,
+									.nurseSkilled = original_instance->nurseSkilled,
+									.nurseRoute = nurseRoute,
+									.allNurseRoutes = allNurseRoutes,
+									.nurseOrder = nurseOrder,
+									.nurseWaitingTime = nurseWaitingTime,
+									.nurseTravelTime = nurseTravelTime,
+									.doubleService = original_instance->doubleService,
+									.dependsOn = original_instance->dependsOn,
 									.violatedTW = violatedTW,
 									.violatedTWMK = violatedTWMK,
 									.isFeasible = 0,
-									.MK_mind = oi->MK_mind,
-									.MK_maxd = oi->MK_maxd,
-									.capabilityOfDoubleServices = oi->capabilityOfDoubleServices,
-									.prefScore = oi->prefScore,
-									.algorithmOptions = oi->algorithmOptions,
-									.carerWaitingMatrix = oi->carerWaitingMatrix, //NB: NEW: 03/06/2021
-									.carerTravelMatrix = oi->carerTravelMatrix //NB: NEW: 03/06/2021
+									.mkMinD = original_instance->mkMinD,
+									.mkMaxD = original_instance->mkMaxD,
+									.capabilityOfDoubleServices = original_instance->capabilityOfDoubleServices,
+									.prefScore = original_instance->prefScore,
+									.algorithmOptions = original_instance->algorithmOptions,
+									.nurseWaitingMatrix = original_instance->nurseWaitingMatrix, //NB: NEW: 03/06/2021
+									.nurseTravelMatrix = original_instance->nurseTravelMatrix, //NB: NEW: 03/06/2021
+                                    .totalServiceTime = original_instance->totalServiceTime, //NB NEW: 06/11/2021
+                                    .totalServiceTimeIncDS = original_instance->totalServiceTimeIncDS //NB NEW: 06/11/2021
 	};
 
 	if (LOCAL_VERBOSE > 5){
@@ -220,14 +223,14 @@ struct INSTANCE copy_instance(struct INSTANCE* oi) {
 
 
 // // Functions to read instances, and some hardcoded instances too
-struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, int tw_interval_data, bool exclude_carer_travel_data,
-        double* od_data, double* carer_travel_from_depot_data, double* carer_travel_to_depot_data, int* unavail_matrix_data, int* carer_unavail_data,
-        int* carerWorkingTimes_data, int* jobTimeInfo_data, int* jobRequirements_data, int* carerSkills_data, int* doubleService_data, int* dependsOn_data,
-        int* mk_mind_data, int* mk_maxd_data, int* capabilityOfDoubleServices_data, double* prefScore_data, double* algorithmOptions_data) {
+struct INSTANCE InstanceFromPython(int nJobs_data, int nNurses_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, int twInterval_data, bool excludeNurseTravel_data,
+                                   double* od_data, double* nurseTravelFromDepot_data, double* nurseTravelToDepot_data, int* unavailMatrix_data, int* nurseUnavail_data,
+                                   int* nurseWorkingTimes_data, int* jobTimeInfo_data, int* jobRequirements_data, int* nurseSkills_data, int* doubleService_data, int* dependsOn_data,
+                                   int* mkMinD_data, int* mkMaxD_data, int* capabilityOfDoubleServices_data, double* prefScore_data, double* algorithmOptions_data) {
 
     int printAllAllocations = 0;
 
-    // quality_measure = 1 is Mk, 0 is Ait H.
+    // qualityMeasure = 1 is Mk, 0 is Ait H.
     // Add very small number just to prevent accuracy errors
     int quality_measure = (int)(algorithmOptions_data[0] + 1e-6);
 
@@ -240,7 +243,7 @@ struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkil
     int ct = -1;
     int nRows, nCols;
     int nJobs = nJobs_data;
-    int nCarers = nCarers_data;
+    int nNurses = nNurses_data;
     int nSkills = nSkills_data;
     if (verbose_data > 5){
         printf("Starting allocation of memory\n");
@@ -266,78 +269,78 @@ struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkil
     }
 
 
-    // 2. double** carer_travel_from_depot: nCarers x nJobs (using double* carer_travel_from_depot_data)
-    nRows = nCarers;
+    // 2. double** nurseTravelFromDepot: nNurses x nJobs (using double* carer_travel_from_depot_data)
+    nRows = nNurses;
     nCols = nJobs;
     ct = -1;
-    double** carer_travel_from_depot;
-    carer_travel_from_depot = malloc(nRows * sizeof(double*)); // Rows
+    double** nurseTravelFromDepot;
+    nurseTravelFromDepot = malloc(nRows * sizeof(double*)); // Rows
     for (int i = 0; i < nRows; i++){
-        carer_travel_from_depot[i] = malloc(nCols*sizeof(double)); // Cols
+        nurseTravelFromDepot[i] = malloc(nCols*sizeof(double)); // Cols
     }
     for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
             ct++;
-            carer_travel_from_depot[i][j] = (double) carer_travel_from_depot_data[ct];
+            nurseTravelFromDepot[i][j] = (double) nurseTravelFromDepot_data[ct];
         }
     }
     if (verbose_data > 5){
-        printf("Allocated carer_travel_from_depot.\n");
+        printf("Allocated nurseTravelFromDepot.\n");
     }
 
-    // 3. double** nurse_travel_to_depot: nNurses x nJobs (using double* nurse_travel_to_depot_data)
-    double** carer_travel_to_depot;
+    // 3. double** nurseTravelToDepot: nNurses x nJobs (using double* nurse_travel_to_depot_data)
+    double** nurseTravelToDepot;
     ct = -1;
-    carer_travel_to_depot = malloc(nRows * sizeof(double*)); // Rows
+    nurseTravelToDepot = malloc(nRows * sizeof(double*)); // Rows
     for (int i = 0; i < nRows; i++){
-        carer_travel_to_depot[i] = malloc(nCols*sizeof(double)); // Cols
+        nurseTravelToDepot[i] = malloc(nCols*sizeof(double)); // Cols
     }
     for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
             ct++;
-            carer_travel_to_depot[i][j] = (double) carer_travel_to_depot_data[ct];
+            nurseTravelToDepot[i][j] = (double) nurseTravelToDepot_data[ct];
         }
     }
     if (verbose_data > 5){
-        printf("Allocated carer_travel_to_depot.\n");
+        printf("Allocated nurseTravelToDepot.\n");
     }
 
-    // 4. int** carerWorkingTimes: nCarers x 3 (using int* carerWorkingTimes_data)
-    int** carerWorkingTimes;
-    nRows = nCarers;
-    nCols = 3;
-    carerWorkingTimes = malloc(nRows * sizeof(int*)); // Rows
+    // 4. int** nurseWorkingTimes: nNurses x 5 (using int* carerWorkingTimes_data) Note: changed from nNurses x 3 to nNurses x 5 on 04/11/2021
+    int** nurseWorkingTimes;
+    nRows = nNurses;
+    nCols = 5; // Changed from 3 to 5 on 04/11/2021
+    nurseWorkingTimes = malloc(nRows * sizeof(int*)); // Rows
     for (int i = 0; i < nRows; i++){
-        carerWorkingTimes[i] = malloc(nCols*sizeof(int)); // Cols
+        nurseWorkingTimes[i] = malloc(nCols*sizeof(int)); // Cols
     }
     ct = -1;
     for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
             ct++;
-            carerWorkingTimes[i][j] = carerWorkingTimes_data[ct];
+            nurseWorkingTimes[i][j] = nurseWorkingTimes_data[ct];
         }
     }
     if (verbose_data > 5){
-        printf("Allocated carerWorkingTimes.\n");
+        printf("Allocated nurseWorkingTimes.\n");
     }
 
     // 5. int** nurseSkills: nNurses x nSkills (using int* nurseSkills_data)
-    int** carerSkills;
-    nRows = nCarers;
+    int** nurseSkills;
+    nRows = nNurses;
     nCols = nSkills;
-    carerSkills = malloc(nRows * sizeof(int*)); // Rows
+    nurseSkills = malloc(nRows * sizeof(int*)); // Rows
     for (int i = 0; i < nRows; i++){
-        carerSkills[i] = malloc(nCols*sizeof(int)); // Cols
+        nurseSkills[i] = malloc(nCols*sizeof(int)); // Cols
     }
     ct = -1;
     for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
             ct++;
-            carerSkills[i][j] = carerSkills_data[ct];
+            nurseSkills[i][j] = nurseSkills_data[ct];
         }
     }
     if (verbose_data > 5){
-        printf("Allocated carerSkills.\n");
+        printf("Allocated nurseSkills.\n");
     }
 
     // 6. int** jobRequirements: nJobs x nSkills (using int* jobRequirements_data)
@@ -380,7 +383,7 @@ struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkil
 
     // 8. int** solMatrix: nNurses x nJobs (set to all -1)
     int** solMatrix;
-    nRows = nCarers;
+    nRows = nNurses;
     nCols = nJobs;
     solMatrix = malloc(nRows * sizeof(int*)); // Rows
     for (int i = 0; i < nRows; i++){
@@ -397,7 +400,7 @@ struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkil
 
     // 9. double** timeMatrix: nNurses x nJobs (set to all -1)
     double** timeMatrix;
-    nRows = nCarers;
+    nRows = nNurses;
     nCols = nJobs;
     timeMatrix = malloc(nRows * sizeof(double*)); // Rows
     for (int i = 0; i < nRows; i++){
@@ -414,49 +417,50 @@ struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkil
 
 
     // 10. int* nurseRoute: 1 x nJobs
-    int* carerRoute = malloc(nJobs * sizeof(int));
+    int* nurseRoute = malloc(nJobs * sizeof(int));
 
-    // 11. int** allCarerRoutes: nCarers x nJobs (set to all -1)
-    int** allCarerRoutes;
-    nRows = nCarers;
+    // 11. int** allNurseRoutes: nNurses x nJobs (set to all -1)
+    int** allNurseRoutes;
+    nRows = nNurses;
     nCols = nJobs;
-    allCarerRoutes = malloc(nRows * sizeof(int*)); // Rows
+    allNurseRoutes = malloc(nRows * sizeof(int*)); // Rows
     for (int i = 0; i < nRows; i++){
-        allCarerRoutes[i] = malloc(nCols*sizeof(int)); // Cols
+        allNurseRoutes[i] = malloc(nCols*sizeof(int)); // Cols
     }
     for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
-            allCarerRoutes[i][j] = -1;
+            allNurseRoutes[i][j] = -1;
         }
     }
     if (verbose_data > 5){
-        printf("Allocated allCarerRoutes.\n");
+        printf("Allocated allNurseRoutes.\n");
     }
 
-    // 12. double* carerWaitingTime: 1 x nCarers
-    double* carerWaitingTime = malloc(nCarers * sizeof(double));
+    // 12. double* nurseWaitingTime: 1 x nNurses
+    double* nurseWaitingTime = malloc(nNurses * sizeof(double));
 
     // 13. double nurseTravelTime: 1 x nNurses
-    double* carerTravelTime = malloc(nCarers * sizeof(double));
+    double* nurseTravelTime = malloc(nNurses * sizeof(double));
 
-    // 14. - 17. int* doubleService, dependsOn, mk_mind, mk_maxd: 1 x nJobs (using _data)
+    // 14. - 17. int* doubleService, dependsOn, mkMinD, mkMaxD: 1 x nJobs (using _data)
     int* doubleService = malloc(nJobs * sizeof(int));
     int* dependsOn = malloc(nJobs * sizeof(int));
-    int* mk_mind = malloc(nJobs * sizeof(int));
-    int* mk_maxd = malloc(nJobs * sizeof(int));
+    int* mkMinD = malloc(nJobs * sizeof(int));
+    int* mkMaxD = malloc(nJobs * sizeof(int));
     int nDoubleServices = 0;
     for (int i = 0; i < nJobs; ++i) {
         doubleService[i] = doubleService_data[i];
         dependsOn[i] = dependsOn_data[i];
-        mk_mind[i] = mk_mind_data[i + 1];
-        mk_maxd[i] = mk_maxd_data[i + 1];
+        mkMinD[i] = mkMinD_data[i + 1];
+        mkMaxD[i] = mkMaxD_data[i + 1];
         nDoubleServices += doubleService_data[i];
     }
+    int nJobsIncDS = nJobs + nDoubleServices;
 
-    // 18. int* carerUnavail: 1 x nCarers (using int* carer_unavail_data) (24/05/2021)
-    int* carerUnavail = malloc(nCarers * sizeof(int));
-    for (int i = 0; i < nCarers; i++){
-        carerUnavail[i] = carer_unavail_data[i];
+    // 18. int* nurseUnavail: 1 x nNurses (using int* carer_unavail_data) (24/05/2021)
+    int* nurseUnavail = malloc(nNurses * sizeof(int));
+    for (int i = 0; i < nNurses; i++){
+        nurseUnavail[i] = nurseUnavail_data[i];
     }
 
     // 19. double* violatedTW: 1 x nJobs
@@ -465,23 +469,23 @@ struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkil
     // 20. double* violatedTWMK: 1 x nJobs
     double* violatedTWMK = malloc(nJobs * sizeof(double));
 
-    // 21. int** carerSkilled: nCarers x nJobs (set using carerSkills, jobRequirements, doubleService)
-    int** carerSkilled;
-    nRows = nCarers;
+    // 21. int** nurseSkilled: nNurses x nJobs (set using nurseSkills, jobRequirements, doubleService)
+    int** nurseSkilled;
+    nRows = nNurses;
     nCols = nJobs;
-    carerSkilled = malloc(nRows * sizeof(int*)); // Rows
+    nurseSkilled = malloc(nRows * sizeof(int*)); // Rows
     for (int i = 0; i < nRows; i++){
-        carerSkilled[i] = malloc(nCols*sizeof(int)); // Cols
+        nurseSkilled[i] = malloc(nCols*sizeof(int)); // Cols
     }
-    carer_skilled_from_skills_and_requirements(carerSkills, jobRequirements, carerSkilled, doubleService, nJobs, nCarers, nSkills);
+    NurseSkilledFromSkillsAndRequirements(nurseSkills, jobRequirements, nurseSkilled, doubleService, nJobs, nNurses, nSkills);
     if (verbose_data > 5){
-        printf("Allocated carerSkilled.\n");
+        printf("Allocated nurseSkilled.\n");
     }
 
-    // 22. double** prefScore: nJobs x nCarers (using double* prefScore_data)
+    // 22. double** prefScore: nJobs x nNurses (using double* prefScore_data)
     double** prefScore; // Job x Nurse
     nRows = nJobs;
-    nCols = nCarers;
+    nCols = nNurses;
     prefScore = malloc(nRows * sizeof(double*)); // Rows
     for (int i = 0; i < nRows; i++){
         prefScore[i] = malloc(nCols*sizeof(double)); // Cols
@@ -507,10 +511,10 @@ struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkil
         printf("Allocated algorithmOptions.\n");
     }
 
-    // 24. int*** capabilityOfDoubleServices: nCarers x nCarers x nDoubleServices (using int* capabilityOfDoubleServices_data)
+    // 24. int*** capabilityOfDoubleServices: nNurses x nNurses x nDoubleServices (using int* capabilityOfDoubleServices_data)
     int*** capabilityOfDoubleServices;
-    nRows = nCarers;
-    nCols = nCarers;
+    nRows = nNurses;
+    nCols = nNurses;
     // dim3 is nDoubleServices
     capabilityOfDoubleServices = malloc(nRows * sizeof(int**)); // Rows
     for (int i = 0; i < nRows; i++) {
@@ -541,15 +545,15 @@ struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkil
     for (int i = 0; i < nRows; i++) {
         unavailMatrix[i] = malloc(nCols * sizeof(int*)); // Cols
         for (int j = 0; j < nCols; j++){
-            unavailMatrix[i][j] = malloc(nCarers*sizeof(int));
+            unavailMatrix[i][j] = malloc(nNurses*sizeof(int));
         }
     }
     ct = -1;
     for (int i = 0; i < nRows; ++i) {
         for (int j = 0; j < nCols; ++j) {
-            for (int k = 0; k < nCarers; ++k) {
+            for (int k = 0; k < nNurses; ++k) {
                 ct++;
-                unavailMatrix[i][j][k] = unavail_matrix_data[ct];
+                unavailMatrix[i][j][k] = unavailMatrix_data[ct];
             }
         }
     }
@@ -557,111 +561,128 @@ struct INSTANCE instance_from_python(int nJobs_data, int nCarers_data, int nSkil
         printf("Allocated unavailMatrix.\n");
     }
 
-    // 26. double** carerWaitingMatrix: nCarers x nJobs (set to all 0)
+    // 26. double** nurseWaitingMatrix: nNurses x nJobs (set to all 0)
     // NB: NEW: 03/06/2021
-    double** carerWaitingMatrix;
-    nRows = nCarers;
+    double** nurseWaitingMatrix;
+    nRows = nNurses;
     nCols = nJobs;
-    carerWaitingMatrix = malloc(nRows * sizeof(double*)); // Rows
+    nurseWaitingMatrix = malloc(nRows * sizeof(double*)); // Rows
     for (int i = 0; i < nRows; i++){
-        carerWaitingMatrix[i] = malloc(nCols*sizeof(double)); // Cols
+        nurseWaitingMatrix[i] = malloc(nCols*sizeof(double)); // Cols
     }
     for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
-            carerWaitingMatrix[i][j] = 0;
+            nurseWaitingMatrix[i][j] = 0;
         }
     }
     if (verbose_data > 5){
-        printf("Allocated carerWaitingMatrix.\n");
+        printf("Allocated nurseWaitingMatrix.\n");
     }
 
-    // 27. double** carerWaitingMatrix: nCarers x nJobs (set to all 0)
+    // 27. double** nurseWaitingMatrix: nNurses x nJobs (set to all 0)
     // NB: NEW: 03/06/2021
-    double** carerTravelMatrix;
-    nRows = nCarers;
+    double** nurseTravelMatrix;
+    nRows = nNurses;
     nCols = nJobs;
-    carerTravelMatrix = malloc(nRows * sizeof(double*)); // Rows
+    nurseTravelMatrix = malloc(nRows * sizeof(double*)); // Rows
     for (int i = 0; i < nRows; i++){
-        carerTravelMatrix[i] = malloc(nCols*sizeof(double)); // Cols
+        nurseTravelMatrix[i] = malloc(nCols*sizeof(double)); // Cols
     }
     for (int i = 0; i < nRows; ++i){
         for(int j = 0; j < nCols; ++j){
-            carerTravelMatrix[i][j] = 0;
+            nurseTravelMatrix[i][j] = 0;
         }
     }
     if (verbose_data > 5){
-        printf("Allocated carerTravelMatrix.\n");
+        printf("Allocated nurseTravelMatrix.\n");
     }
 
-    // 28. int* carerOrder: 1 x nCarers (0... nCarers-1)
-    int* carerOrder = malloc(nCarers * sizeof(int));
-    for (int i = 0; i < nCarers; ++i){
-        carerOrder[i] = i;
+    // 28. int* nurseOrder: 1 x nNurses (0... nNurses-1)
+    int* nurseOrder = malloc(nNurses * sizeof(int));
+    for (int i = 0; i < nNurses; ++i){
+        nurseOrder[i] = i;
+    }
+
+    //29. NB NEW 06/11/2021 - calculate totalServiceTime
+    double totalServiceTime = 0.0;
+    for (int j = 0; j < nJobs; ++j){
+        totalServiceTime += jobTimeInfo[j][2];
+    }
+
+    //30. NB NEW 06/11/2021 - calculate totalServiceTimeIncDS - which is totalServiceTime plus double the time for double services.
+    double totalServiceTimeIncDS = totalServiceTime;
+    for (int j = 0; j < nJobs; ++j){
+        if(doubleService[j] == 1){
+            totalServiceTimeIncDS += jobTimeInfo[j][2];
+        }
     }
 
     verbose_data = printAllAllocations;	// Return this to what it was
 
     struct INSTANCE inst = { .nJobs = nJobs,
-            .nCarers = nCarers,
+            .nJobsIncDS = nJobsIncDS, // NB: NEW 08/11/2021
+            .nNurses = nNurses,
             .nSkills = nSkills,
             .verbose = verbose_data,
-            .quality_measure = quality_measure,
+            .qualityMeasure = quality_measure,
             .MAX_TIME_SECONDS = MAX_TIME_SECONDS,
-            .tw_interval = tw_interval_data,
-            .exclude_carer_travel = exclude_carer_travel_data,
+            .twInterval = twInterval_data,
+            .excludeNurseTravel = excludeNurseTravel_data,
             .od = od,
-            .carer_travel_from_depot = carer_travel_from_depot,
-            .carer_travel_to_depot = carer_travel_to_depot,
+            .nurseTravelFromDepot = nurseTravelFromDepot,
+            .nurseTravelToDepot = nurseTravelToDepot,
             .unavailMatrix = unavailMatrix,
-            .carerUnavail = carerUnavail,
-            .carerWorkingTimes = carerWorkingTimes,
+            .nurseUnavail = nurseUnavail,
+            .nurseWorkingTimes = nurseWorkingTimes,
             .solMatrix = solMatrix,
             .timeMatrix = timeMatrix,
             .jobTimeInfo = jobTimeInfo,
             .jobRequirements = jobRequirements,
-            .carerSkills = carerSkills,
-            .carerSkilled = carerSkilled,
-            .carerRoute = carerRoute,
-            .allCarerRoutes = allCarerRoutes,
-            .carerOrder = carerOrder,
-            .carerWaitingTime = carerWaitingTime,
-            .carerTravelTime = carerTravelTime,
+            .nurseSkills = nurseSkills,
+            .nurseSkilled = nurseSkilled,
+            .nurseRoute = nurseRoute,
+            .allNurseRoutes = allNurseRoutes,
+            .nurseOrder = nurseOrder,
+            .nurseWaitingTime = nurseWaitingTime,
+            .nurseTravelTime = nurseTravelTime,
             .doubleService = doubleService,
             .dependsOn = dependsOn,
             .violatedTW = violatedTW,
             .violatedTWMK = violatedTWMK,
             .isFeasible = 0,
-            .MK_mind = mk_mind,
-            .MK_maxd = mk_maxd,
+            .mkMinD = mkMinD,
+            .mkMaxD = mkMaxD,
             .capabilityOfDoubleServices = capabilityOfDoubleServices,
             .prefScore = prefScore,
             .algorithmOptions = algorithmOptions,
-            .carerWaitingMatrix = carerWaitingMatrix, // NB: NEW: 03/06/2021
-            .carerTravelMatrix = carerTravelMatrix // NB: NEW: 03/06/2021
+            .nurseWaitingMatrix = nurseWaitingMatrix, // NB: NEW: 03/06/2021
+            .nurseTravelMatrix = nurseTravelMatrix, // NB: NEW: 03/06/2021
+            .totalServiceTime = totalServiceTime, //NB: NEW: 06/11/2021
+            .totalServiceTimeIncDS = totalServiceTimeIncDS //NB NEW 06/11/2021
     };
 
     return inst;
 
-} // END OF instance_from_python
+} // END OF InstanceFromPython
 
-void free_instance_copy(struct INSTANCE* ip) {
-	for (int i = 0; i < ip->nCarers; ++i)
+void FreeInstanceCopy(struct INSTANCE* ip) {
+	for (int i = 0; i < ip->nNurses; ++i)
 		free(ip->solMatrix[i]);
 	free(ip->solMatrix);
 	if (ip->verbose > 10)
 		printf("Freed solMatrix. (copy)\n");
 
-	for (int i = 0; i < ip->nCarers; ++i)
+	for (int i = 0; i < ip->nNurses; ++i)
 		free(ip->timeMatrix[i]);
 	free(ip->timeMatrix);
 	if (ip->verbose > 10)
 		printf("Freed timeMatrix. (copy)\n");
 
-	for (int i = 0; i < ip->nCarers; ++i)
-		free(ip->allCarerRoutes[i]);
-	free(ip->allCarerRoutes);
+	for (int i = 0; i < ip->nNurses; ++i)
+		free(ip->allNurseRoutes[i]);
+	free(ip->allNurseRoutes);
 	if (ip->verbose > 10)
-		printf("Freed allCarerRoutes. (copy)\n");
+		printf("Freed allNurseRoutes. (copy)\n");
 
 	free(ip->violatedTW);
 	if (ip->verbose > 10)
@@ -671,32 +692,32 @@ void free_instance_copy(struct INSTANCE* ip) {
 	if (ip->verbose > 10)
 		printf("freed ip->violatedTWMK (copy)\n");
 
-	free(ip->carerRoute);
-	// ip->carerRoute = NULL;
+	free(ip->nurseRoute);
+	// ip->nurseRoute = NULL;
 	if (ip->verbose > 10)
-		printf("freed ip->carerRoute (copy)\n");
+		printf("freed ip->nurseRoute (copy)\n");
 
-	free(ip->carerOrder);
+	free(ip->nurseOrder);
 	if (ip->verbose > 10)
-		printf("freed ip->carerOrder (copy)\n");
+		printf("freed ip->nurseOrder (copy)\n");
 
-	free(ip->carerWaitingTime);
+	free(ip->nurseWaitingTime);
 	if (ip->verbose > 10)
-		printf("freed ip->carerWaitingTime (copy)\n");
+		printf("freed ip->nurseWaitingTime (copy)\n");
 
-	free(ip->carerTravelTime);
+	free(ip->nurseTravelTime);
 	if (ip->verbose > 10)
-		printf("freed ip->carerTravelTime (copy)\n");
+		printf("freed ip->nurseTravelTime (copy)\n");
 
 	if (ip->verbose > 10)
 		printf("Finished freeing memory of instance copy.\n");
 }
 
-void free_instance_memory(struct INSTANCE* ip) {
-	free(ip->carerRoute);
-	ip->carerRoute = NULL; // Used as temp. array to avoid allocations
+void FreeInstanceMemory(struct INSTANCE* ip) {
+	free(ip->nurseRoute);
+	ip->nurseRoute = NULL; // Used as temp. array to avoid allocations
 	if (ip->verbose > 10)
-		printf("Set carerRoute to NULL.\n");
+		printf("Set nurseRoute to NULL.\n");
 
 	// printf("\nWarning: There are more things to free!\n");
 	/* deallocate the array */
@@ -706,25 +727,25 @@ void free_instance_memory(struct INSTANCE* ip) {
 	if (ip->verbose > 10)
 		printf("Freed od.\n");
 
-	for (int i = 0; i < (ip->nCarers); i++)
-		free(ip->carer_travel_from_depot[i]);
-	free(ip->carer_travel_from_depot);
+	for (int i = 0; i < (ip->nNurses); i++)
+		free(ip->nurseTravelFromDepot[i]);
+	free(ip->nurseTravelFromDepot);
 	if (ip->verbose > 10)
-		printf("Freed carer_travel_from_depot.\n");
+		printf("Freed nurseTravelFromDepot.\n");
 
-	for (int i = 0; i < (ip->nCarers); i++)
-		free(ip->carer_travel_to_depot[i]);
-	free(ip->carer_travel_to_depot);
+	for (int i = 0; i < (ip->nNurses); i++)
+		free(ip->nurseTravelToDepot[i]);
+	free(ip->nurseTravelToDepot);
 	if (ip->verbose > 10)
-		printf("Freed carer_travel_to_depot.\n");
+		printf("Freed nurseTravelToDepot.\n");
 
-	for (int i = 0; i < ip->nCarers; ++i)
+	for (int i = 0; i < ip->nNurses; ++i)
 		free(ip->solMatrix[i]);
 	free(ip->solMatrix);
 	if (ip->verbose > 10)
 		printf("Freed solMatrix.\n");
 
-	for (int i = 0; i < ip->nCarers; ++i)
+	for (int i = 0; i < ip->nNurses; ++i)
 		free(ip->timeMatrix[i]);
 	free(ip->timeMatrix);
 	if (ip->verbose > 10)
@@ -743,24 +764,24 @@ void free_instance_memory(struct INSTANCE* ip) {
 	if (ip->verbose > 10)
 		printf("Freed jobRequirements.\n");
 
-	for (int i = 0; i < ip->nCarers; ++i)
-		free(ip->carerSkills[i]);
-	free(ip->carerSkills);
+	for (int i = 0; i < ip->nNurses; ++i)
+		free(ip->nurseSkills[i]);
+	free(ip->nurseSkills);
 	if (ip->verbose > 10)
-		printf("Freed carerSkills.\n");
+		printf("Freed nurseSkills.\n");
 
 
-	for (int i = 0; i < ip->nCarers; ++i)
-		free(ip->carerSkilled[i]);
-	free(ip->carerSkilled);
+	for (int i = 0; i < ip->nNurses; ++i)
+		free(ip->nurseSkilled[i]);
+	free(ip->nurseSkilled);
 	if (ip->verbose > 10)
-		printf("Freed carerSkilled.\n");
+		printf("Freed nurseSkilled.\n");
 
-	for (int i = 0; i < ip->nCarers; ++i)
-		free(ip->carerWorkingTimes[i]);
-	free(ip->carerWorkingTimes);
+	for (int i = 0; i < ip->nNurses; ++i)
+		free(ip->nurseWorkingTimes[i]);
+	free(ip->nurseWorkingTimes);
 	if (ip->verbose > 10)
-		printf("Freed carerWorkingTimes.\n\n");
+		printf("Freed nurseWorkingTimes.\n\n");
 
 	free(ip->violatedTWMK);
 	if (ip->verbose > 10)
@@ -770,22 +791,22 @@ void free_instance_memory(struct INSTANCE* ip) {
 	if (ip->verbose > 10)
 		printf("freed ip->violatedTW\n");
 
-	for (int i = 0; i < ip->nCarers; ++i)
-		free(ip->allCarerRoutes[i]);
-	free(ip->allCarerRoutes);
+	for (int i = 0; i < ip->nNurses; ++i)
+		free(ip->allNurseRoutes[i]);
+	free(ip->allNurseRoutes);
 	if (ip->verbose > 10)
-		printf("Freed allCarerRoutes.\n");
+		printf("Freed allNurseRoutes.\n");
 
 
-	// free(ip->carerRoute);
-	// ip->carerRoute = NULL;
+	// free(ip->nurseRoute);
+	// ip->nurseRoute = NULL;
 	// if(ip->verbose > 10)
-	// 	printf("freed ip->carerRoute (set to NULL)\n");
+	// 	printf("freed ip->nurseRoute (set to NULL)\n");
 
-	free(ip->carerOrder);
-	ip->carerOrder = NULL;
+	free(ip->nurseOrder);
+	ip->nurseOrder = NULL;
 	if (ip->verbose > 10)
-		printf("freed ip->carerOrder\n");
+		printf("freed ip->nurseOrder\n");
 
 	free(ip->doubleService);
 	if (ip->verbose > 10)
@@ -795,25 +816,25 @@ void free_instance_memory(struct INSTANCE* ip) {
 	if (ip->verbose > 10)
 		printf("freed ip->dependsOn\n");
 
-	free(ip->carerWaitingTime);
+	free(ip->nurseWaitingTime);
 	if (ip->verbose > 10)
-		printf("freed ip->carerWaitingTime\n");
+		printf("freed ip->nurseWaitingTime\n");
 
-	free(ip->carerTravelTime);
+	free(ip->nurseTravelTime);
 	if (ip->verbose > 10)
-		printf("freed ip->carerTravelTime\n");
+		printf("freed ip->nurseTravelTime\n");
 
 	free(ip->algorithmOptions);
 	if (ip->verbose > 10)
 		printf("freed ip->algorithmOptions\n");
 
-	free(ip->MK_mind);
+	free(ip->mkMinD);
 	if (ip->verbose > 10)
 		printf("freed ip->mk_mind\n");
 
-	free(ip->MK_maxd);
+	free(ip->mkMaxD);
 	if (ip->verbose > 10)
-		printf("freed ip->MK_maxd\n");
+		printf("freed ip->mkMaxD\n");
 
 	if (ip->verbose > 10)
 		printf("Finished freeing memory.\n");
@@ -823,7 +844,7 @@ void free_instance_memory(struct INSTANCE* ip) {
 
 
 
-struct INSTANCE generate_instance() {
+struct INSTANCE GenerateInstance() {
 	int nRows, nCols;
 	int verbose_data = 110;
 
@@ -896,7 +917,7 @@ struct INSTANCE generate_instance() {
 		// SIMPLE DEBUG:
 		/*
 		int nJobs = 12;
-		int nCarers = 3;
+		int nNurses = 3;
 		int startTime = 0;
 
 		int od_data[13][13] = {
@@ -938,7 +959,7 @@ struct INSTANCE generate_instance() {
 		// MANKOWSKA
 			/*
 		int nJobs = 10;
-		int nCarers = 3;
+		int nNurses = 3;
 		int nSkills = 6;
 		int startTime = 9;
 		int od_data[11][11]={
@@ -994,7 +1015,7 @@ struct INSTANCE generate_instance() {
 		/*
 			// SIMPLE EXAMPLE
 			int nJobs = 5;
-			int nCarers = 2;
+			int nNurses = 2;
 			int startTime = 9;
 
 			int od_data[5][5] = {{0, 1, 2, 3, 4},
@@ -1039,7 +1060,7 @@ struct INSTANCE generate_instance() {
 	}
 
 	// // Debug
-	// for (int i = 0; i < nCarers; ++i)
+	// for (int i = 0; i < nNurses; ++i)
 	// {
 	// 	for (int j = 0; j < nJobs; ++j)
 	// 	{
@@ -1080,7 +1101,7 @@ struct INSTANCE generate_instance() {
 		for (int j = 0; j < nCols; ++j)
 			nurseSkilled[i][j] = nurseSkilled_data[i][j];
 	//end populating
-	// printf("Allocated carerSkilled.\n");
+	// printf("Allocated nurseSkilled.\n");
 
 
 
@@ -1108,7 +1129,7 @@ struct INSTANCE generate_instance() {
 		for (int j = 0; j < nCols; ++j)
 			nurseWorkingTimes[i][j] = nurseWorkingTimes_data[i][j];
 	//end populating
-	// printf("Allocated carerWorkingTimes.\n");
+	// printf("Allocated nurseWorkingTimes.\n");
 
 // nurseSkills_data
 	int** nurseSkills;
@@ -1122,7 +1143,7 @@ struct INSTANCE generate_instance() {
 		for (int j = 0; j < nCols; ++j)
 			nurseSkills[i][j] = nurseSkills_data[i][j];
 	//end populating
-	// printf("Allocated carerSkills.\n");
+	// printf("Allocated nurseSkills.\n");
 
 // jobRequirements_data
 	int** jobRequirements;
@@ -1167,7 +1188,7 @@ struct INSTANCE generate_instance() {
 	//end populating
 	// printf("Allocated solMatrix.\n");
 
-	// int * carerRoute = 	malloc(nJobs * sizeof(int));
+	// int * nurseRoute = 	malloc(nJobs * sizeof(int));
 	double** timeMatrix;
 	nRows = nNurses;
 	nCols = nJobs;
@@ -1189,40 +1210,40 @@ struct INSTANCE generate_instance() {
 	double* violatedTW = malloc(nJobs * sizeof(double));
 	// Group all data in the instance:
 	// Old version:
-	// struct INSTANCE inst = {.od = od, .startTime = startTime, .nJobs = nJobs, .nCarers = nCarers, .solMatrix = solMatrix, .jobTimeWindow = jobTimeWindow, .jobDuration = jobDuration, .carerSkilled = carerSkilled};
+	// struct INSTANCE inst = {.od = od, .startTime = startTime, .nJobs = nJobs, .nNurses = nNurses, .solMatrix = solMatrix, .jobTimeWindow = jobTimeWindow, .jobDuration = jobDuration, .nurseSkilled = nurseSkilled};
 
 	// struct INSTANCE inst = {.nJobs = nJobs, 
-	// 						.nCarers = nCarers,
+	// 						.nNurses = nNurses,
 	// 						.nSkills = nSkills, 
 	// 						.verbose = 5, 
 	// 						.MAX_TIME_SECONDS = 600,
 	// 						.od = od, 
 	// 						// .od_cost = od_cost, 
-	// 						.carerWorkingTimes = carerWorkingTimes,
+	// 						.nurseWorkingTimes = nurseWorkingTimes,
 	// 						.solMatrix = solMatrix, 
 	// 						.jobTimeInfo = jobTimeInfo, 
 	// 						.jobRequirements = jobRequirements, 
-	// 						.carerSkills = carerSkills,
-	// 						.carerSkilled = carerSkilled,
-	// 						.carerRoute = carerRoute};
+	// 						.nurseSkills = nurseSkills,
+	// 						.nurseSkilled = nurseSkilled,
+	// 						.nurseRoute = nurseRoute};
 	// New version:
 	float MAX_TIME_SECONDS = 600;
 	struct INSTANCE inst = { .nJobs = nJobs,
-									.nCarers = nNurses,
+									.nNurses = nNurses,
 									.nSkills = nSkills,
 									.verbose = verbose_data,
 									.MAX_TIME_SECONDS = MAX_TIME_SECONDS,
 									.od = od,
 		// .od_cost = od_cost, 
-		.carerWorkingTimes = nurseWorkingTimes,
+		.nurseWorkingTimes = nurseWorkingTimes,
 		.solMatrix = solMatrix,
 		.timeMatrix = timeMatrix,
 		.jobTimeInfo = jobTimeInfo,
 		.jobRequirements = jobRequirements,
-		.carerSkills = nurseSkills,
-		.carerSkilled = nurseSkilled,
-		.carerRoute = nurseRoute,
-		.carerWaitingTime = nurseWaitingTime,
+		.nurseSkills = nurseSkills,
+		.nurseSkilled = nurseSkilled,
+		.nurseRoute = nurseRoute,
+		.nurseWaitingTime = nurseWaitingTime,
 		.doubleService = doubleService,
 		.violatedTW = violatedTW,
 		.isFeasible = 0 };
@@ -1232,13 +1253,13 @@ struct INSTANCE generate_instance() {
 	return inst;
 }
 
-void carer_skilled_from_skills_and_requirements(int** carerSkills, int** jobRequirements, int** carerSkilled, int* doubleService, int nJobs, int nCarers, int nSkills) {
+void NurseSkilledFromSkillsAndRequirements(int** nurseSkills, int** jobRequirements, int** nurseSkilled, int* doubleService, int nJobs, int nNurses, int nSkills) {
 	int canDoIt = 1;
-	for (int i = 0; i < nCarers; ++i) {
+	for (int i = 0; i < nNurses; ++i) {
 		for (int j = 0; j < nJobs; ++j) {
 			canDoIt = 1;
 			for (int k = 0; k < nSkills; ++k) {
-				if (carerSkills[i][k] < jobRequirements[j][k]) {
+				if (nurseSkills[i][k] < jobRequirements[j][k]) {
 					// if (j == 9)
 					// {
 					// 	printf("a[%d][%d] = %d, r[%d][%d] = %d\n", i,k,a[i][k], j, k, r[j][k]);
@@ -1247,7 +1268,7 @@ void carer_skilled_from_skills_and_requirements(int** carerSkills, int** jobRequ
 					break;
 				}
 			}
-            carerSkilled[i][j] = canDoIt;
+            nurseSkilled[i][j] = canDoIt;
 		}
 	}
 
@@ -1255,8 +1276,8 @@ void carer_skilled_from_skills_and_requirements(int** carerSkills, int** jobRequ
 	int nursesThatCanDoIt = 0;
 	for (int j = 0; j < nJobs; ++j) {
 		nursesThatCanDoIt = 0;
-		for (int i = 0; i < nCarers; ++i) {
-			if (carerSkilled[i][j] > 0)
+		for (int i = 0; i < nNurses; ++i) {
+			if (nurseSkilled[i][j] > 0)
 				nursesThatCanDoIt++;
 		}
 		if ((nursesThatCanDoIt < 1) && (doubleService[j] < 1)) {
@@ -1269,11 +1290,11 @@ void carer_skilled_from_skills_and_requirements(int** carerSkills, int** jobRequ
 	}
 
 	// // Debug
-	// for (int i = 0; i < nCarers; ++i)
+	// for (int i = 0; i < nNurses; ++i)
 	// {
 	// 	for (int j = 0; j < nJobs; ++j)
 	// 	{
-	// 		printf("%d\t", carerSkilled[i][j]);
+	// 		printf("%d\t", nurseSkilled[i][j]);
 	// 	}
 	// 	printf("\n");
 	// }

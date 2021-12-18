@@ -24,9 +24,9 @@ int GRASP(struct INSTANCE* ip) {
 	double elapsedTime = 0.0;
 	double average_gen_quality = 0.0;
 	long double sum_of_qualities = 0.0;
-	int given_quality = ip->quality_measure;
+	int given_quality = ip->qualityMeasure;
 	int solutions_in_pool = (int)(ip->algorithmOptions[8] + eps); // Allocate space for a pool of solutions (aO[8] = 10)
-	int rcl_strategy = (int)(ip->algorithmOptions[10] + eps); //Type of strategy for cut-off value in RCL (used in randomised_constructive). (aO[10] = 1 (strategy 1 C=B-delta*(B-W)))
+	int rcl_strategy = (int)(ip->algorithmOptions[10] + eps); //Type of strategy for cut-off value in RCL (used in RandomisedConstructive). (aO[10] = 1 (strategy 1 C=B-delta*(B-W)))
 
 	double* pool_quality = malloc(solutions_in_pool * sizeof(double));
 	struct INSTANCE** pool = (struct INSTANCE**)malloc(solutions_in_pool * sizeof(struct INSTANCE*));
@@ -60,21 +60,21 @@ int GRASP(struct INSTANCE* ip) {
 	bestSol = (*ip); 
 
 	// Initial nurse order: 
-	int* bestNurseOrder = malloc(ip->nCarers * sizeof(int)); // Rows
-	for (int i = 0; i < ip->nCarers; ++i) { //Initially, carerOrder is 0,1,...,nCarers-1, and so bestNurseOrder array is taken to be the same.
-		ip->carerOrder[i] = i;
+	int* bestNurseOrder = malloc(ip->nNurses * sizeof(int)); // Rows
+	for (int i = 0; i < ip->nNurses; ++i) { //Initially, nurseOrder is 0,1,...,nNurses-1, and so bestNurseOrder array is taken to be the same.
+		ip->nurseOrder[i] = i;
 		bestNurseOrder[i] = i;
 	}
 
 	printf("\nSTARTING Nurse order: (");
-	for (int i = 0; i < ip->nCarers; ++i) {
-		printf("%d,", ip->carerOrder[i]);
+	for (int i = 0; i < ip->nNurses; ++i) {
+		printf("%d,", ip->nurseOrder[i]);
 	}
 	printf(")\n");
 
 	//Initial bestSolMatrix:
-	int** bestSolMatrix = malloc(ip->nCarers * sizeof(int*)); // Rows
-	for (int i = 0; i < ip->nCarers; i++) {
+	int** bestSolMatrix = malloc(ip->nNurses * sizeof(int*)); // Rows
+	for (int i = 0; i < ip->nNurses; i++) {
 		bestSolMatrix[i] = malloc(ip->nJobs * sizeof(int)); // Cols
 		for (int j = 0; j < ip->nJobs; ++j) {
 			bestSolMatrix[i][j] = ip->solMatrix[i][j]; //Initially, bestSolMatrix is taken to be the same as solMatrix, so all -1's.
@@ -101,11 +101,11 @@ int GRASP(struct INSTANCE* ip) {
 
 	while (iter < MAX_ITERATIONS) {
 		startIT = clock();
-		currentQuality = sol_quality(ip, -30);
+		currentQuality = SolutionQuality(ip, -30);
 
 		struct INSTANCE newEmpty = emptySol;
 		*ip = newEmpty; //what do these two lines do?
-		clean_solution_from_struct(ip); // Set all elements in solMatrix 2D array to -1.
+        CleanSolutionFromStruct(ip); // Set all elements in solMatrix 2D array to -1.
 
 		//Running constructive.
 		if (iter == 0) { //First iteration only, no solution currently exists.
@@ -114,28 +114,28 @@ int GRASP(struct INSTANCE* ip) {
 		else if (changeNurseOrder > 0) {
 			if (currentQuality > before_exch) { //If solution quality is better than the quality of the solution before the exchange, update before_exchange
 				before_exch = currentQuality;
-				random_two_exchange(ip->carerOrder, ip->nCarers, &exch1, &exch2);
+                RandomTwoExchange(ip->nurseOrder, ip->nNurses, &exch1, &exch2);
 				no_imp_iter = 0;
 			}
 			else { // Quality of solution before exchange is better than or equal to the quality of the current solution (after exchange), so reverse the previous exchange to return back to better quality solution.			
 				no_imp_iter++;
-				two_exchange(ip->carerOrder, exch1, exch2);
+                TwoExchange(ip->nurseOrder, exch1, exch2);
 			}
-			shuffle(ip->carerOrder, (size_t)ip->nCarers); //Shuffle the contents of carerOrder.
+            Shuffle(ip->nurseOrder, (size_t) ip->nNurses); //Shuffle the contents of nurseOrder.
 		}
 
 		double rnd_dbl = (float)rand() / (float)RAND_MAX;
 		GRASP_param = delta_low + rnd_dbl * delta_range; //delta value in paper, used for cut-off value strategies.
 
 		//Assign jobs to nurses, create a solution.
-		randomised_constructive(ip, 1, GRASP_param, rcl_strategy);
+        RandomisedConstructive(ip, 1, GRASP_param, rcl_strategy);
 		sols_generated++;
 
 		endIT = clock();
 		elapsedTimeIT = (float)(endIT - startIT) / CLOCKS_PER_SEC;
 		// Constructive finished.
 
-		double constrCurrentQuality = sol_quality(ip, -10000); //quality of the current solution.
+		double constrCurrentQuality = SolutionQuality(ip, -10000); //quality of the current solution.
 		if (sols_generated > 1) {
 			average_constructive_sol = (average_constructive_sol * (sols_generated - 1) + constrCurrentQuality) / sols_generated;
 		}
@@ -172,7 +172,7 @@ int GRASP(struct INSTANCE* ip) {
 				printf("Running standard LS, passed threshold with quality: %.2f (average CR: %.2f, threshold value: %.2f )\n", constrCurrentQuality, average_constructive_sol, constr_tr_value);
 				printf("PASS = %d\n", constructive_passes_threshold);
 			}
-			ls_quality_test = standard_local_search_test(ip, LS_ITERS, LS_TIME, 100); //Run LS first-improvement VNS, returns the solution quality of the best solution created
+			ls_quality_test = StandardLocalSearchTest(ip, LS_ITERS, LS_TIME, 100); //Run LS first-improvement VNS, returns the solution quality of the best solution created
 		}
 		else {
 			printf("SKIP LS, quality: %.2f (average CR: %.2f, threshold value: %.2f )\n", constrCurrentQuality, average_constructive_sol, constr_tr_value);
@@ -184,7 +184,7 @@ int GRASP(struct INSTANCE* ip) {
 		elapsedTimeIT = (float)(endIT - startIT) / CLOCKS_PER_SEC; //constructive algorithm time + local search time (seconds)
 		// End extra debug
 
-		currentQuality = sol_quality(ip, -11);
+		currentQuality = SolutionQuality(ip, -11);
 		double ls_total_q = currentQuality;
 
 		/// ------------------------- START PATH RELINKING (PR) ------------------------- ///
@@ -208,32 +208,32 @@ int GRASP(struct INSTANCE* ip) {
 			PR_DIRECTION = 2; //Forward and backward
 		}
 		else if (PR_DIRECTION_PARAMETER == 3) {
-			PR_DIRECTION = pick_integer(3); //Randomly chosen (either forward, backwards, or forward and backward)
+			PR_DIRECTION = PickInteger(3); //Randomly chosen (either forward, backwards, or forward and backward)
 		}
 
 		/// PR01: PR between every generated solution and a random solution from the pool
 		if (PR_STRATEGY == 1) {
 			solutions_relinked++;
-			printf("Start PR round for sol with quality %.2f\n", sol_quality(ip, -123));
+			printf("Start PR round for sol with quality %.2f\n", SolutionQuality(ip, -123));
 			for (int trial = 0; trial < solutions_in_pool * 2; trial++){ // Don't do too many trials here (solution_in_pool * 2 = 20)
-				int ps = pick_integer(solutions_in_pool); //Pick random integer between 0 and solutions_in_pool-1
+				int ps = PickInteger(solutions_in_pool); //Pick random integer between 0 and solutions_in_pool-1
 				if (NULL != pool[ps]) {
 					printf("\tAbout to PR incumbent with POOL-%d <-> ", ps);
 					path_relinkings_performed++;
-					struct INSTANCE relinkedSolution = copy_instance(ip);
+					struct INSTANCE relinkedSolution = CopyInstance(ip);
 					double rel_quality = -1;
 					// Do PR with ip and pool[ps], and return the quality of the best solution (relinkedSolution).
-					rel_quality = directed_path_relinking(ip, pool[ps], currentQuality, pool_quality[ps], &relinkedSolution, PR_DIRECTION);
+					rel_quality = DirectedPR(ip, pool[ps], currentQuality, pool_quality[ps], &relinkedSolution, PR_DIRECTION);
 					if ((rel_quality > currentQuality + TOL) && (fabs(rel_quality - pool_quality[ps]) > TOL)) { //Quality of relinkedSoln > quality of ip AND quality of relinkedSoln and pool[ps] sol differ.
 						// PR improved the current solution and it's different from the one in the pool
-						overwrite_instance(ip, &relinkedSolution); //ip solution updated to the (better) relinkedSolution
-						printf("\tDone. Achieved quality: %.2f\n", sol_quality(ip, -123));
+                        OverwriteInstance(ip, &relinkedSolution); //ip solution updated to the (better) relinkedSolution
+						printf("\tDone. Achieved quality: %.2f\n", SolutionQuality(ip, -123));
 						currentQuality = rel_quality; //Update current quality of ip
 					}
 					else {
-						printf("\tDone. PR didn't work, achieved quality: %.2f\n", sol_quality(&relinkedSolution, -123));
+						printf("\tDone. PR didn't work, achieved quality: %.2f\n", SolutionQuality(&relinkedSolution, -123));
 					}
-					free_instance_copy(&relinkedSolution); //Deallocate memory
+                    FreeInstanceCopy(&relinkedSolution); //Deallocate memory
 					break;
 				} //End if(NULL != pool[ps])
 			} //End for(int trial = 0; trial < solutions_in_pool * 2; trial++)
@@ -244,38 +244,38 @@ int GRASP(struct INSTANCE* ip) {
 			double pr_threshold = -bigM;
 			if (currentQuality > pr_threshold) { //Passed the threshold
 				solutions_relinked++;
-				struct INSTANCE relinkedSolution = copy_instance(ip);
-				struct INSTANCE bestRelinkedSolution = copy_instance(ip);
+				struct INSTANCE relinkedSolution = CopyInstance(ip);
+				struct INSTANCE bestRelinkedSolution = CopyInstance(ip);
 				double best_quality_of_round = currentQuality;
 				for (int ps = 0; ps < solutions_in_pool; ps++) {
 					if (NULL != pool[ps]) {
-						double rel_quality = directed_path_relinking(ip, pool[ps], currentQuality, pool_quality[ps], &relinkedSolution, PR_DIRECTION);
+						double rel_quality = DirectedPR(ip, pool[ps], currentQuality, pool_quality[ps], &relinkedSolution, PR_DIRECTION);
 						if ((rel_quality > best_quality_of_round + TOL) && (fabs(rel_quality - pool_quality[ps]) > TOL)) { //Quality of relinkedSoln > quality of ip AND quality of relinkedSoln and pool[ps] sol differ.
 							// PR improved the current solution and it's different from the one in the pool
-							overwrite_instance(&bestRelinkedSolution, &relinkedSolution); //relinkedSolution is stored as bestRelinkedSolution
+                            OverwriteInstance(&bestRelinkedSolution, &relinkedSolution); //relinkedSolution is stored as bestRelinkedSolution
 							best_quality_of_round = rel_quality;
 						}
 					}
 				}
 				if (best_quality_of_round - TOL > currentQuality) { //If bestRelinkedSolution has better quality than current quality of ip
-					overwrite_instance(ip, &bestRelinkedSolution); //Update ip, ip is now bestRelinkedSolution
+                    OverwriteInstance(ip, &bestRelinkedSolution); //Update ip, ip is now bestRelinkedSolution
 				}
-				currentQuality = sol_quality(ip, -11); //currentQuality = quality of updated ip solution (final quality)
+				currentQuality = SolutionQuality(ip, -11); //currentQuality = quality of updated ip solution (final quality)
 
 				if (fabs(currentQuality - best_quality_of_round) > TOL) { //If current quality of ip and quality of bestRS are not the same
 					printf("ERROR: PR option 2 did not work as expected!\n We thought we'd get: %.2f but we got %.2f\n", best_quality_of_round, currentQuality);
 					exit(-34339);
 				}
 				//Deallocate memory
-				free_instance_copy(&relinkedSolution);
-				free_instance_copy(&bestRelinkedSolution);
+                FreeInstanceCopy(&relinkedSolution);
+                FreeInstanceCopy(&bestRelinkedSolution);
 			}
 		} //End else if (PR_STRATEGY == 2)
 
 		if (constructive_passes_threshold > 1) {
 			if (ip->verbose > 10) {
-				print_and_recalculate_pool_contents(pool, pool_quality, solutions_in_pool);
-				calculate_and_print_dissimilartiy_matrix(pool, solutions_in_pool);
+                PrintRecalculatePoolContents(pool, pool_quality, solutions_in_pool);
+                CalculatePrintDissimilarityMatrix(pool, solutions_in_pool);
 			}
 		}
 
@@ -294,7 +294,7 @@ int GRASP(struct INSTANCE* ip) {
 				insertHere = ps;
 				break;
 			}
-			double dissimilarity_with_ps = solution_dissimilarity(ip, pool[ps]); //Returns the solution dissimilarity d(S_1, S_2) where S_1 = ip, S_2 = pool[ps].
+			double dissimilarity_with_ps = SolutionDissimilarity(ip, pool[ps]); //Returns the solution dissimilarity d(S_1, S_2) where S_1 = ip, S_2 = pool[ps].
 
 			if (pool_quality[ps] > currentQuality) { //If quality of pool[ps] solution better than quality of ip
 				if (dissimilarity_with_ps < dissimilarity_threshold) { //If dissimilarity of solutions ip and pool[ps] is below the threshold, then the solution is too similar to solutions already in pool, so do not add soln to pool.
@@ -321,7 +321,7 @@ int GRASP(struct INSTANCE* ip) {
 
 		// Insert solution in the pool:
 		if (insertHere >= 0) {
-			(*pool[insertHere]) = copy_instance(ip); //pool[ps] is replaced with ip!
+			(*pool[insertHere]) = CopyInstance(ip); //pool[ps] is replaced with ip!
 			pool_quality[insertHere] = currentQuality; 
 		}
 		end = clock();
@@ -336,14 +336,14 @@ int GRASP(struct INSTANCE* ip) {
 				printf("tott %.2f ", ip->objTime);
 				printf("tard %.2f ", ip->objTardiness);
 				printf("ovti %.2f ", ip->objOvertime);
-				printf("pref %.2f ", ip->totPref);
+				printf("pref %.2f ", ip->totalPref);
 				printf("l_day %.2f ", ip->objLongestDay);
 				// printf("\n");
 				printf("GRASP_P %.4f ", GRASP_param);
 				printf("et %.1fs (max %.1f)", elapsedTime, ip->MAX_TIME_SECONDS);
 				printf("\n > Nurse order: (");
-				for (int i = 0; i < ip->nCarers; ++i) {
-					printf("%d,", ip->carerOrder[i]);
+				for (int i = 0; i < ip->nNurses; ++i) {
+					printf("%d,", ip->nurseOrder[i]);
 				}
 				printf(")\n");
 
@@ -354,14 +354,14 @@ int GRASP(struct INSTANCE* ip) {
 				printf("It %6d\t", iter);
 				printf("Q %6.2f\tt %6.1f s\n", currentQuality, elapsedTime);
 				printf(" > Nurse order: (");
-				for (int i = 0; i < ip->nCarers; ++i) {
-					printf("%d,", ip->carerOrder[i]);
+				for (int i = 0; i < ip->nNurses; ++i) {
+					printf("%d,", ip->nurseOrder[i]);
 				}
 				printf(")\n");
-				sol_quality(ip, -1);
+                SolutionQuality(ip, -1);
 			}
 
-			bestSol = copy_instance(ip); //bestSol = ip, store best solution so far
+			bestSol = CopyInstance(ip); //bestSol = ip, store best solution so far
 			bestQuality = currentQuality; //bestQuality = quality of ip, store quality of best solution so far
 		}
 		else if (ip->verbose > 5) { //currentQuality <= bestQuality
@@ -370,8 +370,8 @@ int GRASP(struct INSTANCE* ip) {
 			printf(" (best: %.2f) ", bestQuality);
 			printf("CA: %.2f\t", constrCurrentQuality);
 			printf("\n > Nurse order: (");
-			for (int i = 0; i < ip->nCarers; ++i) {
-				printf("%d,", ip->carerOrder[i]);
+			for (int i = 0; i < ip->nNurses; ++i) {
+				printf("%d,", ip->nurseOrder[i]);
 			}
 			printf(")\n");
 			printf("Elapsed time: %.2f s (MAX: %.2f)", elapsedTime, ip->MAX_TIME_SECONDS);
@@ -392,7 +392,7 @@ int GRASP(struct INSTANCE* ip) {
 		printf("GRASP: Performed %d iterations.\n", iter);
 	}
 
-	double thisSol = sol_quality(ip, -3423); //Quality of current ip solution
+	double thisSol = SolutionQuality(ip, -3423); //Quality of current ip solution
 	double cquality = 0.0;
 	int pickthis = -1;
 	if (ip->verbose > 5) {
@@ -401,7 +401,7 @@ int GRASP(struct INSTANCE* ip) {
 
 	for (int ps2 = 0; ps2 < solutions_in_pool; ps2++) { //For each 'space' (position) in pool, ps2=0,...,solnsinpool
 		if (pool[ps2] != NULL) { //If there is a solution in that position in the pool
-			cquality = sol_quality(pool[ps2], -3234); //quality of the solution in that space in the pool
+			cquality = SolutionQuality(pool[ps2], -3234); //quality of the solution in that space in the pool
 			if (ip->verbose > 5) {
 				printf("\tPOS %d - Q = %.2f\n", ps2, cquality);
 			}
@@ -419,7 +419,7 @@ int GRASP(struct INSTANCE* ip) {
 		*ip = *pool[pickthis]; // Get this pointer, ip = best solution found in pool
 		pool[pickthis] = NULL; // Prevent this sol from being cleaned, remove solution from pool (remove pointer, ip still points to the solution though)
 		if (ip->verbose > 5) {
-			printf("Sol quality after copying: %.2f\n", sol_quality(ip, -235223));
+			printf("Sol quality after copying: %.2f\n", SolutionQuality(ip, -235223));
 		}
 	}
 
@@ -427,7 +427,7 @@ int GRASP(struct INSTANCE* ip) {
 		printf("Saved best solution\n");
 	}
 
-	double quality = sol_quality(ip, -121212); //quality of solution ip
+	double quality = SolutionQuality(ip, -121212); //quality of solution ip
 
 	/// ------------------------- START PATH RELINKING (PR) BETWEEN ALL PAIRS OF SOLUTIONS ------------------------- ///
 	// PR03 Perform path relinking at the end of the algorithm, between all pairs of solutions in the pool.
@@ -437,19 +437,19 @@ int GRASP(struct INSTANCE* ip) {
 	if (relinking_all_pairs > 0) {
 		double TOL = 1e-6;
 		printf("Relinking all pairs of solutions in the pool.\n");
-		struct INSTANCE output = copy_instance(ip);
-		struct INSTANCE bestRelinkedSolution = copy_instance(ip);
+		struct INSTANCE output = CopyInstance(ip);
+		struct INSTANCE bestRelinkedSolution = CopyInstance(ip);
 		double best_final_quality = quality;
 		for (int ps = 0; ps < solutions_in_pool; ps++) {
 			for (int ps2 = 0; ps2 < solutions_in_pool; ps2++) {
 				if ((ps2 != ps) && (NULL != pool[ps]) && (NULL != pool[ps2])) {
-					overwrite_instance(&output, pool[ps]);
-					path_relinking(&output, pool[ps2]);
-					double relinking_quality = sol_quality(&output, -123);
+                    OverwriteInstance(&output, pool[ps]);
+                    PathRelinking(&output, pool[ps2]);
+					double relinking_quality = SolutionQuality(&output, -123);
 					if ((relinking_quality > best_final_quality + TOL)) {
 						// PR improved the current solution and it's different from the one in the pool
-						overwrite_instance(&bestRelinkedSolution, &output);
-						printf("\tPair %d - %d: *** achieved quality: %.2f ***\n", ps, ps2, sol_quality(&bestRelinkedSolution, -123));
+                        OverwriteInstance(&bestRelinkedSolution, &output);
+						printf("\tPair %d - %d: *** achieved quality: %.2f ***\n", ps, ps2, SolutionQuality(&bestRelinkedSolution, -123));
 						printf("\tbest_final_quality: %.2f, relinking_quality: %.2f\n", best_final_quality, relinking_quality);
 						best_final_quality = relinking_quality;
 					}
@@ -459,28 +459,28 @@ int GRASP(struct INSTANCE* ip) {
 
 		if (quality < best_final_quality - TOL) { //If bestRS has better quality than previous ip solution (before PR), then update ip to be bestRS
 		    printf("quality: %.2f, best_final_quality: %.2f\n", quality, best_final_quality);
-		    printf("bestRelinkedSolution quality: %.2f\n", sol_quality(&bestRelinkedSolution, -123));
-			overwrite_instance(ip, &bestRelinkedSolution);
-			double new_quality = sol_quality(ip, -123);
+		    printf("bestRelinkedSolution quality: %.2f\n", SolutionQuality(&bestRelinkedSolution, -123));
+            OverwriteInstance(ip, &bestRelinkedSolution);
+			double new_quality = SolutionQuality(ip, -123);
 			printf("new_quality: %.2f \n", new_quality);
 		}
 
 		int solcallnum = ip->verbose - 1;
 		solcallnum = 12345;
-		quality = sol_quality(ip, solcallnum); //quality of updated ip solution
+		quality = SolutionQuality(ip, solcallnum); //quality of updated ip solution
 
 
 		if (fabs(quality - best_final_quality) > TOL) { //If quality of ip is not the same as quality of bestRS, then we haven't updated ip correctly
 			printf("ERROR: PR all pairs did not work as expected!\n We thought we'd get: (bfq) %.2f but we got (q) %.2f\n", best_final_quality, quality);
-			printf("Sol quality type: %d\n", ip->quality_measure);
+			printf("Sol quality type: %d\n", ip->qualityMeasure);
 			printf("Exiting program.");
 			exit(-34339);
 		}
 		printf("\tPR all pairs final quality: %.2f\n", quality);
 
 		//Deallocate memory:
-		free_instance_copy(&output);
-		free_instance_copy(&bestRelinkedSolution);
+        FreeInstanceCopy(&output);
+        FreeInstanceCopy(&bestRelinkedSolution);
 	}
 	
 	/// ------------------------- END PATH RELINKING (PR) BETWEEN ALL PAIRS OF SOLUTIONS ------------------------- ///
@@ -493,9 +493,9 @@ int GRASP(struct INSTANCE* ip) {
 	for (int ps2 = 0; ps2 < solutions_in_pool; ps2++) { //For each 'space' (position) in the pool
 		if (pool[ps2] != NULL) { //If there's a solution in that position, remove it from the pool
 			if (ip->verbose > 3) {
-				printf("\tPOS %d - Q = %.2f\n", ps2, sol_quality(pool[ps2], -3234));
+				printf("\tPOS %d - Q = %.2f\n", ps2, SolutionQuality(pool[ps2], -3234));
 			}
-			free_instance_copy(pool[ps2]);
+            FreeInstanceCopy(pool[ps2]);
 			pool[ps2] = NULL;
 		}
 	}
@@ -518,7 +518,7 @@ int GRASP(struct INSTANCE* ip) {
 	}
 
 	// Deallocate memory
-	for (int i = 0; i < ip->nCarers; ++i) {
+	for (int i = 0; i < ip->nNurses; ++i) {
 		free(bestSolMatrix[i]);
 	}
 	free(bestSolMatrix);
@@ -528,7 +528,7 @@ int GRASP(struct INSTANCE* ip) {
 
 } //END OF GRASP FUNCTION.
 
-void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, int rcl_strategy) {
+void RandomisedConstructive(struct INSTANCE* ip, int randomness, double delta, int rclStrategy) {
 
 	//Seed: each nurse is assigned a single job to ensure that all nurses will have an initial route, regardless of how far their starting location is, and helps construct more balanced solution.
 	//Assign remaining jobs: the jobs are ranked and assigned to the best position in any of the nurse routes, until no more jobs are left to assign.
@@ -537,12 +537,12 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 	if (DEBUG_PRINT > 0) {
 		printf("\nSTARTING RANDOMISED CONSTRUCTIVE --------------------------\n");
 		printf("Start solmatrix:\n");
-		print_solmatrix(ip);
+        PrintSolMatrix(ip);
 		printf("Constructive allocations...\n");
 	}
 
-	int* nurseSeed = malloc(ip->nCarers * sizeof(int)); // nurseSeed: 1 x nCarers, initialised to -1.
-	for (int j = 0; j < ip->nCarers; ++j) {
+	int* nurseSeed = malloc(ip->nNurses * sizeof(int)); // nurseSeed: 1 x nNurses, initialised to -1.
+	for (int j = 0; j < ip->nNurses; ++j) {
 		nurseSeed[j] = -1;
 	}
 
@@ -551,8 +551,8 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 		allocatedJobs[i] = 0;
 	}
 
-	int b_indices_size = ip->nCarers * ip->nJobs;
-	int** bestIndices = malloc(b_indices_size * sizeof(int*)); //bestIndices: (nCarers x nJobs) x 2, column 0 = nurse, column 1 = job.
+	int b_indices_size = ip->nNurses * ip->nJobs;
+	int** bestIndices = malloc(b_indices_size * sizeof(int*)); //bestIndices: (nNurses x nJobs) x 2, column 0 = nurse, column 1 = job.
 	for (int i = 0; i < b_indices_size; ++i) {
 		bestIndices[i] = malloc(2 * sizeof(int));
 	}
@@ -570,14 +570,14 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 	double bestRank = -DBL_MAX;
 	double worstRank = DBL_MAX;
 
-	for (int nurseIdx = 0; nurseIdx < ip->nCarers; ++nurseIdx) {
+	for (int nurseIdx = 0; nurseIdx < ip->nNurses; ++nurseIdx) {
 		bestRank = -DBL_MAX;
 		worstRank = DBL_MAX;
 		int alreadyAllocated = 0;
 		int unskilledFor = 0;
 		int dismissedJobs = 0;
 		int consideredJobs = 0;
-		int nurse = ip->carerOrder[nurseIdx]; // nurse = number of the nurse in the nurseIdxth position in the carerOrder array.
+		int nurse = ip->nurseOrder[nurseIdx]; // nurse = number of the nurse in the nurseIdxth position in the nurseOrder array.
 
 		for (int job = 0; job < ip->nJobs; ++job) { //For 'nurse', go through all jobs 0,...,nJobs, and check the quality of the solution that arises when 'job' is inserted into 'nurse's route
 			//Update rankValues[job] for each job, and store/keep updated the highest/lowest quality solution (bestRank/worstRank) of all solutions for the current nurse. 
@@ -588,7 +588,7 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 				rankValues[job] = -2 * bigM; 
 				continue;
 			}
-			if (check_skills(ip, job, nurse) < 1) { //If nurse is not skilled to do the job (i.e. carerSkilled[nurse][job] = 0)
+			if (CheckSkills(ip, job, nurse) < 1) { //If nurse is not skilled to do the job (i.e. nurseSkilled[nurse][job] = 0)
 				unskilledFor++;
 				rankValues[job] = -bigM;
 				continue;
@@ -596,7 +596,7 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 			if (DEBUG_PRINT > 0) {
 				printf("\n---Insert in nurse %d the job %d\n", nurse, job);
 			}
-			if (best_job_insertion(ip, job, nurse) < 0){ //If job cannot be inserted into nurse's route.
+			if (BestJobInsertion(ip, job, nurse) < 0){ //If job cannot be inserted into nurse's route.
 				dismissedJobs++;
 				rankValues[job] = -bigM;
 				continue;
@@ -611,7 +611,7 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 			int sol_q_num = -1000;
 
 			// Check the rank of the job and save the best one overall
-			rankValues[job] = sol_quality(ip, sol_q_num); //Calculate the solution quality of the job-nurse assignment (i.e. the new solution with 'job' inserted into nurse's route), and save it to rankValues[job].
+			rankValues[job] = SolutionQuality(ip, sol_q_num); //Calculate the solution quality of the job-nurse assignment (i.e. the new solution with 'job' inserted into nurse's route), and save it to rankValues[job].
 
 			// Keep track of best and worst ranks
 			if (rankValues[job] > bestRank) {
@@ -623,40 +623,40 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 			if (DEBUG_PRINT > 0) {
 				printf("%.2f\nDone.\nRemoving job %d\n", rankValues[job], job);
 			}
-			remove_job(ip, job, nurse); //Remove job from nurse's route, i.e. return solution back to original.
+            RemoveJob(ip, job, nurse); //Remove job from nurse's route, i.e. return solution back to original.
 
 			bestIndices[job][0] = nurse; // The best quality solution (so far) was created with 'job' in 'nurse's route, store best indices.
 			bestIndices[job][1] = job;
 
 		} //End for(int job = 0; job < ip->nJobs; ++job) loop
 
-		if (consideredJobs < 1) { //None of the jobs could be inserted into nurse's route, so continue in for loop (move on to next nurse (++nurseIdx) in carerOrder array).
+		if (consideredJobs < 1) { //None of the jobs could be inserted into nurse's route, so continue in for loop (move on to next nurse (++nurseIdx) in nurseOrder array).
 			continue;
 		}
 
 		//Create cut-off value and add elements (jobs) to the RCL (RCL_seeds). rcl_size = number of elements in the RCL,
-		generate_rcl(delta, &rcl_size, RCL_seeds, rankValues, ip->nJobs, bestRank, worstRank, rcl_strategy);
+        GenerateRCL(delta, RCL_seeds, &rcl_size, rankValues, ip->nJobs, bestRank, worstRank, rclStrategy);
 
 		int cNurse = -1;
 		int cJob = -1;
 
 		//Pick an element at random from RCL_seeds, returns the indicies for the selected element, i.e. the job-nurse assignment. cNurse = the selected nurse and cJob = the selected job (they are selected together).
-		rcl_pick(bestIndices, RCL_seeds, rcl_size, &cNurse, &cJob);
+        RCLPick(bestIndices, RCL_seeds, rcl_size, &cNurse, &cJob);
 
 		if (DEBUG_PRINT > 0) {
 			// printf("Picking one of the %d top seed values for nurse %d\n", GRASP_param, nurse);
 			printf("Decided on (nurse %d, job %d)\n", cNurse, cJob);
 			printf("Solmatrix:\n");
-			print_solmatrix(ip);
+            PrintSolMatrix(ip);
 			printf("Nurse routes:\n");
-			print_int_matrix(ip->allCarerRoutes, ip->nCarers, ip->nJobs);
+            PrintIntMatrix(ip->allNurseRoutes, ip->nNurses, ip->nJobs);
 			if (cJob < 0) {
 				printf("ERROR: The best pick was a -1!!!!\n");
 				exit(-1);
 			}
 		}
 
-		if (best_job_insertion(ip, cJob, cNurse) > -1) { //If cJob has been successfully inserted into cNurse's route
+		if (BestJobInsertion(ip, cJob, cNurse) > -1) { //If cJob has been successfully inserted into cNurse's route
 			// printf("Chosen job %d as seed for nurse %d\n", cJob, nurse);
 			if (ip->doubleService[cJob]) { // If cJob is a double service 
 				allocatedJobs[cJob] += 0.5; // Record cJob as being half-done (only one nurse so far, need two)
@@ -668,14 +668,14 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 		}
 		else {
 			printf("\nERROR! Solmatrix:\n");
-			print_solmatrix(ip);
+            PrintSolMatrix(ip);
 			printf("\nERROR: FAILED to assign job %d as seed for nurse %d\n", cJob, cNurse);
 			if (ip->doubleService[cJob]) {
 				printf("(This job is a DS)\n");
 			}
 			exit(-1);
 		}
-	} // End for (int nurseIdx = 0; nurseIdx < ip->nCarers; ++nurseIdx) loop
+	} // End for (int nurseIdx = 0; nurseIdx < ip->nNurses; ++nurseIdx) loop
 
 	//Deallocate memory
 	free(RCL_seeds); 
@@ -699,8 +699,8 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 	int ittt = 0; //Is this needed? Only used at the beginning of the while loop, ittt++.
 	int assignmentIterations = 0;
 	int MAX_ASSIGNMENT_ITS = jobsRemaining * 500;
-	int* RCL = malloc(ip->nJobs * ip->nCarers * sizeof(int)); // 1D array, size = 1 x (nJobs*nCarers), Restricted Candidate List.
-	double* rankAssignments = malloc(ip->nJobs * ip->nCarers * sizeof(double)); // 1D array, size = 1 x (nJobs*nCarers)
+	int* RCL = malloc(ip->nJobs * ip->nNurses * sizeof(int)); // 1D array, size = 1 x (nJobs*nNurses), Restricted Candidate List.
+	double* rankAssignments = malloc(ip->nJobs * ip->nNurses * sizeof(double)); // 1D array, size = 1 x (nJobs*nNurses)
 
 	while (jobsRemaining > 0) {
 		ittt++;
@@ -714,11 +714,11 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 			bestIndices[i][1] = -1;
 		}
 
-		double base_quality = sol_quality(ip, -3423462); //solution quality of current solution ip.
+		double base_quality = SolutionQuality(ip, -3423462); //solution quality of current solution ip.
 		ct = -1;
 		int potentialAllocations = 0;
-		for (int nurseidx = 0; nurseidx < ip->nCarers; ++nurseidx) { // For each nurse 0,...,nCarers
-			int nurse = ip->carerOrder[nurseidx];
+		for (int nurseidx = 0; nurseidx < ip->nNurses; ++nurseidx) { // For each nurse 0,...,nNurses
+			int nurse = ip->nurseOrder[nurseidx];
 			for (int job = 0; job < ip->nJobs; ++job) {
 				ct++;
 				// printf("Test %2d: nurse %d - job %d - ", ct, nurse, job);
@@ -732,17 +732,17 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 				// There is potential to allocate this job to this nurse, let's see if they have the skill
 				int skillCheck = 0;
 				if (!ip->doubleService[job]) { //If the job is not a double service (doubleService[job] == 0)
-					skillCheck = check_skills(ip, job, nurse); //skillCheck = ip->carerSkilled[nurse][job]
+					skillCheck = CheckSkills(ip, job, nurse); //skillCheck = ip->nurseSkilled[nurse][job]
 				}
 				else { //If the job is a double service
 					if (allocatedJobs[job] < 0.4) { // If no nurses have been assigned this job (recall that allocatedJobs[job] = 0.5 means that one nurse has been assigned the job and another nurse is required).
-						skillCheck = check_skills_ds_first(ip, job, nurse); //skillCheck = 1 if there exists another nurse that can do the double service job with 'nurse', and = 0 otherwise.
+						skillCheck = CheckSkillsDSFirst(ip, job, nurse); //skillCheck = 1 if there exists another nurse that can do the double service job with 'nurse', and = 0 otherwise.
 					}
 					else { //If only one nurse has been assigned to this double service 'job' (allocatedJobs[job] == 0.5)
 						// Who else is doing it?
-						for (int nurseb = 0; nurseb < ip->nCarers; nurseb++) {
+						for (int nurseb = 0; nurseb < ip->nNurses; nurseb++) {
 							if (ip->solMatrix[nurseb][job] > -0.5) { //if 'job' is positioned in nurseb's route, i.e. nurseb has been assigned 'job'
-								skillCheck = check_skills_ds(ip, job, nurse, nurseb); //skillCheck = 1 if nurse and nurseb can do the job together, and = 0 otherwise.
+								skillCheck = CheckSkillsDS(ip, job, nurse, nurseb); //skillCheck = 1 if nurse and nurseb can do the job together, and = 0 otherwise.
 								break;
 							}
 						}
@@ -759,12 +759,12 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 				}
 
 				// printf("Nearly inserting job %d in nurse %d\n", job, nurse);
-				if (best_job_insertion(ip, job, nurse) < 0){
+				if (BestJobInsertion(ip, job, nurse) < 0){
 					printf("WARNING: Constructive could not insert job %d in nurse %d, but previous checks deemed it possible!!!\n", job, nurse);
 					continue;
 				}
 
-				rankAssignments[ct] = sol_quality(ip, -1000);
+				rankAssignments[ct] = SolutionQuality(ip, -1000);
 				
 				// debug : remove this! only for testing if priority to "difficult" jobs is good
 				int difficult_job_priority = 0;
@@ -780,7 +780,7 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 						rankAssignments[ct] = rankAssignments[ct] + chunk;
 
 					double job_tw_duration = ip->jobTimeInfo[job][1] - ip->jobTimeInfo[job][0];
-					double nurse_zero_journey_duration = ip->carerWorkingTimes[0][1] - ip->carerWorkingTimes[0][0];
+					double nurse_zero_journey_duration = ip->nurseWorkingTimes[0][1] - ip->nurseWorkingTimes[0][0];
 					double job_tw_to_nurse_zero_ratio = job_tw_duration / nurse_zero_journey_duration;
 					if (job_tw_to_nurse_zero_ratio < 0.5) {
 						rankAssignments[ct] = rankAssignments[ct] + chunk * (0.7 - job_tw_to_nurse_zero_ratio);
@@ -796,14 +796,14 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 					worstRank = rankAssignments[ct];
 				}
 
-				remove_job(ip, job, nurse);
+                RemoveJob(ip, job, nurse);
 
 				bestIndices[ct][0] = nurse;
 				bestIndices[ct][1] = job;
 
 			}// End for (int job = 0; job < ip->nJobs; ++job) loop
 
-		} //End for (int nurseidx = 0; nurseidx < ip->nCarers; ++nurseidx) loop
+		} //End for (int nurseidx = 0; nurseidx < ip->nNurses; ++nurseidx) loop
 
 		// printf("There were %d potential allocations, and there are %d remaining jobs.\n", potentialAllocations, jobsRemaining);
 		if (potentialAllocations < jobsRemaining) {
@@ -811,13 +811,13 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 		}
 
 		//Create cut-off value and add elements (jobs) to the RCL (RCL_seeds).
-		generate_rcl(delta, &rcl_size, RCL, rankAssignments, ip->nJobs * ip->nCarers, bestRank, worstRank, rcl_strategy);
+        GenerateRCL(delta, RCL, &rcl_size, rankAssignments, ip->nJobs*ip->nNurses, bestRank, worstRank, rclStrategy);
 	
 		int best_nurse = -1;
 		int best_job = -1;
 
 		//Pick an element at random from RCL_seeds, returns the indicies for the selected element, i.e. the job-nurse assignment. best_nurse = the selected nurse and best_job = the selected job.
-		rcl_pick(bestIndices, RCL, rcl_size, &best_nurse, &best_job);
+        RCLPick(bestIndices, RCL, rcl_size, &best_nurse, &best_job);
 
 		if ((best_nurse < 0 || best_job < 0) || assignmentIterations > MAX_ASSIGNMENT_ITS) {
 			if (assignmentIterations > MAX_ASSIGNMENT_ITS) {
@@ -843,10 +843,10 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 				}
 			}
 			printf("STAFF:\n");
-			for (int nnn = 0; nnn < ip->nCarers; ++nnn) {
+			for (int nnn = 0; nnn < ip->nNurses; ++nnn) {
 				printf("Nurse %d - Skills: [", nnn);
 				for (int sss = 0; sss < ip->nSkills; ++sss) {
-					printf("%d, ", ip->carerSkills[nnn][sss]);
+					printf("%d, ", ip->nurseSkills[nnn][sss]);
 				}
 				printf("]\n");
 			}
@@ -856,7 +856,7 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 
 		int cJob = best_job;
 		int cNurse = best_nurse;
-		if (best_job_insertion(ip, cJob, cNurse) > -1){ //If cJob has been successfully inserted into cNurse's route
+		if (BestJobInsertion(ip, cJob, cNurse) > -1){ //If cJob has been successfully inserted into cNurse's route
 			if (ip->doubleService[cJob]) { //If cJob is a double service (doubleService[cJob] == 1).
 				allocatedJobs[cJob] += 0.5; //Mark cJob as being allocated to a nurse
 				if (allocatedJobs[cJob] >= 0.6) { //If cJob has been allocated two nurses, then the job has been fulfilled!
@@ -874,7 +874,7 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 	// Deallocate memory
 	free(rankAssignments);
 	free(RCL);
-	for (int i = 0; i < ip->nCarers * ip->nJobs; ++i) {
+	for (int i = 0; i < ip->nNurses * ip->nJobs; ++i) {
 		free(bestIndices[i]);
 	}
 	free(bestIndices);
@@ -883,16 +883,16 @@ void randomised_constructive(struct INSTANCE* ip, int randomness, double delta, 
 
 	if (DEBUG_PRINT > 0) {
 		printf("End solmatrix:\n");
-		print_solmatrix(ip);
+        PrintSolMatrix(ip);
 		printf("\n-------------- END OF RANDOMISED CONSTRUCTIVE -------------- \n\n");
 	}
 
 	return;
 
-} // END OF randomised_constructive function.
+} // END OF RandomisedConstructive function.
 
-void grasp_ls(struct INSTANCE* ip, int LS_ITERS) {
-	double quality = sol_quality(ip, 0);
+void GRASPLS(struct INSTANCE* ip, int LS_ITERS) {
+	double quality = SolutionQuality(ip, 0);
 	int maxSwitches = 3;
 	int performedSwaps = 0;
 	int performedSwitches = maxSwitches + 1000;
@@ -906,16 +906,16 @@ void grasp_ls(struct INSTANCE* ip, int LS_ITERS) {
 	// int MAX_LS_ITERS = 100000;
 	for (int i = 0; i < LS_ITERS; ++i) {
 		/* Perform a swap */
-		int n1 = rand() % ip->nCarers;
-		int n2 = rand() % ip->nCarers;
+		int n1 = rand() % ip->nNurses;
+		int n2 = rand() % ip->nNurses;
 		int j1 = rand() % ip->nJobs;
 
-		if (best_switch(ip, infOnly, ip->MAX_TIME_SECONDS) > -1) {
+		if (BestSwitch(ip, infOnly, ip->MAX_TIME_SECONDS) > -1) {
 			performedSwaps++;
-			double propQ = sol_quality(ip, 0);
+			double propQ = SolutionQuality(ip, 0);
 			// if (propQ < quality) // Reverse
 			// {
-			// 	if(repair(ip, n1) < 0)
+			// 	if(Repair(ip, n1) < 0)
 			// 	{
 			// 		printf("COULD NOT UNDO REPAIR\n");				
 			// 	}
@@ -950,10 +950,10 @@ void grasp_ls(struct INSTANCE* ip, int LS_ITERS) {
 			performedSwitches++;
 			int zzzz = 0;
 			for (int switchTrials = 0; switchTrials < 1000; ++switchTrials) {
-				n1 = rand() % ip->nCarers;
-				n2 = rand() % ip->nCarers;
+				n1 = rand() % ip->nNurses;
+				n2 = rand() % ip->nNurses;
 				j1 = rand() % ip->nJobs;
-				if (switch_carer(ip, n1, n2, j1) > -1) {
+				if (SwitchNurse(ip, n1, n2, j1) > -1) {
 					zzzz = 1;
 					break;
 				}
@@ -971,9 +971,9 @@ void grasp_ls(struct INSTANCE* ip, int LS_ITERS) {
 			// if (ip->verbose > 1)
 			// {
 			// 	// printf("\nSTART----------------------------------------------------\n");
-			// 	// sol_quality(ip, 1);
-			// 	// printf("Quality improved to: %.2f (%.2f) \n", quality, alternative_quality(ip, 0));
-			// 	// printf("Quality improved to: %.2f (%.2f) \n", quality, alternative_quality(ip, 0));
+			// 	// SolutionQuality(ip, 1);
+			// 	// printf("Quality improved to: %.2f (%.2f) \n", quality, AlternativeQuality(ip, 0));
+			// 	// printf("Quality improved to: %.2f (%.2f) \n", quality, AlternativeQuality(ip, 0));
 			// 	// printf("\n----------------------------------------------------END\n");
 			// }
 			  // printf("Quality improved to: %.2f\n", quality);
@@ -985,7 +985,7 @@ void grasp_ls(struct INSTANCE* ip, int LS_ITERS) {
 		// 	printf("Potential problem! Quality: %d\n", quality);
 		// 	printf("Switch %d, %d, %d\n", n1, n2, j1);
 		// 	print_solmatrix(ip);
-		// 	report_solution(ip);
+		// 	ReportSolution(ip);
 		// 	break;
 
 		// }
@@ -1001,7 +1001,7 @@ void grasp_ls(struct INSTANCE* ip, int LS_ITERS) {
 	return;
 }
 
-void generate_rcl(double delta, int* rcl_size, int* RCL_seeds, double* rankValues, int rv_size, double bestRank, double worstRank, int strategy) {
+void GenerateRCL(double delta, int* rclSeeds, int* rclSize, double* rankValues, int rvSize, double bestRank, double worstRank, int strategy){
 
 	//This function creates the cut-off value C (worstAllowed) for the RCL, and then goes through all rankValues[i] for i=0,...,nJobs.
 	//If rankValues[i] > cut off point (i.e quality of solution with job i inserted has quality that is higher than the cut-off point), then job i is added to the RCL (RCL_seeds).
@@ -1042,7 +1042,7 @@ void generate_rcl(double delta, int* rcl_size, int* RCL_seeds, double* rankValue
 		worstAllowed = bestRank - fabs(bestRank) * delta; // C = B - delta*B
 	}
 	else {
-		printf("ERROR: In generate_rcl() the value of 'strategy' is %d, which is not understood\n", strategy);
+		printf("ERROR: In GenerateRCL() the value of 'strategy' is %d, which is not understood\n", strategy);
 		exit(-321);
 	}
 
@@ -1068,55 +1068,55 @@ void generate_rcl(double delta, int* rcl_size, int* RCL_seeds, double* rankValue
 
 	if (strategy == 1 || strategy == 2) {
 		// printf("Started creating list. Delta: %.2f, Best: %.2f, Worst: %.2f, Worst allowed: %.2f\n", delta, bestRank, worstRank, worstAllowed);
-		(*rcl_size) = 0; // No elements in the RCL to begin with.
-		for (int i = 0; i < rv_size; i++) { // For i = 0,...,nJobs
+		(*rclSize) = 0; // No elements in the RCL to begin with.
+		for (int i = 0; i < rvSize; i++) { // For i = 0,...,nJobs
 			if (rankValues[i] > worstAllowed - tolerance) { //If quality of solution using job i (inserting job i into nurse's route) is better than cut-off value.
-				(*rcl_size)++; //Increase the size of the RCL by one, as we are going to add an element to the RCL.
+				(*rclSize)++; //Increase the size of the RCL by one, as we are going to add an element to the RCL.
 				// printf("\tAdded element number %d to the list, value: %.2f\n", (*rcl_size), rankValues[i]);
 				//Add job i to the RCL:
-				RCL_seeds[(*rcl_size) - 1] = i; // The (*rcl_size - 1)th element of RCL_seeds is set to job i (have to use -1 because array index starts from 0 but rcl_size =1 means first element in RCL).
+				rclSeeds[(*rclSize) - 1] = i; // The (*rcl_size - 1)th element of RCL_seeds is set to job i (have to use -1 because array index starts from 0 but rcl_size =1 means first element in RCL).
 			}
 		}
 	}
 
-	if (strategy == 3) { //debug : feature. Not implemented yet. Can use update_top_values for this.
+	if (strategy == 3) { //debug : feature. Not implemented yet. Can use UpdateTopValues for this.
 		printf("STRATEGY 3 For creating RCL in GRASP - Not implemented yet!");
 		exit(-1);
 	}
 
-	if ((*rcl_size) < 1) { //If no elements have been added to the RCL
+	if ((*rclSize) < 1) { //If no elements have been added to the RCL
 		printf("WARNING! RCL in GRASP has no candidates!\n");
 		printf("Creating list with strategy = %d and delta = %.9f\n>>\tBest: %.2f, Worst: %.2f, Worst allowed: %.2f, hardCutOff: %.2f\n", strategy, delta, bestRank, worstRank, worstAllowed, hardCutOff);
-		printf("There were %d to choose from (-DBL_MAX omitted)\n", rv_size);
-		for (int iii = 0; iii < rv_size; iii++) {
+		printf("There were %d to choose from (-DBL_MAX omitted)\n", rvSize);
+		for (int iii = 0; iii < rvSize; iii++) {
 			if (rankValues[iii] > -DBL_MAX + 100)
 				printf("\t%d\t%.2f\n", iii, rankValues[iii]);
 		}
 		exit(-1);
 	}
 
-} //END OF generate_rcl function.
+} //END OF GenerateRCL function.
 
-void rcl_pick(int** bestIndices, int* RCL_seeds, int rcl_size, int* cCarer, int* cJob) {
+void RCLPick(int** bestIndices, int* rclSeeds, int rclSize, int* cNurse, int* cJob) {
 
 	// This function randomly picks an element from the RCL, which returns to us the indicies for the job-nurse assignment (cNurse and cJob).
 	// Picks one random element from bestIndices. The index of bestIndices comes from RCL_seeds. The elements considered of RCL_seeds are only the first rcl_size elements. Output is saved in cNurse and cJob.
 
-	 int rd_int = pick_integer(rcl_size);
+	 int rd_int = PickInteger(rclSize);
 //	int rd_int = 0; //ISSUE, THIS SHOULD BE SELECTING A RANDOM INTEGER BETWEEN 0 AND rcl_size, SHOULD NOT ALWAYS BE 0 AS THIS MEANS THAT THE ELEMENT PICKED WILL ALWAYS BE THE 0TH ELEMENT OF RCL_seeds!
 
-	int el = RCL_seeds[rd_int]; //el = element, (should be) selected at random from RCL_seeds.
+	int el = rclSeeds[rd_int]; //el = element, (should be) selected at random from RCL_seeds.
 
 	//Job-nurse assignment
-	(*cCarer) = bestIndices[el][0]; //cNurse = the nurse for job 'el'
+	(*cNurse) = bestIndices[el][0]; //cNurse = the nurse for job 'el'
 	(*cJob) = bestIndices[el][1]; //cJob = the job for job 'el' to go into cNurse's route.
 
 	return;
 
-} // END OF rcl_pick function.
+} // END OF RCLPick function.
 
 // Deprecated with new RCL functions above (May 19)
-void best_index_pick(int** bestIndices, int GRASP_param, int* cCarer, int* cJob) {
+void BestIndexPick(int** bestIndices, int GRASP_param, int* cNurse, int* cJob) {
 	// Identify how many VALID indices
 	int ct = 0;
 
@@ -1136,12 +1136,12 @@ void best_index_pick(int** bestIndices, int GRASP_param, int* cCarer, int* cJob)
 		// 	printf("\t%d\n", bestIndices[iii]);
 
 		  // printf("\t%d\t\t%.2f\n", bestIndices[iii], bestValues[iii]);
-		(*cCarer) = -1;
+		(*cNurse) = -1;
 		(*cJob) = -1;
 		return;
 	}
 
-	int choice = pick_integer(ct);
+	int choice = PickInteger(ct);
 	int chosenIndex = -1;
 	int ct2 = -1;
 	for (int i = 0; i < GRASP_param; i++) {
@@ -1167,18 +1167,18 @@ void best_index_pick(int** bestIndices, int GRASP_param, int* cCarer, int* cJob)
 		exit(-1);
 	}
 	else
-		(*cCarer) = bestIndices[chosenIndex][0];
+		(*cNurse) = bestIndices[chosenIndex][0];
 	(*cJob) = bestIndices[chosenIndex][1];
 	// return chosenIndex;
 }
 
-int pick_integer(int max_int) {
+int PickInteger(int max_int) {
 	//This function picks an integer number randomly between 0 and max_int - 1
 
 	return (int)(rand() % (max_int));
 }
 
-void update_top_values(int GRASP_param, int** bestIndices, double* bestValues, double newValue, int bestCarer, int bestJob) {
+void UpdateTopValues(int GRASP_param, int** bestIndices, double* bestValues, double newValue, int bestNurse, int bestJob) {
 	// printf("Proposed idx %d, proposed val %.2f\n", i, newValue);
 	// printf("bestI\t\tbestVal\n");
 	// for (int iii = 0; iii < GRASP_param; ++iii)
@@ -1193,46 +1193,46 @@ void update_top_values(int GRASP_param, int** bestIndices, double* bestValues, d
 				bestIndices[kk][1] = bestIndices[kk + 1][1];
 			}
 			bestValues[k] = newValue;
-			bestIndices[k][0] = bestCarer;
+			bestIndices[k][0] = bestNurse;
 			bestIndices[k][1] = bestJob;
 			break;
 		}
 	}
 }
 
-void clean_solution_from_struct(struct INSTANCE* ip) {
-	for (int nurse = 0; nurse < ip->nCarers; ++nurse) {
+void CleanSolutionFromStruct(struct INSTANCE* ip) {
+	for (int nurse = 0; nurse < ip->nNurses; ++nurse) {
 		for (int job = 0; job < ip->nJobs; ++job) {
 			ip->solMatrix[nurse][job] = -1;
 		}
 	}
 }
 
-int identify_early_insert(struct INSTANCE* ip, struct INSTANCE* guiding, int guiding_carer, int guiding_carer_pos) {
+int IdentifyEarlyInsert(struct INSTANCE* ip, struct INSTANCE* guiding, int guidingNurse, int guidingNursePos) {
 	
 	//Identify if a job needs to be inserted earlier than proposed. This prevents jobs being inserted after others that are present in the same nurse and are seen to appear later in the guiding solution.
 	
-	int position_insert = guiding_carer_pos;
+	int position_insert = guidingNursePos;
 
-	for (int irt = 1; irt < guiding->nJobs - guiding_carer_pos; irt++) { //For each
-		int nxtJob = guiding->allCarerRoutes[guiding_carer][guiding_carer_pos + irt];
+	for (int irt = 1; irt < guiding->nJobs - guidingNursePos; irt++) { //For each
+		int nxtJob = guiding->allNurseRoutes[guidingNurse][guidingNursePos + irt];
 		// Check if the guiding nurse is doing any more jobs after this one
 		if (nxtJob < 0) {
 			break;
 		}
 		// Check if this nurse is doing that job
-		if (ip->solMatrix[guiding_carer][nxtJob] >= 0) {
-			if (ip->solMatrix[guiding_carer][nxtJob] < position_insert) {
+		if (ip->solMatrix[guidingNurse][nxtJob] >= 0) {
+			if (ip->solMatrix[guidingNurse][nxtJob] < position_insert) {
 				// printf("\t> Solved a problem! Job was due to be inserted at pos: %d, \n", position_insert);
 				// printf("\t> but we insert it in position %d instead, to prevent overtaking job %d\n", ip->solMatrix[guiding_nurse][nxtJob], nxtJob);
-				position_insert = ip->solMatrix[guiding_carer][nxtJob];
+				position_insert = ip->solMatrix[guidingNurse][nxtJob];
 			}
 		}
 
 	}
 
-	if (position_insert == guiding_carer_pos) {
-		int jc = get_job_count(ip, guiding_carer); //jc = number of jobs in guiding_nurse's route in ip solution
+	if (position_insert == guidingNursePos) {
+		int jc = GetJobCount(ip, guidingNurse); //jc = number of jobs in guiding_nurse's route in ip solution
 		if (position_insert > jc) { //If position of mvjob in guiding_nurse's route in guiding solution is greater than number of jobs in guiding_nurse's route in ip solution
 			//That is, the number of jobs = number of possible positions to add a job, so if position_insert is greater than jc it means that position_insert is not in the guiding_nurse's route
 			//E.g. nurse only does 5 jobs (in positions 0,1,2,3,4), but position_insert is 8, so we're trying to insert a job in position 8 when nurse doesn't even have jobs in positions 5,6, or 7.
@@ -1243,27 +1243,27 @@ int identify_early_insert(struct INSTANCE* ip, struct INSTANCE* guiding, int gui
 
 	return position_insert;
 
-} //END OF identify_early_insert function.
+} //END OF IdentifyEarlyInsert function.
 
-void find_best_worst_pool_qualities(double* pool_best, double* pool_worst, struct INSTANCE** pool, double* pool_quality, int pool_size) {
+void BestWorstPoolQualities(double* poolBest, double* poolWorst, struct INSTANCE** pool, double* poolQuality, int poolSize) {
 	/* Finds the best and worst qualities currently in the solution pool
 	   using only the solutions that have been initialised (not NULL ptrs)
 	   This code maximises, so best = max, worst = min
 	*/
-	*pool_best = -bigM;
-	*pool_worst = bigM;
-	for (int i = 0; i < pool_size; ++i) {
+	*poolBest = -bigM;
+	*poolWorst = bigM;
+	for (int i = 0; i < poolSize; ++i) {
 		if (NULL != pool[i]) {
-			if (pool_quality[i] < *pool_worst)
-				*pool_worst = pool_quality[i];
+			if (poolQuality[i] < *poolWorst)
+				*poolWorst = poolQuality[i];
 
-			if (pool_quality[i] > * pool_best)
-				*pool_best = pool_quality[i];
+			if (poolQuality[i] > * poolBest)
+				*poolBest = poolQuality[i];
 		}
 	}
 }
 
-double solution_dissimilarity(struct INSTANCE* input1, struct INSTANCE* input2) {
+double SolutionDissimilarity(struct INSTANCE* input1, struct INSTANCE* input2) {
 	/*
 	Calculate a measure of dissimilarity between two solutions.	It is a combination of three parts:
 	  1) Dissimilarity in the nurse order
@@ -1285,14 +1285,14 @@ double solution_dissimilarity(struct INSTANCE* input1, struct INSTANCE* input2) 
 	int assignment_value = 0;
 	int route_value = 0;
 
-	// Calculate nurse dissimilarity (d_o(O_1, O_2) in paper) - Hamming distance between the ordering vectors (carerOrder), which is the number of different digits.
-	for (int i = 0; i < input1->nCarers; ++i) { //For i = 0,...,nCarers
-		if (input1->carerOrder[i] != input2->carerOrder[i]) //If the nurse in carerOrder[i] for input 1 is NOT the same nurse in carerOrder[i] for input 2 (i.e. nurses are in different order)
+	// Calculate nurse dissimilarity (d_o(O_1, O_2) in paper) - Hamming distance between the ordering vectors (nurseOrder), which is the number of different digits.
+	for (int i = 0; i < input1->nNurses; ++i) { //For i = 0,...,nNurses
+		if (input1->nurseOrder[i] != input2->nurseOrder[i]) //If the nurse in nurseOrder[i] for input 1 is NOT the same nurse in nurseOrder[i] for input 2 (i.e. nurses are in different order)
 			nurse_order_value++;
 	}
 
 	// Calculate assignment dissimilarity and arc dissimilarity
-	for (int i = 0; i < input1->nCarers; ++i) { //For i = 0,...,nCarers
+	for (int i = 0; i < input1->nNurses; ++i) { //For i = 0,...,nNurses
 		for (int j = 0; j < input1->nJobs; ++j) { //For j - 0,...,nJobs
 			if (input1->solMatrix[i][j] < 0) { //If in ip solution, job j is not in nurse i's route, go to next job (++j)
 				continue;
@@ -1301,13 +1301,13 @@ double solution_dissimilarity(struct INSTANCE* input1, struct INSTANCE* input2) 
 				assignment_value++;
 			}
 
-			int i_des = find_arc_destination(i, j, input1); //See where this arc goes: i_des = the job# after job j in nurse i's route in ip solution, if j is the last job in nurse i's route then i_des = -1 (nurse goes back to depot).
+			int i_des = FindArcDestination(i, j, input1); //See where this arc goes: i_des = the job# after job j in nurse i's route in ip solution, if j is the last job in nurse i's route then i_des = -1 (nurse goes back to depot).
 			// So we have an arc j -> i_des, find out where this job goes to on input2
 
 			int arc_dissimilar = 1; // Assume the arc is not there (unless we find it)
-			for (int nu = 0; nu < input2->nCarers; ++nu) { //For each nurse nu = 0,...,nCarers (for pool[ps])
+			for (int nu = 0; nu < input2->nNurses; ++nu) { //For each nurse nu = 0,...,nNurses (for pool[ps])
 				if (input2->solMatrix[nu][j] > -1) { //If job j is in nurse nu's route in pool[ps] solution
-					int i_des2 = find_arc_destination(nu, j, input2); // i_des2 = the job# after job j in nurse nu's route in pool[ps] soln, if j is the last job in nu's route then i_des2 = -1 (nu returns back to depot)
+					int i_des2 = FindArcDestination(nu, j, input2); // i_des2 = the job# after job j in nurse nu's route in pool[ps] soln, if j is the last job in nu's route then i_des2 = -1 (nu returns back to depot)
 
 					//If there's a job after j in nu's route AND the job after j in nu's route is the same job as the job after j in nurse i's route (i.e. both nurse i and nurse nu have the same job j
 					// in their routes AND the job AFTER job j in both of their routes is the SAME job - so both nurse's have job j going to job k in their routes)
@@ -1326,7 +1326,7 @@ double solution_dissimilarity(struct INSTANCE* input1, struct INSTANCE* input2) 
 						}
 					}
 				}
-			} // End for (int nu = 0; nu < input2->nCarers; ++nu) - looking for arcs in input2
+			} // End for (int nu = 0; nu < input2->nNurses; ++nu) - looking for arcs in input2
 
 			route_value += arc_dissimilar; //Number of arc dissimilarities
 
@@ -1336,16 +1336,16 @@ double solution_dissimilarity(struct INSTANCE* input1, struct INSTANCE* input2) 
 			}
 
 		}  // End for (int j = 0; j < input1->nJobs; ++j)      
-	} // End for (int i = 0; i < input1->nCarers; ++i)
+	} // End for (int i = 0; i < input1->nNurses; ++i)
 
 	// d(S_1, S_2) = d_o(O_1,O_2) + d_a(R_1, R_2) + d_r(R_1, R_2)
 	double d_value = weight1 * nurse_order_value + weight2 * assignment_value + weight3 * route_value;
 
 	return(d_value);
 
-} //END OF solution_dissimilarity function.
+} //END OF SolutionDissimilarity function.
 
-int find_arc_destination(int source_carer, int source_job, struct INSTANCE* ip) {
+int FindArcDestination(int sourceNurse, int sourceJob, struct INSTANCE* ip) {
 	/*
 	  Given a nurse/job combination, find out where the nurse goes next to (the arc)
 	  If there is no "next job" we assume it goes back to depot, noted by "-1"
@@ -1354,12 +1354,12 @@ int find_arc_destination(int source_carer, int source_job, struct INSTANCE* ip) 
 	// If there is a job after source_job in source_nurse's route, then this function returns that job, otherwise it returns -1 (which means that there are no other jobs in source_nurse's route,
 	// source_job is the last job in source_nurse's route and so the nurse ends up returning to the depot).
 
-	int c_pos = ip->solMatrix[source_carer][source_job]; //c_pos position of job in nurse's route, 'current position'
+	int c_pos = ip->solMatrix[sourceNurse][sourceJob]; //c_pos position of job in nurse's route, 'current position'
 	/*int n_pos = c_pos++;*/ /// 'next position'. Increment is AFTER, so n_pos = c_pos, and THEN c_pos is increased by one, should this be ++c_pos or just c_pos + 1 instead as we're trying to find the NEXT position in the route?
 	int n_pos = c_pos+1; // Changed from c_pos++ to cpos+1, 26/12/2020.
 	int d_pos = -1; // If we don't find the following point, assume it goes back to depot
 	for (int i = 0; i < ip->nJobs; ++i) { //For each job i = 0,...,nJobs
-		if (ip->solMatrix[source_carer][i] == n_pos) { //If the position of job i in nurse's route is in the NEXT position of nurse's route after position c_pos
+		if (ip->solMatrix[sourceNurse][i] == n_pos) { //If the position of job i in nurse's route is in the NEXT position of nurse's route after position c_pos
 			d_pos = i; //Store the job i as d_pos
 			break;
 		}
@@ -1367,65 +1367,65 @@ int find_arc_destination(int source_carer, int source_job, struct INSTANCE* ip) 
 
 	return(d_pos);
 
-} //END OF find_arc_destination function.
+} //END OF FindArcDestination function.
 
-void print_and_recalculate_pool_contents(struct INSTANCE** pool, double* pool_quality, int solutions_in_pool) {
+void PrintRecalculatePoolContents(struct INSTANCE** pool, double* poolQuality, int solutionsInPool) {
 	printf("Pool contents:\n");
-	for (int ps2 = 0; ps2 < solutions_in_pool; ps2++) {
+	for (int ps2 = 0; ps2 < solutionsInPool; ps2++) {
 		if (pool[ps2] != NULL)
-			printf("\tPOOL %d - Q = %.2f (rec %.2f)\n", ps2, sol_quality(pool[ps2], -3234), pool_quality[ps2]);
+			printf("\tPOOL %d - Q = %.2f (rec %.2f)\n", ps2, SolutionQuality(pool[ps2], -3234), poolQuality[ps2]);
 	}
 }
 
-void calculate_and_print_dissimilartiy_matrix(struct INSTANCE** pool, int solutions_in_pool) {
+void CalculatePrintDissimilarityMatrix(struct INSTANCE** pool, int solutionsInPool) {
 	printf("Pool dissimilarity matrix:\n\t");
-	for (int ps3 = 0; ps3 < solutions_in_pool; ps3++)
+	for (int ps3 = 0; ps3 < solutionsInPool; ps3++)
 		printf("POOL%d\t", ps3);
 
-	for (int ps3 = 0; ps3 < solutions_in_pool; ps3++) {
+	for (int ps3 = 0; ps3 < solutionsInPool; ps3++) {
 		printf("\nPOOL %d", ps3);
-		for (int ps4 = 0; ps4 < solutions_in_pool; ps4++) {
+		for (int ps4 = 0; ps4 < solutionsInPool; ps4++) {
 			if ((pool[ps3] != NULL) && (pool[ps4] != NULL))
-				printf("\t%.1f", solution_dissimilarity(pool[ps3], pool[ps4]));
+				printf("\t%.1f", SolutionDissimilarity(pool[ps3], pool[ps4]));
 			else
 				printf("\t----");
 		}
 	}
 }
 
-double forward_path_relinking(struct INSTANCE* input1, struct INSTANCE* input2, double q1, double q2, struct INSTANCE* output) {
-	return directed_path_relinking(input1, input2, q1, q2, output, 0);
+double ForwardPR(struct INSTANCE* input1, struct INSTANCE* input2, double q1, double q2, struct INSTANCE* output) {
+	return DirectedPR(input1, input2, q1, q2, output, 0);
 }
 
-double forward_and_backward_path_relinking(struct INSTANCE* input1, struct INSTANCE* input2, double q1, double q2, struct INSTANCE* output1) {
+double ForwardBackwardPR(struct INSTANCE* input1, struct INSTANCE* input2, double q1, double q2, struct INSTANCE* output1) {
 	/*
 	  Performs both, forward and backward path relinking and
 	  returns the relinked solution with the highest quality
 	  from the two
 	*/
 
-	struct INSTANCE output2 = copy_instance(input1);
-	double rq_forward = forward_path_relinking(input1, input2, q1, q2, output1);
-	double rq_backward = backward_path_relinking(input1, input2, q1, q2, &output2);
+	struct INSTANCE output2 = CopyInstance(input1);
+	double rq_forward = ForwardPR(input1, input2, q1, q2, output1);
+	double rq_backward = BackwardPR(input1, input2, q1, q2, &output2);
 	double best_relinking_quality = rq_forward;
 	if (rq_backward > rq_forward) {
-		overwrite_instance(output1, &output2);
+        OverwriteInstance(output1, &output2);
 		best_relinking_quality = rq_backward;
 	}
 
-	free_instance_copy(&output2);
+    FreeInstanceCopy(&output2);
 
 	return best_relinking_quality;
 }
 
-double backward_path_relinking(struct INSTANCE* input1, struct INSTANCE* input2, double q1, double q2, struct INSTANCE* output) {
+double BackwardPR(struct INSTANCE* input1, struct INSTANCE* input2, double q1, double q2, struct INSTANCE* output) {
 	// Performs backwards path relinking
 	// Starts from the best solution and goes towards the worst
 	// Result is saved on "output" (this is always equal or better than the best of q1 or q2)
-	return directed_path_relinking(input1, input2, q1, q2, output, 1);
+	return DirectedPR(input1, input2, q1, q2, output, 1);
 }
 
-double directed_path_relinking(struct INSTANCE* input1, struct INSTANCE* input2, double q1, double q2, struct INSTANCE* output, int direction) {
+double DirectedPR(struct INSTANCE* input1, struct INSTANCE* input2, double q1, double q2, struct INSTANCE* output, int direction) {
 
 	// This function performs PR in the requested direction, and returns the quality of the best solution created.
 	/*
@@ -1444,34 +1444,34 @@ double directed_path_relinking(struct INSTANCE* input1, struct INSTANCE* input2,
 			source_sol_1 = -1;
 		}
 		if (source_sol_1 > -1) { /// Should this be >-1? This will never occur, as source_sol_1 is only either 0 or -1, so can never be > 0. Changed from 0 to -1, 26/12/2020.
-			overwrite_instance(output, input1); //relinkedSolution = ip solution
-			relinking_quality = path_relinking(output, input2); //PR with relinkedSolution as starting solution and pool[ps] solution as guiding solution.
+            OverwriteInstance(output, input1); //relinkedSolution = ip solution
+			relinking_quality = PathRelinking(output, input2); //PR with relinkedSolution as starting solution and pool[ps] solution as guiding solution.
 		}
 		else {
-			overwrite_instance(output, input2); //relinkedSolution = pool[ps] solution
-			relinking_quality = path_relinking(output, input1); //PR with relinkedSolution as starting solution as ip solution as guiding solution.
+            OverwriteInstance(output, input2); //relinkedSolution = pool[ps] solution
+			relinking_quality = PathRelinking(output, input1); //PR with relinkedSolution as starting solution as ip solution as guiding solution.
 		}
 	}
 	else if (direction == 2) {
-		relinking_quality = forward_and_backward_path_relinking(input1, input2, q1, q2, output); //Does both forward and backward PR and returns the quality of the best solution found.
+		relinking_quality = ForwardBackwardPR(input1, input2, q1, q2, output); //Does both forward and backward PR and returns the quality of the best solution found.
 	}
 	else {
-		printf("ERROR: Unknown PR direction %d in directed_path_relinking(...)\n", direction);
+		printf("ERROR: Unknown PR direction %d in DirectedPR(...)\n", direction);
 		exit(-23483);
 	}
 
 	return relinking_quality;
 
-} //END OF directed_path_relinking function.
+} //END OF DirectedPR function.
 
-double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
+double PathRelinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 	
 	// Modify ip iteratively so that it ends being identical to "guiding". Save the best solution found during the process, apply local search to it and return it in "ip" again.
 	// debug: missing: need to modify ip right at the start to prevent moving jobs between nurses that are "interchangeable" (same skills, times and start locations), 
 	// this will result in much less work for the relinking
 
 	// This function takes a solution ip and uses small movements to modify ip iteratively so that eventually, ip is equivalent to the guiding solution.
-	// Movements: change nurse order (swap order of two nurses in carerOrder array so that a nurse's position in ip matches the nurse's position in guiding solution,
+	// Movements: change nurse order (swap order of two nurses in nurseOrder array so that a nurse's position in ip matches the nurse's position in guiding solution,
 	// or remove a job from a nurse's route in ip and reinsert the job in another nurse's route in ip to match the position of that job in the guiding soltuion.
 	// The quality of ip is calculated after every improvement, and the improvements continue to be made until ip = guiding solution.
 	// Then, the best intermediate solution ip found in the path is taken as the best solution, and ip becomes this best solution.
@@ -1483,11 +1483,11 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 	//ip = relinkedSolution (either ip or pool[ps]), guiding = either pool[ps] or ip
 	//so either modifying ip toward pool[ps], or modifying pool[ps] toward ip.
 
-	struct INSTANCE bestSolution = copy_instance(ip); //Best intermediate solution
-	struct INSTANCE starting_solution = copy_instance(ip); //Keep a copy of the original ip solution before any modifications, as we might have to revert back to this solution if no improvements made.
-	double starting_quality = sol_quality(ip, -1476879); // Quality of original ip solution (starting_solution)
+	struct INSTANCE bestSolution = CopyInstance(ip); //Best intermediate solution
+	struct INSTANCE starting_solution = CopyInstance(ip); //Keep a copy of the original ip solution before any modifications, as we might have to revert back to this solution if no improvements made.
+	double starting_quality = SolutionQuality(ip, -1476879); // Quality of original ip solution (starting_solution)
 
-	int nmoves = guiding->nCarers + guiding->nJobs; //n+m in paper, max number of moves
+	int nmoves = guiding->nNurses + guiding->nJobs; //n+m in paper, max number of moves
 	int* performed = malloc(nmoves * sizeof(int)); //size = 1 x nMoves (movements that have been performed), 0-1
 	double* all_moves_quality = malloc(nmoves * sizeof(double)); // size = 1 x nMoves (quality of movements that have been performed)
 
@@ -1523,59 +1523,59 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 				if (performed[mv]) { //If move has been performed, continue onto next mv (++mv)
 					continue;
 				}
-				if (mv < guiding->nCarers) { //Then we can do carerOrder swap
-					if (ip->carerOrder[mv] == guiding->carerOrder[mv]) { //same nurse in same position in both solutions, move not necessary (nothing to move!)
+				if (mv < guiding->nNurses) { //Then we can do nurseOrder swap
+					if (ip->nurseOrder[mv] == guiding->nurseOrder[mv]) { //same nurse in same position in both solutions, move not necessary (nothing to move!)
 						performed[mv] = 1;
 						moves_performed++;
 						continue; //Go to next mv (++mv)
 					}
-					//Otherwise, if nurses are not in the same position in carerOrder array in both solutions, need to swap two elements in carerOrder for ip so that ip->carerOrder[mv] == guiding->carerOrder[mv]
-					int A = ip->carerOrder[mv]; //nurse in position mv of carerOrder for ip
-					int A_pos = mv; //position in carerOrder for ip
-					int B = guiding->carerOrder[mv]; //nurse in position mv of carerOrder for guiding
-					int B_pos = -1; //position in carerOrder for guiding, set to -1
-					int new_pos_mv = guiding->carerOrder[mv]; //nurse in position mv of carerOrder for guiding
-					for (int el = 0; el < guiding->nCarers; el++) { //For each position el = 0,...,nCarers
+					//Otherwise, if nurses are not in the same position in nurseOrder array in both solutions, need to swap two elements in nurseOrder for ip so that ip->nurseOrder[mv] == guiding->nurseOrder[mv]
+					int A = ip->nurseOrder[mv]; //nurse in position mv of nurseOrder for ip
+					int A_pos = mv; //position in nurseOrder for ip
+					int B = guiding->nurseOrder[mv]; //nurse in position mv of nurseOrder for guiding
+					int B_pos = -1; //position in nurseOrder for guiding, set to -1
+					int new_pos_mv = guiding->nurseOrder[mv]; //nurse in position mv of nurseOrder for guiding
+					for (int el = 0; el < guiding->nNurses; el++) { //For each position el = 0,...,nNurses
 						if (el == mv) { //If position el is the same as position mv, go to next position el (++el)
 							continue;
 						}
-						if (ip->carerOrder[el] == B) { //If nurse in position el is the same as the nurse in position mv of carerOrder for guiding, save the position el
+						if (ip->nurseOrder[el] == B) { //If nurse in position el is the same as the nurse in position mv of nurseOrder for guiding, save the position el
 							B_pos = el;
 							break;
 						}
 					}
 					// Now, switch the position of the nurse in position B_pos (el) of nurseOrderip with the position of the nurse in position A_pos (mv) of nurseOrderip
-					// Then, ip->carerOrder[mv] == guiding->carerOrder[mv]!
-					ip->carerOrder[B_pos] = A;
-					ip->carerOrder[A_pos] = B;
+					// Then, ip->nurseOrder[mv] == guiding->nurseOrder[mv]!
+					ip->nurseOrder[B_pos] = A;
+					ip->nurseOrder[A_pos] = B;
 
-					double move_quality = sol_quality(ip, -3900090);
-					if (move_quality > best_move_quality) { //If quality has improved, update best_move_quality and save the best position in carerOrder to switch
+					double move_quality = SolutionQuality(ip, -3900090);
+					if (move_quality > best_move_quality) { //If quality has improved, update best_move_quality and save the best position in nurseOrder to switch
 						best_move_to_perform = mv; 
 						best_move_quality = move_quality;
 					}
-					//Return carerOrder in ip back to before
-					ip->carerOrder[B_pos] = B;
-					ip->carerOrder[A_pos] = A;
+					//Return nurseOrder in ip back to before
+					ip->nurseOrder[B_pos] = B;
+					ip->nurseOrder[A_pos] = A;
 
-				} //End if(mv < guiding->nCarers)
+				} //End if(mv < guiding->nNurses)
 
-				else { // All other moves (can't do nurses because mv >= nCarers, so that number of nurses doesn't exist in carerOrder).
-					int mvjob = mv - guiding->nCarers; //0,...,nJobs
+				else { // All other moves (can't do nurses because mv >= nNurses, so that number of nurses doesn't exist in nurseOrder).
+					int mvjob = mv - guiding->nNurses; //0,...,nJobs
 					if (ip->doubleService[mvjob] > 0) { //If mvjob is a double service 
 						int guiding_nurse1 = -1; // First nurse that does job 'mvjob'
 						int guiding_nurse_pos1 = -1; //Position of 'mvjob' in first nurse's route
 						int guiding_nurse2 = -1; //Second nurse that does job 'mvjob'
 						int guiding_nurse_pos2 = -1; //Position of 'mvjob' in second nurse's route
 						//This function returns, for the guiding solution, the two nurses that do the job 'mvjob', and the position of 'mvjob' in each nurse's route
-                        get_carer_and_position_of_job_ds(guiding, mvjob, &guiding_nurse1, &guiding_nurse_pos1, &guiding_nurse2, &guiding_nurse_pos2);
+                        NurseAndJobPositionDS(guiding, mvjob, &guiding_nurse1, &guiding_nurse_pos1, &guiding_nurse2, &guiding_nurse_pos2);
 
 						int current_nurse1 = -1; 
 						int current_nurse_pos1 = -1;
 						int current_nurse2 = -1;
 						int current_nurse_pos2 = -1;
 						//This function returns, for the ip solution, the two nurses that do the job 'mvjob', and the position of 'mvjob' in each nurse's route
-                        get_carer_and_position_of_job_ds(ip, mvjob, &current_nurse1, &current_nurse_pos1, &current_nurse2, &current_nurse_pos2);
+                        NurseAndJobPositionDS(ip, mvjob, &current_nurse1, &current_nurse_pos1, &current_nurse2, &current_nurse_pos2);
 
 						// Check for coincidence, this can only happen if nurse1 is nurse1 in the other sol, as they are searched in increasing order, so no need to check if guiding_nurse1 = current_nurse2 
 						// because in that case it will happen that guiding_nurse2 > current_nurse1 by def.
@@ -1587,37 +1587,37 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 						}
 
 						// Test the move:
-						remove_job(ip, mvjob, current_nurse1); //Remove mvjob from both nurse's routes in ip solution
-						remove_job(ip, mvjob, current_nurse2);
-						int position_insert1 = identify_early_insert(ip, guiding, guiding_nurse1, guiding_nurse_pos1); //Returns updated position guiding_nurse_pos1
-						int position_insert2 = identify_early_insert(ip, guiding, guiding_nurse2, guiding_nurse_pos2); //Returns updated position guiding_nurse_pos2
+                        RemoveJob(ip, mvjob, current_nurse1); //Remove mvjob from both nurse's routes in ip solution
+                        RemoveJob(ip, mvjob, current_nurse2);
+						int position_insert1 = IdentifyEarlyInsert(ip, guiding, guiding_nurse1, guiding_nurse_pos1); //Returns updated position guiding_nurse_pos1
+						int position_insert2 = IdentifyEarlyInsert(ip, guiding, guiding_nurse2, guiding_nurse_pos2); //Returns updated position guiding_nurse_pos2
 						//If cannot insert mvjob into position 'position_insert1' in guiding_nurse1's route in ip OR cannot insert mvjob into position_insert2 in guiding_nurse2's route in ip:
-						if ((insert_job_at_position(ip, mvjob, guiding_nurse1, position_insert1) < 0) || (insert_job_at_position(ip, mvjob, guiding_nurse2, position_insert2) < 0)) {
+						if ((InsertJobAtPosition(ip, mvjob, guiding_nurse1, position_insert1) < 0) || (InsertJobAtPosition(ip, mvjob, guiding_nurse2, position_insert2) < 0)) {
 							all_moves_quality[mv] = -DBL_MAX;
 							printf("ERROR: This shouldn't happen!!!!!! PR cannot match guiding solution. DS\n");
 							printf("Trying to get job %d into nurse %d position %d\n", mvjob, guiding_nurse1, position_insert1);
 							printf("AND: job %d into nurse %d position %d\n", mvjob, guiding_nurse2, position_insert2);
 							printf("This is SOLMATRIX after the trials:\n");
-							print_solmatrix(ip);
+                            PrintSolMatrix(ip);
 							printf("Inserting back for debugging...\n");
-							insert_job_at_position(ip, mvjob, current_nurse2, current_nurse_pos2);
-							insert_job_at_position(ip, mvjob, current_nurse1, current_nurse_pos1);
-							print_solmatrix(ip);
+                            InsertJobAtPosition(ip, mvjob, current_nurse2, current_nurse_pos2);
+                            InsertJobAtPosition(ip, mvjob, current_nurse1, current_nurse_pos1);
+                            PrintSolMatrix(ip);
 							exit(-23535);
 							continue;
 						}
 
 						// Successfully inserted mvjob into positions in guiding_nurse1 and guiding_nurse2's routes.
-						double move_quality = sol_quality(ip, -3900090);
+						double move_quality = SolutionQuality(ip, -3900090);
 						if (move_quality > best_move_quality) { //If quality has improved, update best_move_quality and save the best mv
 							best_move_to_perform = mv;
 							best_move_quality = move_quality;
 						}
 
 						// Return ip solution back to before, first by removing mvjob from guiding_nurse's routes and then adding mvjob back into current_nurse's routes.
-						remove_job(ip, mvjob, guiding_nurse1);
-						remove_job(ip, mvjob, guiding_nurse2);
-						if ((insert_job_at_position(ip, mvjob, current_nurse1, current_nurse_pos1) < 0) || (insert_job_at_position(ip, mvjob, current_nurse2, current_nurse_pos2) < 0)) {
+                        RemoveJob(ip, mvjob, guiding_nurse1);
+                        RemoveJob(ip, mvjob, guiding_nurse2);
+						if ((InsertJobAtPosition(ip, mvjob, current_nurse1, current_nurse_pos1) < 0) || (InsertJobAtPosition(ip, mvjob, current_nurse2, current_nurse_pos2) < 0)) {
 							printf("ERROR: We have messed it up!\nCannot insert job %d back into nurse %d or %d\n", mvjob, current_nurse1, current_nurse2);
 							exit(-32543543);
 						}
@@ -1626,12 +1626,12 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 						int guiding_nurse = -1; //Nurse in guiding solution that does mvjob
 						int guiding_nurse_pos = -1; //Position of mvjob in guiding_nurse's route in guiding solution
 						//This function returns the nurse in guiding solution that does mvjob, and the positon of mvjob in that nurse's route
-                        get_carer_and_position_of_job(guiding, mvjob, &guiding_nurse, &guiding_nurse_pos);
+                        NurseAndJobPosition(guiding, mvjob, &guiding_nurse, &guiding_nurse_pos);
 
 						int current_nurse = -1; //Nurse in ip solution that does mvjob
 						int current_nurse_pos = -1; //Position of mvjob in current_nurse's route in ip solution
 						//This function returns the nurse in ip solution that does mvjob, and the position of mvjob in that nurse's route
-                        get_carer_and_position_of_job(ip, mvjob, &current_nurse, &current_nurse_pos);
+                        NurseAndJobPosition(ip, mvjob, &current_nurse, &current_nurse_pos);
 
 						double move_quality = -DBL_MAX;
 						if ((guiding_nurse == current_nurse) && (current_nurse_pos == guiding_nurse_pos)) { //If same nurse is doing the same job in the same position of the route in both solutions, don't need to do anything!
@@ -1640,23 +1640,23 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 							continue;
 						}
 						else {
-							remove_job(ip, mvjob, current_nurse); //Remove mvjob from current_nurse's route in ip solution
-							int position_insert = identify_early_insert(ip, guiding, guiding_nurse, guiding_nurse_pos); //Return updated position
-							if (insert_job_at_position(ip, mvjob, guiding_nurse, position_insert) < 0) { //If mvjob cannot be inserted into guiding_nurse's route in position_insert of ip solution
+                            RemoveJob(ip, mvjob, current_nurse); //Remove mvjob from current_nurse's route in ip solution
+							int position_insert = IdentifyEarlyInsert(ip, guiding, guiding_nurse, guiding_nurse_pos); //Return updated position
+							if (InsertJobAtPosition(ip, mvjob, guiding_nurse, position_insert) < 0) { //If mvjob cannot be inserted into guiding_nurse's route in position_insert of ip solution
 								all_moves_quality[mv] = -DBL_MAX;
-								insert_job_at_position(ip, mvjob, current_nurse, current_nurse_pos); //Revert ip solution back to before.
+                                InsertJobAtPosition(ip, mvjob, current_nurse, current_nurse_pos); //Revert ip solution back to before.
 								// May not be an error if guiding_nurse_pos is too large (which might happen, we just need to wait in that case)
 								// printf("ERROR: This shouldn't happen!!!!!! PR cannot match guiding solution. Single Serv.\n");
 								continue;
 							}
-							move_quality = sol_quality(ip, -3900090); //Calculate quality of ip solution
+							move_quality = SolutionQuality(ip, -3900090); //Calculate quality of ip solution
 						}
 						if (move_quality > best_move_quality) { //If quality has improved, update best_move_quality and save the best mv
 							best_move_to_perform = mv;
 							best_move_quality = move_quality;
 						}
-						remove_job(ip, mvjob, guiding_nurse); //Revert ip back to before
-						if (insert_job_at_position(ip, mvjob, current_nurse, current_nurse_pos) < 0) { //Insert mvjob back into current_nurse, shouldn't this be < 0? Changed 26/12/2020, added <0 to statement.
+                        RemoveJob(ip, mvjob, guiding_nurse); //Revert ip back to before
+						if (InsertJobAtPosition(ip, mvjob, current_nurse, current_nurse_pos) < 0) { //Insert mvjob back into current_nurse, shouldn't this be < 0? Changed 26/12/2020, added <0 to statement.
 							printf("ERROR: We have messed it up!\nCannot insert job %d back into nurse %d\n", mvjob, current_nurse);
 							exit(-32543543);
 						}
@@ -1666,54 +1666,54 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 
 			// Perform the best move for real:
 			if (best_move_to_perform >= 0) {
-				if (best_move_to_perform < guiding->nCarers) { //If the move to be performed is carerOrder swap
-					int A = ip->carerOrder[best_move_to_perform];
+				if (best_move_to_perform < guiding->nNurses) { //If the move to be performed is nurseOrder swap
+					int A = ip->nurseOrder[best_move_to_perform];
 					int A_pos = best_move_to_perform;
-					int B = guiding->carerOrder[best_move_to_perform];
+					int B = guiding->nurseOrder[best_move_to_perform];
 					int B_pos = -1;
-					int new_pos_best_move_to_perform = guiding->carerOrder[best_move_to_perform];
-					for (int el = 0; el < guiding->nCarers; el++) {
+					int new_pos_best_move_to_perform = guiding->nurseOrder[best_move_to_perform];
+					for (int el = 0; el < guiding->nNurses; el++) {
 						if (el == best_move_to_perform) {
 							continue;
 						}
-						if (ip->carerOrder[el] == B) {
+						if (ip->nurseOrder[el] == B) {
 							B_pos = el;
 							break;
 						}
 					}
-					// Perform carerOrder swap in ip solution
-					ip->carerOrder[B_pos] = A;
-					ip->carerOrder[A_pos] = B;
+					// Perform nurseOrder swap in ip solution
+					ip->nurseOrder[B_pos] = A;
+					ip->nurseOrder[A_pos] = B;
 				}
 				else { //The move to be performed is a job removal/reinsertion
-					int mvjob = best_move_to_perform - guiding->nCarers;
+					int mvjob = best_move_to_perform - guiding->nNurses;
 					if (ip->doubleService[mvjob] > 0) { //If mvjob is a double service
 						int guiding_nurse1 = -1;
 						int guiding_nurse_pos1 = -1;
 						int guiding_nurse2 = -1;
 						int guiding_nurse_pos2 = -1;
 						//Get the two nurses in guiding solution that are assigned mvjob, and get the position of mvjob in each of two nurses' routes.
-                        get_carer_and_position_of_job_ds(guiding, mvjob, &guiding_nurse1, &guiding_nurse_pos1, &guiding_nurse2, &guiding_nurse_pos2);
+                        NurseAndJobPositionDS(guiding, mvjob, &guiding_nurse1, &guiding_nurse_pos1, &guiding_nurse2, &guiding_nurse_pos2);
 
 						int current_nurse1 = -1;
 						int current_nurse_pos1 = -1;
 						int current_nurse2 = -1;
 						int current_nurse_pos2 = -1;
 						//Get the two nurses in ip solution that are assigned mvjob, and get the position of mvjob in each of the two nurses' routes.
-                        get_carer_and_position_of_job_ds(ip, mvjob, &current_nurse1, &current_nurse_pos1, &current_nurse2, &current_nurse_pos2);
+                        NurseAndJobPositionDS(ip, mvjob, &current_nurse1, &current_nurse_pos1, &current_nurse2, &current_nurse_pos2);
 
 						//Remove mvjob from the two nurses' routes in ip solution
-						remove_job(ip, mvjob, current_nurse1);
-						remove_job(ip, mvjob, current_nurse2);
+                        RemoveJob(ip, mvjob, current_nurse1);
+                        RemoveJob(ip, mvjob, current_nurse2);
 
 						// Check positions
-						int position_insert1 = identify_early_insert(ip, guiding, guiding_nurse1, guiding_nurse_pos1);
-						int position_insert2 = identify_early_insert(ip, guiding, guiding_nurse2, guiding_nurse_pos2);
+						int position_insert1 = IdentifyEarlyInsert(ip, guiding, guiding_nurse1, guiding_nurse_pos1);
+						int position_insert2 = IdentifyEarlyInsert(ip, guiding, guiding_nurse2, guiding_nurse_pos2);
 
 						//If could not insert mvjob into guiding_nurse1's route in ip solution OR could not insert mvjob into guiding_nurse2's route in ip solution:
-						if ((insert_job_at_position(ip, mvjob, guiding_nurse1, position_insert1) < 0) || (insert_job_at_position(ip, mvjob, guiding_nurse2, position_insert2) < 0)) {
-							insert_job_at_position(ip, mvjob, current_nurse1, current_nurse_pos1); //Reinsert mvjob into the original positions of the original nurses (revert solution back to before)
-							insert_job_at_position(ip, mvjob, current_nurse2, current_nurse_pos2);
+						if ((InsertJobAtPosition(ip, mvjob, guiding_nurse1, position_insert1) < 0) || (InsertJobAtPosition(ip, mvjob, guiding_nurse2, position_insert2) < 0)) {
+                            InsertJobAtPosition(ip, mvjob, current_nurse1, current_nurse_pos1); //Reinsert mvjob into the original positions of the original nurses (revert solution back to before)
+                            InsertJobAtPosition(ip, mvjob, current_nurse2, current_nurse_pos2);
 							printf("ERROR: This shouldn't happen!!!!!! PR cannot match guiding solution. DS\n");
 							exit(-23535);
 							continue;
@@ -1723,16 +1723,16 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 					else { //mvjob is a single service
 						int guiding_nurse = -1;
 						int guiding_nurse_pos = -1;
-                        get_carer_and_position_of_job(guiding, mvjob, &guiding_nurse, &guiding_nurse_pos); //Get nurse that does mvjob in guiding solution and the position of mvjob in that nurse's route
+                        NurseAndJobPosition(guiding, mvjob, &guiding_nurse, &guiding_nurse_pos); //Get nurse that does mvjob in guiding solution and the position of mvjob in that nurse's route
 
 						int current_nurse = -1;
 						int current_nurse_pos = -1;
-                        get_carer_and_position_of_job(ip, mvjob, &current_nurse, &current_nurse_pos); //Get nurse that does mvjob in ip solution and the position of mvjob in that nurse's route
+                        NurseAndJobPosition(ip, mvjob, &current_nurse, &current_nurse_pos); //Get nurse that does mvjob in ip solution and the position of mvjob in that nurse's route
 
-						remove_job(ip, mvjob, current_nurse); //Remove mvjob from current_nurse's route in ip solution
+                        RemoveJob(ip, mvjob, current_nurse); //Remove mvjob from current_nurse's route in ip solution
 
-						int position_insert = identify_early_insert(ip, guiding, guiding_nurse, guiding_nurse_pos); //Returns updates position
-						if (insert_job_at_position(ip, mvjob, guiding_nurse, position_insert) < 0) { //If cannot insert mvjob into guiding_nurse's route in position_insert in ip solution
+						int position_insert = IdentifyEarlyInsert(ip, guiding, guiding_nurse, guiding_nurse_pos); //Returns updates position
+						if (InsertJobAtPosition(ip, mvjob, guiding_nurse, position_insert) < 0) { //If cannot insert mvjob into guiding_nurse's route in position_insert in ip solution
 							printf("ERROR: We have messed it up!\nCannot perform the move we thought was best! (job %d to nurse %d)\n", mvjob, current_nurse);
 							exit(-32003);
 						}
@@ -1743,17 +1743,17 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 				// Record the move and assess performance
 				performed[best_move_to_perform] = 1;
 				moves_performed++;
-				double fq = sol_quality(ip, -54911); //Quality of solution after actual move performed.
+				double fq = SolutionQuality(ip, -54911); //Quality of solution after actual move performed.
 				if (fq > best_inst_quality) { //If true, then this is the best solution of the path so far!
-					overwrite_instance(&bestSolution, ip); //bestSolution = ip
+                    OverwriteInstance(&bestSolution, ip); //bestSolution = ip
 					best_inst_quality = best_move_quality; //best_move_quality should be the same as fq.
 				}
 
 			} // End if (best_move_to_perform >= 0)
 		} // End of while(moves_performed < nmoves)
 
-		finish_sol_q = sol_quality(ip, -142381); //Quality of ip solution
-		gqual = sol_quality(guiding, -14923); //Quality of guiding solution
+		finish_sol_q = SolutionQuality(ip, -142381); //Quality of ip solution
+		gqual = SolutionQuality(guiding, -14923); //Quality of guiding solution
 		/// Should also add a check to make sure that the quality of the guiding solution is not changing.
 		if (abs(finish_sol_q - gqual) > tolerance) { //If there is a difference between the quality of the ip and guiding solutions, then ip still hasn't reached the guiding solution yet, need another loop of PR
 			pr_failed = 1; 
@@ -1765,13 +1765,13 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 				printf("Path relinking did not work as expected.\n");
 				printf("Start %.2f Target %.2f (Finished %.2f)\n", starting_quality, gqual, finish_sol_q);
 				printf("Finished stuff:\nNurse Order:\n");
-				print_int_matrix_one(ip->carerOrder, 1, ip->nCarers);
+                PrintIntMatrixOne(ip->nurseOrder, 1, ip->nNurses);
 				printf("Sol Matrix:\n");
-				print_solmatrix(ip);
+                PrintSolMatrix(ip);
 				printf("Guiding stuff:\nNurse Order:\n");
-				print_int_matrix_one(guiding->carerOrder, 1, guiding->nCarers);
+                PrintIntMatrixOne(guiding->nurseOrder, 1, guiding->nNurses);
 				printf("Sol Matrix:\n");
-				print_solmatrix(guiding);
+                PrintSolMatrix(guiding);
 				exit(-126835);
 			}
 		}
@@ -1780,13 +1780,13 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 
 
 	// Going back to the best solution we found:
-	overwrite_instance(ip, &bestSolution); //ip = bestSolution (make ip be the best solution found)
-	double best_along_q = sol_quality(ip, -143053); //Quality of ip
+    OverwriteInstance(ip, &bestSolution); //ip = bestSolution (make ip be the best solution found)
+	double best_along_q = SolutionQuality(ip, -143053); //Quality of ip
 
 	// Perform local search on ip
-	standard_local_search(ip, 10000, 60); //standard_local_search_test but only ONE iteration
+    StandardLocalSearch(ip, 10000, 60); //StandardLocalSearchTest but only ONE iteration
 
-	double ach = sol_quality(ip, -14357921); //Quality of ip after LS
+	double ach = SolutionQuality(ip, -14357921); //Quality of ip after LS
 
 	//If quality of ip now is better than initial quality of ip (at beginning of function before any changes were made) AND quality of ip now is better than guiding solution
 	if ((ach > starting_quality + tolerance) && (ach > gqual + tolerance)) { 
@@ -1801,27 +1801,27 @@ double path_relinking(struct INSTANCE* ip, struct INSTANCE* guiding) {
 	}
 	else { //Quality of ip solution has not improved
 		// printf("> PR did NOT work: Start %.2f Target %.2f -> Achieved %.2f\t\t(Finished %.2f, Best along %.2f)\n", starting_quality, gqual, ach, finish_sol_q, best_along_q);    
-		overwrite_instance(ip, &starting_solution); //Restore ip back to the solution it was at the beginning of the function (before any changes were made to ip)
+        OverwriteInstance(ip, &starting_solution); //Restore ip back to the solution it was at the beginning of the function (before any changes were made to ip)
 		ach = starting_quality; //Set ach = quality of original ip solution (before any changes were made to ip)
 	}
 	
 	//Deallocate memory:
-	free_instance_copy(&bestSolution);
-	free_instance_copy(&starting_solution);
+    FreeInstanceCopy(&bestSolution);
+    FreeInstanceCopy(&starting_solution);
 	free(performed);
 	free(all_moves_quality);
 
 	return ach;
 
-} //END OF path_relinking function.
+} //END OF PathRelinking function.
 
-void get_carer_and_position_of_job(struct INSTANCE* ip, int job, int* carer, int* position) {
+void NurseAndJobPosition(struct INSTANCE* ip, int job, int* nurse, int* position) {
 
 	// This function finds the nurse that does a given 'job', and returns the nurse that does the 'job' and the position in the nurse's route that the job is in.
 
-	for (int nurse_g = 0; nurse_g < ip->nCarers; nurse_g++) {
+	for (int nurse_g = 0; nurse_g < ip->nNurses; nurse_g++) {
 		if (ip->solMatrix[nurse_g][job] >= 0) {
-			(*carer) = nurse_g;
+			(*nurse) = nurse_g;
 			(*position) = ip->solMatrix[nurse_g][job];
 			break;
 		}
@@ -1829,21 +1829,21 @@ void get_carer_and_position_of_job(struct INSTANCE* ip, int job, int* carer, int
 
 } //END OF get_nurse_and_position_of_job function.
 
-void get_carer_and_position_of_job_ds(struct INSTANCE* ip, int job, int* carer1, int* position1, int* carer2, int* position2) {
+void NurseAndJobPositionDS(struct INSTANCE* ip, int job, int* nurse1, int* position1, int* nurse2, int* position2) {
 
 	// For a given double service 'job', this function finds the two nurses that have been assigned the job and returns the nurse numbers (nurse1 and nurse2)
 	// and the position of the job in each nurse's route (position1 and position 2)
 
 	int onFirst = 1;
-	for (int nurse_g = 0; nurse_g < ip->nCarers; nurse_g++) { //For each nurse_g=0,...,nCarers
+	for (int nurse_g = 0; nurse_g < ip->nNurses; nurse_g++) { //For each nurse_g=0,...,nNurses
 		if (ip->solMatrix[nurse_g][job] >= 0) { //If job in in nurse_g's route
 			if (onFirst > 0) { 
-				(*carer1) = nurse_g; //nurse_g does the job, store it as nurse1
+				(*nurse1) = nurse_g; //nurse_g does the job, store it as nurse1
 				(*position1) = ip->solMatrix[nurse_g][job]; //position1 = position of job in nurse_g's (nurse1's) route.
 				onFirst = -1000;
 			}
 			else {
-				(*carer2) = nurse_g; //other nurse_g does the job with nurse1, store is as nurse2
+				(*nurse2) = nurse_g; //other nurse_g does the job with nurse1, store is as nurse2
 				(*position2) = ip->solMatrix[nurse_g][job]; //position2 = position of job in nurse2's route.
 				break;
 			}
@@ -1852,13 +1852,13 @@ void get_carer_and_position_of_job_ds(struct INSTANCE* ip, int job, int* carer1,
 
 } //END OF get_nurse_and_position_of_job_ds function.
 
-void standard_local_search(struct INSTANCE* ip, int MAX_ITERATIONS, double MAX_TIME) {
-	//This function runs standard_local_search_test but with only ONE iteration.
-	//Note that the parameter MAX_ITERATIONS is not used in the standard_local_search_test function.
-	standard_local_search_test(ip, MAX_ITERATIONS, MAX_TIME, 1);
+void StandardLocalSearch(struct INSTANCE* ip, int MAX_ITERATIONS, double MAX_TIME) {
+	//This function runs StandardLocalSearchTest but with only ONE iteration.
+	//Note that the parameter MAX_ITERATIONS is not used in the StandardLocalSearchTest function.
+    StandardLocalSearchTest(ip, MAX_ITERATIONS, MAX_TIME, 1);
 }
 
-double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, double MAX_TIME, int TEST_ITERATIONS) {
+double StandardLocalSearchTest(struct INSTANCE* ip, int MAX_ITERATIONS, double MAX_TIME, int TEST_ITERATIONS) {
 
 	// This function is called after each iteration of RCA (Randomized Constructive Algorithm) and applies a local search procedure to the resulting solution of RCA to improve its quality.
 	// The LS is a first-improvement VNS framework - useful because it can incorporate multiple different local search techniques/movements.
@@ -1867,12 +1867,12 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 	// Within any neighbourhood, if the quality of the solution has improved, then the LS procedure goes back to the first neighbourhood in the list and starts the process again.
 	// This is repeated until all neighbourhoods (LS techniques) have been applied to a solution and the solution has not improved.
 	// The neighbourhoods used in this LS, in order, are as follows:
-	// NE01 - Moving a job (best_switch): Move a single job from one nurse's route and insert the job into a better position in another nurse's (or the same nurse's) route.
-	// NE02 - Exchanging two services (route_two_exchange): Swap two jobs between two nurses (that is, one job from one nurse's route is swapped with another job from another nurse's route).
-	// NE03 - Nurse order change (nurse_two_exchange): Swaps the order of two nurses in the carerOrder array.
+	// NE01 - Moving a job (BestSwitch): Move a single job from one nurse's route and insert the job into a better position in another nurse's (or the same nurse's) route.
+	// NE02 - Exchanging two services (RouteTwoExchange): Swap two jobs between two nurses (that is, one job from one nurse's route is swapped with another job from another nurse's route).
+	// NE03 - Nurse order change (NurseTwoExchange): Swaps the order of two nurses in the nurseOrder array.
 	// NE04 - Remove and reinsert linked services (best_sync_double_service): Removes a double service job from two nurses and inserts the job into better positions in two other nurse's routes OR
 	// removes dependent jobs from two nurses and inserts the jobs into better positions in two other nurse's routes (could be the same nurses in both cases but better positions).
-	// NE05 - 2-OPT (two_opt_move): Reverse the order of jobs between and including selected positions in a single nurse's route.
+	// NE05 - 2-OPT (TwoOptMove): Reverse the order of jobs between and including selected positions in a single nurse's route.
 	// Function returns the quality of the final solution (retVale) (Note that if the while loop is still running but the number of iterations of the loop is ==TEST_ITERATIONS, 
 	// then the function returns the quality of the solution in the TEST_ITERATIONS'th iteration, it does not continue to find a better solution).
 
@@ -1884,7 +1884,7 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 	int useTwoOpt = (int)(ip->algorithmOptions[1] + eps); //aO[1] = 1, so NE05 2-OPT active.
 	int useTwoExchange = (int)(ip->algorithmOptions[2] + eps); //aO[2] = 1, so NE02 2-exchange active.
 	int useNurseOrderChange = (int)(ip->algorithmOptions[3] + eps); //aO[3] = 0, NE03 nurse order change not active. (why?)
-	double quality = sol_quality(ip, -15); //Initial solution quality of ip.	
+	double quality = SolutionQuality(ip, -15); //Initial solution quality of ip.
 	int performedSwaps = 0;
 	int performedSwitches = 1000;
 	int twoOptDidSomething = 0;
@@ -1909,12 +1909,12 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 		lsIters++;
 
 		// Perform a swap: pick two nurses at random and a job at random.
-		//int n1 = rand() % ip->nCarers; //not used
-		//int n2 = rand() % ip->nCarers; //not used
+		//int n1 = rand() % ip->nNurses; //not used
+		//int n2 = rand() % ip->nNurses; //not used
 		//int j1 = rand() % ip->nJobs; // not used
 		infOnly = 0;
 		twoOptDidSomething = 1;
-		double b_baseQuality = sol_quality(ip, -16);
+		double b_baseQuality = SolutionQuality(ip, -16);
 
 		if (lsIters == TEST_ITERATIONS) { //If the number of iterations is equal to TEST_ITERATIONS (which is 100), the return value is set as the quality of the current solution ip
 			retValue = b_baseQuality; 
@@ -1932,21 +1932,21 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 			break;
 		}
 
-		/// NE01: best_switch
-		int bswitchValue = best_switch(ip, infOnly, MAX_TIME - elapsedTime); //best_switch attempts to move a single job from one nurse's route to another, =0 if successful, =-1 otherwise.
+		/// NE01: BestSwitch
+		int bswitchValue = BestSwitch(ip, infOnly, MAX_TIME - elapsedTime); //BestSwitch attempts to move a single job from one nurse's route to another, =0 if successful, =-1 otherwise.
 		if (bswitchValue > -1) { //If switch successful and solution quality has improved
 			performedSwaps++;
 			n1_improvements++;
-			propQ = sol_quality(ip, -17); //quality of new solution
+			propQ = SolutionQuality(ip, -17); //quality of new solution
 			n1_imp_amount = quality - propQ; //improvement amount
 			quality = propQ; //quality is updated to the quality of the new solution.
 			if (ip->verbose > 5) {
-				printf("best_switch improved to > %.2f\n", quality);
+				printf("BestSwitch improved to > %.2f\n", quality);
 			}
 			continue; //Start while loop again - start from first neighbourhood (this one!)
 		}
 
-		/// NE02 (2-exchange): route_two_exchange
+		/// NE02 (2-exchange): RouteTwoExchange
 		if (useTwoExchange > 0) {
 			end = clock();
 			elapsedTime = (float)(end - start) / CLOCKS_PER_SEC;
@@ -1956,80 +1956,80 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 			if (ip->verbose > 5) {
 				printf("Two exchange (start quality: %.2f)\n", quality);
 			}
-			int twoExchangeValue = route_two_exchange(ip, 1); //Swaps two jobs between two nurses (one job from one nurse is swapped with one job from another nurse), =0 if successful, =-1 otherwise.
+			int twoExchangeValue = RouteTwoExchange(ip, 1); //Swaps two jobs between two nurses (one job from one nurse is swapped with one job from another nurse), =0 if successful, =-1 otherwise.
 			if (twoExchangeValue > -1) { //If swap successful and solution quality has improved
-				propQ = sol_quality(ip, -1711);
+				propQ = SolutionQuality(ip, -1711);
 				quality = propQ;
 				if (ip->verbose > 5) {
-					printf("two_exchange improved to > %.2f\n", quality);
+					printf("TwoExchange improved to > %.2f\n", quality);
 				}
-				continue; //Start while loop again - start from first neighbourhood best_switch
+				continue; //Start while loop again - start from first neighbourhood BestSwitch
 			}
 		}
 
-		/// NE03 (Nurse order change): nurse_two_exchange
+		/// NE03 (Nurse order change): NurseTwoExchange
 		if (useNurseOrderChange > 0) {
 			end = clock();
 			elapsedTime = (float)(end - start) / CLOCKS_PER_SEC;
 			if (elapsedTime > MAX_TIME) { //Exceeed time limit, exit while loop
 				break;
 			}
-			int didItWork = nurse_two_exchange(ip); //Swaps two nurses in carerOrder array, =1 if nurses swapped and solution improved, =-1 otherwise.
+			int didItWork = NurseTwoExchange(ip); //Swaps two nurses in nurseOrder array, =1 if nurses swapped and solution improved, =-1 otherwise.
 			if (didItWork > -1) { //If two nurses have been swapped and the solution quality has improved
-				quality = sol_quality(ip, -1710);
-				continue; //Start while loop again - start from the first neighbourhood best_switch
+				quality = SolutionQuality(ip, -1710);
+				continue; //Start while loop again - start from the first neighbourhood BestSwitch
 			}
 		}
 
-		/// NE04 (Best sync double switch): best_sync_double_switch
+		/// NE04 (Best sync double switch): BestSyncDoubleSwitch
 		if (ip->verbose > 5) {
-			printf("\tBest_sync_double_switch (start quality: %.2f)\n", sol_quality(ip, -18));
+			printf("\tBest_sync_double_switch (start quality: %.2f)\n", SolutionQuality(ip, -18));
 		}	
-		if (best_sync_double_switch(ip) > 0) { //If double service/dependent jobs switched successfully
+		if (BestSyncDoubleSwitch(ip) > 0) { //If double service/dependent jobs switched successfully
 			end = clock();
 			elapsedTime = (float)(end - start) / CLOCKS_PER_SEC;
 			if (elapsedTime > MAX_TIME) { //Exceeded time limit, exit while loop
 				break;
 			}
 			if (ip->verbose > 5) {
-				printf("\tbest_sync_double_switch improved to > %.2f\n", sol_quality(ip, -19));
+				printf("\tbest_sync_double_switch improved to > %.2f\n", SolutionQuality(ip, -19));
 			}
-			propQ = sol_quality(ip, -20);
+			propQ = SolutionQuality(ip, -20);
 			n2_improvements++;
 			n2_imp_amount = quality - propQ;
 			quality = propQ;
-			continue; //Start while loop again - start from the first neighbourhood best_switch
+			continue; //Start while loop again - start from the first neighbourhood BestSwitch
 		}
 
-		/// NE05 (2-OPT): two_opt_move
+		/// NE05 (2-OPT): TwoOptMove
 		if (ip->verbose > 5) {
-			printf("\t\t2opt (start quality: %.2f)\n", sol_quality(ip, -21));
+			printf("\t\t2opt (start quality: %.2f)\n", SolutionQuality(ip, -21));
 		}
 		twoOptDidSomething = 0;
 		if (useTwoOpt > 0.5) {
 			double TOL = 0.1;
 			double startoffwith = quality; //Initial quality of solution before changes are made
 
-			for (int nurseidx = 0; nurseidx < ip->nCarers; nurseidx++) { //For each nurseidx=0,...,nCarers
-				int nurse = ip->carerOrder[nurseidx];
+			for (int nurseidx = 0; nurseidx < ip->nNurses; nurseidx++) { //For each nurseidx=0,...,nNurses
+				int nurse = ip->nurseOrder[nurseidx];
 				int foundImprovement = 10;
-				int nurseJobCount = get_carer_job_count(ip, nurse); //Number of jobs in nurse's route.
+				int nurseJobCount = GetNurseJobCount(ip, nurse); //Number of jobs in nurse's route.
 				int countImprovements = 0;
-				double nurseInitQ = sol_quality(ip, -22);
+				double nurseInitQ = SolutionQuality(ip, -22);
 				int realOptIterations = 0;
 				while (foundImprovement > 1) {
 					foundImprovement = -1;
 					for (int posi = 0; posi < ip->nJobs; posi++) { //For each POSITION posi = 0,...,nJobs
 						for (int posj = posi + 1; posj < ip->nJobs; posj++) { //For each POSITION posj = posi+1,...,nJobs		
-							double initq = sol_quality(ip, -23);
-							int res = two_opt_move(ip, nurse, posi, posj); //Reverse order of jobs between and including positions posi and posj in nurse's route, =0 if successful, =-1 otherwise.
+							double initq = SolutionQuality(ip, -23);
+							int res = TwoOptMove(ip, nurse, posi, posj); //Reverse order of jobs between and including positions posi and posj in nurse's route, =0 if successful, =-1 otherwise.
 							if (res < 0) { //Could not reverse order of jobs, go to next posj (++posj)
 								continue;
 							}
-							double endq = sol_quality(ip, -24); //quality of new solution with order of jobs reversed
+							double endq = SolutionQuality(ip, -24); //quality of new solution with order of jobs reversed
 							realOptIterations++;
 							if (endq < initq + TOL) { //if solution quality has NOT improved
-								res = two_opt_move(ip, nurse, posi, posj); //Undo two_opt_move (return solution back to before)
+								res = TwoOptMove(ip, nurse, posi, posj); //Undo TwoOptMove (return solution back to before)
 								if (res < 0) { //Job order could not be reversed
 									printf("ERROR: Cannot undo 2opt move\n");
 									exit(-1);
@@ -2037,7 +2037,7 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 							}
 							else if (endq + TOL > initq) { //If solution quality improved
 								if (ip->verbose > 5) {
-									printf("\t\t2opt improved to > %.2f\n", sol_quality(ip, -25));
+									printf("\t\t2opt improved to > %.2f\n", SolutionQuality(ip, -25));
 								}
 								foundImprovement = 10;
 								countImprovements++;
@@ -2049,11 +2049,11 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 						}
 					} //End for (int posi = 0; posi < ip->nJobs; posi++) loop
 				} //End while (foundImprovement > 1) loop
-			} //End for (int nurseidx = 0; nurseidx < ip->nCarers; nurseidx++) loop
+			} //End for (int nurseidx = 0; nurseidx < ip->nNurses; nurseidx++) loop
 
-			// printf("2 opt went from: %.2f to %.2f (BF: %d)", startoffwith, sol_quality(ip, 0), backandforce);
+			// printf("2 opt went from: %.2f to %.2f (BF: %d)", startoffwith, SolutionQuality(ip, 0), backandforce);
 			// END NEW 2 OPT IMPLEMENTATION
-			double finishoffwith = sol_quality(ip, -27);
+			double finishoffwith = SolutionQuality(ip, -27);
 			if (finishoffwith > startoffwith + TOL) {
 				twoOptDidSomething = 1;
 				n3_improvements++;
@@ -2076,7 +2076,7 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 
 	} // End of while true (while(1>0) loop.
 
-	double final_quality = sol_quality(ip, -29);
+	double final_quality = SolutionQuality(ip, -29);
 
 	if (test_assigned < 1) {
 		retValue = final_quality;
@@ -2096,7 +2096,7 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 
 	return retValue;
 
-} //END OF standard_local_search_test function.
+} //END OF StandardLocalSearchTest function.
 
 
 // void standard_local_search_two_opt_first(struct INSTANCE * ip, int MAX_ITERATIONS, double MAX_TIME)
@@ -2104,7 +2104,7 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 
 //   clock_t start = clock();
 //   clock_t end = clock();
-//   double quality = sol_quality(ip, 0);
+//   double quality = SolutionQuality(ip, 0);
 //   if (ip->verbose > 1)
 //   {
 //     printf("\n\nSTANDARD LOCAL SEARCH\n\n");
@@ -2130,16 +2130,16 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 
 //     // NEW 2OPT IMPLEMENTATION
 //     double TOL = 0.1;
-//     double startoffwith = sol_quality(ip, 0);
+//     double startoffwith = SolutionQuality(ip, 0);
 //     // printf("Two-opt, start quality: %.4f\n", startoffwith);
 
-//     for(int nurseidx = 0; nurseidx < ip->nCarers; nurseidx++)
+//     for(int nurseidx = 0; nurseidx < ip->nNurses; nurseidx++)
 //     {
-//       int nurse = ip->carerOrder[nurseidx];
+//       int nurse = ip->nurseOrder[nurseidx];
 //       int foundImprovement = 10;
 //       int nurseJobCount = get_nurse_job_count(ip, nurse);
 //       int countImprovements = 0;
-//       double nurseInitQ = sol_quality(ip, 0);
+//       double nurseInitQ = SolutionQuality(ip, 0);
 //       int realOptIterations = 0;
 //       // printf("\nNurse %d starts off with quality %.2f (Has %d jobs).\n", nurse, nurseInitQ, nurseJobCount);
 //       while(foundImprovement > 1)
@@ -2155,20 +2155,20 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 //             // printf("\n*** (i,j) = (%d, %d) ***", jobi, jobj);
 //             // if (ip->solMatrix[nurse][jobj] < 0)
 //             // 	continue;					
-//             double initq = sol_quality(ip, 0);
+//             double initq = SolutionQuality(ip, 0);
 
 //             // printf("\tN%d: %d by %d ", nurse, jobi, jobj);
-//             int res = two_opt_move(ip, nurse, jobi, jobj);
+//             int res = TwoOptMove(ip, nurse, jobi, jobj);
 //             // printf(" (res = %d) -> ", res);
 //             if (res < 0)
 //               continue;
 
-//             double endq = sol_quality(ip, 0);
+//             double endq = SolutionQuality(ip, 0);
 //             realOptIterations++;
 //             if (endq < initq + TOL) 
 //             {
 //               // printf("Iniq %.6f: -> EndQ: %.6f\n", initq, endq);
-//               res = two_opt_move(ip, nurse, jobi, jobj);
+//               res = TwoOptMove(ip, nurse, jobi, jobj);
 //               if (res < 0)
 //               {
 //                 printf("ERROR: Cannot undo 2opt move\n");
@@ -2195,15 +2195,15 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 //       // if (countImprovements > 1)
 //       // {
 //       // 	printf(" ****** ");
-//       // 	printf("After %d moves (%d real iterations), finishes with quality %.2f (started with %.2f).\n", countImprovements, realOptIterations, sol_quality(ip, 0), nurseInitQ);
+//       // 	printf("After %d moves (%d real iterations), finishes with quality %.2f (started with %.2f).\n", countImprovements, realOptIterations, SolutionQuality(ip, 0), nurseInitQ);
 //       // }
 
 
 
 //     }
-//     // printf("2 opt went from: %.2f to %.2f (BF: %d)", startoffwith, sol_quality(ip, 0), backandforce);
+//     // printf("2 opt went from: %.2f to %.2f (BF: %d)", startoffwith, SolutionQuality(ip, 0), backandforce);
 //     // END NEW 2 OPT IMPLEMENTATION
-//     double finishoffwith = sol_quality(ip, 0);
+//     double finishoffwith = SolutionQuality(ip, 0);
 
 //     // printf("Two-opt, finish quality: %.4f\n", finishoffwith);
 
@@ -2212,18 +2212,18 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 //       // ip->verbose = 5;
 //       lsIters++;
 //       /* Perform a swap */
-//       int n1 = rand() % ip->nCarers;
-//       int n2 = rand() % ip->nCarers;
+//       int n1 = rand() % ip->nNurses;
+//       int n2 = rand() % ip->nNurses;
 //       int j1 = rand() % ip->nJobs;
 //       infOnly = 0;
-//       if (best_switch(ip, infOnly) > -1)
-//       // if (best_switch(ip, 0) > -1)
+//       if (BestSwitch(ip, infOnly) > -1)
+//       // if (BestSwitch(ip, 0) > -1)
 //       {
 //         performedSwaps++;
-//         double propQ = sol_quality(ip, 0);
+//         double propQ = SolutionQuality(ip, 0);
 //         // if (propQ < quality) // Reverse
 //         // {
-//         // 	if(repair(ip, n1) < 0)
+//         // 	if(Repair(ip, n1) < 0)
 //         // 	{
 //         // 		printf("COULD NOT UNDO REPAIR\n");				
 //         // 	}
@@ -2263,13 +2263,13 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 //       }
 
 //       // int j2 = rand() % ip->nJobs;
-//       // if (swap_points(ip, n1, n2, j1, j2) > -1)
+//       // if (SwapPoints(ip, n1, n2, j1, j2) > -1)
 //       // {
 //       // 	performedSwaps++;
-//       // 	int propQ = sol_quality(ip, 0);
+//       // 	int propQ = SolutionQuality(ip, 0);
 //       // 	if (propQ < quality) // Reverse
 //       // 	{
-//       // 		if(swap_points(ip, n2, n1, j1, j2) < 0)
+//       // 		if(SwapPoints(ip, n2, n1, j1, j2) < 0)
 //       // 		{
 //       // 			printf("COULD NOT UNDO SWAP\n");				
 //       // 		}
@@ -2280,14 +2280,14 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 
 //       // Repair one nurse schedule
 
-//       // n1 = rand() % ip->nCarers;
-//       // if (quality < 0 && repair(ip, n1) > -1)
+//       // n1 = rand() % ip->nNurses;
+//       // if (quality < 0 && Repair(ip, n1) > -1)
 //       // {
 //       // 	performedSwaps++;
-//       // 	int propQ = sol_quality(ip, 0);
+//       // 	int propQ = SolutionQuality(ip, 0);
 //       // 	// if (propQ < quality) // Reverse
 //       // 	// {
-//       // 	// 	if(repair(ip, n1) < 0)
+//       // 	// 	if(Repair(ip, n1) < 0)
 //       // 	// 	{
 //       // 	// 		printf("COULD NOT UNDO REPAIR\n");				
 //       // 	// 	}
@@ -2303,8 +2303,8 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 //       // 	int zzzz = 0;
 //       // 	for (int switchTrials = 0; switchTrials < 1000; ++switchTrials)
 //       // 	{
-//       // 		n1 = rand() % ip->nCarers;
-//       // 		n2 = rand() % ip->nCarers;
+//       // 		n1 = rand() % ip->nNurses;
+//       // 		n2 = rand() % ip->nNurses;
 //       // 		j1 = rand() % ip->nJobs;
 //       // 		if (switch_nurse(ip, n1, n2, j1) > -1)
 //       // 		{
@@ -2319,7 +2319,7 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 //       // 	else
 //       // 		printf("WARNING: 1000 iterations expired and no switch could be performed!\n");
 
-//       // 	// int propQ = sol_quality(ip, 0);
+//       // 	// int propQ = SolutionQuality(ip, 0);
 //       // }
 //       /* Perform a switch */
 //       // 	if (propQ < quality) // Reverse
@@ -2341,9 +2341,9 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 //           if (ip->verbose > 1)
 //           {
 //             // printf("\nSTART----------------------------------------------------\n");
-//             // sol_quality(ip, 1);
-//             // printf("Quality improved to: %.2f (%.2f) \n", quality, alternative_quality(ip, 0));
-//             // printf("Quality improved to: %.2f (%.2f) \n", quality, alternative_quality(ip, 0));
+//             // SolutionQuality(ip, 1);
+//             // printf("Quality improved to: %.2f (%.2f) \n", quality, AlternativeQuality(ip, 0));
+//             // printf("Quality improved to: %.2f (%.2f) \n", quality, AlternativeQuality(ip, 0));
 //             // printf("\n----------------------------------------------------END\n");
 //           }
 //             // printf("Quality improved to: %.2f\n", quality);
@@ -2360,7 +2360,7 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 //       // 	printf("Potential problem! Quality: %d\n", quality);
 //       // 	printf("Switch %d, %d, %d\n", n1, n2, j1);
 //       // 	print_solmatrix(ip);
-//       // 	report_solution(ip);
+//       // 	ReportSolution(ip);
 //       // 	break;
 
 //       // }
@@ -2368,12 +2368,12 @@ double standard_local_search_test(struct INSTANCE* ip, int MAX_ITERATIONS, doubl
 //       elapsedTime = (float)(end - start) / CLOCKS_PER_SEC;
 //     // }
 
-//       // printf("\nStandard LS went further to %.2f (BF: %d)\n\n", sol_quality(ip, 0), backandforce);
+//       // printf("\nStandard LS went further to %.2f (BF: %d)\n\n", SolutionQuality(ip, 0), backandforce);
 
 //   }
 //   if (ip->verbose > 1)
 //   {
-//     printf("Final quality: %.4f\n", sol_quality(ip, 0));
+//     printf("Final quality: %.4f\n", SolutionQuality(ip, 0));
 //     printf("---- Performed %d LS iterations, %.2f seconds.----\n", lsIters, elapsedTime);
 //   }
 // }
