@@ -8,7 +8,7 @@ block_cipher = None
 
 
 a = Analysis(['constructive_wrapper.py'],
-             pathex=['C:\\Users\\ah4c20\\Asyl\\PostDoc\\SOCIALCARE\\code\\screpo'],
+             pathex=['C:\\Users\\ah4c20\\Asyl\\PostDoc\\SOCIALCARE\\code\\Carrot'],
              binaries=[],
              datas=[
              ("C:\\Users\\ah4c20\Anaconda3\\Lib\\site-packages\\branca\\*.json","branca"),
@@ -17,7 +17,8 @@ a = Analysis(['constructive_wrapper.py'],
              ],
              hiddenimports=[
                      'fiona._shim',
-                     'fiona.schema'],
+                     'fiona.schema',
+                     'babel.numbers'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
