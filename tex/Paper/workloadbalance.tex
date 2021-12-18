@@ -1,0 +1,77 @@
+\documentclass[a4paper]{article}
+
+\input{includes/preamble.tex}
+\usepackage{fullpage}
+
+\begin{document}
+\title{Workload Balance}
+%\author{Asyl L. Hawa}
+\date{}
+\maketitle
+
+\section*{Objectives}
+\begin{enumerate}[leftmargin=*]
+	\item Bowers et al. (2015) -- (page 198) A simple workload balancing requirement is incorporated with a constraint that no member of staff should be allocated more than 4 patients. This assumes that all pateints require the same staff-time, excluding travel. A more sophisticated algorithm could consider the complete workloads and the likely time commitments associated with each patient visit, including the time for direct patient contact and indirect administrative tasks.
+	\item Bredstrom and Ronnqvist (2008) -- (page 21) The difference in workload is measured with the pairwise vehicle difference sum of service durations. (pages 25--26) -- Balancing constraint given (eqn 9), goal of having a mean of 5 hours workload (excluding travelling time) for each staff member. (page 27) Objective is to minimise the maximal difference in workload (excluding travel time, only considering the sum of durations/service time).
+	\item Lanzarone and Matta (2014) -- (page 49) The problem is formalised as a minimisation of nurses' maximum overtimes in a lexicographic way: firstly, we minimise the highest value, then the highest value of the remaining ones, and so forth. Operatively, the goal is analytically pursued by minimising the maximum increase of a stochastic cost function, which depends on the time spent by nurses when providing visits in surplus to their capacity. (page 50) OF: minimisation of the maximum assigned workload, which corresponds to reducing nurses' overtime: OF: minimisation of the difference between the maximum and average assigned workload, which corresponds to balancing the workloads among the nurses. Constraints related to maxmimum acceptable workloads and the assignment of each patient to exactly one nurse of each type are imposed, and the obj of the assignment is to balance the nurses' workloads by minimising a weighted sum of the number of provided visits, of the assigned patients, and of the distances travelled. (page 51) Equation (1) shows the formulation for min the max overtimes of nurses in lexicographical order.
+	\item Mutingi and Mbohwa (2014) -- (page 210) Workload is measured as a sum of travel times and duration of visits. (page 212) For each nurse $i$ the workload is $w_i$, the percentage deviation $d_i$ of $w_i$ from the average workload $\overline{w}$ is calculated as $d_i =100.\frac{w_i - \overline{w}}{\overline{w}}$. Function is supposed to be as minimal as possible if the schedule is to be satisfactory to the nurse, the patient, and the management/decision maker. Function is converted using fuzzy interval-valued linear membership functions. In practice, values of $a$ and $b$ for the membership function are derived from expert knowledge and intuition -- for instance, average workload $\overline{w}$ is set as standard or target workload s.t. the var of individual workloads from $\overline{w}$ should at best be within the range $[0,a]$. Here, $a$ is the agreeable deviation of working time (hours) from the target $\overline{w}$, considered unlikely to cause any dissatisfaction among nurses. To find $b$, need to find the min of the max acceptable deviation of working time from the target. (page 213) Fitness function has user defined weights to signify the relative important of workload, time windows, and distance travelled.
+\end{enumerate}
+
+\section{Workload Balance}
+
+Currently, 
+\begin{equation}
+	\bar{B} = \min_{i \in N} \{\max\{0, en(i) - arr(i)\}\},
+\end{equation}
+which only considers overtime.
+Instead:
+\begin{equation}
+	wl_i = \frac{\displaystyle\sum_{h=0}^{mi} s_{k_{h}^{i}}}{en(i) - st(i)}
+\end{equation}
+where $s_{k_{h}^{i}}$ is the service time for each job $k_{h}^{i}$ in nurse $i$'s route $r_i = \{k_{0}^{i}, k_{1}^{i}, k_{2}^{i}, \dotsc, k_{mi}^{i}, k_{0}^{i}\}$. Thus, $wl_i$ is the sum of all service times of jobs performed by nurse $i$ divided by the length of nurse $i$'s shift.
+
+Then, let
+
+\begin{equation}
+	\bar{wl} = \frac{\displaystyle\sum_{i \in N} wl_i}{n},
+\end{equation}
+which is the average of all workload times.
+
+Finally,
+\begin{equation}
+	\bar{B} = \max_{i \in N}\{wl_i - \bar{wl}\},
+\end{equation}	
+that is, we take the maximum of all differences of workloads to the average.
+
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
