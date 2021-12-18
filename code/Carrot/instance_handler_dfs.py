@@ -20,17 +20,18 @@ import matplotlib.pyplot as plt
 from math import sqrt
 from datetime import timedelta
 from numpy.ctypeslib import ndpointer
+from tkinter import *
 
 # Display all rows and columns of dataframes in command prompt:
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
-def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, options_vector, wb_balance, quality_measure, max_time_seconds, random_seed):
-    
+def create_solve_inst(client_df, nurseshift_df, nurseday_df, planning_date, options_vector, wb_coeff, maxtravel_coeff, maxwaiting_coeff, quality_measure, max_time_seconds, random_seed):
+
     # Create instance of the INSTANCE class
     inst = INSTANCE()
    
     # Build/fill inst object
-    inst = convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
+    inst = convert_dfs_inst(inst, client_df, nurseshift_df, nurseday_df, planning_date)
         
     inst.lambda_1 = 1
     inst.lambda_2 = 1
@@ -40,10 +41,13 @@ def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, opti
     inst.lambda_6 = 10
     inst.quality_measure = quality_measure
     inst.MAX_TIME_SECONDS = max_time_seconds
-    options_vector[55] = wb_balance # alpha_5 Workload balance (from user input)
+    options_vector[55] = wb_coeff # alpha_5 Workload balance (from user input)
+    options_vector[60] = wb_coeff # alpha_5 Workload balance (from user input)
+    options_vector[58] = maxtravel_coeff # alpha_8 max travel (from user input)
+    options_vector[59] = maxwaiting_coeff # alpha_9 max waiting (from user input)
 
-    # Create instances of JOB and CARER classes for inst
-    inst.instantiate_job_carer_objects(client_df, carerday_df)
+    # Create instances of JOB and NURSE classes for inst
+    inst.instantiate_job_nurse_objects(client_df, nurseday_df)
 
     inst.algorithmOptions = options_vector
     if quality_measure == 'default':
@@ -60,6 +64,7 @@ def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, opti
         exit(-1)
     
     saved_od_data = inst.od[0][0]
+
     inst.solve(randomSeed=random_seed, printAllCallData=False)
     inst.solve = []
     inst.lib = []
@@ -72,15 +77,15 @@ def create_solve_inst(client_df, carershift_df, carerday_df, planning_date, opti
     return inst
 ### --- End def create_solve_inst --- ###
 
-def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date):
+def convert_dfs_inst(inst, client_df, nurseshift_df, nurseday_df, planning_date):
   
     inst.name = str(client_df.loc[0]['area']) + '_' + str(pd.Timestamp.date(planning_date)) # name is 'inst_area_date'
     inst.fname = inst.name # Note: Need to change
     inst.area = client_df.loc[0]['area']
     inst.date = pd.Timestamp.date(planning_date)
-    inst.nCarers = len(carerday_df)
+    inst.nNurses = len(nurseday_df)
     inst.nJobs = len(client_df)
-    inst.nShifts = len(carershift_df)
+    inst.nShifts = len(nurseshift_df)
     inst.nSkills = 5 # NOTE: this is a random number just for testing.
     cwd = os.getcwd()
 
@@ -90,14 +95,18 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
         os.mkdir(outputfiles_path)
     
     # Create and fill arrays with data from the instance
-    inst.carerWorkingTimes = np.zeros((inst.nCarers, 3), dtype=np.int32) # carerWorkingTimes is nCarers x 3, col[0] = start time, col[1] = finish time, col[2] = max working time.
-    for i in range(inst.nCarers):
-        inst.carerWorkingTimes[i][0] = carerday_df.iloc[i]['start']
-        inst.carerWorkingTimes[i][1] = carerday_df.iloc[i]['end']
-        inst.carerWorkingTimes[i][2] = carerday_df.iloc[i]['duration']
-    
 
-    inst.jobTimeInfo = np.zeros((inst.nJobs, 3), dtype=np.int32) # jobTimeInfo is nJobs x 3, col[0] = startTW, col[1] = endTW, col[2] = length of job (time)
+    # nurseWorkingTimes is nNurses x 5, col[0] = start time, col[1] = finish time, col[2] = total day length, col[3] = number of shifts, col[4] = duration of shifts (i.e. col[4] = col[2] - unavailable time).
+    inst.nurseWorkingTimes = np.zeros((inst.nNurses, 5), dtype=np.int32) # Changed from 3 to 5 on 04/11/2021
+    for i in range(inst.nNurses):
+        inst.nurseWorkingTimes[i][0] = nurseday_df.iloc[i]['start']
+        inst.nurseWorkingTimes[i][1] = nurseday_df.iloc[i]['end']
+        inst.nurseWorkingTimes[i][2] = nurseday_df.iloc[i]['duration']
+        inst.nurseWorkingTimes[i][3] = 0 # NEW: 04/11/2021
+        inst.nurseWorkingTimes[i][4] = 0 # NEW: 04/11/2021
+    
+    # jobTimeInfo is nJobs x 3, col[0] = startTW, col[1] = endTW, col[2] = length of job (time)
+    inst.jobTimeInfo = np.zeros((inst.nJobs, 3), dtype=np.int32) 
     for i in range(inst.nJobs):
         inst.jobTimeInfo[i][0] = client_df.iloc[i]['tw_start']
         inst.jobTimeInfo[i][1] = client_df.iloc[i]['tw_end']
@@ -106,85 +115,97 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
     
     inst.doubleService = np.zeros(inst.nJobs, dtype=np.int32)
     for i in range(inst.nJobs):
-        if client_df.iloc[i]['num_carers'] > 1:
+        if client_df.iloc[i]['num_nurses'] > 1:
             inst.doubleService[i] = 1
     nDS = np.sum(inst.doubleService) # Number of jobs that are double services
+
+    # print('Double Service:\n')
+    # for i in range(inst.nJobs):
+    #     print(inst.doubleService[i], end=' ')
+    # print('\n')
+
+    # sumDurations = 0
+    # for i in range(len(client_df)):
+    #     sumDurations += client_df.iloc[i]['duration']
+    # print('sumDurations: ', sumDurations)
+
+    # exit(-1)
     
 
     inst.od = np.zeros((inst.nJobs+1, inst.nJobs+1), dtype=np.float64) # Time in minutes
-    osrm_table_request(inst, client_df, carerday_df, 'od')
+    osrm_table_request(inst, client_df, nurseday_df, 'od')
 
     # inst.travelCostMatrix = np.zeros((inst.nJobs, inst.nJobs), dtype=np.float64) # NEW, OD_COST, 11/06/2021, take time in minutes and convert to cost.
     # calculate_travel_cost_matrix(inst)
     
-    inst.carer_travel_from_depot = np.zeros((inst.nCarers, inst.nJobs), dtype=np.float64) # From carer's home to job - TIME IN MINS, THIS WILL BE USED IN C
-    osrm_table_request(inst, client_df, carerday_df, 'carerfrom')
+    inst.nurse_travel_from_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From nurse's home to job - TIME IN MINS, THIS WILL BE USED IN C
+    osrm_table_request(inst, client_df, nurseday_df, 'nursefrom')
 
-    inst.carer_travel_to_depot = np.zeros((inst.nCarers, inst.nJobs), dtype=np.float64) # From job to carer's home - TIME IN MINS, THIS WILL BE USED IN C
-    osrm_table_request(inst, client_df, carerday_df, 'carerto')
+    inst.nurse_travel_to_depot = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # From job to nurse's home - TIME IN MINS, THIS WILL BE USED IN C
+    osrm_table_request(inst, client_df, nurseday_df, 'nurseto')
        
-    inst.carerSkills = np.ones((inst.nCarers, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
+    inst.nurseSkills = np.ones((inst.nNurses, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
     inst.jobSkillsRequired = np.ones((inst.nJobs, inst.nSkills), dtype=np.int32) # Note: this will only work if nSkills > 0.
-    inst.prefScore = np.zeros((inst.nJobs, inst.nCarers), dtype=np.float64)
+    inst.prefScore = np.zeros((inst.nJobs, inst.nNurses), dtype=np.float64)
     inst.dependsOn = np.full(inst.nJobs, -1, dtype=np.int32) # Set all jobs to -1, means no jobs are dependent on one another.
     inst.algorithmOptions = np.zeros(100, dtype=np.float64)
     # NOTE: what happens if nDS == 0, i.e. there are no double services? Cannot have third dimension of capabilityofDS matrix be zero, need to make it one.
-    inst.capabilityOfDoubleServices = np.ones((inst.nCarers, inst.nCarers, nDS), dtype=np.int32) # NOTE: just for testing, setting it to all ones so that every pair of nurses is capable of doing the double service.
+    inst.capabilityOfDoubleServices = np.ones((inst.nNurses, inst.nNurses, nDS), dtype=np.int32) # NOTE: just for testing, setting it to all ones so that every pair of nurses is capable of doing the double service.
     inst.mk_mind = np.zeros(inst.nJobs+1, dtype=np.int32) #nJobs+1 because that's what is taken in by C, mk_mind[i] = mk_mind_data[i+1]
     inst.mk_maxd = np.zeros(inst.nJobs+1, dtype=np.int32)
-    inst.solMatrix = np.zeros((inst.nCarers, inst.nJobs), dtype=np.int32)
-    inst.timeMatrix = np.full((inst.nCarers, inst.nJobs), -1, dtype=np.float64) # NEW 03/06/2021
-    inst.carerWaitingTime = np.zeros(inst.nCarers, dtype=np.float64) # NEW 03/06/2021
-    inst.carerTravelTime = np.zeros(inst.nCarers, dtype=np.float64) # NEW 03/06/2021
+    inst.solMatrix = np.zeros((inst.nNurses, inst.nJobs), dtype=np.int32)
+    inst.timeMatrix = np.full((inst.nNurses, inst.nJobs), -1, dtype=np.float64) # NEW 03/06/2021
+    inst.nurseWaitingTime = np.zeros(inst.nNurses, dtype=np.float64) # NEW 03/06/2021
+    inst.nurseTravelTime = np.zeros(inst.nNurses, dtype=np.float64) # NEW 03/06/2021
     inst.violatedTW = np.zeros(inst.nJobs, dtype=np.float64) # NEW 03/06/2021
-    inst.carerWaitingMatrix = np.zeros((inst.nCarers, inst.nJobs), dtype=np.float64) # NEW 03/06/2021
-    inst.carerTravelMatrix = np.zeros((inst.nCarers, inst.nJobs), dtype=np.float64) # NEW 03/06/2021
-    inst.totalsArray = np.zeros(19, dtype=np.float64) # NEW 04/06/2021
+    inst.nurseWaitingMatrix = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # NEW 03/06/2021
+    inst.nurseTravelMatrix = np.zeros((inst.nNurses, inst.nJobs), dtype=np.float64) # NEW 03/06/2021
+    inst.totalsArray = np.zeros(23, dtype=np.float64) # NEW 04/06/2021 - changed from 19 to 23 19/11/2021
 
-    # Matrix of size 50 by 4 by nCarers, where number of rows = number of shifts, col[0] = shift number, col[1] = start time, col[2]= end time, col[3] = duration of shift, and third dimension is number of nurses.
-    # i.e each 2d matrix is 50x4, and there are nCarers lots of 2d matrices to form a 3d matrix.
-    numCarers = 0
+    # Matrix of size 50 by 4 by nNurses, where number of rows = number of shifts, col[0] = shift number, col[1] = start time, col[2]= end time, col[3] = duration of shift, and third dimension is number of nurses.
+    # i.e each 2d matrix is 50x4, and there are nNurses lots of 2d matrices to form a 3d matrix.
+    numNurses = 0
     numShifts = 0
     shift_count = 0
-    inst.shift_matrix = np.full((50, 4, inst.nCarers), -1, dtype=np.int32)
+    inst.shift_matrix = np.full((50, 4, inst.nNurses), -1, dtype=np.int32)
 
-    # Start with first carer 0
-    prevCarer = carershift_df.iloc[0]['carer_id']
-    inst.shift_matrix[shift_count][0][numCarers] = numShifts
-    inst.shift_matrix[shift_count][1][numCarers] = carershift_df.iloc[0]['start']
-    inst.shift_matrix[shift_count][2][numCarers] = carershift_df.iloc[0]['end']
-    inst.shift_matrix[shift_count][3][numCarers] = carershift_df.iloc[0]['duration']
+    # Start with first nurse 0
+    prevNurse = nurseshift_df.iloc[0]['nurse_id']
+    inst.shift_matrix[shift_count][0][numNurses] = numShifts
+    inst.shift_matrix[shift_count][1][numNurses] = nurseshift_df.iloc[0]['start']
+    inst.shift_matrix[shift_count][2][numNurses] = nurseshift_df.iloc[0]['end']
+    inst.shift_matrix[shift_count][3][numNurses] = nurseshift_df.iloc[0]['duration']
 
     # Fill shift_matrix for the rest of the nurses
-    for i in range(1, len(carershift_df)):
-        currentCarer = carershift_df.iloc[i]['carer_id']
-        if prevCarer == currentCarer: # If currentCarer is the same as the previousNurse, then the carer has another shift.
+    for i in range(1, len(nurseshift_df)):
+        currentNurse = nurseshift_df.iloc[i]['nurse_id']
+        if prevNurse == currentNurse: # If currentNurse is the same as the previousNurse, then the nurse has another shift.
             shift_count += 1
             numShifts += 1
-            inst.shift_matrix[shift_count][0][numCarers] = numShifts
-            inst.shift_matrix[shift_count][1][numCarers] = carershift_df.iloc[i]['start']
-            inst.shift_matrix[shift_count][2][numCarers] = carershift_df.iloc[i]['end']
-            inst.shift_matrix[shift_count][3][numCarers] = carershift_df.iloc[i]['duration']
-        else: # Otherwise currentCarer is a new carer, so add this shift detail to the next matrix in the 3d matrix
+            inst.shift_matrix[shift_count][0][numNurses] = numShifts
+            inst.shift_matrix[shift_count][1][numNurses] = nurseshift_df.iloc[i]['start']
+            inst.shift_matrix[shift_count][2][numNurses] = nurseshift_df.iloc[i]['end']
+            inst.shift_matrix[shift_count][3][numNurses] = nurseshift_df.iloc[i]['duration']
+        else: # Otherwise currentNurse is a new nurse, so add this shift detail to the next matrix in the 3d matrix
             shift_count = 0
-            numCarers += 1
+            numNurses += 1
             numShifts = 0
-            inst.shift_matrix[shift_count][0][numCarers] = numShifts
-            inst.shift_matrix[shift_count][1][numCarers] = carershift_df.iloc[i]['start']
-            inst.shift_matrix[shift_count][2][numCarers] = carershift_df.iloc[i]['end']
-            inst.shift_matrix[shift_count][3][numCarers] = carershift_df.iloc[i]['duration']
-            prevCarer = currentCarer
+            inst.shift_matrix[shift_count][0][numNurses] = numShifts
+            inst.shift_matrix[shift_count][1][numNurses] = nurseshift_df.iloc[i]['start']
+            inst.shift_matrix[shift_count][2][numNurses] = nurseshift_df.iloc[i]['end']
+            inst.shift_matrix[shift_count][3][numNurses] = nurseshift_df.iloc[i]['duration']
+            prevNurse = currentNurse
 
     # Create unavailability matrix, same format as shift_matrix
-    inst.unavail_matrix = np.full((50,4,inst.nCarers), -1, dtype=np.int32)
-    inst.carer_unavail = np.zeros(inst.nCarers, dtype=np.float64) # Array that hold the number of unavailble shifts for each carer.
+    inst.unavail_matrix = np.full((50,4,inst.nNurses), -1, dtype=np.int32)
+    inst.nurse_unavail = np.zeros(inst.nNurses, dtype=np.int32) # Array that hold the number of unavailble shifts for each nurse.
 
-    for k in range(inst.nCarers): # For each carer
-        num_unavail = 0 # Set the number of unavailable shifts to 0 for that carer
-        if inst.shift_matrix[1][0][k] < 0: # If the carer k does not have a second shift, then the carer only have one shift (which is the whole day) and so is not unavailable at all
-            inst.carer_unavail[k] = 0 # The number of unavailable shifts for this carer is 0
+    for k in range(inst.nNurses): # For each nurse
+        num_unavail = 0 # Set the number of unavailable shifts to 0 for that nurse
+        if inst.shift_matrix[1][0][k] < 0: # If the nurse k does not have a second shift, then the nurse only have one shift (which is the whole day) and so is not unavailable at all
+            inst.nurse_unavail[k] = 0 # The number of unavailable shifts for this nurse is 0
             continue
-        elif inst.shift_matrix[1][0][k] > 0: # If the carer k does have a second shift, then the carer has at least one unavailble shift throughout the day
+        elif inst.shift_matrix[1][0][k] > 0: # If the nurse k does have a second shift, then the nurse has at least one unavailble shift throughout the day
             i = 1
             while inst.shift_matrix[i][0][k] > i-1: 
                 start_unavail = inst.shift_matrix[i-1][2][k] # start_unavail is the end of the previous shift
@@ -196,16 +217,41 @@ def convert_dfs_inst(inst, client_df, carershift_df, carerday_df, planning_date)
                 inst.unavail_matrix[i-1][3][k] = duration_unavail
                 i += 1
                 num_unavail +=1
-                inst.carer_unavail[k] += 1 # update the number of unavailable shifts for this carer k.
+                inst.nurse_unavail[k] += 1 # update the number of unavailable shifts for this nurse k.
     # End for loop
+
+    # NEW: 04/11/2021 - Update nurseWorkingTimes matrix for the extra columns: col[3] = number of shifts during the day for that nurse, and col[4] = duration of actual working time on shift for the nurse
+    # That is, col[4] = col[2] (total shift length) - unavailable time (if the nurse has any). (04/11/2021)
+    for i in range(inst.nNurses):
+        num_avail_shifts = inst.nurse_unavail[i] + 1 # number of available shifts for nurse i is number of unavailable shifts + 1
+        inst.nurseWorkingTimes[i][3] = num_avail_shifts # set number of available shifts for nurse i in cWT
+        if num_avail_shifts == 1: # if there is only one shift, then nurse works only a single block, there are no separate shifts/unavailable times
+            inst.nurseWorkingTimes[i][4] = inst.nurseWorkingTimes[i][2] # Set duration of shift lengths for nurse i as duration of whole day, as there are no unavailable times.
+        elif num_avail_shifts > 1: # If nurse i has more than one shift, there is unavailable time between, so we need to calculate the duration of ONLY the working shift times
+            sum_durations = 0
+            for j in range(num_avail_shifts-1): # go through shift_matrix 3d matrix and sum up duration times for the shifts of nurse i
+                sum_durations += inst.shift_matrix[j][3][i] # j = shift number, from 0 all the way up to num_unavail_shifts-1, 3=column that contains duration of each shift, i = nurse i
+            inst.nurseWorkingTimes[i][4] = sum_durations
+        # End if
+    # End for
+
+    #PRINT OUT NURSE WORKING TIMES:
+    # print("Carer working times:\n")
+    # for i in range(inst.nNurses):
+    #     for j in range(5):
+    #         print(inst.nurseWorkingTimes[i][j])
+    #     print("\n")
+    # print("end")
+    # exit(-1)
+
     
     return inst
 ### --- End of def convert_dict_inst --- ###
 
-def osrm_table_request(inst, client_df, carerday_df, matrix='none'):
+def osrm_table_request(inst, client_df, nurseday_df, matrix='none'):
     # For osrm, the coordinates need to be in string form, and in the order 'longitude,latitude'. Our data is in 'lat,lon', so create_coord_string function swaps it around.
 
-    nCarers = inst.nCarers
+    nNurses = inst.nNurses
     nJobs = inst.nJobs
     area = inst.area
 
@@ -215,11 +261,11 @@ def osrm_table_request(inst, client_df, carerday_df, matrix='none'):
         lonlat_jobs.append(lonlat)
     lljSize = len(lonlat_jobs)
         
-    lonlat_carers = []
-    for i in range(nCarers):
-        lonlat = [carerday_df.iloc[i]['longitude'], carerday_df.iloc[i]['latitude']] #Note that we're getting coords in order lon/lat, not lat/lon, so we don't need to swap them over for osrm.
-        lonlat_carers.append(lonlat)
-    llcSize = len(lonlat_carers)
+    lonlat_nurses = []
+    for i in range(nNurses):
+        lonlat = [nurseday_df.iloc[i]['longitude'], nurseday_df.iloc[i]['latitude']] #Note that we're getting coords in order lon/lat, not lat/lon, so we don't need to swap them over for osrm.
+        lonlat_nurses.append(lonlat)
+    llnSize = len(lonlat_nurses)
 
     server = r'localhost:5000'
     str_call = r'http://' + server + '/table/v1/driving/'
@@ -247,19 +293,19 @@ def osrm_table_request(inst, client_df, carerday_df, matrix='none'):
                 inst.od[i+1][j+1] = time_mins
     # --- End od matrix --- #
 
-    elif matrix == 'carerfrom':
-        # Going FROM depot, so time from each CARER home to each JOB (source = carer, destination = job)
+    elif matrix == 'nursefrom':
+        # Going FROM depot, so time from each NURSE home to each JOB (source = nurse, destination = job)
 
         # Nurses first (sources):
         count = 0 # Used to count the number of sources and destinations, as the index of each [lon,lat] in the address needs to be added to the end of the address.
         source_list = [] # Indices for source long/lats
-        coord_strings_list_carers = [] # List of longs/lats as strings
-        for i in range(llcSize):
-            coordstrcarer = create_lonlat_string(lonlat_carers[i]) # Convert each lat/long coord into a long/lat STRING
-            coord_strings_list_carers.append(coordstrcarer) # Add the long/lat string to list
+        coord_strings_list_nurses = [] # List of longs/lats as strings
+        for i in range(llnSize):
+            coordstrnurse = create_lonlat_string(lonlat_nurses[i]) # Convert each lat/long coord into a long/lat STRING
+            coord_strings_list_nurses.append(coordstrnurse) # Add the long/lat string to list
             source_list.append(str(i)) # Add index of long/lat pair to list
             count +=1
-        coord_strings_carers = ';'.join(coord_strings_list_carers) # coord_strings_carers = single string comprising all strings in coord_strings_list_carers joined with semicolons in between
+        coord_strings_nurses = ';'.join(coord_strings_list_nurses) # coord_strings_nurses = single string comprising all strings in coord_strings_list_nurses joined with semicolons in between
         source_string = ';'.join(source_list) # Join the list of strings together into a single string with semicolon between each string
 
         # Jobs second (destinations):
@@ -276,21 +322,21 @@ def osrm_table_request(inst, client_df, carerday_df, matrix='none'):
         # Get results from osrm:
         sources = '?sources=' + source_string # Create sources string
         destinations = '&destinations=' + destination_string # Create destinations string
-        str_call = str_call + coord_strings_carers + ';' + coord_strings_jobs + sources + destinations # Create full address
+        str_call = str_call + coord_strings_nurses + ';' + coord_strings_jobs + sources + destinations # Create full address
         r = requests.get(str_call) # Get results from osrm
         osrmdict = r.json() # .json file has dictionary containing information on the route, including distance and duration.
 
-        # Fill carer_travel_from_depot matrix:
+        # Fill nurse_travel_from_depot matrix:
         durations = osrmdict['durations']
         for i in range(len(durations)):
             for j in range(len(durations[i])):
                 time_seconds = durations[i][j]
                 time_mins = time_seconds/60
-                inst.carer_travel_from_depot[i][j] = time_mins
-    # --- End carer from matrix --- #
+                inst.nurse_travel_from_depot[i][j] = time_mins
+    # --- End nurse from matrix --- #
 
-    elif matrix == 'carerto':
-        # Going TO depot, so time from each JOB to each CARER home (source = job, destination = carer)
+    elif matrix == 'nurseto':
+        # Going TO depot, so time from each JOB to each NURSE home (source = job, destination = nurse)
 
         # Jobs first (sources):
         count = 0 # Used to count the number of sources and destinations, as the index of each [lon,lat] in the address needs to be added to the end of the address.
@@ -306,33 +352,33 @@ def osrm_table_request(inst, client_df, carerday_df, matrix='none'):
 
         # Nurses second (destinations):
         destination_list = [] # Indices for destination long/lats
-        coord_strings_list_carers = [] # List of longs/lats as strings
-        for i in range(llcSize):
-            coordstrcarer = create_lonlat_string(lonlat_carers[i]) # Convert each lat/long coord into a long/lat STRING
-            coord_strings_list_carers.append(coordstrcarer) # Add the long/lat string to list
+        coord_strings_list_nurses = [] # List of longs/lats as strings
+        for i in range(llnSize):
+            coordstrnurse = create_lonlat_string(lonlat_nurses[i]) # Convert each lat/long coord into a long/lat STRING
+            coord_strings_list_nurses.append(coordstrnurse) # Add the long/lat string to list
             destination_list.append(str(count)) # Add index of long/lat pair to list
             count += 1
-        coord_strings_carers = ';'.join(coord_strings_list_carers) # coord_strings_carers = single string comprising all strings in coord_strings_list_carers joined with semicolons in between
+        coord_strings_nurses = ';'.join(coord_strings_list_nurses) # coord_strings_nurses = single string comprising all strings in coord_strings_list_nurses joined with semicolons in between
         destination_string = ';'.join(destination_list) # Join the list of strings together into a single string with semicolon between each string
 
         # Get results from osrm:
         sources = '?sources=' + source_string
         destinations = '&destinations=' + destination_string
-        str_call = str_call + coord_strings_jobs + ';' + coord_strings_carers + sources + destinations
+        str_call = str_call + coord_strings_jobs + ';' + coord_strings_nurses + sources + destinations
         r = requests.get(str_call)
         osrmdict = r.json() # .json file has dictionary containing information on the route, including distance and duration.
 
-        # Fill carer_travel_to_depot matrix:
+        # Fill nurse_travel_to_depot matrix:
         durations = osrmdict['durations']
         for i in range(len(durations)):
             for j in range(len(durations[i])):
                 time_seconds = durations[i][j]
                 time_mins = time_seconds/60
-                inst.carer_travel_to_depot[j][i] = time_mins
-    # --- End carer to matrix --- #
+                inst.nurse_travel_to_depot[j][i] = time_mins
+    # --- End nurse to matrix --- #
     else:
         print('[ERROR]: no matrix type specified for osrm_table_request.')
-        print('Matrix type should be either \'od\', \'carerfrom\', or \'carerto\'.')
+        print('Matrix type should be either \'od\', \'nursefrom\', or \'nurseto\'.')
         print('Terminating program.')
         exit(-1)
     # --- End else --- #
@@ -391,15 +437,15 @@ class JOB(object):
         self.skillsRequired = []
         self.features = []
         self.preferences = []
-        self.preferredCarers = []
+        self.preferredNurses = []
         self.dependsOn = -1
         self.minimumGap = 0
         self.maximumGap = 0
         # self.location = [] # NOTE: NEW, 27/12/2020 ALH
         # Calculated (solution)
-        self.assignedCarer = 0
-        self.carerID = 'Unknown'
-        self.arrivalTime = 0 # time carer arrives at job location
+        self.assignedNurse = 0
+        self.nurseID = 'Unknown'
+        self.arrivalTime = 0 # time nurse arrives at job location
         self.startTime = 0 # NEW: 07/06/2021, actual time job starts
         self.departureTime = 0
         self.waitingToStart = 0
@@ -410,7 +456,7 @@ class JOB(object):
         self.markedWebsite = 0 # use this to determine for DS jobs if they have already been assessed in solution_to_website, if they haven't (=0) then need to create list, else if they have been assessed (=1) then need to append to the list.
 ### --- End class JOB --- ###        
 
-class CARER(object):
+class NURSE(object):
     def __init__(self):
         # Characteristics
         self.ID = ''
@@ -433,16 +479,16 @@ class CARER(object):
         self.overtimeWork = 0
         self.travelTime = 0
         self.route = []
-### --- End class CARER --- ###                       
+### --- End class NURSE --- ###                       
 
 class INSTANCE(object):
     def __init__(self):
         self.nJobs = -1
-        self.nCarers = -1
+        self.nNurses = -1
         self.nSkills = -1
         self.nShifts = -1
-        self.carerWorkingTimes = []
-        self.carerSkills = []
+        self.nurseWorkingTimes = []
+        self.nurseSkills = []
         self.jobTimeInfo = []
         self.jobSkillsRequired = []
         self.prefScore = []
@@ -451,20 +497,20 @@ class INSTANCE(object):
         self.dependsOn = []
         self.od = [] # Main od matrix, contains times in minutes - this will be used in C
         self.od_dist = [] #----NOTE- NEW VAR: contains distance matrix in metres
-        self.carer_travel_from_depot = [] # Main carer_travel_from_depot matrix, contains times in minutes - this will be used in C
-        self.carer_travel_to_depot = [] # Main carer_travel_to_depot matrix, contains times in minutes - this will be used in C
+        self.nurse_travel_from_depot = [] # Main nurse_travel_from_depot matrix, contains times in minutes - this will be used in C
+        self.nurse_travel_to_depot = [] # Main nurse_travel_to_depot matrix, contains times in minutes - this will be used in C
         self.shift_matrix = [] # NOTE: NEW 22/05/2021, used to hold shift information for nurses 3D matrix
         self.unavail_matrix = [] # NOTE: NEW 22/05/2021, used to hold unavailable shift information for nurses 3D matrix
-        self.carer_unavail = [] # NOTE: NEW 22/05/2021, used to hold number of unavailable shifts for each carer (1d array)
-        self.carer_travel_from_depot_dist = [] #----NOTE- NEW VAR: contains distance matrix in metres
-        self.carer_travel_to_depot_dist = [] #----NOTE- NEW VAR: contains distance matrix in metres
+        self.nurse_unavail = [] # NOTE: NEW 22/05/2021, used to hold number of unavailable shifts for each nurse (1d array)
+        self.nurse_travel_from_depot_dist = [] #----NOTE- NEW VAR: contains distance matrix in metres
+        self.nurse_travel_to_depot_dist = [] #----NOTE- NEW VAR: contains distance matrix in metres
         self.xy = [] # x y coordinates for plotting routes on a map LAT-LONG
         self.solMatrix = []
         self.MAX_TIME_SECONDS = 30
         self.verbose = 1 # was 5, changed to 1 on 11/06/2021
         self.secondsPerTU = 1
         self.tw_interval = 15
-        self.exclude_carer_travel = True
+        self.exclude_nurse_travel = True
         self.name = ''
         self.fname = ''
         self.area = ''
@@ -476,11 +522,11 @@ class INSTANCE(object):
         self.DSSkillType = 'strictly-shared' # See overleaf document for details, was shared-duplicate default, now changed to strictly-shared on 11/06/2021
         self.capabilityOfDoubleServices = []
         self.timeMatrix = [] # NOTE: NEW (03/06/2021)
-        self.carerWaitingTime = [] # MOVED FROM POST PROCESSED 03/06/2021
-        self.carerTravelTime = [] # MOVED FROM POST PROCESSED 03/06/2021
+        self.nurseWaitingTime = [] # MOVED FROM POST PROCESSED 03/06/2021
+        self.nurseTravelTime = [] # MOVED FROM POST PROCESSED 03/06/2021
         self.violatedTW = [] # NEW 03/06/2021
-        self.carerWaitingMatrix = [] # NEW 03/06/2021
-        self.carerTravelMatrix = [] # NEW 03/06/2021
+        self.nurseWaitingMatrix = [] # NEW 03/06/2021
+        self.nurseTravelMatrix = [] # NEW 03/06/2021
         # self.travelCostMatrix = [] # NEW 11/06/2021, cost of each trip for each pair of jobs, nJobs x nJobs, use od matrix, cost in pounds. (could also be called od_cost!)
         # self.odMileage = [] # NEW 11/06/2021, nJobs x nJobs, od matrix but with mileage instead od time in minutes
         # self.odMileageCost = [] # NEW 11/06/2021, nJobs x nJobs, cost of mileage for each trip, so x 0.25p per mile
@@ -488,13 +534,13 @@ class INSTANCE(object):
         # totalOvertime, maxOvertime, minSpareTime, maxSpareTime, shortestDay, longestDay, ait_quality, mk_quality, wb_quality, paper_quality, quality.
 
         # Post-processed solution:
-        self.carerRoute = [] # In post_process_solution, this will become equivalent to allNurseRoutes, with dimensions nCarers x nPositions(jobs), and so carerRoute[carer][position] = job.
-        self.carerServiceTime = []
-        self.carerTravelCost = [] # NEW 11/06/2021, total cost of all trips for that carer, 1 x nCarers
-        # self.nurseMileageMatrix = [] # NEW 11/06/2021, mileage of each trip for each carer to each job (make sure to exclude to/from depot), nCarers x nJobs
-        self.carerMileage = [] # NEW 11/06/2021, total mileage travelled by each carer, 1 x nCarers
-        self.carerMileageCost = [] # NEW 11/06/2021, total cost of mileage by each carer, 1 x nCarers, multiply carerMileage by 0.25p per mile to get cost in pounds.
-        self.carerTime = []
+        self.nurseRoute = [] # In post_process_solution, this will become equivalent to allNurseRoutes, with dimensions nNurses x nPositions(jobs), and so nurseRoute[nurse][position] = job.
+        self.nurseServiceTime = []
+        self.nurseTravelCost = [] # NEW 11/06/2021, total cost of all trips for that nurse, 1 x nNurses
+        # self.nurseMileageMatrix = [] # NEW 11/06/2021, mileage of each trip for each nurse to each job (make sure to exclude to/from depot), nNurses x nJobs
+        self.nurseMileage = [] # NEW 11/06/2021, total mileage travelled by each nurse, 1 x nNurses
+        self.nurseMileageCost = [] # NEW 11/06/2021, total cost of mileage by each nurse, 1 x nNurses, multiply nurseMileage by 0.25p per mile to get cost in pounds.
+        self.nurseTime = []
         self.totalWaitingTime = -1
         self.totalServiceTime = -1
         self.totalTravelTime = -1
@@ -511,6 +557,10 @@ class INSTANCE(object):
         self.MKQuality = -1
         self.WBQuality = -1
         self.paperQuality = -1
+        self.totalPref = -1
+        self.maxTravelTime = -1
+        self.maxWaitingTime = -1
+        self.maxDiffWorkload = -1
         self.nLateJobs = 0
         self.quality_measure = 'standard'
         self.c_quality = 0
@@ -518,8 +568,8 @@ class INSTANCE(object):
         self.mk_maxd = []
         self.totalDistance = 0
         self.totalDistanceJobsOnly = 0
-        self.distCarers = []
-        self.distCarersJobsOnly = []
+        self.distNurses = []
+        self.distNursesJobsOnly = []
         self.totalTravelCost = 0 # NEW 11/06/2021
         self.totalMileage = 0 # NEW 11/06/2021
         self.totalMileageCost = 0 # NEW 11/06/2021
@@ -554,10 +604,10 @@ class INSTANCE(object):
                         ctypes.c_int, # tw_interval_data
                         ctypes.c_bool, #exclude_nurse_travel_data
                         ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # * od_data
-                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # * carer_travel_from_depot
-                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # * carer_travel_to_depot
+                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # * nurse_travel_from_depot
+                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # * nurse_travel_to_depot
                         ndpointer(ctypes.c_int, flags="C_CONTIGUOUS"), # unavail_matrix
-                        ndpointer(ctypes.c_int, flags="C_CONTIGUOUS"), # carer_unavail
+                        ndpointer(ctypes.c_int, flags="C_CONTIGUOUS"), # nurse_unavail
                         ndpointer(ctypes.c_int, flags="C_CONTIGUOUS"), # nurseWorkingTimes_data
                         ndpointer(ctypes.c_int, flags="C_CONTIGUOUS"), # jobTimeInfo_data
                         ndpointer(ctypes.c_int, flags="C_CONTIGUOUS"), # jobRequirements_data
@@ -571,26 +621,26 @@ class INSTANCE(object):
                         ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),# prefScore
                         ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),# algorithmOptions
                         ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # timeMatrix, NEW 03/06/2021
-                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # carerWaitingTime, NEW 03/06/2021
-                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # carerTravelTime, NEW 03/06/2021
+                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # nurseWaitingTime, NEW 03/06/2021
+                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # nurseTravelTime, NEW 03/06/2021
                         ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # violatedTW, NEW 03/06/2021
-                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # carerWaitingMatrix, NEW 03/06/2021
-                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # carerTravelMatrix, NEW 03/06/2021
+                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # nurseWaitingMatrix, NEW 03/06/2021
+                        ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # nurseTravelMatrix, NEW 03/06/2021
                         ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"), # totalsArray, NEW 04/06/2021
                         ctypes.c_int] # Random seed
     ### --- End def  __init__ --- ### 
 
-    def instantiate_job_carer_objects(self, client_df, carerday_df):
-        # Create two lists containing objects of the classes JOB and CARER respectively.
+    def instantiate_job_nurse_objects(self, client_df, nurseday_df):
+        # Create two lists containing objects of the classes JOB and NURSE respectively.
         self.jobObjs = []
         for ii in range(self.nJobs):
             self.jobObjs.append(JOB())
             self.jobObjs[-1].ID = ii # Set the ID for the object just added to jobObjs to be the index of the object (its position in the jobObjs list).
 
-        self.carerObjs = []
-        for ii in range(self.nCarers):
-            self.carerObjs.append(CARER())
-            self.carerObjs[-1].ID = ii # Set the ID for the object just added to carerObjs to be the index of the object (its position in the carerObjs list).
+        self.nurseObjs = []
+        for ii in range(self.nNurses):
+            self.nurseObjs.append(NURSE())
+            self.nurseObjs[-1].ID = ii # Set the ID for the object just added to nurseObjs to be the index of the object (its position in the nurseObjs list).
         
         # 1. Jobs:
         for j in range(self.nJobs):
@@ -609,7 +659,7 @@ class INSTANCE(object):
             self.jobObjs[j].doubleService = self.doubleService[j]
             self.jobObjs[j].features = []
             self.jobObjs[j].preferences = []
-            self.jobObjs[j].preferredCarers = []
+            self.jobObjs[j].preferredNurses = []
             self.jobObjs[j].dependsOn = -1
             self.jobObjs[j].minimumGap = []
             self.jobObjs[j].maximumGap = []
@@ -618,75 +668,75 @@ class INSTANCE(object):
         # End jobs
 
         # 2. Carers:
-        for i in range(self.nCarers):
-            self.carerObjs[i].ID = carerday_df.iloc[i]['carer_id'] # NOTE: this could also be 'carer' instead of unique_id, but unique_id has the shift number
-            self.carerObjs[i].postcode = carerday_df.iloc[i]['postcode']
-            latlon = [carerday_df.iloc[i]['latitude'], carerday_df.iloc[i]['longitude']]
-            self.carerObjs[i].startLocation = GEOPOINT(float(latlon[0]), float(latlon[1]))
-            self.carerObjs[i].transportMode = 'car'
-            istart = carerday_df.iloc[i]['start']
-            ifinish = carerday_df.iloc[i]['end']
-            self.carerObjs[i].shiftTimes = [float(istart), float(ifinish)]
-            self.carerObjs[i].maxWorking = float(carerday_df.iloc[i]['duration'])
-            self.carerObjs[i].skills = []
-            self.carerObjs[i].features = []
-            self.carerObjs[i].preferences = []
-            self.carerObjs[i].preferredJobs = []
-            self.carerObjs[i].jobsToAvoid = []
+        for i in range(self.nNurses):
+            self.nurseObjs[i].ID = nurseday_df.iloc[i]['nurse_id'] # NOTE: this could also be 'nurse' instead of unique_id, but unique_id has the shift number
+            self.nurseObjs[i].postcode = nurseday_df.iloc[i]['postcode']
+            latlon = [nurseday_df.iloc[i]['latitude'], nurseday_df.iloc[i]['longitude']]
+            self.nurseObjs[i].startLocation = GEOPOINT(float(latlon[0]), float(latlon[1]))
+            self.nurseObjs[i].transportMode = 'car'
+            istart = nurseday_df.iloc[i]['start']
+            ifinish = nurseday_df.iloc[i]['end']
+            self.nurseObjs[i].shiftTimes = [float(istart), float(ifinish)]
+            self.nurseObjs[i].maxWorking = float(nurseday_df.iloc[i]['duration'])
+            self.nurseObjs[i].skills = []
+            self.nurseObjs[i].features = []
+            self.nurseObjs[i].preferences = []
+            self.nurseObjs[i].preferredJobs = []
+            self.nurseObjs[i].jobsToAvoid = []
         # End carers
 
         # Locations:
         self.xy = []
-        self.xy.append(self.carerObjs[0].startLocation.longlat()) # why only the first carer [0] location? Note that coords appended are lon/lat, not lat/lon!
+        self.xy.append(self.nurseObjs[0].startLocation.longlat()) # why only the first nurse [0] location? Note that coords appended are lon/lat, not lat/lon!
         for job in self.jobObjs:
             self.xy.append(job.location.longlat()) # Append all job coordinates - lon/lat, not lat/lon!
-    ### --- End def instantiate_job_carer_objects --- ###
+    ### --- End def instantiate_job_nurse_objects --- ###
 
     def fill_preferences(self):
-        self.prefScore = np.zeros((self.nJobs, self.nCarers), dtype=np.float64) # Matrix, nJobs x nCarers (note that this is the only variable with jobxnurse, not nursexjob dimensions).
+        self.prefScore = np.zeros((self.nJobs, self.nNurses), dtype=np.float64) # Matrix, nJobs x nNurses (note that this is the only variable with jobxnurse, not nursexjob dimensions).
         for i,job in enumerate(self.jobObjs): # For each JOB object in the jobObjs list
-            for j,carer in enumerate(self.carerObjs): # For each CARER object in the carerObjs list
-                self.prefScore[i][j] = self.preference_score(job, carer) # Set the preference score of job i and carer j
+            for j,nurse in enumerate(self.nurseObjs): # For each NURSE object in the nurseObjs list
+                self.prefScore[i][j] = self.preference_score(job, nurse) # Set the preference score of job i and nurse j
     ### --- End def fill_preferences --- ###
 
-    def preference_score(self, job, carer):
-        # Function determines preference score of given job and given carer, where 'job' is a JOB object and 'carer' is a CARER object.
-        carerOK = 0
-        if len(job.preferredCarers) > 0: # If the job does have preferred carers
-            carerOK = -1 # Penalise if there is someone on the list, but it's not met
-            for pc in job.preferredCarers: # For each 'value' (string?) pc in preferredCarers list
-                if pc.lower() == carer.ID.lower(): # If the 'pc' index matched the ID of the carer (carer called in as parameter), then it means that this given job would prefer to have this carer.
-                    carerOK = 1 # carer is okay for this job!
+    def preference_score(self, job, nurse):
+        # Function determines preference score of given job and given nurse, where 'job' is a JOB object and 'nurse' is a NURSE object.
+        nurseOK = 0
+        if len(job.preferredNurses) > 0: # If the job does have preferred carers
+            nurseOK = -1 # Penalise if there is someone on the list, but it's not met
+            for pc in job.preferredNurses: # For each 'value' (string?) pc in preferredNurses list
+                if pc.lower() == nurse.ID.lower(): # If the 'pc' index matched the ID of the nurse (nurse called in as parameter), then it means that this given job would prefer to have this nurse.
+                    nurseOK = 1 # nurse is okay for this job!
                     break
 
         
         matchedPrefsJob = 0
         unmatchedPrefsJob = 0 # NOTE: Always zero??
         for pref in job.preferences: # For each value (job preference characteristic?) in job.preferences list
-            if pref in carer.features: # If the preference characteristic is one of the carer's features, i.e. carer has the desired characteristic
+            if pref in nurse.features: # If the preference characteristic is one of the nurse's features, i.e. nurse has the desired characteristic
                 matchedPrefsJob = matchedPrefsJob + 1 # Increase preference score for job
             else:
                 matchedPrefsJob = matchedPrefsJob - 1 # Decrease preference score for job
 
-        matchedPrefsCarer = 0
-        unmatchedPrefsCarer = 0 # NOTE: Always zero??
-        for pref in carer.preferences: # For each value (carer preference characteristic?) in carer.preferences list
+        matchedPrefsNurse = 0
+        unmatchedPrefsNurse = 0 # NOTE: Always zero??
+        for pref in nurse.preferences: # For each value (nurse preference characteristic?) in nurse.preferences list
             if pref in job.features: # If the preference characteristic is one of the job's features, i.e. job has the desired characteristic
-                matchedPrefsCarer = matchedPrefsCarer + 1 # Increase preference score for carer
+                matchedPrefsNurse = matchedPrefsNurse + 1 # Increase preference score for nurse
             else:
-                matchedPrefsCarer = matchedPrefsCarer - 1 # Decrease preference score for carer
+                matchedPrefsNurse = matchedPrefsNurse - 1 # Decrease preference score for nurse
 
         jobToAvoid = 0
-        for jta in carer.jobsToAvoid: # For each value (job ID?) in carer.jobsToAvoid list
+        for jta in nurse.jobsToAvoid: # For each value (job ID?) in nurse.jobsToAvoid list
             if jta.lower() == job.ID.lower(): # If the ID of the current job is in the jobsToAvoid list, then jobToAvoid = -1
                 jobToAvoid = -1
                 break
 
         # Calculate preference score
         score = (
-                self.lambda_1*carerOK +
+                self.lambda_1*nurseOK +
                 self.lambda_2*matchedPrefsJob + self.lambda_3*unmatchedPrefsJob + 
-                self.lambda_4*matchedPrefsCarer + self.lambda_5*unmatchedPrefsCarer +
+                self.lambda_4*matchedPrefsNurse + self.lambda_5*unmatchedPrefsNurse +
                 self.lambda_6*jobToAvoid
                 )
 
@@ -699,17 +749,17 @@ class INSTANCE(object):
         self.mk_maxd = np.asarray(self.mk_maxd, dtype=np.int32)
 
         self.nJobs = int(self.nJobs)
-        self.nCarers = int(self.nCarers)
+        self.nNurses = int(self.nNurses)
         self.nSkills = int(self.nSkills)
         self.od = np.ascontiguousarray(self.od)
-        self.carer_travel_from_depot = np.ascontiguousarray(self.carer_travel_from_depot)
-        self.carer_travel_to_depot = np.ascontiguousarray(self.carer_travel_to_depot)
+        self.nurse_travel_from_depot = np.ascontiguousarray(self.nurse_travel_from_depot)
+        self.nurse_travel_to_depot = np.ascontiguousarray(self.nurse_travel_to_depot)
         self.unavail_matrix = np.ascontiguousarray(self.unavail_matrix.reshape(-1), dtype=np.int32)
-        self.carer_unavail = np.ascontiguousarray(self.carer_unavail, dtype=np.int32)	
-        self.carerWorkingTimes = np.ascontiguousarray(self.carerWorkingTimes, dtype=np.int32)
+        self.nurse_unavail = np.ascontiguousarray(self.nurse_unavail, dtype=np.int32)	
+        self.nurseWorkingTimes = np.ascontiguousarray(self.nurseWorkingTimes, dtype=np.int32)
         self.jobTimeInfo = np.ascontiguousarray(self.jobTimeInfo, dtype=np.int32)
         self.jobSkillsRequired = np.ascontiguousarray(self.jobSkillsRequired, dtype=np.int32)
-        self.carerSkills = np.ascontiguousarray(self.carerSkills, dtype=np.int32)
+        self.nurseSkills = np.ascontiguousarray(self.nurseSkills, dtype=np.int32)
         self.solMatrix = np.ascontiguousarray(self.solMatrix, dtype=np.int32)
         self.doubleService = np.ascontiguousarray(self.doubleService, dtype=np.int32)		
         self.dependsOn = np.ascontiguousarray(self.dependsOn, dtype=np.int32)
@@ -719,18 +769,18 @@ class INSTANCE(object):
         self.prefScore = np.ascontiguousarray(self.prefScore)
         self.algorithmOptions = np.ascontiguousarray(self.algorithmOptions)
         self.timeMatrix = np.ascontiguousarray(self.timeMatrix) # NEW 03/06/2021
-        self.carerWaitingTime = np.ascontiguousarray(self.carerWaitingTime) # NEW 03/06/2021
-        self.carerTravelTime = np.ascontiguousarray(self.carerTravelTime) # NEW 03/06/2021
+        self.nurseWaitingTime = np.ascontiguousarray(self.nurseWaitingTime) # NEW 03/06/2021
+        self.nurseTravelTime = np.ascontiguousarray(self.nurseTravelTime) # NEW 03/06/2021
         self.violatedTW = np.ascontiguousarray(self.violatedTW) # NEW 03/06/2021
-        self.carerWaitingMatrix = np.ascontiguousarray(self.carerWaitingMatrix) # NEW 03/06/2021
-        self.carerTravelMatrix = np.ascontiguousarray(self.carerTravelMatrix) # NEW 03/06/2021
+        self.nurseWaitingMatrix = np.ascontiguousarray(self.nurseWaitingMatrix) # NEW 03/06/2021
+        self.nurseTravelMatrix = np.ascontiguousarray(self.nurseTravelMatrix) # NEW 03/06/2021
         self.totalsArray = np.ascontiguousarray(self.totalsArray) # NEW 04/06/2021
 
         if	(self.verbose > 5 or printAllCallData):
             print('nJobs (type ' + str(type(self.nJobs)) + ')')
             print(self.nJobs)
-            print('nCarers (type ' + str(type(self.nCarers)) + ')')
-            print(self.nCarers)
+            print('nNurses (type ' + str(type(self.nNurses)) + ')')
+            print(self.nNurses)
             print('nSkills (type ' + str(type(self.nSkills)) + ')')
             print(self.nSkills)
             print('verbose (type ' + str(type(self.verbose)) + ')')
@@ -743,20 +793,20 @@ class INSTANCE(object):
             print('Shape = ' + str(self.od.shape))
             print(self.od)
 
-            print('carer_travel_from_depot (type ' + str(type(self.carer_travel_from_depot)) + ')')
-            print('dtype = ' + str(self.carer_travel_from_depot.dtype))
-            print('Shape = ' + str(self.carer_travel_from_depot.shape))
-            print(self.carer_travel_from_depot)
+            print('nurse_travel_from_depot (type ' + str(type(self.nurse_travel_from_depot)) + ')')
+            print('dtype = ' + str(self.nurse_travel_from_depot.dtype))
+            print('Shape = ' + str(self.nurse_travel_from_depot.shape))
+            print(self.nurse_travel_from_depot)
 
-            print('carer_travel_to_depot (type ' + str(type(self.carer_travel_to_depot)) + ')')
-            print('dtype = ' + str(self.carer_travel_to_depot.dtype))
-            print('Shape = ' + str(self.carer_travel_to_depot.shape))
-            print(self.carer_travel_to_depot)
+            print('nurse_travel_to_depot (type ' + str(type(self.nurse_travel_to_depot)) + ')')
+            print('dtype = ' + str(self.nurse_travel_to_depot.dtype))
+            print('Shape = ' + str(self.nurse_travel_to_depot.shape))
+            print(self.nurse_travel_to_depot)
         
-            print('carerWorkingTimes (type ' + str(type(self.carerWorkingTimes)) + ')')
-            print('dtype = ' + str(self.carerWorkingTimes.dtype))
-            print('Shape = ' + str(self.carerWorkingTimes.shape))
-            print(self.carerWorkingTimes)
+            print('nurseWorkingTimes (type ' + str(type(self.nurseWorkingTimes)) + ')')
+            print('dtype = ' + str(self.nurseWorkingTimes.dtype))
+            print('Shape = ' + str(self.nurseWorkingTimes.shape))
+            print(self.nurseWorkingTimes)
             
             print('jobTimeInfo (type ' + str(type(self.jobTimeInfo)) + ')')
             print('dtype = ' + str(self.jobTimeInfo.dtype))
@@ -768,10 +818,10 @@ class INSTANCE(object):
             print('Shape = ' + str(self.jobSkillsRequired.shape))
             print(self.jobSkillsRequired)
             
-            print('carerSkills (type ' + str(type(self.carerSkills)) + ')')
-            print('dtype = ' + str(self.carerSkills.dtype))
-            print('Shape = ' + str(self.carerSkills.shape))
-            print(self.carerSkills)
+            print('nurseSkills (type ' + str(type(self.nurseSkills)) + ')')
+            print('dtype = ' + str(self.nurseSkills.dtype))
+            print('Shape = ' + str(self.nurseSkills.shape))
+            print(self.nurseSkills)
             
             print('solMatrix (type ' + str(type(self.solMatrix)) + ')')
             print('dtype = ' + str(self.solMatrix.dtype))
@@ -817,10 +867,10 @@ class INSTANCE(object):
         print('Max time: ' + str(self.MAX_TIME_SECONDS) + ' seconds, Random seed: ' + str(randomSeed))
         print('-------------------------------------------------\n')
 
-        self.fun(self.nJobs, self.nCarers, self.nSkills, self.verbose, self.MAX_TIME_SECONDS, self.tw_interval, self.exclude_carer_travel, self.od, self.carer_travel_from_depot, self.carer_travel_to_depot,
-            self.unavail_matrix, self.carer_unavail, self.carerWorkingTimes, self.jobTimeInfo, self.jobSkillsRequired, self.carerSkills, self.solMatrix, self.doubleService, self.dependsOn,
-            self.mk_mind, self.mk_maxd, self.capabilityOfDoubleServices, self.prefScore, self.algorithmOptions, self.timeMatrix, self.carerWaitingTime, self.carerTravelTime, self.violatedTW, 
-            self.carerWaitingMatrix, self.carerTravelMatrix, self.totalsArray, randomSeed)
+        self.fun(self.nJobs, self.nNurses, self.nSkills, self.verbose, self.MAX_TIME_SECONDS, self.tw_interval, self.exclude_nurse_travel, self.od, self.nurse_travel_from_depot, self.nurse_travel_to_depot,
+            self.unavail_matrix, self.nurse_unavail, self.nurseWorkingTimes, self.jobTimeInfo, self.jobSkillsRequired, self.nurseSkills, self.solMatrix, self.doubleService, self.dependsOn,
+            self.mk_mind, self.mk_maxd, self.capabilityOfDoubleServices, self.prefScore, self.algorithmOptions, self.timeMatrix, self.nurseWaitingTime, self.nurseTravelTime, self.violatedTW, 
+            self.nurseWaitingMatrix, self.nurseTravelMatrix, self.totalsArray, randomSeed)
 
         if self.verbose > 10:
             print('Returned this matrix: ')
@@ -832,34 +882,34 @@ class INSTANCE(object):
     ### --- End def solve --- ###  
 
     def post_process_solution(self):
-        # This function creates self.carerRoute, which is the same as allNurseRoutes[carer][position] = job.
-        # Generate carer routes:
-        # self.carerWaitingTime = np.zeros(self.nCarers)
-        self.carerServiceTime = np.zeros(self.nCarers)
-        # self.carerTravelTime = np.zeros(self.nCarers)
-        self.carerTime = np.zeros(self.nCarers)
+        # This function creates self.nurseRoute, which is the same as allNurseRoutes[nurse][position] = job.
+        # Generate nurse routes:
+        # self.nurseWaitingTime = np.zeros(self.nNurses)
+        self.nurseServiceTime = np.zeros(self.nNurses)
+        # self.nurseTravelTime = np.zeros(self.nNurses)
+        self.nurseTime = np.zeros(self.nNurses)
         self.totalWaitingTime = 0
         self.totalServiceTime = 0
         self.totalTravelTime = 0
         self.totalTime = 0
-        self.carerRoute = []
-        self.carerTravelCost = np.zeros(self.nCarers, dtype=np.float64) # NEW 11/06/2021, initialise the carerTravelCost array to 1 x nCarers
-        self.carerMileage = np.zeros(self.nCarers, dtype=np.float64) # NEW 11/06/2021, initialise the carerMileage array to 1 x nCarers
-        self.carerMileageCost = np.zeros(self.nCarers, dtype=np.float64) # NEW 11/06/2021, initialise the carerMileageCost array to 1 x nCarers
+        self.nurseRoute = []
+        self.nurseTravelCost = np.zeros(self.nNurses, dtype=np.float64) # NEW 11/06/2021, initialise the nurseTravelCost array to 1 x nNurses
+        self.nurseMileage = np.zeros(self.nNurses, dtype=np.float64) # NEW 11/06/2021, initialise the nurseMileage array to 1 x nNurses
+        self.nurseMileageCost = np.zeros(self.nNurses, dtype=np.float64) # NEW 11/06/2021, initialise the nurseMileageCost array to 1 x nNurses
 
-        for carer in range(self.nCarers):
+        for nurse in range(self.nNurses):
             try:
-                howMany = max(self.solMatrix[carer]) + 1 # howMany = largest value in self.solMatrix[carer], which is equivalent to the number of jobs in the carer's route. Add one because job positions start at 0.
+                howMany = max(self.solMatrix[nurse]) + 1 # howMany = largest value in self.solMatrix[nurse], which is equivalent to the number of jobs in the nurse's route. Add one because job positions start at 0.
             except Exception as e:
                 print('[ERROR]: in post_process_solution()')
                 print(e)
-                print('Nurse: ' + str(carer))
+                print('Nurse: ' + str(nurse))
                 print('solMatrix: \n' + str(self.solMatrix))
             
-            self.carerRoute.append(np.full(howMany, -1)) # add array of size 'number of jobs' containing all -1 to the carerRoute list.
-            for i,sp in enumerate(self.solMatrix[carer,:]): # For each index, value in solMatrix[carer], all jobs
-                if sp > -1: # If > -1 then job i is in position sp of carer's route
-                    self.carerRoute[carer][sp] = i # set carerRoute[carer][position] = job (like allNurseRoutes)
+            self.nurseRoute.append(np.full(howMany, -1)) # add array of size 'number of jobs' containing all -1 to the nurseRoute list.
+            for i,sp in enumerate(self.solMatrix[nurse,:]): # For each index, value in solMatrix[nurse], all jobs
+                if sp > -1: # If > -1 then job i is in position sp of nurse's route
+                    self.nurseRoute[nurse][sp] = i # set nurseRoute[nurse][position] = job (like allNurseRoutes)
     ### --- End def post_process_solution --- ###
 
     def convert_minutes_to_hhmmss(self, mins):
@@ -879,7 +929,7 @@ class INSTANCE(object):
     def solution_to_website_dst(self, filename='unknown', add_plots=True):
         print('Generating website...')
         # Check if website generation is available:
-        if (self.carerObjs[0].startLocation == []):
+        if (self.nurseObjs[0].startLocation == []):
             print('[WARNING]: Website generation is not available for this instance.')
             print('Skipping.')
             return
@@ -897,19 +947,19 @@ class INSTANCE(object):
         m = folium.Map(location=xyRev[0], zoom_start=14, tiles='cartodbpositron')
         
         foliumRouteLayers = []
-        for ni in range(self.nCarers):
+        for ni in range(self.nNurses):
             route_colour = clusterColour(ni) #Returns a hex colour.
             # Create a FeatureGroup layer; you can put things in it and handle them as a single layer.
-            foliumRouteLayers.append(folium.map.FeatureGroup(name='Carer ' + str(ni))) # Create FeatureGroup for the current carer ni, add it to the list foliumRouteLayers.
+            foliumRouteLayers.append(folium.map.FeatureGroup(name='Carer ' + str(ni))) # Create FeatureGroup for the current nurse ni, add it to the list foliumRouteLayers.
             nRoute = []
             nRouteRev = []
             # nRoute.append(tuple(rxy[0]))
 
-            niRoute = self.get_carer_route_dst(ni) # carer route for carer ni, niRoute[position] = job.
+            niRoute = self.get_nurse_route_dst(ni) # nurse route for nurse ni, niRoute[position] = job.
             # print(niRoute)
             for pos in range(self.nJobs):
-                job = int(niRoute[pos]) #job = the job at position pos in carer ni's route.
-                if niRoute[pos] < -0.1: # If no job at position pos in carer ni's route, then carer ni has no route, no jobs assigned to carer ni, so break.
+                job = int(niRoute[pos]) #job = the job at position pos in nurse ni's route.
+                if niRoute[pos] < -0.1: # If no job at position pos in nurse ni's route, then nurse ni has no route, no jobs assigned to nurse ni, so break.
                     break
                 nRoute.append(tuple(xyRev[job + 1])) #append as a tuple the lat/lon of job
                 nRouteRev.append(reverse_latlong(xyRev[job + 1])) # append as a list the LON/LAT of the job (reversed, so lon/lat, not lat/lon!) NOTE: Why not just use xy??
@@ -924,8 +974,8 @@ class INSTANCE(object):
                     if self.jobObjs[job].markedWebsite == 0:
                         popupVal = popupVal + '<br><b>Double Service</b>'
                         # Carer 1 information
-                        popupVal = popupVal + '<br><b>Carer 1 ID:</b> ' + str(self.jobObjs[job].carerID[0])
-                        popupVal = popupVal + '<br><b>Carer 1 #:</b> ' + str(self.jobObjs[job].assignedCarer[0])
+                        popupVal = popupVal + '<br><b>Carer 1 ID:</b> ' + str(self.jobObjs[job].nurseID[0])
+                        popupVal = popupVal + '<br><b>Carer 1 #:</b> ' + str(self.jobObjs[job].assignedNurse[0])
                         popupVal = popupVal + '<br><b>Carer 1 Arrive:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].arrivalTime[0])
                         popupVal = popupVal + '<br><b>Carer 1 Start:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].startTime[0])
                         popupVal = popupVal + '<br><b>Carer 1 Depart:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].departureTime[0])
@@ -937,8 +987,8 @@ class INSTANCE(object):
                         popupVal = popupVal + '<br><b>Carer 1 Travel to Job:</b>' + self.convert_minutes_to_hhmmss(self.jobObjs[job].travelToJob[0])
                         
                         # Carer 2 information
-                        popupVal = popupVal + '<br><b>Carer 2 ID:</b> ' + str(self.jobObjs[job].carerID[1])
-                        popupVal = popupVal + '<br><b>Carer 2 #:</b> ' + str(self.jobObjs[job].assignedCarer[1])
+                        popupVal = popupVal + '<br><b>Carer 2 ID:</b> ' + str(self.jobObjs[job].nurseID[1])
+                        popupVal = popupVal + '<br><b>Carer 2 #:</b> ' + str(self.jobObjs[job].assignedNurse[1])
                         popupVal = popupVal + '<br><b>Carer 2 Arrive:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].arrivalTime[1])
                         popupVal = popupVal + '<br><b>Carer 2 Start:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].startTime[1])
                         popupVal = popupVal + '<br><b>Carer 2 Depart:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].departureTime[1])
@@ -950,8 +1000,8 @@ class INSTANCE(object):
                         popupVal = popupVal + '<br><b>Carer 2 Travel to Job:</b>' + self.convert_minutes_to_hhmmss(self.jobObjs[job].travelToJob[1])
                         self.jobObjs[job].markedWebsite += 1
                 else:
-                    popupVal = popupVal + '<br><b>Carer ID:</b> ' + str(self.jobObjs[job].carerID)
-                    popupVal = popupVal + '<br><b>Carer #:</b> ' + str(self.jobObjs[job].assignedCarer)
+                    popupVal = popupVal + '<br><b>Carer ID:</b> ' + str(self.jobObjs[job].nurseID)
+                    popupVal = popupVal + '<br><b>Carer #:</b> ' + str(self.jobObjs[job].assignedNurse)
                     popupVal = popupVal + '<br><b>Arrive:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].arrivalTime)
                     popupVal = popupVal + '<br><b>Start:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].startTime)
                     popupVal = popupVal + '<br><b>Depart:</b> ' + self.convert_minutes_to_hhmmss(self.jobObjs[job].departureTime)
@@ -967,17 +1017,17 @@ class INSTANCE(object):
                 continue 
 
             # Obtain the routeList, which is a list of coordinates of the route ([lat,lon]), and the duration (SECONDS) and distance (METRES) of the route.
-            routeList, dist, dur, distjobs, durjobs = route_points_osrm(self.carerObjs[ni].startLocation.longlat(), self.carerObjs[ni].startLocation.longlat(), goingThrough=nRouteRev)
-            distJobsMiles = metres_to_miles(distjobs) # get distance for this carer in miles, not metres
-            self.carerMileage[ni] = distJobsMiles
-            self.carerMileageCost[ni] = distJobsMiles * 0.25
+            routeList, dist, dur, distjobs, durjobs = route_points_osrm(self.nurseObjs[ni].startLocation.longlat(), self.nurseObjs[ni].startLocation.longlat(), goingThrough=nRouteRev)
+            distJobsMiles = metres_to_miles(distjobs) # get distance for this nurse in miles, not metres
+            self.nurseMileage[ni] = distJobsMiles
+            self.nurseMileageCost[ni] = distJobsMiles * 0.25
             self.totalDistance = self.totalDistance + dist
             self.totalDistanceJobsOnly = self.totalDistanceJobsOnly + distjobs
-            self.distCarers.append(dist)
-            self.distCarersJobsOnly.append(distjobs)
+            self.distNurses.append(dist)
+            self.distNursesJobsOnly.append(distjobs)
             foliumRouteLayers[-1].add_child(folium.PolyLine(routeList, color=route_colour, weight=2.5, opacity=1)) # Add a coloured line along the route onto the layer.
             m.add_child(foliumRouteLayers[-1]) # Add the layer onto the map m.
-        # End for ni in range(nCarers) loop
+        # End for ni in range(nNurses) loop
         
         # Add some info bottom-left:
         lht =   '''
@@ -997,32 +1047,32 @@ class INSTANCE(object):
         lht = lht + '''&nbsp; <i> - Total distance: </i>''' + str(self.totalDistance/1000) + '''<br>'''
         lht = lht + '''&nbsp; <i> - Total distance jobs: </i>''' + str(self.totalDistanceJobsOnly/1000) + '''<br><br>'''
 
-        carerPart = '''&nbsp; <b><u>Carer breakdown:</u> </b><br>'''
-        for i, cc in enumerate(self.carerObjs):
-            carerPart = carerPart + '''<br>&nbsp; <b>Carer ''' + str(i) + ' (' + str(cc.ID) + '''):</u> </b><br>'''
-            carerPart = carerPart + '''&nbsp; <i>Skills: </i>''' + str(cc.skills) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Shift start time: </i>''' + self.convert_minutes_to_hhmmss(self.carerWorkingTimes[i][0]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Shift end time: </i>''' + self.convert_minutes_to_hhmmss(self.carerWorkingTimes[i][1]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Duration of shift: </i>''' + self.convert_minutes_to_hhmmss(self.carerWorkingTimes[i][2]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Actual start time: </i>''' + self.convert_minutes_to_hhmmss(cc.startTime) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Actual end time: </i>''' + self.convert_minutes_to_hhmmss(cc.finishTime) + '''<br>'''
-            cc.route = list(self.carerRoute[i][:])
-            carerPart = carerPart + '''&nbsp; <i>Number of services: </i>''' + str(len(cc.route)) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Total service time: </i>''' + self.convert_minutes_to_hhmmss(self.carerServiceTime[i]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Total travel time: </i>''' + self.convert_minutes_to_hhmmss(self.carerTravelTime[i]) + '''<br>'''
-            carerPart = carerPart + '''&nbsp; <i>Total waiting time: </i>''' + self.convert_minutes_to_hhmmss(self.carerWaitingTime[i]) + '''<br>'''
+        nursePart = '''&nbsp; <b><u>Carer breakdown:</u> </b><br>'''
+        for i, cc in enumerate(self.nurseObjs):
+            nursePart = nursePart + '''<br>&nbsp; <b>Carer ''' + str(i) + ' (' + str(cc.ID) + '''):</u> </b><br>'''
+            nursePart = nursePart + '''&nbsp; <i>Skills: </i>''' + str(cc.skills) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Shift start time: </i>''' + self.convert_minutes_to_hhmmss(self.nurseWorkingTimes[i][0]) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Shift end time: </i>''' + self.convert_minutes_to_hhmmss(self.nurseWorkingTimes[i][1]) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Duration of shift: </i>''' + self.convert_minutes_to_hhmmss(self.nurseWorkingTimes[i][2]) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Actual start time: </i>''' + self.convert_minutes_to_hhmmss(cc.startTime) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Actual end time: </i>''' + self.convert_minutes_to_hhmmss(cc.finishTime) + '''<br>'''
+            cc.route = list(self.nurseRoute[i][:])
+            nursePart = nursePart + '''&nbsp; <i>Number of services: </i>''' + str(len(cc.route)) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Total service time: </i>''' + self.convert_minutes_to_hhmmss(self.nurseServiceTime[i]) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Total travel time: </i>''' + self.convert_minutes_to_hhmmss(self.nurseTravelTime[i]) + '''<br>'''
+            nursePart = nursePart + '''&nbsp; <i>Total waiting time: </i>''' + self.convert_minutes_to_hhmmss(self.nurseWaitingTime[i]) + '''<br>'''
             if len(cc.route) > 0:
-                carerPart = carerPart + '''&nbsp; <i>Service route: </i>[''' + str(self.jobObjs[int(cc.route[0])].ID)
+                nursePart = nursePart + '''&nbsp; <i>Service route: </i>[''' + str(self.jobObjs[int(cc.route[0])].ID)
                 for kkk in range(1,len(cc.route)):
                     jobbb = self.jobObjs[int(cc.route[kkk])]
                     if jobbb.doubleService:
-                        carerPart = carerPart + ', (' + str(jobbb.ID) + ')'
+                        nursePart = nursePart + ', (' + str(jobbb.ID) + ')'
                     else:
-                        carerPart = carerPart + ', ' + str(jobbb.ID)
+                        nursePart = nursePart + ', ' + str(jobbb.ID)
 
-                carerPart = carerPart + ''']<br>'''
+                nursePart = nursePart + ''']<br>'''
     
-        lht = lht + carerPart
+        lht = lht + nursePart
 
         if add_plots == True:
             modalImages = [self.fname + '_workload_dst.png', self.fname + '_time_info_dst.png']
@@ -1074,19 +1124,19 @@ class INSTANCE(object):
         
         m.get_root().html.add_child(folium.Element(lht))
 
-        # Depot, change to one per carer!
-        for carerj in range(self.nCarers):
-            carer_popup = 'Start location for carer ' + str(carerj)
-            # print(self.carerObjs[nursej].startLocation)
-            folium.Circle(self.carerObjs[carerj].startLocation.latlong(), radius=50, popup=carer_popup, color='black', fill_color='black', fill_opacity=0.5, fill=True).add_to(m)
+        # Depot, change to one per nurse!
+        for nursej in range(self.nNurses):
+            nurse_popup = 'Start location for nurse ' + str(nursej)
+            # print(self.nurseObjs[nursej].startLocation)
+            folium.Circle(self.nurseObjs[nursej].startLocation.latlong(), radius=50, popup=nurse_popup, color='black', fill_color='black', fill_opacity=0.5, fill=True).add_to(m)
         
         m.add_child(folium.map.LayerControl())
         m.save(webFilename)
 
         # Calculate travel variables (moved here from c_w.py 27/09/2021)
-        self.totalTravelCost = sum(self.carerTravelCost)
-        self.totalMileage = sum(self.carerMileage)
-        self.totalMileageCost = sum(self.carerMileageCost)
+        self.totalTravelCost = sum(self.nurseTravelCost)
+        self.totalMileage = sum(self.nurseMileage)
+        self.totalMileageCost = sum(self.nurseMileageCost)
         self.totalCost = self.totalTravelCost + self.totalMileageCost
 
         print('Website generated successfully.')
@@ -1111,7 +1161,7 @@ class INSTANCE(object):
         # times = [self.totalTravelTime, self.totalWaitingTime, self.totalServiceTime]
         # colours = ['#98d4f9', '#a6e781', '#f998c5'] ##a6e781 ##eeee76
         # plt.pie(times, labels=labels, colors=colours, autopct='%1.1f%%')
-        # plt.title('Total time for ' + str(self.nCarers) + ' nurses: ' + self.convert_minutes_to_hhmmss(self.totalTime))
+        # plt.title('Total time for ' + str(self.nNurses) + ' nurses: ' + self.convert_minutes_to_hhmmss(self.totalTime))
         # plt.axis('equal')
         # plt.draw()
 
@@ -1119,7 +1169,7 @@ class INSTANCE(object):
         fig.suptitle(self.area + ' ' + str(self.date) + ': DST', fontsize=13, fontweight='bold')
         ax = fig.add_subplot(111)
         # fig.subplots_adjust(top=0.72)
-        subtitle = 'Total time for ' + str(self.nCarers) + ' carers: ' + self.convert_minutes_to_hhmmss(self.totalTime)
+        subtitle = 'Total time for ' + str(self.nNurses) + ' carers: ' + self.convert_minutes_to_hhmmss(self.totalTime)
         subtitle = '\nTravel Time: ' + self.convert_minutes_to_hhmmss(self.totalTravelTime) + '  Service Time: ' + self.convert_minutes_to_hhmmss(self.totalServiceTime) + '  Waiting Time: ' + self.convert_minutes_to_hhmmss(self.totalWaitingTime)
         ax.set_title(subtitle, fontsize=8)
 
@@ -1144,24 +1194,24 @@ class INSTANCE(object):
         outputfiles_path = os.path.join(cwd, 'output')
         # plt.savefig(self.fname + '_time_info' + '.png', bbox_inches='tight')
         plt.savefig(outputfiles_path + '/' + pie_plot_name, bbox_inches='tight')
-        plt.show()
+        # plt.show()
         # exit(-1)
     ### --- End def plot_pie_time_spent_dst --- ###
 
-    def plot_bar_time_per_carer_dst(self):
-        xpos = np.arange(self.nCarers)
+    def plot_bar_time_per_nurse_dst(self):
+        xpos = np.arange(self.nNurses)
         width = 0.35
 
-        p1 = plt.bar(xpos, self.carerServiceTime, width, color='#f998c5')
-        p2 = plt.bar(xpos, self.carerTravelTime, width, bottom=self.carerServiceTime, color='#98d4f9')
-        p3 = plt.bar(xpos, self.carerWaitingTime, width, bottom=(self.carerServiceTime + self.carerTravelTime), color='#a6e781')
+        p1 = plt.bar(xpos, self.nurseServiceTime, width, color='#f998c5')
+        p2 = plt.bar(xpos, self.nurseTravelTime, width, bottom=self.nurseServiceTime, color='#98d4f9')
+        p3 = plt.bar(xpos, self.nurseWaitingTime, width, bottom=(self.nurseServiceTime + self.nurseTravelTime), color='#a6e781')
 
         plt.xlabel('Carer')
         plt.ylabel('Time')
         plt.title(self.area + ' ' + str(self.date) + ': DST', fontsize=13, fontweight='bold')
         ticksNames = []
         for i in xpos:
-            ticksNames.append(str(self.carerObjs[i].ID))
+            ticksNames.append(str(self.nurseObjs[i].ID))
             # ticksNames.append(i)
             # ticksNames.append('Nurse ' + str(i))
         # maxYtick = 8*3600/self.secondsPerTU
@@ -1183,32 +1233,32 @@ class INSTANCE(object):
         outputfiles_path = os.path.join(cwd, 'output')
         # plt.savefig(self.fname + '_workload' + '.png', bbox_inches='tight')
         plt.savefig(outputfiles_path + '/' + bar_plot_name, bbox_inches='tight')
-        plt.show()
+        # plt.show()
     ### --- End def plot_bar_time_per_nurse_dst --- ###
 
-    def get_carer_route_dst(self, ni):
-        # carerRoute = array, all -1s, then if index p has value j, it means that job j is in position p in carer's route.
-        carerRoute = np.zeros(self.nJobs)
+    def get_nurse_route_dst(self, ni):
+        # nurseRoute = array, all -1s, then if index p has value j, it means that job j is in position p in nurse's route.
+        nurseRoute = np.zeros(self.nJobs)
         for ii in range(self.nJobs):
-            carerRoute[ii] = -1
+            nurseRoute[ii] = -1
 
         for ii in range(self.nJobs):
             if (self.solMatrix[ni][ii] >= 0):
-                carerRoute[self.solMatrix[ni][ii]] = ii
+                nurseRoute[self.solMatrix[ni][ii]] = ii
 
-        return carerRoute
+        return nurseRoute
     ### --- End def get_nurse_route_dst --- ###
 
     def get_travel_time(self, i, j):
         return(self.od[int(i + 1)][int(j + 1)])
     ### --- End def get_travel_time --- ###
 
-    def get_carer_from_travel_time(self, i, j):
-        return(self.carer_travel_from_depot[int(i)][int(j)])
+    def get_nurse_from_travel_time(self, i, j):
+        return(self.nurse_travel_from_depot[int(i)][int(j)])
     ### --- End def get_travel_time --- ###
 
-    def get_carer_to_travel_time(self, i, j):
-        return(self.carer_travel_to_depot[int(i)][int(j)])
+    def get_nurse_to_travel_time(self, i, j):
+        return(self.nurse_travel_to_depot[int(i)][int(j)])
     ### --- End def get_travel_time --- ###
 
     def full_solution_report(self, report=2, doPlots=True):
@@ -1234,80 +1284,84 @@ class INSTANCE(object):
         self.MKQuality = 0
         self.WBQuality = 0
         self.paperQuality = 0
+        self.totalPref = 0
+        self.maxTravelTime = 0
+        self.maxWaitingTime = 0
+        self.maxDiffWorkload = 0
 
-        carerID = -1
+        nurseID = -1
 
-        for i in range(self.nCarers):
+        for i in range(self.nNurses):
             job = -1
             prevJob = -1
-            self.carerServiceTime[i] = 0
+            self.nurseServiceTime[i] = 0
             # print('Nurse: ', i)
-            carerID = self.carerObjs[i].ID
-            for p in range(len(self.carerRoute[i])): # For each POSITION
+            nurseID = self.nurseObjs[i].ID
+            for p in range(len(self.nurseRoute[i])): # For each POSITION
                 costOfTravel = 0
-                job = self.carerRoute[i][p] # job = job at position p in carer i's route
+                job = self.nurseRoute[i][p] # job = job at position p in nurse i's route
                 # print('job: ', job)
-                self.carerServiceTime[i] += self.jobTimeInfo[job][2]
-                if p == 0: # If this job is the first job for this carer, then the carer arrives at the start of the job, no waiting time.
+                self.nurseServiceTime[i] += self.jobTimeInfo[job][2]
+                if p == 0: # If this job is the first job for this nurse, then the nurse arrives at the start of the job, no waiting time.
                     arriveAt = self.timeMatrix[i][job]
                     startAt = arriveAt
                 else:
                     arriveAt = readyToNext
                     startAt = self.timeMatrix[i][job]
-                currentTime = startAt + self.jobTimeInfo[job][2] # currentTime = time that carer i finishes job j (start time of job + duration of job)
+                currentTime = startAt + self.jobTimeInfo[job][2] # currentTime = time that nurse i finishes job j (start time of job + duration of job)
                 leaveAt = currentTime # Nurse i leaves job j at this time.
-                if p < (len(self.carerRoute[i])-1): # if this job is NOT the last job (i.e. in the last position) of carer i's route
-                    nextJob = self.carerRoute[i][p+1]
-                    readyToNext = leaveAt + self.carerTravelMatrix[i][nextJob] #time at which carer i arrives at the next job
-                    # if p == (len(self.carerRoute[i]) - 2):
-                    # print('nextJob: ', nextJob, ' nurseTMnextJob: ', self.convert_minutes_to_hhmmss(self.carerTravelMatrix[i][nextJob]), 'readyToNext: ', self.convert_minutes_to_hhmmss(readyToNext), ' leaveAt: ' , self.convert_minutes_to_hhmmss(leaveAt), ' todepotjob: ', self.convert_minutes_to_hhmmss(self.get_nurse_to_travel_time(i, job)), ' todepot next: ', self.convert_minutes_to_hhmmss(self.get_nurse_to_travel_time(i, nextJob)))
+                if p < (len(self.nurseRoute[i])-1): # if this job is NOT the last job (i.e. in the last position) of nurse i's route
+                    nextJob = self.nurseRoute[i][p+1]
+                    readyToNext = leaveAt + self.nurseTravelMatrix[i][nextJob] #time at which nurse i arrives at the next job
+                    # if p == (len(self.nurseRoute[i]) - 2):
+                    # print('nextJob: ', nextJob, ' nurseTMnextJob: ', self.convert_minutes_to_hhmmss(self.nurseTravelMatrix[i][nextJob]), 'readyToNext: ', self.convert_minutes_to_hhmmss(readyToNext), ' leaveAt: ' , self.convert_minutes_to_hhmmss(leaveAt), ' todepotjob: ', self.convert_minutes_to_hhmmss(self.get_nurse_to_travel_time(i, job)), ' todepot next: ', self.convert_minutes_to_hhmmss(self.get_nurse_to_travel_time(i, nextJob)))
                 prevJob = job
                 if self.doubleService[job] == 1: # job is a double service
                     if self.jobObjs[job].markedReport == 0: # no information for either of the two nurses have been added to the job
-                        self.jobObjs[job].carerID = [carerID]
-                        self.jobObjs[job].assignedCarer = [i]
+                        self.jobObjs[job].nurseID = [nurseID]
+                        self.jobObjs[job].assignedNurse = [i]
                         self.jobObjs[job].arrivalTime = [arriveAt]
                         self.jobObjs[job].startTime = [startAt]
                         self.jobObjs[job].departureTime = [leaveAt]
-                        self.jobObjs[job].waitingToStart = [self.carerWaitingMatrix[i][job]]
+                        self.jobObjs[job].waitingToStart = [self.nurseWaitingMatrix[i][job]]
                         self.jobObjs[job].tardiness = [self.violatedTW[job]]
                         self.jobObjs[job].positionInSchedule = [self.solMatrix[i][job]]
-                        self.jobObjs[job].travelToJob = [self.carerTravelMatrix[i][job]]
+                        self.jobObjs[job].travelToJob = [self.nurseTravelMatrix[i][job]]
                         self.jobObjs[job].markedReport += 1
                     elif self.jobObjs[job].markedReport == 1: # information for one of the two nurses has already been added to the job
-                        self.jobObjs[job].carerID.append(carerID)
-                        self.jobObjs[job].assignedCarer.append(i)
+                        self.jobObjs[job].nurseID.append(nurseID)
+                        self.jobObjs[job].assignedNurse.append(i)
                         self.jobObjs[job].arrivalTime.append(arriveAt)
                         self.jobObjs[job].startTime.append(startAt)
                         self.jobObjs[job].departureTime.append(leaveAt)
-                        self.jobObjs[job].waitingToStart.append(self.carerWaitingMatrix[i][job])
+                        self.jobObjs[job].waitingToStart.append(self.nurseWaitingMatrix[i][job])
                         self.jobObjs[job].tardiness.append(self.violatedTW[job])
                         self.jobObjs[job].positionInSchedule.append(self.solMatrix[i][job])
-                        self.jobObjs[job].travelToJob.append(self.carerTravelMatrix[i][job])
+                        self.jobObjs[job].travelToJob.append(self.nurseTravelMatrix[i][job])
                         self.jobObjs[job].markedReport += 1
                     else:
                         print('[ERROR]: self.jobObjs[job].markedReport for job ', job, ' is ', self.jobObjs[job].markedReport)
                         print('Terminating program.')
                         exit(-1)
                 else: # job is not a DS
-                    self.jobObjs[job].carerID = carerID
-                    self.jobObjs[job].assignedCarer = i
+                    self.jobObjs[job].nurseID = nurseID
+                    self.jobObjs[job].assignedNurse = i
                     self.jobObjs[job].arrivalTime = arriveAt
                     self.jobObjs[job].startTime = startAt
                     self.jobObjs[job].departureTime = leaveAt
-                    self.jobObjs[job].waitingToStart = self.carerWaitingMatrix[i][job]
+                    self.jobObjs[job].waitingToStart = self.nurseWaitingMatrix[i][job]
                     self.jobObjs[job].tardiness = self.violatedTW[job]
                     self.jobObjs[job].positionInSchedule = self.solMatrix[i][job]
-                    self.jobObjs[job].travelToJob = self.carerTravelMatrix[i][job]
-                costOfTravel = get_travel_cost(self.carerTravelMatrix[i][job])
-                self.carerTravelCost[i] += costOfTravel
+                    self.jobObjs[job].travelToJob = self.nurseTravelMatrix[i][job]
+                costOfTravel = get_travel_cost(self.nurseTravelMatrix[i][job])
+                self.nurseTravelCost[i] += costOfTravel
             # End for loop p
             if job > -1:
-                travelTime = self.get_carer_to_travel_time(i, job)
+                travelTime = self.get_nurse_to_travel_time(i, job)
                 finishShiftAt = leaveAt + travelTime
             else:
-                finishShiftAt = self.carerWorkingTimes[i][0]
-            self.carerObjs[i].finishTime = finishShiftAt
+                finishShiftAt = self.nurseWorkingTimes[i][0]
+            self.nurseObjs[i].finishTime = finishShiftAt
         # End for loop i
 
         self.totalTime = self.totalsArray[0]
@@ -1326,10 +1380,14 @@ class INSTANCE(object):
         self.MKQuality = self.totalsArray[15]
         self.WBQuality = self.totalsArray[16]
         self.paperQuality = self.totalsArray[17]
+        self.totalPref = self.totalsArray[19]
+        self.maxTravelTime = self.totalsArray[20]
+        self.maxWaitingTime = self.totalsArray[21]
+        self.maxDiffWorkload = self.totalsArray[22]
 
         if doPlots:
             self.plot_pie_time_spent_dst()
-            self.plot_bar_time_per_carer_dst()
+            self.plot_bar_time_per_nurse_dst()
             
         return self.Cquality  
     ### --- End def full_solution_report --- ###
@@ -1349,7 +1407,7 @@ class INSTANCE(object):
                     timeWindow = [client_df.iloc[i]['tw_start'], client_df.iloc[i]['tw_end']]
                     if self.jobObjs[j].timewindow == timeWindow:
                         if self.doubleService[j] == 1:
-                            client_df.loc[i, 'carer_id'] = self.jobObjs[j].carerID[0]
+                            client_df.loc[i, 'nurse_id'] = self.jobObjs[j].nurseID[0]
                             client_df.loc[i, 'arrive_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].arrivalTime[0])
                             client_df.loc[i, 'start_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].startTime[0])
                             client_df.loc[i, 'depart_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].departureTime[0])
@@ -1358,7 +1416,7 @@ class INSTANCE(object):
                             client_df.loc[i, 'travel_time'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].travelToJob[0])
                             client_df.loc[i, 'position'] = self.jobObjs[j].positionInSchedule[0]
 
-                            client_df.loc[i, 'carer_id2'] = self.jobObjs[j].carerID[1]
+                            client_df.loc[i, 'nurse_id2'] = self.jobObjs[j].nurseID[1]
                             client_df.loc[i, 'arrive_job2'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].arrivalTime[1])
                             client_df.loc[i, 'start_job2'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].startTime[1])
                             client_df.loc[i, 'depart_job2'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].departureTime[1])
@@ -1368,7 +1426,7 @@ class INSTANCE(object):
                             client_df.loc[i, 'position2'] = self.jobObjs[j].positionInSchedule[1]
                             break
                         else:
-                            client_df.loc[i, 'carer_id'] = self.jobObjs[j].carerID
+                            client_df.loc[i, 'nurse_id'] = self.jobObjs[j].nurseID
                             client_df.loc[i, 'arrive_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].arrivalTime)
                             client_df.loc[i, 'start_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].startTime)
                             client_df.loc[i, 'depart_job'] = self.convert_minutes_to_hhmmss(self.jobObjs[j].departureTime)
@@ -1396,7 +1454,7 @@ class INSTANCE(object):
         f.write('Date: ' + str(datetime.datetime.now()) + '\n')
         f.write('Quality: ' + str(self.Cquality) + '\n')
         f.write('Measure: ' + str(self.quality_measure) + '\n')
-        f.write('Carers: ' + str(self.nCarers) + '\n')
+        f.write('Nurses: ' + str(self.nNurses) + '\n')
         f.write('Jobs: ' + str(self.nJobs) + '\n')
         f.write('Total Time: ' + str(self.convert_minutes_to_hhmmss(self.totalTime)) + '\n')
         f.write('Total Service Time: ' + str(self.convert_minutes_to_hhmmss(self.totalServiceTime)) + '\n')
@@ -1404,6 +1462,10 @@ class INSTANCE(object):
         f.write('Total Waiting Time: ' + str(self.convert_minutes_to_hhmmss(self.totalWaitingTime)) + '\n')
         f.write('Total Tardiness: ' + str(self.convert_minutes_to_hhmmss(self.totalTardiness)) + '\n')
         f.write('Total Overtime: ' + str(self.convert_minutes_to_hhmmss(self.totalOvertime)) + '\n')
+        f.write('Total Preference: ' + str(self.totalPref) + '\n')
+        f.write('Max Travel Time: ' + str(self.convert_minutes_to_hhmmss(self.maxTravelTime)) + '\n')
+        f.write('Max Waiting Time: ' + str(self.convert_minutes_to_hhmmss(self.maxWaitingTime)) + '\n')
+        f.write('Max Diff Workload: ' + str(self.maxDiffWorkload) + '\n')
         f.write('Total Mileage: ' + str(self.totalMileage) + '\n')
         f.write('Total Cost (£): ' + str(self.totalCost) + '\n')
         f.write('Elapsed Time (s): ' + str(elapsed_time) + '\n')
@@ -1446,6 +1508,9 @@ def default_options_vector():
     ov[55] = 0.50 # alpha_5 Workload balance
     ov[56] = 1 # alpha_6 Preference score
     ov[57] = 0 # alpha_7 Max tardiness (not in paper)
+    ov[58] = -1 # alpha_8 Max Travel Time NEW: 06/11/2021
+    ov[59] = -1 # alpha_9 Max Waiting Time NEW: 06/11/2021
+    ov[60] = -1 # alpha_5 NEW FOR NEW WORKLOAD BALANCE VARIABLE 06/11/2021
 
     ov[99] = 0.0 # print all input data
     return ov
@@ -1518,8 +1583,8 @@ def route_points_osrm(p1, p2, goingThrough=None):
         routeList.append([float(coordPair[1]), float(coordPair[0])])
     dist = osrm_result['routes'][0]['distance']
     dur = osrm_result['routes'][0]['duration'] # NOTE: THIS IS IN SECONDS!! NEED TO CHANGE TO MINUTES.
-    firstlegdist = osrm_result['routes'][0]['legs'][0]['distance'] # distance from carer's home to first job
-    lastlegdist = osrm_result['routes'][0]['legs'][-1]['distance'] # distance from last job back to carer's home
+    firstlegdist = osrm_result['routes'][0]['legs'][0]['distance'] # distance from nurse's home to first job
+    lastlegdist = osrm_result['routes'][0]['legs'][-1]['distance'] # distance from last job back to nurse's home
     distjobs = dist - (firstlegdist + lastlegdist)
     firstlegdur = osrm_result['routes'][0]['legs'][0]['duration'] # NOTE: IN SECONDS!! NEED TO CHANGE TO MINUTES
     lastlegdur = osrm_result['routes'][0]['legs'][-1]['duration'] # NOTE: IN SECONDS!! NEED TO CHANGE TO MINUTES.
