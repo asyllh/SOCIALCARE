@@ -82,7 +82,7 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
     client_dict = {'client_id' : [], 'postcode' : [], 'area' : [], 'date' : [], 
                 'start' : [],  'duration' : [], 'end' : [],  'tw_start' : [], 'tw_end' : [], 
                 'longitude' : [], 'latitude' : [], 
-                'start_time' : [], 'end_time' : [], 'weekly_cycle' : [], 'num_carers' : []}
+                'start_time' : [], 'end_time' : [], 'weekly_cycle' : [], 'num_nurses' : []}
 
     # start_of_day = clientdf_contracts.iloc[0]['From'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first job.
     
@@ -104,7 +104,7 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
         client_start = np.nan # minutes from midnight
         client_end = np.nan # minutes from midnight
         client_weeklycycle = np.nan
-        client_numcarers = np.nan
+        client_numnurses = np.nan
 
         # client_details_row = clientdf_xl.loc[clientdf_xl['Client ID'] == client_id[i]]
         client_details_row = clientdf_xl.loc[[i]]
@@ -147,7 +147,7 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
             client_end = time_dif_to_minutes(client_work_dateendtime, start_of_day) # minutes from midnight
             client_duration = client_end - client_start # minutes
             client_weeklycycle = client_details_row['Weekly Cycle'].values[0]
-            client_numcarers = client_details_row['Number of Carers'].values[0]
+            client_numnurses = client_details_row['Number of Carers'].values[0]
 
             client_longitude, client_latitude = cpo_inst.find_postcode_lonlat(client_postcode)
             if (client_longitude == None):
@@ -173,47 +173,20 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
             client_dict['longitude'].append(client_longitude)
             client_dict['latitude'].append(client_latitude)
             client_dict['weekly_cycle'].append(client_weeklycycle)
-            client_dict['num_carers'].append(client_numcarers)
+            client_dict['num_nurses'].append(client_numnurses)
         # End if add_to_dict == True
     # --- End for i in range(len(client_id)) loop --- #
 
     # Create dataframe from client_dict dictionary
     client_df = pd.DataFrame(client_dict)
-
-    # if day_index == 0 or day_index == 7 or day_index == 14 or day_index == 21 or day_index == 28 or day_index == 35 or day_index == 42 or day_index == 49:
-    #     client_df = client_df[client_df['mon'] == 1] # filter by monday
-    #     client_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by monday
-    # elif day_index == 1 or day_index == 8 or day_index == 15 or day_index == 22 or day_index == 29 or day_index == 36 or day_index == 43 or day_index == 50:
-    #     client_df = client_df[client_df['tue'] == 1] # filter by tuesday
-    #     client_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by tuesday
-    # elif day_index == 2 or day_index == 9 or day_index == 16 or day_index == 23 or day_index == 30 or day_index == 37 or day_index == 44 or day_index == 51:
-    #     client_df = client_df[client_df['wed'] == 1] # filter by wednesday
-    #     client_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by wednesday
-    # elif day_index == 3 or day_index == 10 or day_index == 17 or day_index == 24 or day_index == 31 or day_index == 38 or day_index == 45 or day_index == 52:
-    #     client_df = client_df[client_df['thu'] == 1] # filter by thursday
-    #     client_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by thursday
-    # elif day_index == 4 or day_index == 11 or day_index == 18 or day_index == 25 or day_index == 32 or day_index == 39 or day_index == 46 or day_index == 53:
-    #     client_df = client_df[client_df['fri'] == 1] # filter by friday
-    #     client_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by friday
-    # elif day_index == 5 or day_index == 12 or day_index == 19 or day_index == 26 or day_index == 33 or day_index == 40 or day_index == 47 or day_index == 54:
-    #     client_df = client_df[client_df['sat'] == 1] # filter by saturday
-    #     client_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by saturday
-    # elif day_index == 6 or day_index == 13 or day_index == 20 or day_index == 27 or day_index == 34 or day_index == 41 or day_index == 48 or day_index == 55:
-    #     client_df = client_df[client_df['sun'] == 1] # filter by sunday
-    #     client_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by sunday
-
-
-
-    print('len client_df: ', len(client_df))
-    # exit(-1)
    
     ######################## -------------------------------- CARER -------------------------------- ########################
 
-    carerdetails_sheetname = 'Carer Availability Data'
+    nursedetails_sheetname = 'Carer Availability Data'
     # Carer details sheet
-    carerdf_xl = pd.read_excel(data_filename, sheet_name=carerdetails_sheetname, header=15)
+    nursedf_xl = pd.read_excel(data_filename, sheet_name=nursedetails_sheetname, header=15)
 
-    carerdf_xl.rename(columns={'CARERSOnlineId': 'Carer ID',
+    nursedf_xl.rename(columns={'CARERSOnlineId': 'Carer ID',
                                     'CarerAreasDescription': 'Area', 
                                     'Primary Area Flag': 'Primary', 
                                     'CARERSPostcode': 'Postcode', 
@@ -225,160 +198,160 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
                                     'EmployeeAvailableDay': 'Available Day',
                                     'Week Number & Day': 'Week Number and Day'}, inplace=True)
 
-    carerdf_xl = carerdf_xl[carerdf_xl['Area'] == area] # filter by area
-    carerdf_xl.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by area
+    nursedf_xl = nursedf_xl[nursedf_xl['Area'] == area] # filter by area
+    nursedf_xl.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by area
 
-    # carerdf_xl['Carer ID'] = carerdf_xl['Carer ID'].str.replace(' ', '')
-    # carerdf_xl['Carer ID'] = carerdf_xl['Carer ID'].str.lower()
-    carerdf_xl['Postcode'] = carerdf_xl['Postcode'].str.replace(' ', '')
-    carerdf_xl['Postcode'] = carerdf_xl['Postcode'].str.lower()
+    # nursedf_xl['Carer ID'] = nursedf_xl['Carer ID'].str.replace(' ', '')
+    # nursedf_xl['Carer ID'] = nursedf_xl['Carer ID'].str.lower()
+    nursedf_xl['Postcode'] = nursedf_xl['Postcode'].str.replace(' ', '')
+    nursedf_xl['Postcode'] = nursedf_xl['Postcode'].str.lower()
 
-    # print(carerdf_xl[:10])
+    # print(nursedf_xl[:10])
     # exit(-1)
 
-    carerdf_xl['Date'] = carerdf_xl['Start Date'].dt.date
-    carerdf_xl['Date Start Time'] = pd.to_datetime(carerdf_xl['Date'].astype(str) + ' ' + carerdf_xl['Start Time'].astype(str)) # yyyy-mm-dd hh:mmm:ss
-    carerdf_xl['Date End Time'] = pd.to_datetime(carerdf_xl['Date'].astype(str) + ' ' + carerdf_xl['End Time'].astype(str)) # yyyy-mm-dd hh:mmm:ss
+    nursedf_xl['Date'] = nursedf_xl['Start Date'].dt.date
+    nursedf_xl['Date Start Time'] = pd.to_datetime(nursedf_xl['Date'].astype(str) + ' ' + nursedf_xl['Start Time'].astype(str)) # yyyy-mm-dd hh:mmm:ss
+    nursedf_xl['Date End Time'] = pd.to_datetime(nursedf_xl['Date'].astype(str) + ' ' + nursedf_xl['End Time'].astype(str)) # yyyy-mm-dd hh:mmm:ss
 
-    # print('carerdf_xl:')
-    # print(carerdf_xl)
+    # print('nursedf_xl:')
+    # print(nursedf_xl)
     # exit(-1)
 
     # Dictionaries to hold carer details: one for the individual shifts of the day for each carer, one for the entire day of the carer
     # 'start' and 'end' are minutes from midnight, 'duration' is minutes, 'start_time' and 'end_time' are hh:mm:ss.
-    carer_shift_dict = {'unique_id' : [], 'shift' : [], 
-                    'carer_id' : [], 'postcode' : [], 'area' : [],
+    nurse_shift_dict = {'unique_id' : [], 'shift' : [], 
+                    'nurse_id' : [], 'postcode' : [], 'area' : [],
                     'start' : [], 'duration' : [], 'end' : [], 
                     'longitude' : [], 'latitude' : [],
                     'start_time' : [], 'end_time' : [], 'avail_day' : [], 'week_cycle' : []}
 
-    carer_day_dict = {'carer_id' : [], 'postcode' : [], 'area' : [], 
+    nurse_day_dict = {'nurse_id' : [], 'postcode' : [], 'area' : [], 
                     'start' : [], 'duration' : [], 'end' : [], 
                     'longitude' : [], 'latitude' : [],
                     'start_time' : [], 'end_time' : [], 'avail_day' : [], 'week_cycle' : []}
     
     
     # Get information from excel data
-    carer_id = carerdf_xl['Carer ID']
-    for i in range(len(carer_id)):
-        if pd.isnull(carer_id[i]): # if carer_id[i] == None
+    nurse_id = nursedf_xl['Carer ID']
+    for i in range(len(nurse_id)):
+        if pd.isnull(nurse_id[i]): # if nurse_id[i] == None
             print('[WARNING]: Entry number ', i, ' for ', area, 'has no Carer ID.')
             print('Skipping entry.')
             continue
-        if(carer_id[i] in carer_day_dict['carer_id']): # Skip over carers that have already been assessed.
+        if(nurse_id[i] in nurse_day_dict['nurse_id']): # Skip over carers that have already been assessed.
             continue
-        carer_area = np.nan
-        carer_postcode = np.nan
-        carer_starttime = np.nan # hh:mm:ss 
-        carer_endtime = np.nan # hh:mm:ss 
-        carer_start = np.nan # minutes from midnight 
-        carer_end = np.nan # minutes from midnight
-        carer_duration = np.nan # minutes
-        carer_datestarttime = np.nan # yyyy-mm-dd hh:mmm:ss
-        carer_dateendtime = np.nan # yyyy-mm-dd hh:mmm:ss
-        carer_longitude = np.nan
-        carer_latitude = np.nan
-        carer_availday = np.nan
-        carer_weekcycle = np.nan
+        nurse_area = np.nan
+        nurse_postcode = np.nan
+        nurse_starttime = np.nan # hh:mm:ss 
+        nurse_endtime = np.nan # hh:mm:ss 
+        nurse_start = np.nan # minutes from midnight 
+        nurse_end = np.nan # minutes from midnight
+        nurse_duration = np.nan # minutes
+        nurse_datestarttime = np.nan # yyyy-mm-dd hh:mmm:ss
+        nurse_dateendtime = np.nan # yyyy-mm-dd hh:mmm:ss
+        nurse_longitude = np.nan
+        nurse_latitude = np.nan
+        nurse_availday = np.nan
+        nurse_weekcycle = np.nan
 
-        carer_id_rows = carerdf_xl[carerdf_xl['Carer ID'] == carer_id[i]] # carer_id_rows is a df that only contains information for the current carer_id[i]
+        nurse_id_rows = nursedf_xl[nursedf_xl['Carer ID'] == nurse_id[i]] # nurse_id_rows is a df that only contains information for the current nurse_id[i]
         # Check there is no missing information
-        if len(carer_id_rows) < 1:
-            print('[ERROR]: No shifts available for Carer ', carer_id[i])
+        if len(nurse_id_rows) < 1:
+            print('[ERROR]: No shifts available for Carer ', nurse_id[i])
             print('Terminating program.')
             exit(-1)
-        # Now in this truncated df (carer_id_rows), we need to go down the 'Available Day' column and find the highest number (0-55)
-        # If the highest number is <=13, then the current carer (carer_id[i]) is on a 2-week cycle, else if the highest number is >13 and <=55, then the current carer is on an 8-week cycle.
+        # Now in this truncated df (nurse_id_rows), we need to go down the 'Available Day' column and find the highest number (0-55)
+        # If the highest number is <=13, then the current carer (nurse_id[i]) is on a 2-week cycle, else if the highest number is >13 and <=55, then the current carer is on an 8-week cycle.
         highest_availday = 0
-        for h in range(len(carer_id_rows)):
-            if carer_id_rows.iloc[h]['Available Day'] > highest_availday:
-                highest_availday = carer_id_rows.iloc[h]['Available Day']
+        for h in range(len(nurse_id_rows)):
+            if nurse_id_rows.iloc[h]['Available Day'] > highest_availday:
+                highest_availday = nurse_id_rows.iloc[h]['Available Day']
         if highest_availday <= 13:
-            carer_weekcycle = 2
+            nurse_weekcycle = 2
         elif highest_availday > 13 and highest_availday <= 55:
-            carer_weekcycle = 8
+            nurse_weekcycle = 8
         else:
-            print('[ERROR]: invalid highest_availday value for Carer ', carer_id[i], ', highest_availday is ', highest_availday)
+            print('[ERROR]: invalid highest_availday value for Carer ', nurse_id[i], ', highest_availday is ', highest_availday)
             print('Terminating program.')
             exit(-1)
 
         # for j in range(56): # from 0 to 55
 
-        carer_shift_rows = carer_id_rows[carer_id_rows['Available Day'] == 0]
-        if carer_weekcycle == 2:
-            carer_shift_rows = carer_id_rows[carer_id_rows['Available Day'] == dayindex_2weeks]
-        elif carer_weekcycle == 8:
-            carer_shift_rows = carer_id_rows[carer_id_rows['Available Day'] == dayindex_8weeks]
-        # print('i: ', i, 'carer_id[i]: ', carer_id[i], 'j: ', j)
-        # print(carer_shift_rows)
+        nurse_shift_rows = nurse_id_rows[nurse_id_rows['Available Day'] == 0]
+        if nurse_weekcycle == 2:
+            nurse_shift_rows = nurse_id_rows[nurse_id_rows['Available Day'] == dayindex_2weeks]
+        elif nurse_weekcycle == 8:
+            nurse_shift_rows = nurse_id_rows[nurse_id_rows['Available Day'] == dayindex_8weeks]
+        # print('i: ', i, 'nurse_id[i]: ', nurse_id[i], 'j: ', j)
+        # print(nurse_shift_rows)
         # exit(-1)
         #NOTE: NEW - remove duplicate rows 06/09/2021
-        carer_shift_rows.drop_duplicates(inplace=True)
-        if len(carer_shift_rows) < 1: # No shifts for dayindex_weeks for this carer
+        nurse_shift_rows.drop_duplicates(inplace=True)
+        if len(nurse_shift_rows) < 1: # No shifts for dayindex_weeks for this carer
             continue
-        elif len(carer_shift_rows) == 1: # this carer has only one shift on dayindex_weeks
-            start_of_day = carer_shift_rows.iloc[0]['Date Start Time'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first shift.
+        elif len(nurse_shift_rows) == 1: # this carer has only one shift on dayindex_weeks
+            start_of_day = nurse_shift_rows.iloc[0]['Date Start Time'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first shift.
             shift = 1 # Only one shift
-            carer_uniqueid = str(carer_id[i]) + '__' + str(shift)
-            carer_shift = shift
-            carer_area = carer_shift_rows['Area'].values[0]
-            carer_postcode = carer_shift_rows['Postcode'].values[0]
-            carer_starttime = carer_shift_rows['Start Time'].values[0] # hh:mm:ss
-            carer_endtime = carer_shift_rows['End Time'].values[0] # hh:mm:ss
-            carer_datestarttime = carer_shift_rows.iloc[0]['Date Start Time'] # yyyy-mm-dd hh:mmm:ss
-            carer_dateendtime = carer_shift_rows.iloc[0]['Date End Time'] # yyyy-mm-dd hh:mmm:ss
-            carer_start = time_dif_to_minutes(carer_datestarttime, start_of_day) # minutes from midnight
-            carer_end = time_dif_to_minutes(carer_dateendtime, start_of_day) # minutes from midnight 
-            carer_duration = carer_end - carer_start # minutes
-            carer_availday = carer_shift_rows['Available Day'].values[0]
-            carer_longitude, carer_latitude = cpo_inst.find_postcode_lonlat(carer_postcode)
-            if (carer_longitude == None):
-                # print('[ERROR]: No latitude and longitude found for Carer ', carer_id[i], ', postcode: ', carer_postcode)
-                print('[WARNING]: No latitude and longitude found for Carer ', carer_id[i], ', postcode: ', carer_postcode)
+            nurse_uniqueid = str(nurse_id[i]) + '__' + str(shift)
+            nurse_shift = shift
+            nurse_area = nurse_shift_rows['Area'].values[0]
+            nurse_postcode = nurse_shift_rows['Postcode'].values[0]
+            nurse_starttime = nurse_shift_rows['Start Time'].values[0] # hh:mm:ss
+            nurse_endtime = nurse_shift_rows['End Time'].values[0] # hh:mm:ss
+            nurse_datestarttime = nurse_shift_rows.iloc[0]['Date Start Time'] # yyyy-mm-dd hh:mmm:ss
+            nurse_dateendtime = nurse_shift_rows.iloc[0]['Date End Time'] # yyyy-mm-dd hh:mmm:ss
+            nurse_start = time_dif_to_minutes(nurse_datestarttime, start_of_day) # minutes from midnight
+            nurse_end = time_dif_to_minutes(nurse_dateendtime, start_of_day) # minutes from midnight 
+            nurse_duration = nurse_end - nurse_start # minutes
+            nurse_availday = nurse_shift_rows['Available Day'].values[0]
+            nurse_longitude, nurse_latitude = cpo_inst.find_postcode_lonlat(nurse_postcode)
+            if (nurse_longitude == None):
+                # print('[ERROR]: No latitude and longitude found for Carer ', nurse_id[i], ', postcode: ', nurse_postcode)
+                print('[WARNING]: No latitude and longitude found for Carer ', nurse_id[i], ', postcode: ', nurse_postcode)
                 # print('Terminating program.')
                 print('Skipping carer.')
                 # exit(-1)
                 continue
             
-            # Add info to carer_shift_dict:
-            carer_shift_dict['unique_id'].append(carer_uniqueid)
-            carer_shift_dict['shift'].append(carer_shift)
-            carer_shift_dict['carer_id'].append(carer_id[i])
-            carer_shift_dict['postcode'].append(carer_postcode)
-            carer_shift_dict['area'].append(carer_area)
-            carer_shift_dict['start'].append(carer_start) # minutes from midnight
-            carer_shift_dict['duration'].append(carer_duration) # minutes
-            carer_shift_dict['end'].append(carer_end) # minutes from midnight
-            carer_shift_dict['longitude'].append(carer_longitude)
-            carer_shift_dict['latitude'].append(carer_latitude)
-            carer_shift_dict['start_time'].append(carer_starttime) # hh:mm:ss
-            carer_shift_dict['end_time'].append(carer_endtime) # hh:mm:ss
-            carer_shift_dict['avail_day'].append(carer_availday)
-            carer_shift_dict['week_cycle'].append(carer_weekcycle)
+            # Add info to nurse_shift_dict:
+            nurse_shift_dict['unique_id'].append(nurse_uniqueid)
+            nurse_shift_dict['shift'].append(nurse_shift)
+            nurse_shift_dict['nurse_id'].append(nurse_id[i])
+            nurse_shift_dict['postcode'].append(nurse_postcode)
+            nurse_shift_dict['area'].append(nurse_area)
+            nurse_shift_dict['start'].append(nurse_start) # minutes from midnight
+            nurse_shift_dict['duration'].append(nurse_duration) # minutes
+            nurse_shift_dict['end'].append(nurse_end) # minutes from midnight
+            nurse_shift_dict['longitude'].append(nurse_longitude)
+            nurse_shift_dict['latitude'].append(nurse_latitude)
+            nurse_shift_dict['start_time'].append(nurse_starttime) # hh:mm:ss
+            nurse_shift_dict['end_time'].append(nurse_endtime) # hh:mm:ss
+            nurse_shift_dict['avail_day'].append(nurse_availday)
+            nurse_shift_dict['week_cycle'].append(nurse_weekcycle)
 
-            # Add info to carer_day_dict:
-            carer_day_dict['carer_id'].append(carer_id[i])
-            carer_day_dict['postcode'].append(carer_postcode)
-            carer_day_dict['area'].append(carer_area)
-            carer_day_dict['start'].append(carer_start) # minutes from midnight
-            carer_day_dict['duration'].append(carer_duration) # minutes
-            carer_day_dict['end'].append(carer_end) # minutes from midnight
-            carer_day_dict['longitude'].append(carer_longitude)
-            carer_day_dict['latitude'].append(carer_latitude)
-            carer_day_dict['start_time'].append(carer_starttime) # hh:mm:ss
-            carer_day_dict['end_time'].append(carer_endtime) # hh:mm:ss
-            carer_day_dict['avail_day'].append(carer_availday)
-            carer_day_dict['week_cycle'].append(carer_weekcycle)
-        elif len(carer_shift_rows) > 1: # this carer has multiple shifts on dayindex_weeks
-            start_of_day = carer_shift_rows.iloc[0]['Date Start Time'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first shift.
+            # Add info to nurse_day_dict:
+            nurse_day_dict['nurse_id'].append(nurse_id[i])
+            nurse_day_dict['postcode'].append(nurse_postcode)
+            nurse_day_dict['area'].append(nurse_area)
+            nurse_day_dict['start'].append(nurse_start) # minutes from midnight
+            nurse_day_dict['duration'].append(nurse_duration) # minutes
+            nurse_day_dict['end'].append(nurse_end) # minutes from midnight
+            nurse_day_dict['longitude'].append(nurse_longitude)
+            nurse_day_dict['latitude'].append(nurse_latitude)
+            nurse_day_dict['start_time'].append(nurse_starttime) # hh:mm:ss
+            nurse_day_dict['end_time'].append(nurse_endtime) # hh:mm:ss
+            nurse_day_dict['avail_day'].append(nurse_availday)
+            nurse_day_dict['week_cycle'].append(nurse_weekcycle)
+        elif len(nurse_shift_rows) > 1: # this carer has multiple shifts on dayindex_weeks
+            start_of_day = nurse_shift_rows.iloc[0]['Date Start Time'].replace(hour=0, minute=0, second=0) # Set the start time of that DAY (day_df) to 00:00:00 for the first shift.
             # First just get details of carer area, postcode, day, and lat/lon
-            carer_area = carer_shift_rows['Area'].values[0]
-            carer_postcode = carer_shift_rows['Postcode'].values[0]
-            carer_availday = carer_shift_rows['Available Day'].values[0]
-            carer_longitude, carer_latitude = cpo_inst.find_postcode_lonlat(carer_postcode)
-            if (carer_longitude == None):
-                # print('[ERROR]: No latitude and longitude found for Carer ', carer_id[i], ', postcode: ', carer_postcode)
-                print('[WARNING]: No latitude and longitude found for Carer ', carer_id[i], ', postcode: ', carer_postcode)
+            nurse_area = nurse_shift_rows['Area'].values[0]
+            nurse_postcode = nurse_shift_rows['Postcode'].values[0]
+            nurse_availday = nurse_shift_rows['Available Day'].values[0]
+            nurse_longitude, nurse_latitude = cpo_inst.find_postcode_lonlat(nurse_postcode)
+            if (nurse_longitude == None):
+                # print('[ERROR]: No latitude and longitude found for Carer ', nurse_id[i], ', postcode: ', nurse_postcode)
+                print('[WARNING]: No latitude and longitude found for Carer ', nurse_id[i], ', postcode: ', nurse_postcode)
                 # print('Terminating program.')
                 print('Skipping carer.')
                 # exit(-1)
@@ -389,85 +362,85 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
             day_start = 0
             day_endtime = 0
             day_end = 0
-            for k in range(len(carer_shift_rows)-1, -1, -1): #for k in range (start from len(carer_shift_rows)-1, end at -1 (so go up to 0), and step decrement by -1 each time)
+            for k in range(len(nurse_shift_rows)-1, -1, -1): #for k in range (start from len(nurse_shift_rows)-1, end at -1 (so go up to 0), and step decrement by -1 each time)
                 shift_count += 1
-                carer_uniqueid = str(carer_id[i]) + '__' + str(shift_count)
-                carer_shift = shift_count
-                carer_starttime = carer_shift_rows['Start Time'].values[k] # hh:mm:ss
-                carer_endtime = carer_shift_rows['End Time'].values[k] # hh:mm:ss
-                carer_datestarttime = carer_shift_rows.iloc[k]['Date Start Time'] # yyyy-mm-dd hh:mmm:ss
-                carer_dateendtime = carer_shift_rows.iloc[k]['Date End Time'] # yyyy-mm-dd hh:mmm:ss
-                carer_start = time_dif_to_minutes(carer_datestarttime, start_of_day) # minutes from midnight
-                carer_end = time_dif_to_minutes(carer_dateendtime, start_of_day) # minutes from midnight
-                carer_duration = carer_end - carer_start # minutes
-                if k == len(carer_shift_rows)-1:
-                    day_starttime = carer_starttime # hh:mm:ss
-                    day_start = carer_start # minutes from midnight
+                nurse_uniqueid = str(nurse_id[i]) + '__' + str(shift_count)
+                nurse_shift = shift_count
+                nurse_starttime = nurse_shift_rows['Start Time'].values[k] # hh:mm:ss
+                nurse_endtime = nurse_shift_rows['End Time'].values[k] # hh:mm:ss
+                nurse_datestarttime = nurse_shift_rows.iloc[k]['Date Start Time'] # yyyy-mm-dd hh:mmm:ss
+                nurse_dateendtime = nurse_shift_rows.iloc[k]['Date End Time'] # yyyy-mm-dd hh:mmm:ss
+                nurse_start = time_dif_to_minutes(nurse_datestarttime, start_of_day) # minutes from midnight
+                nurse_end = time_dif_to_minutes(nurse_dateendtime, start_of_day) # minutes from midnight
+                nurse_duration = nurse_end - nurse_start # minutes
+                if k == len(nurse_shift_rows)-1:
+                    day_starttime = nurse_starttime # hh:mm:ss
+                    day_start = nurse_start # minutes from midnight
                 if k == 0:
-                    day_endtime = carer_endtime # hh:mm:ss
-                    day_end = carer_end # minutes from midnight
+                    day_endtime = nurse_endtime # hh:mm:ss
+                    day_end = nurse_end # minutes from midnight
 
-                # Add info to carer_shift_dict
-                carer_shift_dict['unique_id'].append(carer_uniqueid)
-                carer_shift_dict['shift'].append(carer_shift)
-                carer_shift_dict['carer_id'].append(carer_id[i])
-                carer_shift_dict['postcode'].append(carer_postcode)
-                carer_shift_dict['area'].append(carer_area)
-                carer_shift_dict['start'].append(carer_start) # minutes from midnight
-                carer_shift_dict['duration'].append(carer_duration) # minutes
-                carer_shift_dict['end'].append(carer_end) # minutes from midnight
-                carer_shift_dict['longitude'].append(carer_longitude)
-                carer_shift_dict['latitude'].append(carer_latitude)
-                carer_shift_dict['start_time'].append(carer_starttime) # hh:mm:ss
-                carer_shift_dict['end_time'].append(carer_endtime) # hh:mm:ss
-                carer_shift_dict['avail_day'].append(carer_availday)
-                carer_shift_dict['week_cycle'].append(carer_weekcycle)
+                # Add info to nurse_shift_dict
+                nurse_shift_dict['unique_id'].append(nurse_uniqueid)
+                nurse_shift_dict['shift'].append(nurse_shift)
+                nurse_shift_dict['nurse_id'].append(nurse_id[i])
+                nurse_shift_dict['postcode'].append(nurse_postcode)
+                nurse_shift_dict['area'].append(nurse_area)
+                nurse_shift_dict['start'].append(nurse_start) # minutes from midnight
+                nurse_shift_dict['duration'].append(nurse_duration) # minutes
+                nurse_shift_dict['end'].append(nurse_end) # minutes from midnight
+                nurse_shift_dict['longitude'].append(nurse_longitude)
+                nurse_shift_dict['latitude'].append(nurse_latitude)
+                nurse_shift_dict['start_time'].append(nurse_starttime) # hh:mm:ss
+                nurse_shift_dict['end_time'].append(nurse_endtime) # hh:mm:ss
+                nurse_shift_dict['avail_day'].append(nurse_availday)
+                nurse_shift_dict['week_cycle'].append(nurse_weekcycle)
 
-                # Add info to carer_day_dict
+                # Add info to nurse_day_dict
                 if k == 0:
                     day_duration = day_end - day_start # minutes
-                    carer_day_dict['carer_id'].append(carer_id[i])
-                    carer_day_dict['postcode'].append(carer_postcode)
-                    carer_day_dict['area'].append(carer_area)
-                    carer_day_dict['start'].append(day_start) # minutes from midnight
-                    carer_day_dict['duration'].append(day_duration) # minutes
-                    carer_day_dict['end'].append(day_end) # minutes from midnight
-                    carer_day_dict['longitude'].append(carer_longitude)
-                    carer_day_dict['latitude'].append(carer_latitude)
-                    carer_day_dict['start_time'].append(day_starttime) # hh:mm:ss
-                    carer_day_dict['end_time'].append(day_endtime) # hh:mm:ss
-                    carer_day_dict['avail_day'].append(carer_availday)
-                    carer_day_dict['week_cycle'].append(carer_weekcycle)
+                    nurse_day_dict['nurse_id'].append(nurse_id[i])
+                    nurse_day_dict['postcode'].append(nurse_postcode)
+                    nurse_day_dict['area'].append(nurse_area)
+                    nurse_day_dict['start'].append(day_start) # minutes from midnight
+                    nurse_day_dict['duration'].append(day_duration) # minutes
+                    nurse_day_dict['end'].append(day_end) # minutes from midnight
+                    nurse_day_dict['longitude'].append(nurse_longitude)
+                    nurse_day_dict['latitude'].append(nurse_latitude)
+                    nurse_day_dict['start_time'].append(day_starttime) # hh:mm:ss
+                    nurse_day_dict['end_time'].append(day_endtime) # hh:mm:ss
+                    nurse_day_dict['avail_day'].append(nurse_availday)
+                    nurse_day_dict['week_cycle'].append(nurse_weekcycle)
             # End for k loop
         # End elif multiple shifts       
     # End main for i loop
 
-    carershift_df = pd.DataFrame(carer_shift_dict) # Convert dictionary into pd dataframe
-    carerday_df = pd.DataFrame(carer_day_dict) # Convert dictionary into pd dataframe
+    nurseshift_df = pd.DataFrame(nurse_shift_dict) # Convert dictionary into pd dataframe
+    nurseday_df = pd.DataFrame(nurse_day_dict) # Convert dictionary into pd dataframe
 
-    # carershift_df = carershift_df[carershift_df['avail_day'] == day_index] # filter by day_index
-    # carershift_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by day_index
+    # nurseshift_df = nurseshift_df[nurseshift_df['avail_day'] == day_index] # filter by day_index
+    # nurseshift_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by day_index
 
-    # carerday_df = carerday_df[carerday_df['avail_day'] == day_index] # filter by day_index
-    # carerday_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by day_index
+    # nurseday_df = nurseday_df[nurseday_df['avail_day'] == day_index] # filter by day_index
+    # nurseday_df.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by day_index
 
-    print('length of carershift_df: ', len(carershift_df))
-    print('length of carerday_df: ', len(carerday_df))
+    print('length of nurseshift_df: ', len(nurseshift_df))
+    print('length of nurseday_df: ', len(nurseday_df))
 
-    # print('carer_day_dict:')
-    # print(carerday_df)
+    # print('nurse_day_dict:')
+    # print(nurseday_df)
 
     # exit(-1)
     print('Finished collecting data.\n')
 
-    return client_df, carershift_df, carerday_df
+    return client_df, nurseshift_df, nurseday_df
 
     # if area == 'None':
-    #     return client_df, carershift_df, carerday_df
+    #     return client_df, nurseshift_df, nurseday_df
     # else:
     #     clientdf_area = client_df[client_df['area'] == area]
-    #     carershiftdf_area = carershift_df[carershift_df['area'] == area]
-    #     carerdaydf_area = carerday_df[carerday_df['area'] == area]
+    #     carershiftdf_area = nurseshift_df[nurseshift_df['area'] == area]
+    #     carerdaydf_area = nurseday_df[nurseday_df['area'] == area]
     #     clientdf_area.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by area
     #     carershiftdf_area.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by area
     #     carerdaydf_area.reset_index(inplace=True, drop=True) # reset the index of the dataframe now that we've filtered by area
@@ -481,7 +454,7 @@ def get_info_create_dfs(area = 'None', tw_interval = 15, planning_date=None, day
 
 
 
-def carer_works_this_slot(slot): # Function finds out whether there is 'Unavailable' in the given cell 'slot' in Carer Availability
+def nurse_works_this_slot(slot): # Function finds out whether there is 'Unavailable' in the given cell 'slot' in Carer Availability
     works = True
     if type(slot) == str: # If there is the string 'Unavailable' in the given 'slot', then the carer does not work that time
         works = False

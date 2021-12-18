@@ -69,8 +69,9 @@ class CPO_DF(): # Codepoint Open DataFrame
         gdf = geopandas.GeoDataFrame(self.df, geometry=geopandas.points_from_xy(self.df.EA, self.df.NO)) 
 
         # TO DO: Make this a try/except statement        
-        gdf.crs = {"init":"epsg:7405"}
-        # gdf = gdf.set_crs("EPSG:7405") # Set our current reference coordinates (eastings and northings)
+        # gdf.crs = {"init":"epsg:7405"}
+        gdf = gdf.set_crs("EPSG:7405") # Set our current reference coordinates (eastings and northings)
+        # gdf.crs = "ESPG:7405"
 
         gdf = gdf.to_crs("EPSG:4326") # Change it to standard lat-long
 
