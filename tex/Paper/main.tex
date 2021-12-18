@@ -23,14 +23,17 @@
 \author[1]{Antonio Martinez-Sykora}
 \ead{A.Martinez-Sykora@soton.ac.uk}
 
+\author[1]{Asyl L. Hawa}
+\ead{A.Hawa@soton.ac.uk}
+
 \begin{abstract}
-The Home Health Care Routing and Scheduling Problem (HHCRSP) consists in assigning routes and schedules to nurses that deliver health care services to patients at their homes. A varied range of hard and soft constraints such as time windows, synchronisation of nurses, skill mix or patient and nurse preferences make this problem particularly difficult to solve manually. However, this is a challenge faced daily by many community nursing teams.
+The Home Health Care Routing and Scheduling Problem (HHCRSP) consists in assigning routes and schedules to nurses that deliver health care services to patients at their homes. A varied range of hard and soft constraints such as time windows, synchronisation of nurses, skill mix, and patient and nurse preferences make this problem particularly difficult to solve manually. However, this is a challenge faced daily by many community nursing teams.
 
 In this work we present a decision support tool (DST) that aims to help planners solve this problem in an automatic and efficient way. Our DST is based on a Greedy Randomised Adaptive Search Procedure (GRASP) with Path Relinking that solves a HHCRSP and can provide high quality solutions for the problem in terms of travel and waiting time, preference matching and workload balance. 
 
 %The DST is also linked with open source maps and an interactive reporting system that allows to visualise the solution of the HHCRSP problem in an intuitive way, which can help planners both save time and achieve more efficient plans for their everyday operations. \correction{We might need to remove here the DST stuff if not mentioned in the paper (maps, etc.)}
 
-We compare the performance of the GRASP algorithm with state-of-the-art approaches for similar problems and show that it offers competitive results, while providing a wider range of possibilities when modelling real problems. For instance, the computational results show that considering waiting times in the objective function can reduce total operation times up to 19\% in comparison with alternative modelling approaches that minimise travel time only.
+We compare the performance of the GRASP algorithm with state-of-the-art approaches for similar problems and show that it offers competitive results, while providing a wider range of possibilities when modelling real problems. For instance, the computational results show that considering waiting times in the objective function can reduce total operation times up to 24\% in comparison with alternative modelling approaches that minimise travel time only.
 
 % Our preliminary results working with local home health care teams in the south of England suggest that this is a promising approach given its flexibility to include practical constraints and its speed. Furthermore, we expect that its availability and independence of commercial solvers will help reaching more teams in the future.
 \end{abstract}
@@ -54,51 +57,50 @@ OR in health services \sep Metaheuristics \sep Routing \sep Scheduling \sep GRAS
 \noindent Home health care refers to a form of care where a health professional visits a patient in their own home to perform a health-related task \citep{cisse2017}. In the European context, with an ever-ageing population, delivering health care at home is increasingly seen as a necessary alternative to traditional forms of care \citep{tarricone2008}.
 This view is shared by many health providers around the globe as managing long term conditions, frail patients and end-of-life care among others might be done more efficiently in the patient's own home. For example, in the OECD countries, the care at home for patients with long term conditions increased by 6\% \citep{oecd2019} and in the UK the National Health Service (NHS) stated in their long term plan that in the future more care should be delivered to patients in their own homes \citep{nhs2019}.
 
-A key role in the health service to deliver this care are District Nurses (DN), specialised nursing teams that travel to patient's homes and perform a variety of tasks, ranging from insulin injections to dressing wounds. Nevertheless, DN numbers have fallen by 44\% \citep{nhs2018} between 2010 and 2018 in the NHS. On the other hand, while there is no official data on demand, the workforce perception is that demand has risen significantly, putting the service under pressure \citep{robertson2017}. There is, therefore, a strong need for efficiency within the community nursing service, to better utilise the available resources.
+A key role in the health service to deliver this care are District Nurses (DN), specialised nursing teams that travel to patients' homes and perform a variety of tasks, ranging from insulin injections to dressing wounds. Nevertheless, DN numbers have fallen by 44\% \citep{nhs2018} between 2010 and 2018 in the NHS. On the other hand, while there is no official data on demand, the workforce perception is that demand has risen significantly, putting the service under pressure \citep{robertson2017}. There is, therefore, a strong need for efficiency within the community nursing service to better utilise the available resources.
 
-One of the first tasks that the DN team lead faces on a working day is to distribute the work for the team. In the DN teams we visited in the city of Southampton, UK, this entailed assigning a number of home health care visits (typically over a hundred) to the nurses available on the team, attending to hard requirements (skill matching, time windows, job dependencies) and soft ones (minimising travel and waiting times, maintaining workload balance, matching carer-patient preferences). Despite the abundant literature related to similar problems, the planning is currently performed manually in a lengthy process for the planner that potentially leads to suboptimal schedules. Manual planning has three further weaknesses. First there are inconsistencies between the different plans of a nurse, and between plans of different nurses. Although a single DN may become highly skilled in planning overtime that knowledge is lost when they leave the organisation. Second, a poor planning results in turn in a poor utilisation of the workforce, which might include excessive travel and waiting times, unbalanced workloads. Third, it can also affect the quality of care, leading to missed time windows or lack of preference matching for patients.
+One of the first tasks that the DN team lead faces on a working day is to distribute the work for the team. In the DN teams we visited in the city of Southampton, UK, this entailed assigning a number of home health care visits (typically over a hundred) to the nurses available on the team, attending to hard requirements (skill matching, time windows, job dependencies) and soft ones (minimising travel and waiting times, maintaining workload balance, matching nurse-patient preferences). Despite the abundant literature related to similar problems, the planning is currently performed manually in a lengthy process for the planner that potentially leads to suboptimal schedules. Manual planning has three further weaknesses. First, there are inconsistencies between the different plans of a nurse, and between plans of different nurses. Although a single DN may become highly skilled in planning over time, that knowledge is lost when they leave the organisation. Second, poor planning results in poor utilisation of the workforce, which may include excessive travel and waiting times, and unbalanced workloads. Third, maunal planning can affect the quality of care, leading to missed time windows or lack of preference matching for patients.
 
-In an effort to automate and improve this process, we model the planning of home health care visits as a rich vehicle routing problem, with constraints and objectives drawn from our interaction with community nursing teams. This problem is often known in the literature as Home Health Care Routing and Scheduling Problem (HHCRSP). In our case, the schedule takes place over a single day, as it is the preferred approach in practice. This is motivated by the last-minute changes due to staff availability, patient next-day referrals and the nature of continuous review of care, which often prompts to scheduling the next visit right after reviewing their condition on the previous visit. A formal description of the problem is provided in Section~\ref{sec:model}.
+In an effort to automate and improve this process, we model the planning of home health care visits as a rich vehicle routing problem with constraints and objectives drawn from our interaction with community nursing teams. This problem is often known in the literature as the Home Health Care Routing and Scheduling Problem (HHCRSP). In our case, the schedule takes place over a single day, as it is the preferred approach in practice. This is motivated by the last-minute changes due to staff availability, patient next-day referrals and the nature of continuous review of care, which often prompts to scheduling the next visit right after reviewing the patient's condition on the previous visit. A formal description of the problem is provided in Section~\ref{sec:model}.
 
-We propose a Decision Support Tool (DST) that can produce high quality daily routes and schedules for a DN team, according to a flexible objective function. The tool requires as input a patient requirement list and the available staff and then runs an optimisation algorithm based on a weighted objective function. The optimisation is based on a Greedy Randomised Adaptive Search Procedure (GRASP) with Path Relinking, which is detailed in Section~\ref{sec:dst}.
+We propose a Decision Support Tool (DST) that can produce high quality daily routes and schedules for a DN team, according to a flexible objective function. The tool requires as input a patient requirement list and the available staff, and then runs an optimisation algorithm based on a weighted objective function. The optimisation is based on a Greedy Randomised Adaptive Search Procedure (GRASP) with Path Relinking, which is detailed in Section~\ref{sec:dst}.
 
-The main contribution of this article is to present a DST for the HHCRSP that is designed to be used in real community nursing settings. It tackles the most common constraints found in literature (e.g. time windows or skills) but also others often found in practice (e.g. multiple depots or workload balance). We provide extensive computational results (Section~\ref{sec:computationalexperiments}) that show that our algorithm is competitive with state-of-the-art approaches and is flexible to allow real-world constraints and objectives; but also provide insight on the algorithm components that help achieve high quality routes and schedules. 
+The main contribution of this article is to present a DST for the HHCRSP that is designed to be used in real community nursing settings. It tackles the most common constraints found in literature (e.g. time windows and skills) but also others often found in practice (e.g. multiple depots and workload balance). We provide extensive computational results (Section~\ref{sec:computationalexperiments}) that show that our algorithm is competitive with state-of-the-art approaches and is flexible to allow real-world constraints and objectives; but also provide insight on the algorithm components that help achieve high quality routes and schedules. 
 
 %----------------------------------------------------------------------------------%
-\section{Literature review}
+\section{Literature Review}
 \label{sec:litreview}
-\noindent The generalised growth in demand and availability of home health care services of recent years has resulted in a growth in academic interest in the related scheduling problem. While the problem might be addressed by drawing from the extensive vehicle routing problem (VRP) literature (see, for example, \cite{drexl2012} for a comprehensive review of VRPs and synchronisation constraints), HHCRSP has developed its own body of literature. In particular, there are recent review articles: \cite{cisse2017}, \cite{fikar2017}, \citet{dimascolo2021}, and \citet{grieco2020}. We refer the reader to them for a broader understanding of what is meant by HHCRSP and different solving approaches. Home Health Care and Home Care services across the world operate in different ways and, as such, the related scheduling problems have different objectives and constraints. For example, it might be possible to speed up the visits to some patients \citep{mosquera2019}, to allow nurses to share a minibus for part of their route, while walking the rest of it \citep{fikar2015}, for nurses to use public transport \citep{rest2016}, or to allow time preferences for patients \citep{decerle2018}. % This variety makes difficult comparing approaches and translating the findings from one application to another.
+\noindent The generalised growth in demand and availability of home health care services of recent years has resulted in a growth in academic interest in the related scheduling problem. While the problem might be addressed by drawing from the extensive vehicle routing problem (VRP) literature (see, for example, \cite{drexl2012} for a comprehensive review of VRPs and synchronisation constraints), HHCRSP has developed its own body of literature. In particular, there are recent review articles: \cite{cisse2017}, \cite{fikar2017}, \citet{dimascolo2021}, and \citet{grieco2020}. We refer the reader to them for a broader understanding of what is meant by HHCRSP and different solving approaches. Home Health Care and Home Care services across the world operate in different ways and, as such, the related scheduling problems have different objectives and constraints. For example, it might be possible to speed up the visits to some patients \citep{mosquera2019}, to allow nurses to share a minibus for part of their route, whilst walking the rest of it \citep{fikar2015}, for nurses to use public transport \citep{rest2016}, or to allow time preferences for patients \citep{decerle2018}. % This variety makes difficult comparing approaches and translating the findings from one application to another.
 
 
 In this section we review only articles that tackle problems that are similar to those occurring in the service we model, or that are especially relevant for our research, particularly those that tackle the synchronisation of patient visits.  
 
 % Exact methods
-Several articles propose exact methods. These are usually based on a Mixed Integer Linear Program (MILP) formulation that is solved with the help of a commercial solver \citep{bredstrom2008,bachouch2011, mankowska2014, aithaddadene2016}. Typically, these formulations are three index formulations that involve two types of variables: $x_{ijk}$ binary variables that indicate if carer $k$ traverses the arc $i$ and $j$; and $t_{ik}$ real variables that determine at what time carer $k$ starts performing job $i$. These formulations are limited in practice and can only solve to optimality small problems (e.g. 45 patients in \cite{aithaddadene2016} or 10 in \cite{mankowska2014}). In order to address this, some researchers propose to decompose the problem in a column generation scheme. For example, \cite{rasmussen2012} tackles the HHCRSP problem in Denmark. They propose a branch-and-price scheme where generalised synchronisation constraints are relaxed and dealt with in the branching.% \correction{Only Rasmussen?}
+Several articles propose exact methods. These are usually based on a Mixed Integer Linear Program (MILP) formulation that is solved with the help of a commercial solver \citep{bredstrom2008,bachouch2011, mankowska2014, aithaddadene2016}. Typically, these formulations are three index formulations that involve two types of variables: $x_{ijk}$ binary variables that indicate if nurse $k$ traverses the arc $i$ and $j$; and $t_{ik}$ real variables that determine at what time nurse $k$ starts performing job $i$. These formulations are limited in practice and can only solve to optimality small problems (e.g. 45 patients in \cite{aithaddadene2016} or 10 in \cite{mankowska2014}). In order to address this, some researchers propose to decompose the problem in a column generation scheme. For example, \cite{rasmussen2012} tackles the HHCRSP problem in Denmark. They propose a branch-and-price scheme where generalised synchronisation constraints are relaxed and dealt with in the branching.% \correction{Only Rasmussen?}
  % \correction{Cite relevant papers here}. The ILP formulations work well for small problems, but are often not practical to solve for problems with a significant number of patients. %around 50
 
-Often, in order to tackle larger instances, the MILPs are solved in a restricted manner and, while they do not guarantee optimality, they might provide feasible solutions suitable for day to day planning. This is often referred to as a matheuristic algorithm and can be done by reducing the size of the original problem by fixing some aspects and solving it again. One example of this technique is given in \cite{rasmussen2012} that also proposes clustering strategies to reduce the size of the problem, which allows them to solve problems with up to $150$ patients, although no longer proving optimality. Another is \cite{bredstrom2008}, where they propose a heuristic that iteratively allows or forbids assignments between patients and carers in order to generate a series of restricted MILPs that can be solved in a short time. In addition, \citet{nikzad2021} considers a four-phase matheuristic that calls upon a variety of mixed integer models.
+Often, in order to tackle larger instances, the MILPs are solved in a restricted manner and, while they do not guarantee optimality, they might provide feasible solutions suitable for day-to-day planning. This is often referred to as a matheuristic algorithm, and can be done by reducing the size of the original problem by fixing some aspects and solving it again. One example of this technique is given in \cite{rasmussen2012} that also proposes clustering strategies to reduce the size of the problem, which allows them to solve problems with up to $150$ patients, although no longer proving optimality. Another is \cite{bredstrom2008}, where they propose a heuristic that iteratively allows or forbids assignments between patients and nurses in order to generate a series of restricted MILPs that can be solved in a short time. In addition, \citet{nikzad2021} considers a four-phase matheuristic that calls upon a variety of mixed integer models.
 
 Another approach, which is the one we use in this article, is to propose a metaheuristic algorithm independent of a mathematical solver. Various metaheuristic approaches have been widely studied in the literature: \citet{manavizadeh2020} considers a simulated annealing (SA) algorithm, whilst \citet{nasir2020} investigates the effectiveness of a hybrid genetic algorithm (GA). Furthermore, a memetic algorithm is proposed by \citet{shahnejat2021}, and four hybrid metaheuristics including combinations of GA and variable neighbourhood search (VNS) and SA with local search (LS) are developed by \citet{liu2021}. \cite{mankowska2014} and \cite{aithaddadene2016} propose an Adaptive Large Neighbourhood search and a hybrid GRASP combined with Iterated Local Search respectively. One advantage of the use of heuristic algorithms is that they do not require availability of a (often commercial) MILP solver, which is unlikely to be available to health care professionals. 
 
-Finally, we look at the literature that discusses the software implementation of the solution approaches in practice. One of the earliest works is due to \cite{begur1997}, who developed a decision support system based on the Clarke and Wright algorithm \citep{clarke1964} for vehicle routing and then relied on integration with a Geographic Information System (GIS), an interactive user interface and a human planner to alter the routes as necessary. The Laps Care system \citep{eveborn2006, eveborn2009} is a Swedish software for the HHCRSP, based on a repeated matching algorithm has been shown to be successful in saving planning time, minimising travel times and even reducing the number of missed visits. The authors estimated annual savings in 2009 of up to \euro 120 million across teams in Norway, Finland and Sweden \citep{eveborn2009}. Another software is Parpap \citep{bertels2006}, which proposes various approaches combining constraint programming and metaheuristics. A common claim in all these implementation-oriented works is that the software needs to be flexible enough to allow for real-world constraints to be implemented and offers interaction with mapping software.
+Finally, we look at the literature that discusses the software implementation of the solution approaches in practice. One of the earliest works is due to \cite{begur1997}, who developed a decision support system based on the Clarke and Wright algorithm \citep{clarke1964} for vehicle routing and then relied on integration with a Geographic Information System (GIS), an interactive user interface and a human planner to alter the routes as necessary. The Laps Care system \citep{eveborn2006, eveborn2009} is a Swedish software for the HHCRSP based on a repeated matching algorithm, and has been shown to be successful in saving planning time, minimising travel times and even reducing the number of missed visits. The authors estimated annual savings in 2009 of up to \euro 120 million across teams in Norway, Finland and Sweden \citep{eveborn2009}. Another software is Parpap \citep{bertels2006}, which proposes various approaches combining constraint programming and metaheuristics. A common claim in all these implementation-oriented works is that the software needs to be flexible enough to allow for real-world constraints to be implemented and offers interaction with mapping software.
 
 %----------------------------------------------------------------------------------%
-\section{A model for health home care services}
+\section{A Model for Health Home Care Services}
 \label{sec:model}
 \noindent In this section we describe the notation and give a formal description of the HHCRSP problem tackled by our DST.
 
-We consider a list of nurses $N = \{1,\dots,n\}$ that are available for the day. Each nurse $i$ might have a different starting time, $st(i)$, and end time, $en(i)$, of their working day. During the planning horizon, which is one day in our case, the nurses need to perform a number of jobs $J = \{1,\dots,m\}$, a subset of which, $DS \subset J$ are double services, i.e. they require two nurses to be present to be performed. Note that jobs refer to individual tasks that a nurse needs to perform and are not necessarily identified with unique patients or locations, meaning that the same patient might have more than one job on the list.
+We consider a list of nurses $N = \{1,\dots,n\}$ that are available for the day. Each nurse $i$ might have a different starting time, $st(i)$, and end time, $en(i)$, of their working day. During the planning horizon, which is one day in our case, the nurses need to perform a number of jobs $J = \{1,\dots,m\}$, a subset of which, $DS \subset J$, are double services; that is, they require two nurses to be present simultaneously. Note that jobs refer to individual tasks that a nurse needs to perform and are not necessarily identified with unique patients or locations, meaning that the same patient might have more than one job on the list.
 
-A schedule (not necessarily feasible) $\mathcal{S}$, is made of a pair   $\mathcal{S} = \{\mathcal{R}, \mathcal{O}\}$, where $\mathcal{O}$ is a permutation of the vector $o = (1,\dots,n)$ representing the order of the nurses in the solution and $\mathcal{R}$ is a set of $n$ routes, $\mathcal{R} = \{r_1,\dots,r_n\}$, one per nurse. Each route $r_i$ is itself an ordered list of $m_i$ jobs, $r_i = \{k^i_0, k^i_1,\dots,k^i_{m_i}, k^i_0\}$, that are the jobs assigned to nurse $i \in N$ and starts and ends at the depot of that nurse denoted by, $k^i_0$. Of course, a route might be empty, meaning that that particular nurse is not assigned any jobs and $m_i = 0$ and the route only contains the depot, $r_i = \{k^i_0, k^i_0\}$.
-After a schedule is generated, for each job $j \in J$ we denote by $t_j$ its starting time. Note that this refers to the time at which the job starts, rather than the time at which the nurse (or nurses) performing it arrive to the job location, which might be different.
+A schedule (not necessarily feasible) $\mathcal{S}$ is made of a pair   $\mathcal{S} = \{\mathcal{R}, \mathcal{O}\}$, where $\mathcal{O}$ is a permutation of the vector $o = (1,\dots,n)$ representing the order of the nurses in the solution, and $\mathcal{R}$ is a set of $n$ routes, $\mathcal{R} = \{r_1,\dots,r_n\}$, one per nurse. Each route $r_i$ is itself an ordered list of $m_i$ jobs, $r_i = \{k^i_0, k^i_1,\dots,k^i_{m_i}, k^i_0\}$, that are the jobs assigned to nurse $i \in N$ and start and end at the depot of that nurse, denoted by $k^i_0$. Of course, a nurse's route may be empty, meaning that the nurse has not been assigned any jobs; thus $m_i = 0$ and the route only contains the depot, $r_i = \{k^i_0, k^i_0\}$. After a schedule is generated, for each job $j \in J$ we denote by $t_j$ its starting time. Note that this refers to the time at which the job starts, rather than the time at which the assigned nurse (or nurses) arrive to the job location, which may differ.
 
-In the rest of the section, we formally define the constraints and objectives that commonly apply in practice and relate to the skill mix of the workforce, the preferences of some assignments, travel times and synchronisation, visits with two staff members and quality of the schedule.
+In the rest of this section we formally define the constraints and objectives that commonly apply in practice and relate to the skill mix of the workforce, the preferences of some assignments, travel times and synchronisation, visits with two nurses, and the quality of the schedule.
 
 %----------------------------------------------------------------------------------%
 \subsection{Skill Mix}
 \label{sub:skillmix}
 \noindent Some jobs might require a specialised nurse to be performed, and nurses might only perform jobs that they are qualified to do. To model this, we define a function $S_1: N\times J \rightarrow \{0,1\}$, that takes value $1$ if nurse $i$ is skilled to perform job $j$, $S_1(i,j) = 1$ and $0$ otherwise. 
-Naturally, for double service jobs, no single nurse is skilled to perform them $S_1(i,j) = 0, \forall i \in N, \forall j \in DS$. To account for this, we define a second function $S_2: N\times N\times J \rightarrow \{0,1\}$, that takes value $S_2(i_1,i_2,j) = 1$ if the combination of nurses $i_1$ and $i_2$ is sufficiently skilled to perform job $j$ and $0$ otherwise. 
+Naturally, for double service jobs no single nurse is skilled to perform them, $S_1(i,j) = 0$ $\forall i \in N, \forall j \in DS$. To account for this, we define a second function, $S_2: N\times N\times J \rightarrow \{0,1\}$, that takes value $S_2(i_1,i_2,j) = 1$ if the combination of nurses $i_1$ and $i_2$ is sufficiently skilled to perform job $j$ and $0$ otherwise. 
 
 Using these functions, we can write constraints regarding job assignment and skill mix.
 All individual service jobs must be assigned to a skilled nurse, thus in any feasible solution it must hold that if $j \in r_i$ then $S_1(i,j) = 1$. Similarly, all double service jobs must be assigned to a pair of skilled nurses so if $j \in r_i \cap r_{i'}$ then it must hold that $S_2(i, i', j) = 1$.
@@ -107,102 +109,149 @@ All individual service jobs must be assigned to a skilled nurse, thus in any fea
 A relevant modelling consideration relates to the necessary skill mix for simultaneous double services or, in other words, how the function $S_2$ is created in practice. We distinguish the following cases:
 \begin{itemize}
     \item \textbf{Duplicated}. In this case it is required for all staff members visiting the patient to have all necessary skills to perform the service.
-    \item \textbf{Shared}. This is the case when it is sufficient that the combination of skills between the staff members present is enough to perform the service. In particular, it could happen that only one staff member is qualified for all services and the other for none. An example of this would be visits that require a second person to provide support and ensure safety, for example with patients that have a record of behaving inappropriately towards staff.
-    \item \textbf{Strictly shared}. In this case each member of the service does not need to be qualified for all services but should be attending the visit to perform at least one service. This is the approach used in \cite{mankowska2014} and \cite{aithaddadene2016}.
+    \item \textbf{Shared}. This is the case when it is sufficient that the combination of skills between the staff members present is enough to perform the service. In particular, it could happen that only one staff member is qualified for all services and the other for none. An example of this in practice would be visits that require a second person to provide support and ensure safety, for example with patients that have a record of behaving inappropriately towards staff.
+    \item \textbf{Strictly Shared}. In this case each member of the service does not need to be qualified for all services but should be attending the visit to perform at least one service. This is the approach used in \cite{mankowska2014} and \cite{aithaddadene2016}.
     \item \textbf{Shared-Duplicated}. This case is analogous to \emph{Shared}, but it allows some skills to be required by more than one of the staff members, hence it generalises the previous cases.
 \end{itemize}
 
-\noindent In our DST, the default approach is \emph{Shared-Duplicated}, as it allows for the flexibility that is observed in real operations. The data is introduced as a list of skills and, if some skills need to be present in more than one staff member, they can simply appear duplicated on the list. We have, however, also implemented the Strictly Shared approach, in order to solve the instances from the literature.
+\noindent In our DST, the default approach is \emph{Shared-Duplicated}, as it allows for the flexibility that is observed in real operations. The data is introduced as a list of skills and, if some skills need to be present in more than one staff member, they can simply appear duplicated on the list. We have, however, also implemented the \emph{Strictly Shared} approach in order to solve the instances from the literature.
 
-It is not uncommon in the literature to model the skills of the workforce as hierarchical, i.e. each nurse is assigned a skill level and it is assumed that they possess all the skills that lower levels have, and some more. The model might then introduce a penalty or limit for high skilled nurses performing too many low skilled jobs, known as downgrading \cite[see, for example,][]{fikar2015}. In the DN teams we observed, skills were not hierarchical, neither were any such limits in place. Nevertheless, nurses pointed out that high skilled nurses were typically assigned only the high skilled jobs, as they might need to perform other jobs (e.g. attending meetings or other administrative tasks). While this is not something that we consider explicitly, a similar objective may be achieved through setting negative preferences between high skilled nurses and low skilled jobs.
+It is not uncommon in the literature to model the skills of the workforce as hierarchical, i.e. each nurse is assigned a skill level and it is assumed that they possess all the skills that lower levels have and more. The model might then introduce a penalty or limit for high skilled nurses performing too many low skilled jobs, known as downgrading \cite[see, for example,][]{fikar2015}. In the DN teams we observed skills were not hierarchical, neither were any such limits in place. Nevertheless, nurses pointed out that high skilled nurses were typically assigned only the high skilled jobs as they might need to perform other jobs (e.g. attending meetings or other administrative tasks). While this is not something that we consider explicitly, a similar objective may be achieved through setting negative preferences between high skilled nurses and low skilled jobs.
 
 %----------------------------------------------------------------------------------%
 \subsection{Preferences}
 \label{sub:preferences}
-\noindent It is not uncommon in practice that district nurses do their planning using preferences. These might arise from multiple reasons, such as a preserving continuity of care, gender preference, patients and nurses speaking the same language, previous conflicts between a patient and a staff member, \model{etc}. We model this with a preference function, $P: N\times J \rightarrow \mathbb{R}$, such that $P(i,j)$ represents the preference score of assigning job $i$ to staff member $j$. The function $P$ should assign a higher (positive) score to preferred patient-nurse assignments and a lower (negative) score to assignments that are better avoided. We give an indication on how to choose the specific values of the function in Section~\ref{subsub:adequateweights}.
+\noindent It is not uncommon in practice for district nurses to do their planning using preferences. These might arise from multiple reasons, such as a preserving continuity of care, gender preference, patients and nurses speaking the same language, or previous conflicts between a patient and a nurse. We model this with a preference function, $P: N\times J \rightarrow \mathbb{R}$, such that $P(i,j)$ represents the preference score of assigning job $i$ to nurse $j$. The function $P$ should assign a higher (positive) score to preferred patient-nurse assignments and a lower (negative) score to assignments that are better avoided. We give an indication on how to choose the specific values of the function in Section~\ref{subsub:adequateweights}.
 
 %----------------------------------------------------------------------------------%
 \subsection{Travel Times}
 \label{sub:traveltimes}
-\noindent To describe travel times, for each nurse we define $N$ functions $T_i: J\cup\{k^i_0\} \times J\cup\{k^i_0\} \rightarrow \mathbb{R}$, $i \in N$, where $T_i(j_1, j_2)$ indicates the time it takes nurse $i$ to travel from job $j_1$ to job $j_2$, where $k^i_0$ refers to the start and end location of the nurse $i$. Each nurse might start from a different depot (typically, their own home), a fact that is accounted for in these functions. Note that with this definition we allow to have different travel times between jobs for different nurses, and this can be used to model, for example, different means of transport. In our observations, however, all nurses used their own vehicles, so we assume that $T_i$ returns driving times for all nurses and, in particular, that:
+\noindent To describe travel times, for each nurse we define $N$ functions, $T_i: J\cup\{k^i_0\} \times J\cup\{k^i_0\} \rightarrow \mathbb{R}$, $i \in N$, where $T_i(j_1, j_2)$ indicates the time it takes nurse $i$ to travel from job $j_1$ to job $j_2$, and $k^i_0$ refers to the start and end location of the nurse $i$. Each nurse might start from a different depot (typically their own home), a fact that is accounted for in these functions. Note that with this definition we accommodate for different travel times between jobs for different nurses which can be used to model, for example, different means of transport. In our observations, however, all nurses used their own vehicles; thus we assume $T_i$ returns driving times for all nurses and, in particular, that:
 \begin{equation}
-    T_{i_1}(j_1, j_2) = T_{i_2}(j_1, j_2),\ \forall i_1, i_2 \in N,\ \forall j_1, j_2 \in J. \label{eqn:traveltimequality}
+    T_{i_1}(j_1, j_2) = T_{i_2}(j_1, j_2)\quad  \forall i_1, i_2 \in N,\ \forall j_1, j_2 \in J. \label{eq:traveltimeequality}
 \end{equation} 
 
-\noindent Note that this function can be substituted by a more sophisticated one without any changes to the algorithms described here.
+\noindent Note that this function can be substituted by a more sophisticated one without any changes to the algorithms described in the remainder of the paper.
 
 % For simplicity, we also assume this in our experiments, although a more complex function could be provided without modifying the DST.
 
 %----------------------------------------------------------------------------------%
 \subsection{Temporal Constraints}
 \label{sub:temporalconstraints}
-\noindent Each job $j$ has a service time $s_j$ and a time window $t_j$ that is defined by its earliest start time, $e_j$ and the latest start time $l_j$. It is a hard constraint that jobs cannot start before their earliest start time:
-\begin{align}
-    t_j \geq e_j, & \forall j \in J, \label{eqn:jobstart}
-\end{align}
+\noindent Each job $j$ has a service time $s_j$ and a time window $t_j$ that is defined by its earliest start time, $e_j$, and the latest start time, $l_j$. It is a hard constraint that jobs cannot start before their earliest start time:
+\begin{equation}
+    t_j \geq e_j \quad \forall j \in J, \label{eq:jobstart}
+\end{equation}
 
 \noindent however, they may start late. The tardiness with which a job $j$ starts, $z_j$, can be simply calculated using the following:
 \begin{equation}
-    z_j = \max(0, t_j - l_j). \label{eqn:tardiness}
+    z_j = \max(0, t_j - l_j). \label{eq:tardiness}
 \end{equation}
 
-\noindent Note that tardiness here refers only to the difference between the job start and its original time window. Jobs that have dependencies or require two nurses might be further restricted temporally. This might happen in practice, for example, in situations where a certain medication must be administered \model{a few hours (a specific time period/amount of time)} after the first dose. If two jobs $j_1$ and $j_2$ are dependent, this is modelled by imposing a second time window on $j_2$ that depends on the start time of $j_1$, $[e^{(j_1)}_{j_2} + t_{j_1}, l^{(j_1)}_{j_2} + t_{j_1}]$. Then, the same time window constraints hold:
+\noindent Note that tardiness here refers only to the difference between the job start and its original time window. Jobs that have dependencies or require two nurses may be further restricted temporally. This can occur in practice, for example, in situations where a second dose of medication must be administered a few hours after the first dose. If two jobs $j_1$ and $j_2$ are dependent, this is modelled by imposing a second time window on $j_2$ that depends on the start time of $j_1$, $[e^{(j_1)}_{j_2} + t_{j_1}, l^{(j_1)}_{j_2} + t_{j_1}]$. Then, the same time window constraints hold:
 \begin{subequations}
 	\begin{align}
-	t_{j_2} &\geq e^{(j_1)}_{j_2} + t_{j_1}, \label{eqn:timewindow1}\\[3pt] % & \forall j \in J
-	t_{j_2} &\leq l^{(j_1)}_{j_2} + t_{j_1}. \label{eqn:timewindow2} % & \forall j \in J
+	t_{j_2} &\geq e^{(j_1)}_{j_2} + t_{j_1}, \label{eq:timewindow1}\\[3pt] % & \forall j \in J
+	t_{j_2} &\leq l^{(j_1)}_{j_2} + t_{j_1}. \label{eq:timewindow2} % & \forall j \in J
 	\end{align}
 \end{subequations}
 
 \noindent Similarly, $j_2$ will impose a time window on $j_1$, and in a valid instance of the problem it must hold that:
 \begin{subequations}
 	\begin{align}
-	e^{(j_1)}_{j_2} &= -e^{(j_2)}_{j_1}, \label{eqn:earliesttimedependecies}\\[3pt]
-	l^{(j_1)}_{j_2} &= -l^{(j_2)}_{j_1}. \label{eqn:latesttimedependencies}
+	e^{(j_1)}_{j_2} &= -e^{(j_2)}_{j_1}, \label{eq:earliesttimedependecies}\\[3pt]
+	l^{(j_1)}_{j_2} &= -l^{(j_2)}_{j_1}. \label{eq:latesttimedependencies}
 	\end{align}
 \end{subequations}
 
 \noindent Then, we can define the \emph{gap tardiness} of job $j_2$, $\tilde{z}_{j_2}$ as:
 \begin{equation}
-    \tilde{z}_{j_2} = \max(0, t_{j_2} - (l^{(j_1)}_{j_2} + t_{j_1})). \label{eqn:gaptardiness}
+    \tilde{z}_{j_2} = \max(0, t_{j_2} - (l^{(j_1)}_{j_2} + t_{j_1})). \label{eq:gaptardiness}
 \end{equation}
 
-\noindent \model{Since some jobs have time windows (only \textit{some}?)} or might need to be synchronised, waiting times may occur. We denote by $w_{ij}$ the waiting time of nurse $i$ at job $j$. Note that $w_{ij} = 0$ if $j \notin r_i$; otherwise, $w_{ij}$ represents the difference between $t_j$ and the arrival time of nurse $i$ to job $j$.% , denoted by $a(i,j)$.
+\noindent Since some jobs have time windows or might need to be synchronised, waiting times may occur. We denote by $w_{ij}$ the waiting time of nurse $i$ at job $j$. Note that $w_{ij} = 0$ if $j \notin r_i$; otherwise, $w_{ij}$ represents the difference between $t_j$ and the arrival time of nurse $i$ to job $j$.% , denoted by $a(i,j)$.
 
 The arrival time $a(i,j)$ of nurse $i$ at job $j \in r_i$ is calculated as follows:
 \begin{equation}
-    a(i,j) = st(i) + \sum_{h=0}^{j' - 1} w_{ik^i_h} + s_{k^i_h} + T_i(k^i_h, k^i_{h + 1}),
+    a(i,j) = st(i) + \sum_{h=0}^{j' - 1} w_{ik^i_h} + s_{k^i_h} + T_i(k^i_h, k^i_{h + 1}), \label{eq:arrivaltime}
 \end{equation}
 
-\noindent where $j'$ denotes the position of job $j$ in the route $r_i$, i.e. $j = k^i_{j'} \in r_i$. Note that there are no waiting or service times at the depot; that is, $w_{ik^i_0} = 0$ and $s_{k^i_0} = 0 $ for all $i \in N$.
+\noindent where $j'$ denotes the position of job $j$ in the route $r_i$, i.e. $j = k^i_{j'} \in r_i$. Note that there are no waiting or service times at the depot; that is, $w_{ik^i_0} = 0$ and $s_{k^i_0} = 0 $ for all $i \in N$. Furthermore, let $en_{\text{act}}(i)$ be the actual end time of a nurse $i \in N$, that is:
+\begin{equation}
+	en_{\text{act}}(i) = a(i,m_i) + w_{ik_{m_i}^i} + s_{k_{m_i}^i}, \label{eq:actualendtime}
+\end{equation}
+where $m_i$ is the final job in nurse $i$'s route $r_i$.
 
-In practice, waiting times may occur for a variety of reasons. In order to maintain simplicity in our model, we only consider three reasons for which a nurse $i$ might have waiting time $w_{ij} \geq 0$ at a job $j \in r_i$:
+In practice, waiting times may occur for a variety of reasons. In order to maintain simplicity in our model, we only consider four reasons for which a nurse $i$ might have waiting time $w_{ij} \geq 0$ at a job $j \in r_i$:
 \begin{itemize}
     \item Respecting a time window: 
-    \begin{align}
-        w_{ij} \geq e_i - a(i,j) & \forall i \in N, \forall j \in J.
-    \end{align}
+    \begin{equation}
+        w_{ij} \geq e_j - a(i,j) \quad \forall i \in N, \forall j \in J. \label{eq:waiting1TW}
+    \end{equation}
     \item Waiting for a second nurse $i'$ to arrive for a double service:
-    \begin{align}
-        w_{i j} \geq t_j - a(i',j) & \forall j \in DS,\ such\ that\ j \in r_{i} \cap r_{i'}.
-    \end{align}
+    \begin{equation}
+        w_{i j} \geq t_j - a(i',j) \quad \forall j \in DS \text{ such that } j \in r_{i} \cap r_{i'}. \label{eq:waiting2DS}
+    \end{equation}
     \item Waiting for the minimum gap of a synchronised service. If the job $j$ depends on $j'$, then:
-    \begin{equation}\label{eqn:waitingforsynchronised}
+    \begin{equation}\label{eq:waiting3dependent}
         w_{ij} \geq e^{(j')}_{j} - a(i,j).
     \end{equation}
+	\item Waiting time incurred due to breaks between shifts. This is discussed further in Section~\ref{sub:shiftwork}.
 \end{itemize}
 
-\noindent Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. \correction{The equations below are for a single nurse/job only} Let $j_1, j_2 \subset J, j_1 \neq j_2$, be two jobs that have a dependency, where $j_1 \in r_{i_1}$ and $j_2 \in r_{i_2}$, and nurse $i_1$ appears earlier than nurse $i_2$ in the vector of nurse order, $\mathcal{O}$. Then, we enforce that:
+\noindent Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. Let $j_1, j_2 \subset J, j_1 \neq j_2$, be two jobs that have a dependency, where $j_1 \in r_{i_1}$ and $j_2 \in r_{i_2}$, and nurse $i_1$ appears earlier than nurse $i_2$ in the vector of nurse order, $\mathcal{O}$. Then, we enforce the following: \correction{Does this still hold?}
 %  $i_1 < i_2$, \ie $j_1$ appears earlier in the vector $\mathcal{O}$ than $j_2$. Then, we enforce that:
-\begin{equation}\label{eqn:earliestpossiblestartassumption1}
-    w_{i_1 j_1} = \max \{0, e_{j_1} - a(i_1,j_1)\}
-\end{equation}
-and
-\begin{equation}\label{eqn:earliestpossiblestartassumption2}
-    t_{j_1} = \max \{ a(i_1,j_1), e_{j_1} \}
-\end{equation}
-
+\begin{align}
+	w_{i_1 j_1} &= \max \{0, e_{j_1} - a(i_1,j_1)\}, \\ 
+		t_{j_1} &= \max \{ a(i_1,j_1), e_{j_1} \}.\label{eq:earliestpossiblestartassumption}
+\end{align}
+%\begin{equation}\label{eq:earliestpossiblestartassumption1}
+%    w_{i_1 j_1} = \max \{0, e_{j_1} - a(i_1,j_1)\},
+%\end{equation}
+%\begin{equation}\label{eq:earliestpossiblestartassumption2}
+%    t_{j_1} = \max \{ a(i_1,j_1), e_{j_1} \}.
+%\end{equation}
 \noindent Note that this implies that the order in which nurse routes appear in a solution may have an impact on the solution quality. To mitigate this effect, in Section~\ref{sec:dst} we describe strategies to search different orderings of nurses when solving the problem.
+
+%----------------------------------------------------------------------------------%
+\subsection{Shift Work}
+\label{sub:shiftwork}
+\noindent There may be cases where some nurses have multiple shifts in a single day, e.g. a morning shift and an evening shift; these nurses will not be available at all times during the day. Let $\Pi_i = \{\pi_1^i,\dotsc, \pi_{g_i}^i\}$ be the set of shifts for a nurse $i \in N$, where $g_i$ is the total number of shifts for nurse $i$ during the day. For each shift $\pi_f^i \in \Pi_i$, we denote the shift start time by $u(\pi_f^i)$ and the shift end time by $v(\pi_f^i)$. Therefore, the total contracted working time, $ct(i)$, for a nurse $i$ is calculated as:
+\begin{equation}
+	ct(i) = \displaystyle\sum_{f=1}^{g_i} v(\pi_f^i) - u(\pi_f^i). \label{eq:contractedworkingtime}
+\end{equation}
+\noindent Clearly, if $g_i = 1$ for a nurse $i \in N$, then the nurse only has one shift; thus $ct(i) = en(i)-st(i)$. Given these shifts, we must ensure that jobs are assigned to nurses during their actual working time. This also involves considering two cases that may occur:
+\begin{enumerate}[label={(\arabic*)}]
+	%\item A nurse $i$ is assigned a job $j$ with time window within the nurse's valid shift time, but the duration of $j$ results in the end time of $j$ extending into the nurse's break period. In this case, the waiting time incurred is from the arrival time of nurse $i$ at $j$ to the beginning of the nurse's next shift, and the start time for $j$ is moved forward to the start of the next shift. The tardiness is calculated as the time between the end of $j$'s time window, $l_j$, and the new start time of $j$.
+	%\item A nurse $i$ is assigned a job $j$ with time window within nurse $i$'s break period. In this case, the waiting time incurred is the entire break period, and the arrival time at $j$ is moved forward to the start of the next shift. Tardiness as calculated as above.
+	\item A nurse $i$ arrives at a job $j$ during a shift, but the duration of $j$ results in the end time of $j$ extending into the nurse's break period. In this case, the waiting time incurred is from the arrival time of nurse $i$ at $j$ to the end of the shift, and the start time for $j$ is moved forward to the start of $i$'s next shift. The tardiness is calculated as the time between the end of $j$'s time window, $l_j$, and the new start time of $j$.
+	\item A nurse $i$'s arrival time at job $j$ is determined to be during the nurse's unavailable time. In this case, no waiting time is incurred and the new start time for job $j$ and tardiness are as above.
+\end{enumerate}
+\begin{figure}[h!]
+	\centering	
+	\begin{subfigure}[h]{\textwidth}
+		\centering
+		\includestandalone[width=0.7\textwidth]{figures/shiftwork1}
+		\vspace{-2mm}\caption{}
+		\label{fig:itemsinfeas}
+		\vspace{2mm}
+	\end{subfigure}
+	\begin{subfigure}[h]{\textwidth}
+		\centering
+		\includestandalone[width=0.7\textwidth]{figures/shiftwork2}
+		\vspace{-2mm}\caption{}
+		\label{fig:itemsfeas}
+	\end{subfigure}
+	\caption{Examples of the alteration of a job $j$ depending on a nurse $i$'s shift times according to the scenarios above, when (a) the duration of $j$ extends past the end of $i$'s shift; and (b) the start time of $j$ occurs during a period of unavailable time.}
+	\label{fig:itemsaligned}
+\end{figure}
+%\correction{What happens if the next "available" slot is not enough for the job.}
+\noindent In the event that the next available shift for a nurse $i$ is not long enough to perform job $j$, the job is moved forward again in the nurse's schedule. For simplicity, we will consider all nurses' break periods as waiting time, so that the arrival time calculations $a(i,j)$ for nurses $i \in N$ at jobs $j \in J$ (see \eqref{eq:arrivaltime}) remain valid. Then, the waiting times will be corrected by removing all relevant breaks, as shown in \eqref{eq:waitingtimenurse}.
+
+
+%There may be cases where some nurses have multiple shifts in a single day, e.g. a morning shift and an evening shift; these nurses will not be available at all times during the day. Therefore, we must ensure that jobs are assigned to nurses during their actual working times. This also involves considering the case where although a nurse may be working and available at the time that a job starts, the duration of the job may extend into the nurse's unavailable time, i.e. the job ends after the nurse's shift ends. In these instances, the job must be moved forward in the nurse's schedule such that the job starts at the beginning of the nurse's next available shift, and tardiness will be incurred. For convenience, we denote by $ct(i)$ the actual contracted working time of nurse $i \in N$, where $ct(i) = en(i) - st(i)$ if nurse $i$'s day comprises a single shift starting at $en(i)$ and ending at $st(i)$, and $ct(i) < en(i) - st(i)$ if nurse $i$'s day consists of one or more shifts.
+
+
 
 %----------------------------------------------------------------------------------%
 \subsection{Objective Function}
@@ -210,78 +259,129 @@ and
 % The objective function is based on the quality of a solution, which consists on a few measures of interest that are added together with different weights. Performance measures to be maximised have positive weights, while those to be minimised have negative weights.
 \noindent We consider a weighted objective function that includes waiting time, travel time, tardiness, maximum tardiness, overtime, workload balance and preferences. The measures to be maximised have positive weights, while those to be minimised have negative weights.
 
-\subsubsection*{1. Total waiting time}
-\noindent The total waiting time in a solution $\bar{W}$, calculated as:
-\begin{equation}
-     \bar{W} = \sum_{i \in N} \sum_{j \in r_i \subset \mathcal{S}} w_{ij}.
-\end{equation}
-
-\subsubsection*{2. Total travel time}
+\subsubsection*{1. Total travel time}
 \noindent If we denote by $TR(r_i)$ travel time associated with a route $r_i$, such that:
 \begin{equation}
-    TR(r_i) =  \sum_{h = 0}^{m_i - 1} T_i(k^i_h, k^i_{h + 1}),
+	TR(r_i) =  \sum_{h = 0}^{m_i - 1} T_i(k^i_h, k^i_{h + 1}), \label{eq:traveltimenurse}
 \end{equation}
 then the total travel time in $\mathcal{S}$, $\bar{T}$, is calculated as:
 \begin{equation}
-     \bar{T} = \sum_{i \in N}  TR(r_i).
+	\bar{T} = \sum_{i \in N}  TR(r_i). \label{eq:totaltraveltime}
+\end{equation}
+
+\subsubsection*{2. Total waiting time}
+\noindent Firstly, let $W(r_i)$ be the total waiting time for each nurse's route $r_i$:
+\begin{equation}
+	W(r_i) = \displaystyle\sum_{h=0}^{m_i} w_{i k_{h}^i} - \displaystyle\sum_{f=1}^{g'_i - 1} u(\pi_{f+1}^i) - v(\pi_f^i), \label{eq:waitingtimenurse}
+\end{equation}
+\noindent where $g'_i$ is the number of shifts for nurse $i$ that start before $en_{\text{act}}(i)$. Then, the total waiting time in a solution, $\bar{W}$, is calculated as:
+\begin{equation}
+%     \bar{W} = \sum_{i \in N} \sum_{j \in r_i \subset \mathcal{S}} w_{ij}.
+     \bar{W} = \sum_{i \in N} W(r_i). \label{eq:totalwaitingtime}
 \end{equation}
 
 \subsubsection*{3. Total tardiness}
 \noindent The total tardiness in a solution, $\bar{Z}$, is simply the sum of the tardiness across all jobs:
 \begin{equation}
-    \bar{Z} = \sum_{j \in J} z_j.
+    \bar{Z} = \sum_{j \in J} z_j. \label{eq:totaltardiness}
 \end{equation}
 
-\subsubsection*{4. Maximum tardiness}
-\noindent The maximum tardiness in a solution, $Z_{max}$, is given by:
+\subsubsection*{4. Total overtime}
+\noindent The total overtime in the solution, $\bar{O}$, is calculated as the sum of the overtime of all nurses, where the overtime for each nurse $i \in N$ represents the time by which their actual finish time, $en_{\text{act}}(i)$, exceeds their end of shift time, $en(i)$. 
 \begin{equation}
-    Z_{max} = \max_{j \in J} z_j.
+     \bar{O} = \sum_{i \in N} \max \{0, en_{\text{act}}(i) - en(i)\}. \label{eq:totalovertime}
 \end{equation}
 
-\subsubsection*{5. Total overtime}
-\noindent The total overtime in the solution, $\bar{O}$, is calculated as the sum of the overtime of all nurses, where the overtime for each nurse represents the time by which their finish time exceeds their end of shift time, $en(i)$. If we denote the arrival of a nurse $i$ to its end point by $arr(i)$:
+%If we denote the arrival of a nurse $i$ to its end point by $arr(i)$:
+%\begin{equation}
+%	arr(i) = st(i) + TR(r_i) + \sum_{k \in r_i} w_k + s_k,
+%\end{equation}
+
+%\subsubsection*{\alert{5. Workload balance OLD}}
+%\noindent \alert{In order to produce practical solutions, maintaining a balance in the workload is fundamental. To achieve this, we quantify the minimum spare time on any nurse route in the schedule, $\bar{B}$. If $\bar{B}$ is minimised, we favour solutions in which the lowest spare time of any given nurse is as large as possible, hence removing imbalance when possible.}
+%\begin{equation}
+%    \alert{\bar{B} = \min_{i \in N} \left\{\max \{0, en(i) - arr(i)\} \right\}.}
+%\end{equation}
+
+\subsubsection*{5. Workload balance}
+\noindent In order to produce practical solutions, maintaining a balance in the workload is fundamental. There are a few papers in the literature that discuss workload balance calculations for the HHCRSP. \citet{bowers2015} implement a constraint limiting each nurse to attend to no more than four patients, where all service times are equal, whilst \citet{bredstrom2008} state a goal of an average of five hours workload per nurse. Overtimes are considered by \citet{lanzarone2014}, who aim to minimise the nurses' maximum overtimes in a lexicographical manner, and \citet{mutingi2014} calculate the percentage deviation of each nurse's workload from the average workload, which includes travel times. One aspect which is overlooked in all of these models is the length of the nurses's shifts. In practice, nurses may have varying daily shift lengths depending on their contracts, which must be taken into account when attempting to balance the workload. Therefore, we designed a workload balance objective, \eqref{eq:workloadbalance}, which considers the total amount of workload with respect to each nurse's scheduled shift length. 
+
+To achieve this, we calculate the maximum difference of the proportion of nurse workloads to the average workload, $\bar{B}$. The aim is for $\bar{B}$ to equal zero; thus we favour solutions in which $\bar{B}$ is as small as possible, hence removing imbalance where possible.
+
+Let $wl_i$ be the workload proportion for each nurse $i \in N$, where $wl_i$ is calculated as follows:
 \begin{equation}
-	arr(i) = st(i) + TR(r_i) + \sum_{k \in r_i} w_k + s_k,
+	wl_i = \frac{\displaystyle\sum_{h=0}^{m_i} s_{k_h^i}}{ct(i)}, \label{eq:workloadnurse}
 \end{equation}
-then the total overtime can be calculated as:
+that is, $wl_i$ is the proportion of actual working time to the total contracted working time for each nurse. From this, we calculate the average workload, $\bar{wl}$:
 \begin{equation}
-     \bar{O} = \sum_{i \in N} \max \{0, arr(i) - en(i)\}.
+	\bar{wl} = \frac{\displaystyle\sum_{i \in N} wl_i}{n}. \label{eq:averageworkload}
+\end{equation}
+Then, $\bar{B}$ can be defined as:
+\begin{equation}
+	\bar{B} = \max_{i \in N} \{wl_i - \bar{wl}\}. \label{eq:workloadbalance}
+\end{equation}
+\noindent Note that when calculating $\bar{B}$, we only consider the service time performed by each nurse. To account for the travel time and waiting time of each nurse, we developed two further objective function parameters: maximum travel time and maximum waiting time.
+
+\subsubsection*{6. Maximum travel time}
+\noindent The maximum travel time of all nurses' routes, $TR_{\text{max}}$, is calculated as:
+\begin{equation}
+	TR_{\text{max}} = \max_{i \in N} \{TR(r_i)\}, \label{eq:maxtraveltime}
+\end{equation}
+where $TR(r_i)$ is the travel time associated with a route $r_i$ as described in~\eqref{eq:traveltimenurse}.
+
+\subsubsection*{7. Maximum waiting time}
+\noindent The maximum waiting time of the nurses's routes, $W_{\text{max}}$, is determined as follows: 
+\begin{equation}
+	W_{\text{max}} = \max_{i \in N} \{W(r_i)\}. \label{eq:maxwaitingtime}
 \end{equation}
 
-\subsubsection*{6. Workload balance}
-\noindent In order to produce practical solutions, maintaining a balance in the workload is fundamental. To achieve this, we quantify the minimum spare time on any nurse route in the schedule, $\bar{B}$. If $\bar{B}$ is minimised, we favour solutions in which the lowest spare time of any given nurse is as large as possible, hence removing imbalance when possible.
-\begin{equation}
-    \bar{B} = \min_{i \in N} \left\{\max \{0, en(i) - arr(i)\} \right\}.
-\end{equation}
-
-\subsubsection*{7. Total preference score}
+\subsubsection*{8. Total preference score}
 \noindent The total preference score in the solution, $\bar{P}$, is computed as:
 \begin{equation}
-    \bar{P} = \sum_{i \in N} \sum_{j \in r_i \subset \mathcal{R}} P(i,j).
-\end{equation}
-Finally, the full quality of the solution, $q(\mathcal{S})$, is then obtained as:
-\begin{equation}
-    q(\mathcal{S}) = \alpha_1 \bar{T} + % Travel time 
-         \alpha_2 \bar{W} + % Waiting time 
-         \alpha_3 \bar{Z} + % Tardiness 
-         \alpha_4 \bar{O} + % Overtime 
-         \alpha_5 \bar{B} + % Workload balance 
-         \alpha_6 \bar{P} + % Preference score 
-         \alpha_7 Z_{max}. \label{eqn:solutionquality}
+    \bar{P} = \sum_{i \in N} \sum_{j \in r_i \subset \mathcal{R}} P(i,j). \label{eq:totalpreference}
 \end{equation}
 
-\noindent Note that some of the terms considered in the quality function \eqref{eqn:solutionquality} might be considered infeasible in some settings (e.g. overtime and tardiness). For this reason, the objective function that is used during the optimisation, $Q(\mathcal{S})$, is defined as follows:
+\subsubsection*{9. Maximum tardiness}
+\noindent The maximum tardiness in a solution, $Z_{\text{max}}$, is given by:
+\begin{equation}
+	Z_{\text{max}} = \max_{j \in J} z_j. \label{eq:maxtardiness}
+\end{equation}
+
+
+Finally, the full quality of the solution, $q(\mathcal{S})$, is then obtained as:
+%\begin{equation}
+%    \model{q(\mathcal{S}) = \alpha_1 \bar{T} + % Travel time 
+%         \alpha_2 \bar{W} + % Waiting time 
+%         \alpha_3 \bar{Z} + % Tardiness 
+%         \alpha_4 \bar{O} + % Overtime 
+%         \alpha_5 \bar{B} + % Workload balance 
+%         \alpha_6 \bar{P} + % Preference score 
+%         \alpha_7 Z_{max}.} \label{eqn:solutionqualityold}
+%\end{equation}
+\begin{align}
+	q(\mathcal{S}) &= \alpha_1 \bar{T} % Travel time 
+	+ \alpha_2 \bar{W} % Waiting time 
+	+ \alpha_3 \bar{Z} % Tardiness 
+	+ \alpha_4 \bar{O} % Overtime 
+	+ \alpha_5 \bar{B} \nonumber \\% Workload balance 
+	&+ \alpha_6 TR_{\text{max}} %Maximum travel time
+	+ \alpha_7 W_{\text{max}} %Maximum waiting time
+	+ \alpha_8 \bar{P} % Preference score 
+	+ \alpha_9 Z_{\text{max}}. \label{eq:solutionquality}
+\end{align}
+
+\noindent Note that some of the terms considered in the quality function \eqref{eq:solutionquality} might be considered infeasible in some settings (e.g. overtime and tardiness). For this reason, the objective function that is used during the optimisation, $Q(\mathcal{S})$, is defined as follows:
 \begin{equation}
   \max Q(\mathcal{S}) =
   \begin{cases}
    q(\ensuremath{\mathcal{S}}) & \text{if \ensuremath{I(\mathcal{S}) \leq 0}} \\
-   q(\ensuremath{\mathcal{S}}) + \ensuremath{M_1 I(\mathcal{S})} + \ensuremath{M_2} & \text{if \ensuremath{I(\mathcal{S}) > 0}}, \\ \label{eqn:realobjfunction}
+   q(\ensuremath{\mathcal{S}}) + \ensuremath{M_1 I(\mathcal{S})} + \ensuremath{M_2} & \text{if \ensuremath{I(\mathcal{S}) > 0}}, \label{eq:realobjfunction}
   \end{cases}
 \end{equation}
 
-\noindent where $I(\mathcal{S})$ represents the value of the infeasibility in the solution; hence solutions where $I(\mathcal{S}) > 0$ are considered infeasible. The measures that are included in the calculation of $I(\mathcal{S})$ may vary depending on the \model{team (instance?)} being modelled. Typically, \model{they (?be specific)} include the total gap tardiness, $\tilde{Z}$:
+\noindent where $I(\mathcal{S})$ represents the value of the infeasibility in the solution; hence solutions where $I(\mathcal{S}) > 0$ are considered infeasible. The measures that are included in the calculation of $I(\mathcal{S})$ may vary depending on the specific problem setting being modelled. Typically, they include the total gap tardiness, $\tilde{Z}$:
 \begin{equation}
-    \tilde{Z} = \sum_{j \in J} \tilde{z}_j,
+    \tilde{Z} = \sum_{j \in J} \tilde{z}_j, \label{eq:totalgaptardiness}
 \end{equation}
  and often the overtime in the solution, $\bar{O}$, and the tardiness in the solution, $\bar{Z}$. For example, if no overtime or gap tardiness is allowed, $I(\mathcal{S})$ might be defined as $I(\mathcal{S}) = \bar{O} + \tilde{Z}$.
 
@@ -299,24 +399,26 @@ The weights we propose for the Decision Support Tool are listed in Table~\ref{ta
 
 \begin{table}[htbp!]
     \centering
-    \caption{Weights proposed for the objective function of the DST}
-    \begin{tabular}{ccc}
+    \caption{Weights proposed for the objective function of the DST.}
+    \begin{tabular}{ccl}
     \toprule
     \textbf{Weight}  & \textbf{Value} & \textbf{Description} \\
     \midrule
-    $\alpha_1$      &   -1   &   Travel time \\
-    $\alpha_2$      &   -1   &   Waiting time \\
-    $\alpha_3$      &   -15   &   Tardiness \\
-    $\alpha_4$      &   -15   &   Overtime \\   
-    $\alpha_5$      &   $\frac{1}{2}$   &   Workload balance \\       
-    $\alpha_6$      &   1   &   Preference score \\    
-    $\alpha_7$      &   0   &   Maximum tardiness\\    
+    $\alpha_1$      &   -1   &   Total travel time \\
+    $\alpha_2$      &   -1   &   Total waiting time \\
+    $\alpha_3$      &   -15   &   Total tardiness \\
+    $\alpha_4$      &   -15   &   Total overtime \\   
+    $\alpha_5$      &   -2000   &   Workload balance\\       
+    $\alpha_6$      &   -5   &   Maximum travel time\\       
+    $\alpha_7$      &   -5   &   Maximum waiting time\\       
+    $\alpha_8$      &   1   &   Preference score \\    
+    $\alpha_9$      &   0   &   Maximum tardiness\\    
     \bottomrule
     \end{tabular}
     \label{table:adequateweights}
 \end{table}
 
-\noindent Note that the weight for workload balance is smaller than one, meaning that the workload will be balanced by one minute if that costs less than one minute to the overall schedule. This value might be adjusted depending on the number of nurses on the teams, as the impact on the total schedule might be easier to absorb if more nurses are present.
+%\noindent Note that the weight for workload balance is smaller than one, meaning that the workload will be balanced by one minute if that costs less than one minute to the overall schedule. This value might be adjusted depending on the number of nurses on the teams, as the impact on the total schedule might be easier to absorb if more nurses are present.
 
 %----------------------------------------------------------------------------------%
 \section{Decision Support Tool}
@@ -335,25 +437,24 @@ The weights we propose for the Decision Support Tool are listed in Table~\ref{ta
     \label{fig:graspdiagram}
 \end{figure}
 
-Solutions are generated iteratively by the randomised constructive (described in Section~\ref{sub:randomisedconstructive}) and improved with local search (described in Section~\ref{sub:localsearch}). Good solutions are kept in a solution pool if they are different enough from the ones currently in the pool. In order to speed the convergence of the algorithm, the solutions of the pool are used to perform path relinking (see Section~\ref{sub:pathrelinking}). After each iteration we check the stopping criterion. In our implementation this was a time limit. The order of the nurse list is randomly generated for each iteration, as this might have an impact on waiting times. 
+\noindent Solutions are generated iteratively by the randomised constructive (described in Section~\ref{sub:randomisedconstructive}) and improved with local search (described in Section~\ref{sub:localsearch}). Good solutions are kept in a solution pool if they are different enough from the ones currently in the pool. In order to speed the convergence of the algorithm, the solutions of the pool are used to perform path relinking (see Section~\ref{sub:pathrelinking}). After each iteration we check the stopping criterion. In our implementation this is a time limit. The order of the nurse list is randomly generated for each iteration, as this might have an impact on waiting times. 
 
 %----------------------------------------------------------------------------------%
 \subsection{Randomised Constructive}
 \label{sub:randomisedconstructive}
-\noindent The Randomised Constructive Algorithm (RCA) is used to create initial solutions for each iteration of the GRASP algorithm. It works by ranking the quality of all job-nurse assignments by the value of the objective function \eqref{eqn:realobjfunction}, which might also be evaluated in partial solutions. These rankings are sorted by quality, and the highest quality ones are stored in a reduced candidate list (RCL). Then, one of the elements of the list is randomly selected and added to the solution. There are a number of ways in which an RCL can be created, relating to which is the `cut-off' value of the objective value that decides if an assignment enters the RCL or not. In our implementation we have tested two strategies, both depending on the hyper-parameter $\delta$. Let $B$ ($W$) be the best (worst) ranking found in a given iteration of the RCA, the strategies to find the cut-off value, $C$, are as follows:
-\begin{itemize}
-     \item[1)] Strategy 1:
+\noindent The Randomised Constructive Algorithm (RCA) is used to create initial solutions for each iteration of the GRASP algorithm. It works by ranking the quality of all job-nurse assignments by the value of the objective function \eqref{eq:realobjfunction}, which might also be evaluated in partial solutions. These rankings are sorted by quality, and the highest quality ones are stored in a reduced candidate list (RCL). Then, one of the elements of the list is randomly selected and added to the solution. There are a number of ways in which an RCL can be created, relating to which is the `cut-off' value of the objective value that decides if an assignment enters the RCL or not. In our implementation we have tested two strategies, both depending on a hyper-parameter $\delta$. Let $B$ ($W$) be the best (worst) ranking found in a given iteration of the RCA. The strategies to find the cut-off value, $C$, are as follows:
+\begin{enumerate}[label={(\arabic*)}]
+     \item Strategy 1:
      \begin{equation}
-         C = B + \delta (B - W).
+         C = B + \delta (B - W). \label{eq:rcastrategy1}
      \end{equation}
-
-     \item[2)] Strategy 2:
+     \item Strategy 2:
      \begin{equation}
-         C = B - \delta B.
+         C = B - \delta B. \label{eq:rcastrategy2}
      \end{equation}
- \end{itemize} 
+ \end{enumerate} 
 The parameter $\delta$ is randomly selected in each iteration, sampled from the interval $\delta \in [\texttt{grasp\_dl}, \texttt{grasp\_dl} + \texttt{grasp\_dr}]$.
-The values of \texttt{grasp\_dl} + \texttt{grasp\_dr}, together with the type of strategy to use, \texttt{rcl\_strategy}, are hyper-parameters of the algorithm and are optimised in Section~\ref{sub:parametertuning}. The RCA has two phases. In the first part, each nurse is assigned a single job using this procedure. This ensures that all nurses will have an initial route, regardless of how far their starting location is, and helps constructing more balanced solutions. In the second part, jobs are ranked and assigned to the best position in any of the nurse routes, until no more jobs are left to assign. 
+The values of \texttt{grasp\_dl} + \texttt{grasp\_dr}, together with the type of strategy to use, \texttt{rcl\_strategy}, are hyper-parameters of the algorithm and are optimised in Section~\ref{sub:parametertuning}. The RCA has two phases. In the first part, each nurse is assigned a single job using this procedure. This ensures that all nurses will have an initial route, regardless of how far their starting location is, and helps to construct more balanced solutions. In the second part, jobs are ranked and assigned to the best position in any of the nurse routes until no more jobs are left to assign. 
 
 %----------------------------------------------------------------------------------%
 \subsection{Local Search}
@@ -362,15 +463,15 @@ The values of \texttt{grasp\_dl} + \texttt{grasp\_dr}, together with the type of
 
 The quality of the VNS is directly influenced by the neighbourhoods used and their order. We have implemented the following neighbourhoods:
 % \correction{Review names and add descriptions}
-\begin{itemize}
-    \item NE01 Moving a job: This neighbourhood involves removing one service from the route of one nurse and inserting it in the best possible position of another (or the same) nurse.
-    \item NE02 Exchange two services: Two jobs from different nurse routes are removed and reinserted in the corresponding position of the other route.
+\begin{enumerate}[label={(\arabic*)}]
+    \item \textit{NE01: Move a service}. This neighbourhood involves removing one job from the route of one nurse and inserting it in the best possible position of another (or the same) nurse.
+    \item \textit{NE02: Exchange two services}. Two jobs from different nurse routes are removed and reinserted in the corresponding position of the other route.
     % \correction{Check code for real ordering and numbers here}
-    \item NE03 Nurse order change: This neighbourhood focuses on exploring different orderings of the nurse list, $\mathcal{O}$. It searches over exchanges between pairs of nurses in the list. 
+    \item \textit{NE03: Nurse order change}. This neighbourhood focuses on exploring different orderings of the nurse list, $\mathcal{O}$. It searches over exchanges between pairs of nurses in the list. 
     This can have an effect in the way waiting times are calculated (as detailed in Section~\ref{sub:temporalconstraints}) and improve the overall quality.
-    \item NE04 Remove and reinsert linked services: Two services that are dependent on each other (synchronised or double services) are removed simultaneously from the solution and reinserted in the best possible positions.
-    \item NE05 2OPT: This is the classical vehicle routing neighbourhood and operates in a single route. Subsets of each route are removed and reinserted in a reversed order.
-\end{itemize}
+    \item \textit{NE04: Remove and reinsert linked services}. Two services that are dependent on each other (synchronised or double services) are removed simultaneously from the solution and reinserted in the best possible positions.
+    \item \textit{NE05: 2OPT}. This is the classical vehicle routing neighbourhood and operates in a single route. Subsets of each route are removed and reinserted in a reversed order.
+\end{enumerate}
 
 \noindent While some neighbourhoods proved key to the performance of the GRASP algorithm in our initial testing, the benefit of 2OPT and the nurse order change was not immediately evident. For this reason, in Section~\ref{sub:parametertuning} we analyse whether they are helpful to the overall performance of the algorithm or not.
 
@@ -380,7 +481,7 @@ The quality of the VNS is directly influenced by the neighbourhoods used and the
 \noindent The basic idea behind Path Relinking (PR) \citep{laguna1999,resende2016} is to use two existing solutions to generate a third one, which can potentially have higher quality than both of them.
 This is done by transforming one of them (called starting solution) step by step, by using local search movements, in the other solution (called guiding solution).
 
-In our implementation this is done by means of two local search movements, re-arranging the position of a nurse in the nurse order vector and removing and re-inserting a job in a different position. Each of these movements is done such that they result in the nurse or job matching as closely as possible the position seen in the guiding solution. The intermediate solution of highest quality is then saved, and local search is applied on it. Note that, this intermediate solution is often not a local optimum (unlike the starting and the guiding solutions), so applying local search may lead to high quality solutions. The pseudo-code of the routine is described in Algorithm~\ref{alg:pathrelinking}.
+In our implementation this is done by means of two local search movements, re-arranging the position of a nurse in the nurse order vector and removing and re-inserting a job in a different position. Each of these movements is done such that they result in the nurse or job matching as closely as possible the position seen in the guiding solution. The intermediate solution of highest quality is then saved, and local search is applied on it. Note that, this intermediate solution is often not a local optimum (unlike the starting and the guiding solutions), so applying local search may lead to higher quality solutions. The pseudo-code of the routine is described in Algorithm~\ref{alg:pathrelinking}.
 
 % \input{pr_algorithm.tex}
 \begin{algorithm}[h]
@@ -427,31 +528,31 @@ In our implementation this is done by means of two local search movements, re-ar
 \end{algorithmic}
 \end{algorithm}
 
-Note that double services are removed and reinserted simultaneously (see line~\ref{alg:prforinsertion}). In the case that some jobs that are due to be inserted in a position later than the current length of the route, they are instead inserted in the last possible position. This might cause the solutions not to be equal after applying $n + m$ movements, so if this happens another pass is performed (line~\ref{alg:prmainwhile}).
+\noindent Note that double services are removed and reinserted simultaneously (see line~\ref{alg:prforinsertion}). In the case that some jobs that are due to be inserted in a position later than the current length of the route, they are instead inserted in the last possible position. This might cause the solutions not to be equal after applying $n + m$ movements, so if this happens another pass is performed (line~\ref{alg:prmainwhile}).
 
 During the GRASP algorithm, good solutions are kept into a pool, and the relinking occurs between a newly generated solution and one or more solutions from the pool.
 The number of solutions in the pool is controlled by the parameter \texttt{pool\_size}. We determine a suitable value for this parameter in our experiments (see Section~\ref{sec:computationalexperiments}).
 
 During the algorithm, solutions that have higher quality than the worst solution currently in the pool will enter it, unless they are too similar to any existing solution with better quality. To further ensure diversity, if a solution enters the pool, it will do so by replacing the solution most similar to it from those that have lowest quality. To assess if a solution can enter the pool and which solution it will replace, we use the dissimilarity function, $d(\mathcal{S}_1, \mathcal{S}_2)$, which is defined as follows. Let schedule $\mathcal{S}_1$ be the pair $\mathcal{S}_1 = \{\mathcal{R}_1, \mathcal{O}_1\}$ and schedule $\mathcal{S}_2 = \{\mathcal{R}_2, \mathcal{O}_2\}$. Then:
 \begin{equation}
-    d(\mathcal{S}_1, \mathcal{S}_2) = d_o(\mathcal{O}_1, \mathcal{O}_2) + d_a(\mathcal{R}_1, \mathcal{R}_2) + d_r(\mathcal{R}_1, \mathcal{R}_2).
+    d(\mathcal{S}_1, \mathcal{S}_2) = d_o(\mathcal{O}_1, \mathcal{O}_2) + d_a(\mathcal{R}_1, \mathcal{R}_2) + d_r(\mathcal{R}_1, \mathcal{R}_2). \label{eq:dissimilarityfunction}
 \end{equation}
 This is a combination of three measures, the dissimilarity of the nurse order $d_o(\mathcal{O}_1, \mathcal{O}_2)$, of the nurse-job assignments, $d_a(\mathcal{R}_1, \mathcal{R}_2)$, and the differences in the routes themselves, $d_r(\mathcal{R}_1, \mathcal{R}_2)$.
 
 The distance between the solution orderings is simply calculated as the Hamming distance between the ordering vectors, i.e. the number of different digits in them:
 \begin{equation}
-    d_o(\mathcal{O}_1, \mathcal{O}_2) = |\{i\in\{1,\dots,n\} : \mathcal{O}_1(i) \neq  \mathcal{O}_2(i)\}|,
+    d_o(\mathcal{O}_1, \mathcal{O}_2) = |\{i\in\{1,\dots,n\} : \mathcal{O}_1(i) \neq  \mathcal{O}_2(i)\}|, \label{eq:dissimilaritynurseorder}
 \end{equation}
 where $\mathcal{O}_1(i)$ and $\mathcal{O}_2(i)$ represent the $i^{th}$ element in the nurse order vector of schedules $\mathcal{S}_1$ and $\mathcal{S}_2$ respectively.
 
 The dissimilarity in the assignments is calculated as the number of services that are assigned to different nurses in the solutions. If we denote by $\mathcal{R}_1 = \{
 r^{(1)}_1, r^{(1)}_2, \dots, r^{(1)}_n\}$ and $\mathcal{R}_2 = \{r^{(2)}_1, r^{(2)}_2, \dots, r^{(2)}_n\}$ the routes in schedules $\mathcal{S}_1$ and $\mathcal{S}_2$ respectively, then:
 \begin{equation}
-    d_a(\mathcal{R}_1, \mathcal{R}_2) = |\{j\in\{1,\dots,m\} : \nexists i \in N \text{ such that } j \in r^{(1)}_i \cap r^{(2)}_i\}|.
+    d_a(\mathcal{R}_1, \mathcal{R}_2) = |\{j\in\{1,\dots,m\} : \nexists i \in N \text{ such that } j \in r^{(1)}_i \cap r^{(2)}_i\}|. \label{eq:dissimilarityassignments}
 \end{equation}
 Finally, the dissimilarities in the routes are captured by looking at the presence of different arcs in the solution. Let $A(\mathcal{R}_1)$ and $A(\mathcal{R}_2)$ be the sets of arcs present in the routes of schedules $\mathcal{S}_1$ and $\mathcal{S}_2$ respectively, including those to and from the depots, then:
 \begin{equation}
-    d_r(\mathcal{R}_1, \mathcal{R}_2) = |A(\mathcal{R}_1)| - |A(\mathcal{R}_1) \cap A(\mathcal{R}_2)|.
+    d_r(\mathcal{R}_1, \mathcal{R}_2) = |A(\mathcal{R}_1)| - |A(\mathcal{R}_1) \cap A(\mathcal{R}_2)|. \label{eq:dissimilarityroutes}
 \end{equation}
 Note that this function is not symmetrical when $A(\mathcal{R}_1) \neq A(\mathcal{R}_2)$, although this may only happen if one schedule has a different number of empty nurse routes, which is a rare case in practice. Nevertheless, in this case the dissimilarity value will be at least $3$ (two arcs and one assignment), and the difference between the two cases is bounded by $||A(\mathcal{R}_1)| - |A(\mathcal{R}_2)||$, which is at most $1$ for each difference in an empty route. 
 Including the route dissimilarity is particularly important to differentiate the cases where solutions might have nurses with similar profiles (in terms of starting locations, shift times and skills). If the nurses are simply being interchanged and doing the same routes, the solutions will have a positive value for ordering and assignment dissimilarities, but no arc dissimilarity. Nevertheless, if they have genuinely different routes, even if they are interchanging their jobs, the solution will have a high route dissimilarity too.
@@ -462,11 +563,11 @@ In our experiments setting a dissimilarity threshold of $5$ proved sufficient to
 \subsubsection{Type of Path Relinking}
 \label{subsub:typepathrelinking}
 \noindent Path relinking is performed at the end of the algorithm between all pairs of solutions in the pool. However, it is also possible to perform path relinking at intermediate steps of the algorithm too, each time a new solution is generated. Since this is potentially very time consuming, we have we have investigated the following three strategies for relinking intermediate solutions:
-\begin{itemize}
-    \item PR01: Perform path relinking between every generated solution and another solution selected randomly from the pool.
-    \item PR02: Perform path relinking between every new solution and all solutions in the pool.
-    \item PR03: Do not perform path relinking during the algorithm.
-\end{itemize}
+\begin{enumerate}[label={(\arabic*)}]
+    \item \textit{PR01}: Perform path relinking between every generated solution and another solution selected randomly from the pool.
+    \item \textit{PR02}: Perform path relinking between every new solution and all solutions in the pool.
+    \item \textit{PR03}: Do not perform path relinking during the algorithm.
+\end{enumerate}
 
 \noindent Finally, another important parameter of PR is the direction. In forward path relinking, the quality of the starting solution is less or equal than the quality of the guiding solution. In backward path relinking, the quality of the guiding solution is lower. In order to determine the choice of direction, we use the parameter \texttt{pr\_direction}, which represents the choice of direction of path relinking in each iteration: backward, forward, backward and forward or a random pick between them. For relinking at the end of the algorithm we always use both, forward path relinking and backward path relinking, between all pairs of solutions.
 
@@ -503,20 +604,20 @@ In order to select the best possible configuration automatically and in a statis
     \texttt{pool\_size} & Number of solutions in pool & I & [1,100] & 19 \\ % sols_in_pool
     \texttt{grasp\_dl} & Minimum value of $\delta$ & R & [0,0.5] & 0.25 \\ % grasp_dl
     \texttt{grasp\_dr} & Range of $\delta$ & R & [0,1] & 0.81 \\ % grasp_dr
-    \texttt{rcl\_strategy} & Strategy for generating the reduced candidate list & C & 1,2 & 2 \\ % rcl_strategy    
+    \texttt{rcl\_strategy} & Strategy for generating the reduced candidate list & C & 1, 2 & 2 \\ % rcl_strategy    
     \bottomrule
     \end{tabular}
     \label{table:parameters}
 \end{table}
 
-For the remainder of the section we use the parameters found by \texttt{irace} in all our experiments.
+\noindent For the remainder of the section we use the parameters found by \texttt{irace} in all our experiments.
 
 %----------------------------------------------------------------------------------%
 \subsection{Variations in the Literature}
 \label{sub:literaturedata}
 \noindent While the problems reported by \cite{mankowska2014} and \cite{aithaddadene2016} are very similar to the one we describe, there are slight variations in how the problem is modelled that need to be considered. \cite{mankowska2014} describes the following objective function:
 \begin{equation}
-    \min \lambda_1 Dist + \lambda_2 Travel + \lambda_3 Travel^{max},
+    \min \lambda_1 Dist + \lambda_2 Travel + \lambda_3 Travel^{max}, \label{eq:mankowskaobj}
 \end{equation}
 where $Dist$ denotes the distance travelled by all nurses, $Travel$ denotes the total tardiness and $Travel^{max}$ denotes the maximum tardiness. For \cite{mankowska2014} tardiness refers to the time between the end of its time window and the actual start time of a job. Tardiness is not allowed for interdependent jobs, where the dependency gap is a hard constraint. Furthermore, the synchronisation is simplified for jobs with two skills, where the skill with the lower index must always be performed earlier than the skill with the higher index.
 Tardiness does not include overtime for the workers either, which is not mentioned in the model, so we have not set a limit for working hours of staff when solving these instances.
@@ -525,25 +626,27 @@ The lambda values are weights to determine the importance of each factor, and th
 
 In \cite{aithaddadene2016} tardiness is not allowed, but preferences are taken into account, so their objective function is as follows:
 \begin{equation}
-    \min Dist + Pref,
+    \min Dist + Pref, \label{eq:aithobj}
 \end{equation}
 where $Dist$ represents the cost of travelling for all nurses and $Pref$ the preference score.
-In Table~\ref{table:adaptedobjvalues} we specify the weights used in the objective function \eqref{eqn:solutionquality} in order to represent the objective functions of these algorithms.
+In Table~\ref{table:adaptedobjvalues} we specify the weights used in the objective function \eqref{eq:solutionquality} in order to represent the objective functions of these algorithms.
 
 \begin{table}[htbp!]
     \centering
-    \caption{Weights used in the objective function to match those used in the methods from  \citet{aithaddadene2016} (AH) and \citet{mankowska2014} (MK). A weight of zero indicates that the measure is not considered, while a dash indicates that those measures that were considered infeasible, i.e. they contribute to $I(S)$.}
+    \caption{Weights used in the objective function to match those used in the methods from  \citet{aithaddadene2016} (AH) and \citet{mankowska2014} (MK). A weight of zero indicates that the measure is not considered, while a dash indicates those measures that were considered infeasible, i.e. they contribute to $I(S)$.}
     \begin{tabular}{ccc}
     \toprule
     \textbf{Weight}  & \textbf{Values for AH} & \textbf{Values for MK} \\
     \midrule
-    $\alpha_1$      &   $-0.3\times60$          &  $-\frac{1}{3}\times60$   \\
-    $\alpha_2$      &   $0$                     &  $0$                      \\
-    $\alpha_3$      &   -                       &  $-\frac{1}{3}\times60$   \\
-    $\alpha_4$      &   -                       &  $0$   \\   
-    $\alpha_5$      &   $0$                     &  $0$                      \\       
-    $\alpha_6$      &   $-1$                    &  $0$                      \\    
-    $\alpha_7$      &   -                       &  $-\frac{1}{3}\times60$             \\    
+    $\alpha_1$      &   $-0.3\times60$          &  $-\frac{1}{3}\times60$ \\
+    $\alpha_2$      &   $0$                     &  $0$ \\
+    $\alpha_3$      &   -                       &  $-\frac{1}{3}\times60$ \\
+    $\alpha_4$      &   -                       &  $0$ \\   
+    $\alpha_5$      &   $0$                     &  $0$ \\       
+    $\alpha_6$      &   0                       &  0 \\    
+    $\alpha_7$      &   0                       &  0 \\    
+    $\alpha_8$      &   $-1$                    &  $0$ \\    
+    $\alpha_9$      &   -                       &  $-\frac{1}{3}\times60$ \\    
     \bottomrule
     \end{tabular}
     \label{table:adaptedobjvalues}
@@ -562,50 +665,75 @@ In Table~\ref{table:grouptableaithcombined} we present a summary of the results 
 
 \input{combined_table_aith_results.tex}
 
-\noindent These results suggest that our DST can find better objective values within reasonable planning times. In addition, we are able to replicate the 23 optimal solutions provided in the paper. The average results show that \comp{GRASP} is also consistent across runs, finding the optimal solutions for all runs in group \emph{G1} and in most of the runs in group \emph{G2}.
+\noindent These results suggest that our DST can find better objective values within reasonable planning times. In addition, we are able to replicate the 23 optimal solutions provided in the paper. The average results show that GRASP is also consistent across runs, finding the optimal solutions for all runs in group \emph{G1} and in most of the runs in group \emph{G2}.
 
-Similarly, in Table~\ref{table:grouptablemkavgbest} we present the comparison of our DST against the performance of the AVNS algorithm presented in \citet{mankowska2014}.
+Similarly, in Table~\ref{table:grouptablemkavgbest} we present the comparison of our DST against the performance of the AVNS algorithm presented in \citet{mankowska2014}. GRASP clearly outperforms AVNS in the majority of instances, especially on those of larger sizes. Further, our algorithm is able to replicate most of the proven optimal solutions (9 of the 10 instances for which \cite{mankowska2014} provides an optimal solution). In the instance group A, where the AVNS finds all optimal solutions for the problem, GRASP fails to replicate one of these solutions, hence increasing the average. This is one of the cases where the assumption that a start time of a job should be as early as possible for the first nurse arriving \eqref{eq:earliestpossiblestartassumption} proves to be too restrictive and removes the optimal solution from the search space of the metaheuristic. Nevertheless, the loss in quality is under $5\%$ and the route itself found by the two algorithms is the same (but not the scheduled start times). While this effect may still occur in larger instances, it is not evident from our results, suggesting that the efficiency gains seem to outweigh the potential decrease in quality.
 
-\begin{table}
+\begin{table}[h]
 	\centering
-	\caption{Performance of the \comp{GRASP algorithm} (average of best and average results) compared to the AVNS algorithm presented in \citet{mankowska2014} (\emph{mk\_avns}) for the instance groups \emph{A} -- \emph{G}. Figures in bold indicate the best results for each instance group. \comp{mk only 2dp, why?}}
-	\begin{tabular}{c|c|ccc}
+	\caption{Performance of the GRASP algorithm (average of best and average results) compared to the AVNS algorithm presented in \citet{mankowska2014} (\emph{mk\_avns}) for the instance groups \emph{A} -- \emph{G}. Figures in bold indicate the best results for each instance group.}
+	\begin{tabular}{crcrrr}
 		\toprule
-		        &  \emph{mk\_avns}    &   \multicolumn{3}{c}{GRASP} \\
-		Group   &   Result    &   Best        &   Avg         &   Time limit\\
+		        &      & \phantom{a} &   \multicolumn{3}{c}{GRASP} \\
+		\cmidrule{4-6}
+		Group   &   \emph{mk\_avns}    & &   \multicolumn{1}{c}{Best}        &   \multicolumn{1}{c}{Average}         &   \multicolumn{1}{c}{Time Limit}\\
 		\midrule
-		\emph{A}    &   \textbf{225.6}  &   226.41  &   226.41      &   5 s\\
-		\emph{B}    &   475.1   &   \textbf{408.25} &   408.31      &   30 s\\
-		\emph{C}    &   713.6   &   \textbf{628.15} &   637.59      &   1 min\\
-		\emph{D}    &   930.3   &   \textbf{798.80}  &   814.53      &   5 min\\
-		\emph{E}    &   1064.7  &   \textbf{880.06} &   901.00       &   15 min\\
-		\emph{F}    &   1588.0    &   \textbf{1405.68}&   1491.09     &   30 min\\
-		\emph{G}    &   2161.2  &   \textbf{2042.10} &   2341.89     &   3 h\\
+		\emph{A}    &   \textbf{225.6}  &&  226.41  &   226.41      &   5 seconds\\
+		\emph{B}    &   475.1   &&   \textbf{408.25} &   408.31      &   30 seconds\\
+		\emph{C}    &   713.6   &&   \textbf{628.15} &   637.59      &   60 seconds\\
+		\emph{D}    &   930.3   &&   \textbf{798.80}  &   814.53      &   5 minutes\\
+		\emph{E}    &   1064.7  &&   \textbf{880.06} &   901.00       &   15 minutes\\
+		\emph{F}    &   1588.0    &&   \textbf{1405.68}&   1491.09     &   30 minutes\\
+		\emph{G}    &   2161.2  &&   \textbf{2042.10} &   2341.89     &   3 hours\\
 		\bottomrule
 	\end{tabular}
 	\label{table:grouptablemkavgbest}
 \end{table}
 
-\comp{GRASP} clearly outperforms AVNS in the majority of instances, especially on those of larger sizes.
-Further, our algorithm is able to replicate most of the proven optimal solutions (9 of the 10 instances for which \cite{mankowska2014} provides an optimal solution). In the instance group A, where the AVNS finds all optimal solutions for the problem, GRASP fails to replicate one of these solutions, hence increasing the average. This is one of the cases where the assumption that a start time of a job should be as early as possible for the first nurse arriving \eqref{eqn:earliestpossiblestartassumption2} proves to be too restrictive and removes the optimal solution from the search space of the metaheuristic. Nevertheless, the loss in quality is under $5\%$ and the route itself found by the two algorithms is the same (but not the scheduled start times). While this effect may still occur in larger instances, it is not evident from our results, suggesting that the efficiency gains seem to outweigh the potential decrease in quality.
+
 
 %----------------------------------------------------------------------------------%
 \subsection{Trade-offs in Solution Quality}
 \label{sub:exploringobjfunction}
 \noindent While the previous section sheds some light on the algorithmic performance of the GRASP algorithm and, in general, of our ability to solve efficiently HHCRSP problems of size similar to those faced by district nursing teams in the UK, it does not provide any insight on the actual applicability of these solutions. In this section, we focus on the instances from \cite{aithaddadene2016} that are solved to optimality (with up to 45 patients) and analyse how these solutions would appear from the perspective of a team of nurses undertaking the task. This involves asking questions such as: Is the workload fairly distributed? How long does it take to complete the shift? Are patients seeing their preferred carers (or vice versa)?
 
-In order to answer these questions, we examine closely the values of a few key indicators of the quality of a solution: \emph{Total time}, \emph{Travel time}, \emph{Waiting time}, \emph{Preferences} and \emph{Longest Day}, which is the time it takes to perform the longest shift in the solution. We compare the indicators found by using the original objective function (listed in Table~\ref{table:adaptedobjvalues}) with those found by using our proposed objective function (the values listed in Table~\ref{table:adequateweights}, but with preferences being negative and time quantities scaled by $-0.3\times60$, in order to scale them to the data). The result of this comparison is shown in Table~\ref{table:comparisonofqualities}.
+In order to answer these questions, we examine closely the values of a few key indicators of the quality of a solution: \emph{Total time}, \emph{Travel time}, \emph{Waiting time}, \emph{Maximum travel time}, \emph{Maximum waiting time}, \emph{Maximum workload balance difference}, and \emph{Preferences}. We compare the indicators found by using the original objective function (listed in Table~\ref{table:adaptedobjvalues}) with those found by using our proposed objective function (the values listed in Table~\ref{table:adequateweights}, but with preferences being negative and time quantities scaled by $-0.3\times60$, in order to scale them to the data). The result of this comparison is shown in Table~\ref{table:comparisonofqualities}.
 
-\input{quality_comparison_table.tex}
+\input{qualitycomparisontable.tex}
 
-The comparison clearly indicates that there is a significant amount of waiting time that can be reduced by rearranging the routes, and it is often not considered in the literature. We show that these waiting times can be reduced, sometimes entirely, and that these reductions have a non-negligible impact in the total time of operation, generating on average a $10.1\%$ reduction, which can be up to $19.7\%$ of the total time in some instances. Further, these gains in time can be spread out evenly, and it is often possible to achieve a reduction of the workload for those staff members that are already doing the most, reducing up to $11.9\%$ their shift time. Nonetheless, these gains come at the expense of a lower matching of preferences (on average, up by $22.9\%$) and travel time (on average, up by $12.7\%$). For this example, we have considered equal weights for travel and waiting times, but it would be up to individual teams to determine appropriate costs for these, considering mileage costs and environmental factors when weighing travel time.
+\noindent The comparison clearly indicates that there is a significant amount of waiting time that can be reduced by rearranging the routes, which is often not considered in the literature. We show that these waiting times can be reduced over all 23 instances by over 30\%. In 13 of the instances, waiting times are reduced by at least 90\%; the waiting time is eliminated entirely in three of these instances. Subsequently, the maximum waiting time has also been reduced across all instances by 82.33\% on average. These reductions have a non-negligible impact on the total time of operation, generating on average a $11.59\%$ reduction, which can be up to $24.46\%$ of the total time in some instances.
+
+In 10 of the 23 cases, the travel time has also been lowered by up to $16.25\%$, resulting in a decrease in maximum travel time in 16 instances by up to $29.13\%$. Furthermore, we have been able to achieve a better workload balance for nurses in the schedules, improving the factor in all instances by an average of $43.15\%$ \correction{explain}. Nonetheless, these gains come at the expense of a lower matching of preference (up $123.93\%$ on average). For these experiments, we have considered equal weights for total travel and total waiting time, as well as equal weights for maximum travel time and maximum waiting time, however it would be up to individual teams to determine appropriate costs for these, taking into account mileage costs and environmental factor when weighing travel time, and considering nurse satisfaction when weighing waiting time.
+
+\begin{figure}[h!]
+	\centering	
+	\begin{subfigure}[h]{\textwidth}
+		\centering
+		\includestandalone[width=\textwidth]{figures/aithgantt18-4-m-2c}
+		\caption{}
+		\label{fig:aith}
+		\vspace{2mm}
+	\end{subfigure}
+	\begin{subfigure}[h]{\textwidth}
+		\centering
+		\includestandalone[width=\textwidth]{figures/papergantt18-4-m-2c}
+		\caption{}
+		\label{fig:dst}
+	\end{subfigure}
+	\caption{A comparison of schedules for instance 18-4-m-2c using (a) the \textit{ah\_gi} algorithm of \cite{aithaddadene2016} and (b) our DST using GRASP and VNS, where in (b) all objectives have been reduced. The dotted segments indicate travel times, whilst the red lined segments indicate waiting periods.}
+	\label{fig:18-4-l-2agantt}
+\end{figure}
+
+%The total travel time has also been reduced in 12 of the 23 cases by up to 36.41\%, whilst the maximum travel time has been reduced in 14 cases by up to 32.35\%. Nonetheless, these gains come at the expense of a lower matching of preferences (on average, up by $132.6\%$) and maximum workload balance difference (up by 14.56\% on average). For this example, we have considered equal weights for travel time, waiting time, and workload balance difference, but it would be up to individual teams to determine appropriate costs for these, considering mileage costs and environmental factors when weighing travel time.
+
+%Further, these gains in time can be spread out evenly, \comp{and it is often possible to achieve a reduction of the workload for those staff members that are already doing the most, reducing up to $11.9\%$ their shift time - longest day no longer exists, need to discuss reduction in travel and waiting times as well as overall time}. 
 
 %----------------------------------------------------------------------------------%
 \section{Conclusion}
 \label{sec:conclusion}
-\noindent In this article we propose a Decision Support Tool for the Home Health Care Routing and Scheduling Problem that is faced daily by district nursing teams. We propose a model that includes the most common constraints observed in practice (skills, time windows, synchronisation, double services) and objectives (travel time, waiting time, assignment preferences, workload balance, tardiness, overtime). This comprehensive approach provides flexibility in the modelling of the working environment in order to be applicable in general real settings. This allows for modelling a variety of situations, for example, teams with large workloads might find that overtime and tardiness are acceptable but should be penalised, whilst other teams with less workload might find those solutions infeasible and prefer to weight more patient preferences instead.
+\noindent In this article we propose a Decision Support Tool for the Home Health Care Routing and Scheduling Problem that is faced daily by district nursing teams. We propose a model that includes the most common constraints observed in practice (skills, time windows, synchronisation, double services, shifts) and objectives (travel time, waiting time, assignment preferences, workload balance, tardiness, overtime). This comprehensive approach provides flexibility in the modelling of the working environment in order to be applicable in general real settings. This allows for modelling a variety of situations, for example, teams with large workloads might find that overtime and tardiness are acceptable but should be penalised, whilst other teams with less workload might find those solutions infeasible and prefer to weight more patient preferences instead.
 
-At the core of the DST is a GRASP algorithm with Path Relinking that is capable of solving the underlying NP-hard problem successfully for the usual instance sizes observed in practice. We show that the DST is competitive and outperforms other methods in the state-of-the-art literature, and is able to identify most of the optimal solutions known for the problem. Furthermore, we show that current literature ignores route aspects that are important to decision makers, such as waiting time. By including waiting times, we can reduce total operation times by up to 19\% when compared to optimal solutions in the literature that minimise travel times only.
+At the core of the DST is a GRASP algorithm with Path Relinking that is capable of solving the underlying NP-hard problem successfully for the usual instance sizes observed in practice. We show that the DST is competitive and outperforms other methods in the state-of-the-art literature, and is able to identify most of the optimal solutions known for the problem. Furthermore, we show that current literature ignores route aspects that are important to decision makers, such as waiting time. By including waiting times, we can reduce total operation times by up to 24\% when compared to optimal solutions in the literature that minimise travel times and preferences only.
 
 %----------------------------------------------------------------------------------%
 \section{Funding}
