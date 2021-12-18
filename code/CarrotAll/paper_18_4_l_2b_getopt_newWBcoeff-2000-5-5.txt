@@ -1,0 +1,44 @@
+Date: 2021-12-17 10:15:30.438817, running 1 files.
+------------------------------------------------------------
+Instance: 18-4-l-2b
+Quality: 847.0631550044229
+Measure: paper
+Nurses: 4
+Jobs: 20
+Total Time: 1655.0
+Total Service Time: 1353.0
+Total Travel Time: 301.0
+Total Waiting Time: 1.0
+Total Tardiness: 0.0
+Total Overtime: 0.0
+Total Preference: 5.142324447631836
+Max Travel Time: 90.0
+Max Waiting Time: 1.0
+Max Diff Workload: 0.047602739726027354
+Elapsed Time (s): 60.6375272
+------------------------------------------------------------
+
+Run finished at: 2021-12-17 10:16:31.092813
+------------------------------------------------------------
+Date: 2021-12-17 10:38:05.330825, running 1 files.
+------------------------------------------------------------
+Instance: 18-4-l-2b
+Quality: 847.0631550044229
+Measure: paper
+Nurses: 4
+Jobs: 20
+Total Time: 1655.0
+Total Service Time: 1353.0
+Total Travel Time: 301.0
+Total Waiting Time: 1.0
+Total Tardiness: 0.0
+Total Overtime: 0.0
+Total Preference: 5.142324447631836
+Max Travel Time: 90.0
+Max Waiting Time: 1.0
+Max Diff Workload: 0.047602739726027354
+Elapsed Time (s): 60.593985499999995
+------------------------------------------------------------
+
+Run finished at: 2021-12-17 10:39:05.933246
+------------------------------------------------------------

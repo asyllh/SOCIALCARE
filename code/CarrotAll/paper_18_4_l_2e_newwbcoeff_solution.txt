@@ -1,0 +1,153 @@
+THE MIN PREF OF THIS INSTANCE IS:
+<-< minPref = -80.41 >->
+
+STARTING Nurse order: (0,1,2,3,)
+It      0	Q -864.44	t    0.0 s
+ > Nurse order: (3,1,2,0,)
+It      2	Q -807.38	t    0.0 s
+ > Nurse order: (2,3,0,1,)
+It     73	Q -792.95	t    0.7 s
+ > Nurse order: (3,1,2,0,)
+It    265	Q -752.75	t    2.4 s
+ > Nurse order: (3,1,0,2,)
+SKIP LS, quality: -1515.17 (average CR: -1549.40, threshold value: -1549.40 )
+
+Time finished! (60.00 seconds)
+GRASP: Performed 6988 iterations.
+Relinking all pairs of solutions in the pool.
+-------- SolutionQuality(ip, 12345) --------
+
+Nurse 3. Start time: 0.00, End time: 717.00, Length of shift: 717.00
+	Job 9 (DS) arrives at 17.00, prefScore: 4.31, [TW 0 - 717], duration(ST): 88 travel(TR): 23.00 [ready at: 128.00]
+	Job 4 arrives at 128.00, prefScore: 2.39, [TW 0 - 717], duration(ST): 101 travel(TR): 13.00 [ready at: 242.00]
+	Job 5 arrives at 242.00, prefScore: 4.90, [TW 0 - 717], duration(ST): 20 travel(TR): 8.00 [ready at: 270.00]
+	Job 6 arrives at 270.00, prefScore: 5.79, [TW 0 - 717], duration(ST): 104 [ready at: 374.00]
+Finishes: 383.00 Overtime: -334.00 Waiting time: 0.00
+Nurse 1. Start time: 0.00, End time: 717.00, Length of shift: 717.00
+	Job 2 arrives at 15.00, prefScore: 6.55, [TW 0 - 717], duration(ST): 87 travel(TR): 10.00 [ready at: 112.00]
+	Job 17 arrives at 112.00, prefScore: -5.04, [TW 0 - 717], duration(ST): 49 travel(TR): 6.00 [ready at: 167.00]
+	Job 8 arrives at 167.00, prefScore: -6.24, [TW 0 - 717], duration(ST): 48 travel(TR): 14.00 [ready at: 229.00]
+	Job 3 (DS) arrives at 229.00, prefScore: 8.77, [TW 0 - 717], duration(ST): 104 travel(TR): 6.00 [ready at: 339.00]
+	Job 13 arrives at 339.00, prefScore: 7.67, [TW 0 - 717], duration(ST): 51 travel(TR): 9.00 [ready at: 399.00]
+	Job 16 arrives at 399.00, prefScore: -8.85, [TW 0 - 717], duration(ST): 75 [ready at: 474.00]
+Finishes: 480.00 Overtime: -237.00 Waiting time: 0.00
+Nurse 0. Start time: 0.00, End time: 717.00, Length of shift: 717.00
+	Job 9 (DS) arrives at 17.00, prefScore: 1.97, [TW 0 - 717], duration(ST): 88 travel(TR): 9.00 [ready at: 114.00]
+	Job 14 arrives at 114.00, prefScore: 6.28, [TW 0 - 717], duration(ST): 116 travel(TR): 3.00 [ready at: 233.00]
+	Job 10 arrives at 233.00, prefScore: -9.64, [TW 0 - 717], duration(ST): 71 travel(TR): 10.00 [ready at: 314.00]
+	Job 7 arrives at 314.00, prefScore: 6.50, [TW 0 - 717], duration(ST): 103 travel(TR): 19.00 [ready at: 436.00]
+	Job 1 arrives at 436.00, prefScore: 8.54, [TW 0 - 717], duration(ST): 52 [ready at: 488.00]
+Finishes: 500.00 Overtime: -217.00 Waiting time: 0.00
+Nurse 2. Start time: 0.00, End time: 717.00, Length of shift: 717.00
+	Job 15 arrives at 13.00, prefScore: -1.53, [TW 0 - 717], duration(ST): 118 travel(TR): 14.00 [ready at: 145.00]
+	Job 0 arrives at 145.00, prefScore: -5.20, [TW 0 - 717], duration(ST): 72 travel(TR): 12.00 [ready at: 229.00]
+	Job 3 (DS) arrives at 229.00, prefScore: -0.57, [TW 0 - 717], duration(ST): 104 travel(TR): 3.00 [ready at: 336.00]
+	Job 11 arrives at 336.00, prefScore: 6.95, [TW 0 - 717], duration(ST): 54 travel(TR): 22.00 [ready at: 412.00]
+	Job 12 arrives at 412.00, prefScore: -0.17, [TW 0 - 717], duration(ST): 97 [ready at: 509.00]
+Finishes: 521.00 Overtime: -196.00 Waiting time: 0.00
+QUALITY MEASURE: Paper (6)
+---------------------------------
+ALG OPTIONS:
+algOp[50] = 0.00 (if 1, tardiness/overtime are infeasible)
+alpha1 [51] (totalTravelTime) = -1.00
+alpha2 [52] (totalWaitingTime) = -1.00
+alpha3 [53] (mkAllowedTardiness) = -5.00
+alpha4 [54] (totalOvertime) = -5.00
+alpha5 [55] (minSpareTime) = 0.50
+alpha6 [56] (totalPref) = 1.00
+alpha7 [57] (mkMaxTardiness) = 0.00
+alpha7 [58] (maxTravelTime) = -5.00
+alpha7 [59] (maxWaitingTime) = -5.00
+alpha7 [60] (maxDiffWorkload) = -2000.00
+
+-------------------
+
+OUTPUT VARIABLES:
+Total Time (totalTime): 1692.00
+Total Travel Time (totalTravelTime) = 282.00
+Total Waiting Time (totalWaitingTime): 0.00
+Total Service Time (totalServiceTime): 1410.00
+Total Service Time Inc DS (totalServiceTimeIncDS): 1602.00
+Total Overtime (totalOvertime) = 0.00
+Total Violated TW (totalTardiness) = 0.00
+Total ViolatedC:\Users\ah4c20\Asyl\PostDoc\SOCIALCARE\code\CarrotAll
+
+=======================================================
+Running file number 0, "18-4-l-2e" for a maximum of 60 seconds.
+inst.full_file_name:  ./Instances/literature/ait_h/18-4-l-2e
+inst.name:  18-4-l-2e
+Before calling, inst:  <instance_handler_dfs.INSTANCE object at 0x000001B3289AFEE0>
+inst.DSSkillType  strictly-shared
+
+End of Python program - calling C program (GRASP-VNS-ALL)
+Max time: 60 seconds, Random seed: 1516608
+-------------------------------------------------
+
+BACK IN PYTHON.
+
+Finshed.
+Quality: 752.754845921132
+Those were results for 18-4-l-2e running for 60.7 seconds.
+Instance:  18-4-l-2e
+Quality:  752.754845921132
+Measure:  paper
+Nurses:  4
+Jobs:  18
+Total Time:  1692.0
+Total Service Time:  1410.0
+Total Travel Time:  282.0
+Total Waiting Time:  0.0
+Total Tardiness:  0.0
+Total Overtime:  0.0
+Total Preference:  33.37346649169922
+Max Travel Time:  76.0
+Max Waiting Time:  0.0
+Max Diff Workload:  0.06206415620641559
+Elapsed Time (s):  60.7379169
+Max travel coeff:  -5.0
+Max waiting coeff:  -5.0
+WB Coeff:  -2000.0
+
+
+=======================================================
+=======================================================
+
+
+
+End of program.
+ TWMK (totalMKTardiness) = 0.00
+Max Tardiness (maxTardiness) = 0.00
+Max Tardiness MK (mkMaxTardiness) = 0.00
+Total Tardiness MK (mkAllowedTardiness) = 0.00 (totalOvertime + totalTardiness)
+Max Spare Time (maxSpareTime): 334.00
+Min Spare Time (minSpareTime): 196.00
+Shortest Shift (shortestDay): 383.00
+Longest Shift (longestDay): 521.00
+Shift Difference (dayDiff): 138.00
+Total Preference Score (ip->totalPref) = 33.37
+Max Travel Time (maxTravelTime) = 76.00
+Max Waiting Time (maxWaitingTime) = 0.00
+Max Diff Workload (Balance) (maxDiffWorkload) = 0.06
+Quality = -752.75
+
+------------------------------
+ALL QUALITIES:
+Ait H: -117.97
+Mankowska: -94.00
+Workload Balance: -112.17
+Paper: -752.75
+Nurse order: ( 3,  1,  0,  2,   )
+-------- finished. SolutionQuality(ip, 12345) --------
+
+	PR all pairs final quality: -752.75
+Iterations performed: 6988
+GRASP Finished.
+Final quality: -752.75
+Theoretical best quality: -752.75
+Iterations performed: 6988
+sols_generated = 6989
+local_searches_performed = 6988
+solutions_relinked = 0
+total path_relinkings_performed = 0
+Elapsed time: 60.73 s (MAX: 60.00)
+Final solution quality is: -752.75

@@ -1,0 +1,171 @@
+%---- PREAMBLE ----%
+
+% Allows separate files to be used in the main file
+\usepackage{subfiles}
+
+% Algorithms
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\algorithmicbreak}{\State \textbf{break}}
+\newcommand{\Break}{\algorithmicbreak}
+\renewcommand{\algorithmicreturn}{\State \textbf{return}}
+\newcommand{\algorithmicto}{\textbf{ to }}
+\newcommand{\To}{\algorithmicto}
+\newcommand{\algorithmicrun}{\State \textbf{call }}
+\newcommand{\Run}{\algorithmicrun}
+\newcommand{\algorithmicoutput}{\textbf{output }}
+\newcommand{\Output}{\algorithmicoutput}
+\newcommand{\algorithmictrue}{\textbf{true}}
+\newcommand{\True}{\algorithmictrue}
+\newcommand{\algorithmicfalse}{\textbf{false}}
+\newcommand{\False}{\algorithmicfalse}
+\newcommand{\algorithmicand}{\textbf{ and }}
+\newcommand{\AAnd}{\algorithmicand}
+\newcommand{\algorithmicnot}{\textbf{not}}
+\newcommand{\Not}{\algorithmicnot}
+\newcommand{\algorithmicor}{\textbf{ or }}
+\newcommand{\Or}{\algorithmicor}
+
+% Contains advanced math extensions
+\usepackage{amsmath}
+
+% Introduces the *proof* environment and the \theoremstyle command
+\usepackage{amsthm}
+
+% Adds new symbols to be used in math mode, e.g. \mathbb
+\usepackage{amssymb}
+
+% To declare multiple authors
+%\usepackage{authblk}
+
+% Provides extra comands as well as optimisation for producing tables
+\usepackage{booktabs}
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+
+% Allows customisation of appearance and placements for figures/tables etc.
+\usepackage{caption}
+
+\usepackage{comment}
+
+% Adds support for arbitrarily-deep nested lists
+\usepackage[inline]{enumitem}
+
+%Support for changing size of font in table footnotes
+%\usepackage{etoolbox}
+
+% Improves the interface for defining floating objects such as figures/tables
+\usepackage{float}
+
+%\usepackage{fullpage}
+
+% For easy management of document margins and the document page size
+\usepackage[a4paper]{geometry}
+
+% Allows insertion of graphic files within a document
+\usepackage{graphicx}
+
+% Manage links within the document or to any URL when you compile in PDF
+\usepackage[colorlinks]{hyperref} 
+\usepackage[dvipsnames]{xcolor}
+%Tikz colours, used in tikz figures only
+\colorlet{tBlue}{RoyalBlue!35!Cerulean} %tikz color
+\colorlet{tRed}{Red} %tikz color
+\definecolor{tGreen}{HTML}{569909} %tikz color
+\definecolor{tOrange}{HTML}{FA7602} %tikz color
+\definecolor{tLightGreen1}{HTML}{C1E685} %tikz color
+\definecolor{tLightOrange1}{HTML}{FFCD4F} %tikz color
+\colorlet{tLightGreen}{LimeGreen!70!OliveGreen!45!White}
+\colorlet{tLightOrange}{Dandelion!65!White}
+\definecolor{tLightPink}{HTML}{FFD4EB} %tikz color
+\definecolor{tLightBlue}{HTML}{CEF0FF} %tikz color
+
+%Text colours
+\colorlet{myRed}{Red!50!OrangeRed}
+\definecolor{myOrange}{HTML}{FA7602}
+\definecolor{myGreen}{HTML}{569909}
+\definecolor{myAqua}{HTML}{00B1BA} %02BEB8
+\definecolor{myBlue}{HTML}{0095FF} %00B3FF
+\colorlet{myPurple}{Orchid} 
+\colorlet{myPink}{Rhodamine!65!Lavender}
+\colorlet{myGray}{Gray!90!White}
+
+% The document class `elsarticle` uses the \AtBeginDocument comman to define the colour of all link types as blue, so we use the \AtBeginDocument command again to overwrite the colour settings to the colors we choose. REMEMBER TO REMOVE THIS BEFORE SUBMITTING.
+%\AtBeginDocument{% 
+%	\hypersetup{
+%		linkcolor=myPurple,
+%		citecolor=myAqua,
+%		urlcolor=black
+%	}
+%} %end of \AtBeginDocument
+
+\newcommand{\intro}[1]{{\color{myOrange}#1}} % \intro{<text>}, makes <text> orange, use to highlight things to do, urgent, or revisit in introduction section
+
+\newcommand{\ahc}[1]{{\color{myBlue}#1}} % \ahc{<text>}, makes <text> blue, use to highlight things to do, urgent, or revisit in AHC section
+
+\newcommand{\heur}[1]{{\color{myPink}#1}} % \scspp{<text>}, makes <text> pink, use to highlight things to do, urgent, or revisit in SCSPP section
+
+\newcommand{\ea}[1]{{\color{myRed}#1}} % \ea{<text>}, makes <text> red, use to highlight things to do, urgent, or revisit in EA section
+
+\newcommand{\cmsa}[1]{{\color{myGreen}#1}} % \cmsa{<text>}, makes <text> green, use to highlight things to do, urgent, or revisit in CMSA section
+
+\newcommand{\conc}[1]{{\color{myPurple}#1}} % \conc{<text>}, makes <text> purple, use to highlight things to do, urgent, or revisit in Conclusion section
+
+\newcommand{\note}[1]{{\color{myPurple}#1}} % \note{<text>}, makes <text> turquoise, use to highlight things to do, urgent, or revisit in any section
+
+
+\newcommand{\alert}[1]{{\color{myRed}#1}} % \alert{<text>}, makes <text> red, use to highlight things to do, urgent, or revisit.
+
+\newcommand{\done}[1]{{\color{myGray}#1}} % \done{<text>}, makes <text> gray, use to highlight things that are not required or should be ignored.
+
+\newcommand{\ialert}[1]{{\color{myRed}\item#1}} % \ialert{<text>}, makes <text> a red bullet point, use for bullet points of things to do, urgent, or revisit.
+
+\newcommand{\idone}[1]{{\color{myGray}\item#1}} % \idone{<text>}, makes <text> a gray bullet point, use for bullet points that have been completed, that are not required or should be ignored.
+
+\renewcommand{\idone}[1]{} % hides all \idone bullet points
+
+% Successor of amsmath
+\usepackage{mathtools}
+
+\usepackage{multirow}
+
+% No indentation, space between paragraphs
+%\usepackage{parskip}
+
+%\usepackage{natbib}
+
+%Include standalone .tex files
+\usepackage{standalone}
+
+% Define multiple floats (figures/tables) within one environment with individual captions 1a, 1b etc
+\usepackage{subcaption}
+
+%\usepackage[caption=false,font=footnotesize]{subfig}
+
+\usepackage{tabularx}
+
+\usepackage{threeparttable}
+%\appto\TPTnoteSettings{\footnotesize} % Change font size of table footnotes to footnotesize
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+
+\usepackage{wrapfig}
+
+% Need \usepackage{mathtools} to use floor/ceil below.
+% Example: \floor*{\frac{x}{2}}, \ceil*{\frac{x}{2}}
+% The asterisk resizes floor/ceil brackets.
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+%Theorem style
+%\theoremstyle{plain}% default
+\newtheorem{theorem}{Theorem}
+%\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+
+%\theoremstyle{definition}
+%\newtheorem{definition}{Definition}
+%\newtheorem{proposition}{Proposition}
+%\newtheorem{exmp}{Example}[section]

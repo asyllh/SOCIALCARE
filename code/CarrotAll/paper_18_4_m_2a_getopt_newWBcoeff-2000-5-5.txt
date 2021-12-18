@@ -1,0 +1,22 @@
+Date: 2021-12-17 14:02:56.733275, running 1 files.
+------------------------------------------------------------
+Instance: 18-4-m-2a
+Quality: 1993.5859994342968
+Measure: paper
+Nurses: 4
+Jobs: 18
+Total Time: 2102.0
+Total Service Time: 1410.0
+Total Travel Time: 459.0
+Total Waiting Time: 233.0
+Total Tardiness: 0.0
+Total Overtime: 0.0
+Total Preference: 26.963512420654297
+Max Travel Time: 141.0
+Max Waiting Time: 101.0
+Max Diff Workload: 0.05927475592747555
+Elapsed Time (s): 60.8739927
+------------------------------------------------------------
+
+Run finished at: 2021-12-17 14:03:57.616958
+------------------------------------------------------------
