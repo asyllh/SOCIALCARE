@@ -7,12 +7,15 @@ import xlrd
 import xlsxwriter
 import read_helper_functions as rhf
 import networkx_graph as nxg
+import networkx_graph_single as nxgs
 import testnetworkx as testnx
 
 # filenames=['18-4-s-2a','18-4-s-2b','18-4-s-2c','18-4-s-2d','18-4-m-2a','18-4-m-2b','18-4-m-2c','18-4-m-2d','18-4-m-2e','18-4-l-2a','18-4-l-2b','18-4-l-2c','18-4-l-2d','18-4-l-2e']
 filenames=['18-4-s-2a']
-# plot_graph = True
-plot_graph = False
+plot_graph = True
+
+# exit(-1)
+# plot_graph = False
 # workbook = xlsxwriter.Workbook('C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/ExactMethod/Values.xlsx')
 # worksheet = workbook.add_worksheet()
 # worksheet.write(0, 0, 'Filename' )
@@ -247,9 +250,11 @@ for fl in range(len(filenames)):
             if v.x > 0:
                 print(v.varName, v.x)
 
+        edge_dicts = []
         edge_set = []
         res = []
         for k in K:
+            temp_edge_dict = {}
             leavingFrom = []
             goingTo = []
             time = []
@@ -264,9 +269,12 @@ for fl in range(len(filenames)):
                         #print(i,j,k)
                         time.append(t[j,k].X)
                         nurseEdges.append(tuple([i, j]))
-                        if k == 0:
+                        temp_edge_dict[tuple([i,j])] = x[i,j,k].X
+                        if k == 2:
                             print('x', i, j, k, ': ', x[i,j,k].X)
                         #print('j=',j,'k=',k,t[j,k].X)
+            print(temp_edge_dict)
+            edge_dicts.append(temp_edge_dict)
             edge_set.append(nurseEdges)
             kResult = np.column_stack((nurse, leavingFrom, goingTo, time)) # stacking lists
             kResult = kResult[np.argsort(kResult[:,3])] # sorting lists of lists in order based on value of time
@@ -274,6 +282,14 @@ for fl in range(len(filenames)):
         print(res)            
         print('edges:')
         print(edge_set)
+        print(type(edge_set))
+        print('len: ', len(edge_set))
+        # print('edge_set[3]: ', edge_set[3][1])
+        print(edge_dicts)
+        print(type(edge_dicts[0]))
+        print('len: ', len(edge_dicts))
+        # exit(-1)
+        # exit(-1)
         # print('edges size: ', len(edge_set))
         # print('edge inner size: ', len(edge_set[0]))
 
@@ -283,7 +299,8 @@ for fl in range(len(filenames)):
         if plot_graph:
             # solution_graph = nxg.create_graph(file_to_read, inst.NbClients+2, edge_set, nurse_index=[2,3], is_nurse_list=True)
             # solution_graph = nxg.create_graph(file_to_read, inst.NbClients+2, edge_set, nurse_index=999, is_nurse_list=False)
-            solution_graph = testnx.create_graph(file_to_read, inst.NbClients+2, edge_set, nurse_index=999, is_nurse_list=False)
+            solution_graph = nxgs.create_graph(file_to_read, inst.NbClients+2, edge_set, edge_dicts)
+            # solution_graph = testnx.create_graph(file_to_read, inst.NbClients+2, edge_set, nurse_index=999, is_nurse_list=False)
             # solution_graph = testnx.create_graph(file_to_read, inst.NbClients+2, edge_set, nurse_index=3, is_nurse_list=False)
             # solution_graph = nxg.create_graph(file_to_read, inst.NbClients+2, edge_set)
             solution_graph.show()
