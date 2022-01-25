@@ -11,21 +11,22 @@ def create_graph(file_to_read, num_clients, edge_set, nurse_index=999, is_nurse_
 
     # Figure title
     if is_nurse_list: # list of specific nurses, add all indices of nurses to the title
-        title_string = str(file_to_read) + '-nurses'  
+        title_string = str(file_to_read) + '-tnx-nurses'  
         for i in range(len(nurse_index)):
             title_string += '-' + str(nurse_index[i])
         plt.title(title_string)
     else:
         if nurse_index == 999: # all nurses
-            plt.title(str(file_to_read))
+            plt.title(str(file_to_read) + '-tnx')
         elif nurse_index < 999:
-            plt.title(str(file_to_read) + '-nurse' + str(nurse_index)) # one specific nurse
+            plt.title(str(file_to_read) + '-tnx-nurse' + str(nurse_index)) # one specific nurse
 
     # Create graph
     G = nx.MultiGraph()
 
     # Add nodes to graph
-    df = pd.read_csv(r'C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/ExactMethod/18-4-s-2a_coords.csv') 
+    # df = pd.read_csv(r'C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/ExactMethod/18-4-s-2a_coords.csv') 
+    df = pd.read_csv(r'C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/ExactMethod/coordinate_calculations/18-4-s-2a_sym_coords.csv') 
 
     pos = {}
     client_column = df['n']
@@ -228,7 +229,7 @@ def create_graph(file_to_read, num_clients, edge_set, nurse_index=999, is_nurse_
     plt.draw()
 
     # Create filename for the graph
-    graph_filename = str(file_to_read)
+    graph_filename = str(file_to_read) + '-tnx'
     if is_nurse_list: # list of specific nurses, add all indices of nurses to the title
         graph_filename += '-nurses'  
         for i in range(len(nurse_index)):
