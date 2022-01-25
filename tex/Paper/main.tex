@@ -246,7 +246,37 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 	\label{fig:itemsaligned}
 \end{figure}
 %\correction{What happens if the next "available" slot is not enough for the job.}
-\noindent In the event that the next available shift for a nurse $i$ is not long enough to perform job $j$, the job is moved forward again in the nurse's schedule. For simplicity, we will consider all nurses' break periods as waiting time, so that the arrival time calculations $a(i,j)$ for nurses $i \in N$ at jobs $j \in J$ (see \eqref{eq:arrivaltime}) remain valid. Then, the waiting times will be corrected by removing all relevant breaks, as shown in \eqref{eq:waitingtimenurse}.
+%\noindent In the event that the next available shift for a nurse $i$ is not long enough to perform job $j$, the job is moved forward again in the nurse's schedule.
+\noindent The \textsc{CalculateJobTimes} function in \ref{alg:shiftwork} describes how start times, waiting times and tardiness are calculated for each nurse $i \in N$. For each job $j \in r_i$, the arrival time is evaluated using the arrival time, waiting time, service time and travel time of the previous job. Line 1 covers the case where nurse $i$'s day comprises just one shift, i.e. $g_i = 1$. Line 9 is for the case where the duration of the current job $j$ extends in to a break period, whilst Line 14 considers the event that the arrival time of nurse $i$ and job $j$ would be within a break. In both of these cases, the function \textsc{FindValidTime} is used. This function scans through the nurse's day to find the next available time period in which the nurse can feasibly perform the job $j$, and returns the start time of this period, $t_j$. If the job $j$ is a DS, then \textsc{FindValidTime} seeks a start time that is suitable for the current nurse $i$ and the second nurse on the job.
+
+\begin{algorithm}[h]
+\caption{\textsc{CalculateJobTimes}$(i, r_i)$}
+\label{alg:shiftwork}
+\begin{algorithmic}[1]
+	\State Let $f$ be the current shift for nurse $i$
+	\State $a(i,0) \gets 0$
+	\For{$j \gets 1 \To m_i$}
+		\State $a(i,0) \gets a(i, j-1) + w_{ij-1} + s_{j-1} + T_i(j-1, j)$
+		\If{$g_i = 1$}
+			\State $w_{ij} \gets \max\{0, (e_j-a(i,j))\}$
+			\State $z_j \gets \max\{0, (a(i,j) - l_j))\}$
+			\State $t_j \gets a(i,j) + w_{ij}$
+		\ElsIf{$g_i \neq 1 \AAnd \max\{e_j + s_j, a(i,j) + s_j\} > v(\pi_{f}^{i})$}
+			\State $t_j \gets$ \textsc{FindValidTime}$(i, j)$
+			\State $w_{ij} \gets t_j - l_j$
+			\State $z_j \gets t_j - l_j$
+			\State $f \gets$ shift containing time $t_j$
+		\ElsIf{$g_i \neq 1 \AAnd a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f}^{i})$}
+			\State $t_j \gets$ \textsc{FindValidTime}$(i,j)$
+			\State $w_{ij} \gets t_j - v(\pi_{f}^{i})$
+			\State $z_j \gets t_j - l_j$
+			\State $f \gets$ shift containing time $t_j$
+		\EndIf
+	\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+For simplicity, we will consider all nurses' break periods as waiting time, so that the arrival time calculations $a(i,j)$ for nurses $i \in N$ at jobs $j \in J$ (see \eqref{eq:arrivaltime}) remain valid. Then, the waiting times will be corrected by removing all relevant breaks, as shown in \eqref{eq:waitingtimenurse}.
 
 
 %There may be cases where some nurses have multiple shifts in a single day, e.g. a morning shift and an evening shift; these nurses will not be available at all times during the day. Therefore, we must ensure that jobs are assigned to nurses during their actual working times. This also involves considering the case where although a nurse may be working and available at the time that a job starts, the duration of the job may extend into the nurse's unavailable time, i.e. the job ends after the nurse's shift ends. In these instances, the job must be moved forward in the nurse's schedule such that the job starts at the beginning of the nurse's next available shift, and tardiness will be incurred. For convenience, we denote by $ct(i)$ the actual contracted working time of nurse $i \in N$, where $ct(i) = en(i) - st(i)$ if nurse $i$'s day comprises a single shift starting at $en(i)$ and ending at $st(i)$, and $ct(i) < en(i) - st(i)$ if nurse $i$'s day consists of one or more shifts.
