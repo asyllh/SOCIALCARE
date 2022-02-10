@@ -386,7 +386,7 @@ int GRASP(struct INSTANCE* ip) {
 		}
 		iter++;
 
-	} // End of while (iter < MAX_ITERATIONS) loop
+	} // ******************************** End of while (iter < MAX_ITERATIONS) loop*********************************** //
 
 	if (ip->verbose > 0) {
 		printf("GRASP: Performed %d iterations.\n", iter);
