@@ -143,7 +143,7 @@ It is not uncommon in the literature to model the skills of the workforce as hie
     t_j \geq e_j \quad \forall j \in J, \label{eq:jobstart}
 \end{equation}
 
-\noindent however, they may start late. The tardiness with which a job $j$ starts, $z_j$, can be simply calculated using the following:
+\noindent however, they may start late. The tardiness with which a job $j$ starts, $z_j$, can be simply calculated using the following equation:
 \begin{equation}
     z_j = \max(0, t_j - l_j). \label{eq:tardiness}
 \end{equation}
@@ -171,12 +171,12 @@ It is not uncommon in the literature to model the skills of the workforce as hie
 
 \noindent Since some jobs have time windows or might need to be synchronised, waiting times may occur. We denote by $w_{ij}$ the waiting time of nurse $i$ at job $j$. Note that $w_{ij} = 0$ if $j \notin r_i$; otherwise, $w_{ij}$ represents the difference between $t_j$ and the arrival time of nurse $i$ to job $j$.% , denoted by $a(i,j)$.
 
-The arrival time $a(i,j)$ of nurse $i$ at job $j \in r_i$ is calculated as follows:
+The arrival time $a(i,j)$ of nurse $i$ at job $j \in r_i$ is calculated as follows \chng{This is not true with shifts}:
 \begin{equation}
     a(i,j) = st(i) + \sum_{h=0}^{j' - 1} w_{ik^i_h} + s_{k^i_h} + T_i(k^i_h, k^i_{h + 1}), \label{eq:arrivaltime}
 \end{equation}
 
-\noindent where $j'$ denotes the position of job $j$ in the route $r_i$, i.e. $j = k^i_{j'} \in r_i$. Note that there are no waiting or service times at the depot; that is, $w_{ik^i_0} = 0$ and $s_{k^i_0} = 0 $ for all $i \in N$. Furthermore, let $en_{\text{act}}(i)$ be the actual end time of a nurse $i \in N$, that is:
+\noindent where $j'$ denotes the position of job $j$ in the route $r_i$, i.e. $j = k^i_{j'} \in r_i$. Note that there are no waiting or service times at the depot; that is, $w_{ik^i_0} = 0$ and $s_{k^i_0} = 0 $ for all $i \in N$. Furthermore, let $en_{\text{act}}(i)$ be the actual end time of a nurse $i \in N$, that is: \chng{Is this different from $a(i, k_{0}^i)$?}
 \begin{equation}
 	en_{\text{act}}(i) = a(i,m_i) + w_{ik_{m_i}^i} + s_{k_{m_i}^i}, \label{eq:actualendtime}
 \end{equation}
@@ -199,7 +199,7 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 	\item Waiting time incurred due to breaks between shifts. This is discussed further in Section~\ref{sub:shiftwork}.
 \end{itemize}
 
-\noindent Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. Let $j_1, j_2 \subset J, j_1 \neq j_2$, be two jobs that have a dependency, where $j_1 \in r_{i_1}$ and $j_2 \in r_{i_2}$, and nurse $i_1$ appears earlier than nurse $i_2$ in the vector of nurse order, $\mathcal{O}$. Then, we enforce the following: \correction{Does this still hold?}
+\noindent Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. Let $j_1, j_2 \subset J, j_1 \neq j_2$, be two jobs that have a dependency, where $j_1 \in r_{i_1}$ and $j_2 \in r_{i_2}$, and nurse $i_1$ appears earlier than nurse $i_2$ in the vector of nurse order, $\mathcal{O}$. Then, we enforce the following: \correction{Does this still hold?} \chng{Doesn't hold with shifts}
 %  $i_1 < i_2$, \ie $j_1$ appears earlier in the vector $\mathcal{O}$ than $j_2$. Then, we enforce that:
 \begin{align}
 	w_{i_1 j_1} &= \max \{0, e_{j_1} - a(i_1,j_1)\}, \\ 
@@ -224,7 +224,7 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 \begin{enumerate}[label={(\arabic*)}]
 	%\item A nurse $i$ is assigned a job $j$ with time window within the nurse's valid shift time, but the duration of $j$ results in the end time of $j$ extending into the nurse's break period. In this case, the waiting time incurred is from the arrival time of nurse $i$ at $j$ to the beginning of the nurse's next shift, and the start time for $j$ is moved forward to the start of the next shift. The tardiness is calculated as the time between the end of $j$'s time window, $l_j$, and the new start time of $j$.
 	%\item A nurse $i$ is assigned a job $j$ with time window within nurse $i$'s break period. In this case, the waiting time incurred is the entire break period, and the arrival time at $j$ is moved forward to the start of the next shift. Tardiness as calculated as above.
-	\item A nurse $i$ arrives at a job $j$ during a shift, but the duration of $j$ results in the end time of $j$ extending into the nurse's break period. In this case, the waiting time incurred is from the arrival time of nurse $i$ at $j$ to the end of the shift, and the start time for $j$ is moved forward to the start of $i$'s next shift. The tardiness is calculated as the time between the end of $j$'s time window, $l_j$, and the new start time of $j$.
+	\item A nurse $i$ arrives at a job $j$ during a shift, but the duration of $j$ results in the end time of $j$ extending into the nurse's break period. In this case, the waiting time incurred is from the arrival time of nurse $i$ at $j$ to the end of the shift, and the start time for $j$ is moved forward to the start of $i$'s next shift. The tardiness is calculated as the time between the end of $j$'s time window, $l_j$, and the new start time of $j$.\chng{not reflected in (12)}
 	\item A nurse $i$'s arrival time at job $j$ is determined to be during the nurse's unavailable time. In this case, no waiting time is incurred and the new start time for job $j$ and tardiness are as above.
 \end{enumerate}
 \begin{figure}[h!]
@@ -247,32 +247,101 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 \end{figure}
 %\correction{What happens if the next "available" slot is not enough for the job.}
 %\noindent In the event that the next available shift for a nurse $i$ is not long enough to perform job $j$, the job is moved forward again in the nurse's schedule.
-\noindent The \textsc{CalculateJobTimes} function in \ref{alg:shiftwork} describes how start times, waiting times and tardiness are calculated for each nurse $i \in N$. For each job $j \in r_i$, the arrival time is evaluated using the arrival time, waiting time, service time and travel time of the previous job. Line 1 covers the case where nurse $i$'s day comprises just one shift, i.e. $g_i = 1$. Line 9 is for the case where the duration of the current job $j$ extends in to a break period, whilst Line 14 considers the event that the arrival time of nurse $i$ and job $j$ would be within a break. In both of these cases, the function \textsc{FindValidTime} is used. This function scans through the nurse's day to find the next available time period in which the nurse can feasibly perform the job $j$, and returns the start time of this period, $t_j$. If the job $j$ is a DS, then \textsc{FindValidTime} seeks a start time that is suitable for the current nurse $i$ and the second nurse on the job.
+\noindent The \textsc{CalculateJobTimes} function in \ref{alg:shiftwork} describes how start times, waiting times and tardiness are calculated for each nurse $i \in N$. For each job $j \in r_i$, the \chng{arrival time is evaluated using the arrival time, waiting time, service time and travel time of the previous job. - key, but not written in (7)} Line 1 covers the case where nurse $i$'s day comprises just one shift, i.e. $g_i = 1$. Line 9 is for the case where the duration of the current job $j$ extends in to a break period, whilst Line 14 considers the event that the arrival time of nurse $i$ and job $j$ would be within a break \chng{what about case where there are shifts but job is okay to do?}. In both of these cases, the function \textsc{FindValidTime} is used. This function scans through the nurse's day to find the next available time period in which the nurse can feasibly perform the job $j$, and returns the start time of this period, $t_j$. If the job $j$ is a DS, then \textsc{FindValidTime} seeks a start time that is suitable for the current nurse $i$ and the second nurse on the job.
 
 \begin{algorithm}[h]
 \caption{\textsc{CalculateJobTimes}$(i, r_i)$}
 \label{alg:shiftwork}
 \begin{algorithmic}[1]
-	\State Let $f$ be the current shift for nurse $i$
-	\State $a(i,0) \gets 0$
-	\For{$j \gets 1 \To m_i$}
-		\State $a(i,0) \gets a(i, j-1) + w_{ij-1} + s_{j-1} + T_i(j-1, j)$
-		\If{$g_i = 1$}
+	\State Let $f$ be the initial shift for nurse $i$
+	\State $a(i,k_{0}^i) \gets 0$
+%	\For{$j \gets 1 \To m_i$}
+	\For{$j \in r_i$}
+		\State $a(i,j) \gets a(i, j-1) + w_{ij-1} + s_{j-1} + T_i(j-1, j)$
+		\If{$g_i \neq 1 \AAnd \max\{e_j + s_j, a(i,j) + s_j\} > v(\pi_{f}^{i})$}
+			\State $t_j, f \gets$ \textsc{FindValidTime}$(i, j)$
+			\State $w_{ij} \gets t_j - a(i,j)$
+			\State $z_j \gets t_j - l_j$
+%			\State $f \gets$ shift containing time $t_j$
+		\ElsIf{$g_i \neq 1 \AAnd a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f+1}^{i})$}
+			\State $v \gets v(\pi_{f}^{i})$
+			\State $t_j, f \gets$ \textsc{FindValidTime}$(i,j)$
+			\State $w_{ij} \gets t_j - v$
+			\State $z_j \gets t_j - l_j$
+%			\State $f \gets$ shift containing time $t_j$
+		\Else
 			\State $w_{ij} \gets \max\{0, (e_j-a(i,j))\}$
-			\State $z_j \gets \max\{0, (a(i,j) - l_j))\}$
+			\State $z_j \gets \max\{0, (a(i,j) - l_j)\}$
 			\State $t_j \gets a(i,j) + w_{ij}$
-		\ElsIf{$g_i \neq 1 \AAnd \max\{e_j + s_j, a(i,j) + s_j\} > v(\pi_{f}^{i})$}
-			\State $t_j \gets$ \textsc{FindValidTime}$(i, j)$
-			\State $w_{ij} \gets t_j - l_j$
-			\State $z_j \gets t_j - l_j$
-			\State $f \gets$ shift containing time $t_j$
-		\ElsIf{$g_i \neq 1 \AAnd a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f}^{i})$}
-			\State $t_j \gets$ \textsc{FindValidTime}$(i,j)$
-			\State $w_{ij} \gets t_j - v(\pi_{f}^{i})$
-			\State $z_j \gets t_j - l_j$
-			\State $f \gets$ shift containing time $t_j$
 		\EndIf
 	\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[h]
+\footnotesize
+\caption{\textsc{FindValidTime}$(i, j, f, a(i,j))$}
+\label{alg:findvalidtime}
+\begin{algorithmic}[1]
+	\State $\tilde{f} \gets f$
+	\State $\tilde{a}(i,j) \gets a(i,j)$
+	\State valid $\gets \False$
+	\State DS $\gets \False$
+	\State second $\gets \False$
+	\If{$j$ is a double service}
+		\State DS $\gets \True$
+		\State $\tilde{i} \gets$ second nurse assigned to $j$
+		\If{$i > \tilde{i}$}
+			\State second $\gets \True$
+			\If{$\tilde{a}(i,j) > t_j$} %t_j is the start time for j, already set for 1st nurse earlier
+				% infeasible, exit
+				\State valid $\gets \False$
+				\Break
+			\EndIf
+		\EndIf
+	\EndIf % End of if j is double service
+	\While{$\Not$ valid}
+		\State $\tilde{f} \gets \tilde{f}+1$
+		\State $\tilde{a}(i,j) \gets u(\pi_{\tilde{f}}^{i})$
+		\If{DS$= \True$}
+			\If{second $= \False$}
+				\If{$\tilde{a}(i,j) + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
+					\Continue
+				\Else
+					\State valid $\gets \True$
+					\State $t_j \gets \tilde{a}(i,j)$
+					\State $w_{ij} \gets t_j - a(i,j)$
+					\State $z_j \gets t_j - l_j$
+					\State $f \gets \tilde{f}$
+				\EndIf
+			\ElsIf{second $= \True$}
+				\If{$\tilde{a}(i,j) > t_j$} %t_j is the start time of the job from 1st nurse, already set
+					%infeasible, exit
+					\State valid $\gets \False$
+					\Break
+				\ElsIf{$t_j + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
+					\Continue
+				\Else
+					\State valid $\gets \True$
+					%\State $t_j \gets \tilde{a}(i,j)$
+					\State $w_{ij} \gets t_j - a(i,j)$
+					%\State $z_j \gets t_j - l_j$
+					\State $f \gets \tilde{f}$
+				\EndIf
+			\EndIf %End if second is false
+		\ElsIf{DS $= \False$}
+			\If{$\tilde{a}(i,j) + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
+				\Continue
+			\Else
+				\State valid $\gets \True$
+				\State $t_j \gets \tilde{a}(i,j)$
+				\State $w_{ij} \gets t_j - a(i,j)$
+				\State $z_j \gets t_j - l_j$
+				\State $f \gets \tilde{f}$
+			\EndIf
+		\EndIf %End if DS is True/True
+	\EndWhile
+	\Return either infeasible or starting time $t_j$, shift $f$, waiting time $w_{ij}$ and tardiness $z_j$
 \end{algorithmic}
 \end{algorithm}
 
