@@ -152,7 +152,9 @@ void GetNurseRoute(struct INSTANCE* ip, int ni, int* nurseRoute);
 void PrintNurseRoute(struct INSTANCE* ip, int ni, int* nurseRoute);
 void OldSetNurseTime(struct INSTANCE* ip, int nursej);
 void SetNurseTimeAitH(struct INSTANCE* ip, int nursej);
+void SetNurseTimeOld(struct INSTANCE* ip, int nursei);
 void SetNurseTime(struct INSTANCE* ip, int nursei);
+double* FindValidTime(struct INSTANCE* ip, int f, double currentTime, int currentNurse, int job, int considerDependency, int otherNurseDJ, int otherJobDJ, int considerDoubleService, int otherNurseDS, double startTWMK, double endTWMK);
 void SetTimesFull(struct INSTANCE* ip);
 void SetTimesFrom(struct INSTANCE* ip, int firstNurse);
 int SynchroniseJobi(struct INSTANCE* ip, int job, int nurse1, int nurse2);
@@ -173,6 +175,7 @@ void TwoExchange(int* array, int i, int j);
 void RandomTwoExchange(int* array, size_t n, int* i, int* j);
 void Shuffle(int* array, size_t n); // From Ben Pfaff's Writings, see below
 void PrintVector(int* array, size_t n);
+double MaxNum(double num1, double num2);
 
 
 // Not in constructive.c
