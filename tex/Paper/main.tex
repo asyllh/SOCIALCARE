@@ -289,6 +289,32 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 %	\For{$j \gets 1 \To m_i$}
 	\For{$j \in r_i$}
 		\State $a(i,j) \gets a(i, j-1) + w_{ij-1} + s_{j-1} + T_i(j-1, j)$
+		\If{$j \in J'$}
+			\State $j' \gets D(j)$ % D : J' -> DJ, returns other job in pair with job j
+			\State $i' \gets NJ(j')$ % NJ : J -> N, returns the nurse assigned to the job j
+			\If{$i$ appears later than $i'$ in $\mathcal{O}$}
+				\State secondN $\gets \True$
+			\EndIf
+			\If{$(j, j') \in DS$}
+				\State DS $\gets \True$
+				\If{secondN $= \True \AAnd \tilde{a}(i,j) > t_{j'}$} %can also use l_j^(j'), latest ST allowed for j based on j'
+					\Return feasible $\gets \False$
+				\EndIf % arrival later than latest start time
+			\Else 
+				\State $DJ \gets \True$
+				\If{secondN $= \True$} % This nurse is 2nd one to be assessed, other job has been done
+				%Need to find out if this job j is before or after j' in the schedule
+					\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+					\If{$\tilde{a}(i,j) > t_{j'} + l_j^{(j')} \AAnd$gap $= \False$} % current time is later than latest allowed start based on start time of j' and no gap tard allowed
+						\Return feasible $\gets \False$
+					\ElsIf{$\tilde{a}(i,j) > t_{j'} + l_{j}^{(j')} \AAnd$gap $= \True$}
+						\If{$t_{j'} + l_{j}^{(j')} < t_{j'}$} %job j occurs before job j', gap too small
+							\Return feasible $\gets \False$
+						\EndIf
+					\EndIf
+				\EndIf % i appears later than i' in O
+			\EndIf %(j, j') in DS
+		\EndIf %if j in J'
 		\If{$\max\{a(i,j), e_j\} + s_j > v(\pi_{f}^{i}) \AAnd f \neq g_i$}
 			\State feasible, $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i,j,f, a(i,j)$)
 			\If{feasible $= \False$}
@@ -296,10 +322,6 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 			\Else \hspace{0.2mm} \textbf{continue}
 				%\Continue
 			\EndIf
-			%\State $t_j, f \gets$ \textsc{FindValidTime}$(i, j, f, a(i,j))$
-			%\State $w_{ij} \gets t_j - a(i,j)$
-			%\State $z_j \gets t_j - l_j$
-%			\State $f \gets$ shift containing time $t_j$
 		\ElsIf{$a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f+1}^{i}) \AAnd f \neq g_i$}
 			\State $v \gets v(\pi_{f}^{i})$
 			\State feasible, $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i,j,f,v$)
@@ -308,10 +330,6 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 			\Else \hspace{0.2mm} \textbf{continue}
 				%\Continue
 			\EndIf
-			%\State $t_j, f \gets$ \textsc{FindValidTime}$(i,j, f, v)$
-			%\State $w_{ij} \gets t_j - v$
-			%\State $z_j \gets t_j - l_j$
-%			\State $f \gets$ shift containing time $t_j$
 		\Else
 			\State $w_{ij} \gets \max\{0, (e_j-a(i,j))\}$
 			\State $z_j \gets \max\{0, (a(i,j) - l_j)\}$
@@ -357,6 +375,10 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 					%\State valid $\gets \False$
 					%\Return infeasible
 					\Return feasible $\gets \False$
+				\ElsIf{$\tilde{a}(i,j) > t_{j'} + l_{j}^{(j')} \AAnd$gap $= \True$}
+					\If{$t_{j'} + l_{j}^{(j')} < t_{j'}$} %job j occurs before job j', gap too small
+						\Return feasible $\gets \False$
+					\EndIf
 				\EndIf
 			\EndIf % i appears later than i' in O
 		\EndIf %(j, j') in DS
@@ -375,7 +397,7 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 				\Return feasible $\gets \False$
 			%\ElsIf{$\tilde{a}(i,j) > l_j^{(j')} \AAnd$gap $= \True$}
 			\ElsIf{$\tilde{a}(i,j) > t_{j'} + l_j^{(j')} \AAnd$gap $= \True$}
-				\If{$l_j^{(j')} > t_{j'}$} % job j occurs after job j', gap tardiness allowed
+				\If{$t_{j'} + l_j^{(j')} > t_{j'}$} % job j occurs after job j', gap tardiness allowed
 					\If{$\tilde{a}(i,j) + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
 						\Continue
 					\Else
@@ -1133,6 +1155,50 @@ At the core of the DST is a GRASP algorithm with Path Relinking that is capable 
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
+
+\begin{algorithm}[h]
+\footnotesize
+\caption{\textsc{CalculateJobTimes}$(i, r_i)$}
+\label{alg:cjtold}
+\begin{algorithmic}[1]
+\State Let $f$ be the initial shift for nurse $i$
+\State $a(i,k_{0}^i) \gets 0$
+%	\For{$j \gets 1 \To m_i$}
+\For{$j \in r_i$}
+\State $a(i,j) \gets a(i, j-1) + w_{ij-1} + s_{j-1} + T_i(j-1, j)$
+\If{$\max\{a(i,j), e_j\} + s_j > v(\pi_{f}^{i}) \AAnd f \neq g_i$}
+\State feasible, $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i,j,f, a(i,j)$)
+\If{feasible $= \False$}
+\Break
+\Else \hspace{0.2mm} \textbf{continue}
+%\Continue
+\EndIf
+%\State $t_j, f \gets$ \textsc{FindValidTime}$(i, j, f, a(i,j))$
+%\State $w_{ij} \gets t_j - a(i,j)$
+%\State $z_j \gets t_j - l_j$
+%			\State $f \gets$ shift containing time $t_j$
+\ElsIf{$a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f+1}^{i}) \AAnd f \neq g_i$}
+\State $v \gets v(\pi_{f}^{i})$
+\State feasible, $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i,j,f,v$)
+\If{feasible $= \False$}
+\Break
+\Else \hspace{0.2mm} \textbf{continue}
+%\Continue
+\EndIf
+%\State $t_j, f \gets$ \textsc{FindValidTime}$(i,j, f, v)$
+%\State $w_{ij} \gets t_j - v$
+%\State $z_j \gets t_j - l_j$
+%			\State $f \gets$ shift containing time $t_j$
+\Else
+\State $w_{ij} \gets \max\{0, (e_j-a(i,j))\}$
+\State $z_j \gets \max\{0, (a(i,j) - l_j)\}$
+\State $t_j \gets a(i,j) + w_{ij}$
+\EndIf
+\EndFor
+\Return either statement of infeasibility or feasible schedule for nurse $i$
+\end{algorithmic}
+\end{algorithm}
+
 \end{comment}
 
 %		\If{DS $= \True \AAnd$secondN $= \True$}
