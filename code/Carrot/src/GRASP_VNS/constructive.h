@@ -154,6 +154,8 @@ void OldSetNurseTime(struct INSTANCE* ip, int nursej);
 void SetNurseTimeAitH(struct INSTANCE* ip, int nursej);
 void SetNurseTimeOld(struct INSTANCE* ip, int nursei);
 void SetNurseTime(struct INSTANCE* ip, int nursei);
+void CalculateJobTimes(struct INSTANCE* ip, int nursei);
+//void GetOtherDSDJ(struct INSTANCE* ip){
 double* FindValidTime(struct INSTANCE* ip, int f, double currentTime, int currentNurse, int job, int considerDependency, int otherNurseDJ, int otherJobDJ, int considerDoubleService, int otherNurseDS, double startTWMK, double endTWMK);
 void SetTimesFull(struct INSTANCE* ip);
 void SetTimesFrom(struct INSTANCE* ip, int firstNurse);

@@ -2770,7 +2770,7 @@ void SetNurseTime(struct INSTANCE* ip, int nursei){
         double tardiness = 0;
         double waitingTime = 0;
         double worstStart = startTWMK;
-        if(startTWMK < startTW){
+        if(startTWMK < startTW){ // NB: WHY?
             worstStart = startTW; //worstStart takes the latest earliest start time window.
         }
 
@@ -2871,7 +2871,6 @@ void SetNurseTime(struct INSTANCE* ip, int nursei){
      * starting arrival time = 0
      * for each 'job' in nursei's route
      *      if 'job' = first job in nursei's route
-     *          
      *      current arrival time = arrival time to previous job + waiting time at previous job + duration of previous job + travel time from previous job to 'job' (current job)
      *      if(max(current arrival time, startTW(e_j)) + duration of 'job' > endOfShift and this is not last shift for nursei
      *          run FVT, get array
@@ -2893,6 +2892,127 @@ void SetNurseTime(struct INSTANCE* ip, int nursei){
      */
 
 } //END OF SetNurseTime (new) function
+
+void CalculateJobTimes(struct INSTANCE* ip, int nursei){
+
+    //1. Reset all nursei's stored information:
+
+    ip->nurseWaitingTime[nursei] = 0; // Reset nurseWaitingTime for nurse i (total waiting time for nursei)
+    ip->nurseTravelTime[nursei] = 0; // Reset nurseTravelTime for nurse i (total travel time for nursei)
+
+    for(int j = 0; j < ip->nJobs; ++j){
+        ip->timeMatrix[nursei][j] = 0; // Reset timeMatrix for nursei (time at which nursei does job j - if nursei does not do job j then timeMatrix[nursei][j] = -1)
+        ip->nurseWaitingMatrix[nursei][j] = 0; // Reset nurseWaitingMatrix for nursei (waiting time for nursei doing job j - if nursei does not do job j or there is no waiting time then nurseWaitingMatrix[nursei][j] = 0)
+        ip->nurseTravelMatrix[nursei][j] = 0; // Reset nurseTravelMatrix for nursei (travel time for nursei going to job j - if nursei does not do job j or there is no travel time then nurseTravelMatrix[nursei][j] = 0)
+    }
+
+    // Number of breaks and shifts in nursei's day. Note: numUnavail = number of available shifts - 1; so numAvail = numUnavail + 1.
+    int numUnavail = ip->nurseUnavail[nursei];
+    int numShifts = numUnavail + 1; // Number of shifts in nursei's day
+
+    int prevJob = 0; //NB: NEED TO CHANGE THIS
+    int serviceTime = 0; //NB: NEED TO CHANGE THIS
+    double waitingTime = 0; //NB: NEED TO CHANGE THIS
+    double travelTime = -1;
+    double currentTime = (double)ip->nurseWorkingTimes[nursei][0]; //currentTime is the start of nursei's working day.
+    double prevJobArrival = 0; //NB: NEED TO CHANGE/CHECK THIS
+
+    // Main for loop of function:
+    for(int p = 0; p < ip->nJobs; ++p){ //NOTE: p IS THE POSITION, not the job
+        if(ip->allNurseRoutes[nursei][p] < 0){ // If there is no job in position p of nursei's route, then we have reached the end of the route, no more jobs, break out of for loop
+            break;
+        }
+        int job = ip->allNurseRoutes[nursei][p]; // job = the job number at position p in nursei's route.
+        if(p == 0){ // If this is the first job in nursei's route, then we don't use the previous current time
+            travelTime = TravelTimeFromDepot(ip, nursei, job);
+            if(ip->excludeNurseTravel){ //If we're not including the travel time to/from the first/last jobs in the nurses' routes
+                if(ip->jobTimeInfo[job][0] > ip->nurseWorkingTimes[nursei][0] - 0.001){ //If the startTW (e_j) of job is later than time that nursei starts the day
+                    currentTime = ip->jobTimeInfo[job][0]; // currentTime is set to be the startTW (e_j) of job
+                    currentTime += ip->twInterval; // add the extra 15 minutes (or whatever twInterval is set to be) to make the currentTime the actual start time of the job
+                }
+                else{ // start time of nursei's day is later than the startTW (e_j) of job, should we check for this?
+                    currentTime = ip->nurseWorkingTimes[nursei][0];
+                }
+            }
+            else{// include travel time to/from the first/last jobs in the nurses' routes.
+                currentTime += travelTime;
+                ip->nurseTravelTime[nursei] += travelTime;
+                ip->nurseTravelMatrix[nursei][job] = travelTime;
+            }
+        } // End if p == 0
+        else if(p > 0){ // job is not the first job in nursei's route, so we need to update currentTime using the previous job's waiting time, service time, and add travelTime from previous job to this job
+            waitingTime = ip->nurseWaitingMatrix[nursei][prevJob]; //NB CHECK THIS, waiting time at the previous job, prevJob, w_{j-1}
+            serviceTime = ip->jobTimeInfo[prevJob][2]; // Duration of prevJob, s_{j-1}
+            travelTime = GetTravelTime(ip, prevJob, job); // Travel time from previous job to this job, T_i(j-1, j)
+            currentTime = prevJobArrival + waitingTime + serviceTime + travelTime;
+            ip->nurseTravelTime[nursei] += travelTime;
+            ip->nurseTravelMatrix[nursei][job] = travelTime;
+        } // End else if p > 0
+
+
+
+
+
+    }// End for loop positions
+
+
+
+
+}
+
+/*void GetOtherDSDJ(struct INSTANCE* ip, int job, ){
+
+    // Dependent jobs:
+    if(ip->dependsOn[job] > -1){
+        otherJobDJ = ip->dependsOn[job];
+        for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){
+            int prevNurse = ip->nurseOrder[prevNurseInd];
+            if(prevNurse == nursei){
+                otherNurseDJ = -1; //NEW 17/02/2022
+                considerDependency = -1;
+                break;
+            }
+            if(ip->timeMatrix[prevNurse][otherJobDJ] > 0){
+                if(aitOnly > 0){
+                    ip->mkMinD[job] = abs(ip->mkMinD[job]);
+                    ip->mkMaxD[job] = abs(ip->mkMaxD[job]);
+
+                    // NB 17/02/2022: NEED TO CHECK THESE LINES FROM laa ip-?TM[prevNurse][otherjobDJ]... to otherNurseDJ = prevNurse
+                    double laa = ip->timeMatrix[prevNurse][otherJobDJ] - ip->mkMaxD[job]; // NB 17/02/2022: HERE WE SUBTRACT ip->mkMaxD[job], IS IT THE RIGHT ONE? WHY SUBTRATCT, HOW DO WE KNOW WHICH JOB COMES FIRST?
+                    if((laa >= startTW) && (arriveAt <= laa)){ //NB: arrive at is used here!
+                        ip->mkMinD[job] = -1*ip->mkMinD[job]; // NB 17/02/2022: ARE THESE CORRECT? CHANGED IN THE PAPER
+                        ip->mkMaxD[job] = -1*ip->mkMaxD[job];
+                    }
+                }
+                startTWMK = ip->timeMatrix[prevNurse][otherJobDJ] + ip->mkMinD[job];
+                endTWMK = ip->timeMatrix[prevNurse][otherJobDJ] + ip->mkMaxD[job];
+                considerDependency = 1; //NEW 17/02/2022
+                otherNurseDJ = prevNurse; // NB 17/02/2022: NEED TO CHECK THESE LINES FROM laa ip-?TM[prevNurse][otherjobDJ]... to otherNurseDJ = prevNurse
+                break;
+            }
+        }
+    }
+
+    // Double service jobs:
+    if(ip->doubleService[job] > 0){
+        for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){
+            int prevNurse = ip->nurseOrder[prevNurseInd];
+            if(prevNurse == nursei){
+                otherNurseDS = -1; //NEW 17/02/2022
+                considerDoubleService = -1; //NEW 17/02/2022
+                break;
+            }
+            if(ip->timeMatrix[prevNurse][job] > 0){
+                startTWMK = ip->timeMatrix[prevNurse][job];
+                endTWMK = ip->timeMatrix[prevNurse][job];
+                considerDoubleService = 1; //NEW 17/02/2022
+                otherNurseDS = prevNurse; //NEW 17/02/2022
+                break;
+            }
+        }
+    }
+
+}*/
 
 double* FindValidTime(struct INSTANCE* ip, int f, double currentTime, int currentNurse, int job, int considerDependency, int otherNurseDJ, int otherJobDJ, int considerDoubleService, int otherNurseDS,
                       double startTWMK, double endTWMK){
