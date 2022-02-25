@@ -7,6 +7,8 @@ UoS
 
 /** NEED TO CHECK THAT VIOLATEDTW AND VIOLATEDTWMK ARE SET CORRECTLY IN OBJECTIVE FUNCTION 17/02/2022**/
 
+/** MAKE SURE THAT BREAK TIMES ARE REMOVED FROM WAITING TIMES! **/
+
 
 #include <stdlib.h> // To have min in linux
 #include "Python.h"
@@ -2630,7 +2632,7 @@ void SetNurseTimeOld(struct INSTANCE* ip, int nursei){
 
 void SetNurseTime(struct INSTANCE* ip, int nursei){
 
-    /** NB SetNurseTime funtion 17/02/2022 **/
+    /** SetNurseTime funtion 17/02/2022 */
     // Called in SetTimesFrom and SetTimesFull, both in for loops going through all nurses i = 0 to ip->nNurses.
 
     int prevPoint = -1; // previous job
@@ -2895,7 +2897,9 @@ void SetNurseTime(struct INSTANCE* ip, int nursei){
 
 void CalculateJobTimes(struct INSTANCE* ip, int nursei){
 
-    //1. Reset all nursei's stored information:
+    int feasible = -1;
+
+    //Sec: Reset all nursei's stored information:
 
     ip->nurseWaitingTime[nursei] = 0; // Reset nurseWaitingTime for nurse i (total waiting time for nursei)
     ip->nurseTravelTime[nursei] = 0; // Reset nurseTravelTime for nurse i (total travel time for nursei)
@@ -2909,22 +2913,29 @@ void CalculateJobTimes(struct INSTANCE* ip, int nursei){
     // Number of breaks and shifts in nursei's day. Note: numUnavail = number of available shifts - 1; so numAvail = numUnavail + 1.
     int numUnavail = ip->nurseUnavail[nursei];
     int numShifts = numUnavail + 1; // Number of shifts in nursei's day
+    int shift = 0;
+    int endOfDay = -1;
+    if(numShifts == 1){
+        endOfDay = 1;
+    }
 
-    int prevJob = 0; //NB: NEED TO CHANGE THIS
-    int serviceTime = 0; //NB: NEED TO CHANGE THIS
-    double waitingTime = 0; //NB: NEED TO CHANGE THIS
-    double travelTime = -1;
+    int prevJob = -1; //NB: NEED TO CHANGE/CHECK THIS
+    //int serviceTime = 0; //NB: NEED TO CHANGE/CHECK THIS
+    //double waitingTime = 0; //NB: NEED TO CHANGE/CHECK THIS
+    //double travelTime = -1; // NB: NEED TO CHANGE/CHECK THIS
     double currentTime = (double)ip->nurseWorkingTimes[nursei][0]; //currentTime is the start of nursei's working day.
-    double prevJobArrival = 0; //NB: NEED TO CHANGE/CHECK THIS
 
-    // Main for loop of function:
+    // Sec: Main for loop of function:
     for(int p = 0; p < ip->nJobs; ++p){ //NOTE: p IS THE POSITION, not the job
+        feasible = -1;
+
         if(ip->allNurseRoutes[nursei][p] < 0){ // If there is no job in position p of nursei's route, then we have reached the end of the route, no more jobs, break out of for loop
             break;
         }
         int job = ip->allNurseRoutes[nursei][p]; // job = the job number at position p in nursei's route.
+
         if(p == 0){ // If this is the first job in nursei's route, then we don't use the previous current time
-            travelTime = TravelTimeFromDepot(ip, nursei, job);
+            double travelTimeFirst = TravelTimeFromDepot(ip, nursei, job);
             if(ip->excludeNurseTravel){ //If we're not including the travel time to/from the first/last jobs in the nurses' routes
                 if(ip->jobTimeInfo[job][0] > ip->nurseWorkingTimes[nursei][0] - 0.001){ //If the startTW (e_j) of job is later than time that nursei starts the day
                     currentTime = ip->jobTimeInfo[job][0]; // currentTime is set to be the startTW (e_j) of job
@@ -2935,30 +2946,290 @@ void CalculateJobTimes(struct INSTANCE* ip, int nursei){
                 }
             }
             else{// include travel time to/from the first/last jobs in the nurses' routes.
-                currentTime += travelTime;
-                ip->nurseTravelTime[nursei] += travelTime;
-                ip->nurseTravelMatrix[nursei][job] = travelTime;
+                currentTime += travelTimeFirst;
+                ip->nurseTravelTime[nursei] += travelTimeFirst;
+                ip->nurseTravelMatrix[nursei][job] = travelTimeFirst;
             }
         } // End if p == 0
         else if(p > 0){ // job is not the first job in nursei's route, so we need to update currentTime using the previous job's waiting time, service time, and add travelTime from previous job to this job
-            waitingTime = ip->nurseWaitingMatrix[nursei][prevJob]; //NB CHECK THIS, waiting time at the previous job, prevJob, w_{j-1}
-            serviceTime = ip->jobTimeInfo[prevJob][2]; // Duration of prevJob, s_{j-1}
-            travelTime = GetTravelTime(ip, prevJob, job); // Travel time from previous job to this job, T_i(j-1, j)
-            currentTime = prevJobArrival + waitingTime + serviceTime + travelTime;
+            double waitingTimePrev = ip->nurseWaitingMatrix[nursei][prevJob]; //NB CHECK THIS, waiting time at the previous job, prevJob, w_{j-1}
+            int serviceTimePrev = ip->jobTimeInfo[prevJob][2]; // Duration of prevJob, s_{j-1}
+            double travelTime = GetTravelTime(ip, prevJob, job); // Travel time from previous job to this job, T_i(j-1, j)
+            //currentTime = prevJobArrival + waitingTime + serviceTime + travelTime;
+            currentTime = currentTime + waitingTimePrev + serviceTimePrev + travelTime;
             ip->nurseTravelTime[nursei] += travelTime;
             ip->nurseTravelMatrix[nursei][job] = travelTime;
         } // End else if p > 0
 
 
+        double ogArrivalTime = currentTime;
+        double startTW = ip->jobTimeInfo[job][0]; // e_j
+        double endTW = ip->jobTimeInfo[job][1]; // l_j
+        double startTWMK = ip->jobTimeInfo[job][0]; // e_j^(j')
+        double endTWMK = bigM; // l_j^(j')
+
+        // Sec: Find out if job is a DS or a DJ.
+        int gapAllowed = ip->algorithmOptions[12]; // if 1 then gapAllowed = true, else no gap allowed.
+        int considerDependency = -1; // DJ = 1 if job is dependent and nursei is second nurse, = 0 otherwise
+        int considerDoubleService = -1; // DS = 1 if job is double service and nursei is second nurse, = 0 otherwise
+        int otherNurseDJ = -1; //if job is DJ (and therefore nursei is second nurse), this is the other nurse doing the dependent job, already set
+        int otherNurseDS = -1; // if job is DS (and therefore nursei is second nurse), this is the other nurse doing the job at the same time, already set
+        int otherJobDJ = -1; //if job is DJ (and therefore nursei is second nurse), this is the dependent job done by otherNurseDJ, already set
+        int secondNurse = -1; // = 1 if job is DJ and DS and the other nurse has already been assessed, else = -1.
+        int jobAfter = -1; // =1 if 'job' is DJ and time window of current 'job' is AFTER start time of otherJobDJ (which has already been set)
+
+        // 1. Check if job is DJ (dependent job):
+        if(ip->dependsOn[job] > -1){
+            otherJobDJ = ip->dependsOn[job];
+            for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){
+                int prevNurse = ip->nurseOrder[prevNurseInd];
+                if(prevNurse == nursei){
+                    otherNurseDJ = -1; //NEW 17/02/2022
+                    considerDependency = -1;
+                    break;
+                }
+                if(ip->timeMatrix[prevNurse][otherJobDJ] > 0){
+                    if(gapAllowed > 0){ // was if(aitOnly > 0)
+                        ip->mkMinD[job] = abs(ip->mkMinD[job]);
+                        ip->mkMaxD[job] = abs(ip->mkMaxD[job]);
+
+                        // NB 17/02/2022: NEED TO CHECK THESE LINES FROM laa ip-?TM[prevNurse][otherjobDJ]... to otherNurseDJ = prevNurse
+                        double laa = ip->timeMatrix[prevNurse][otherJobDJ] - ip->mkMaxD[job]; // NB 17/02/2022: HERE WE SUBTRACT ip->mkMaxD[job], IS IT THE RIGHT ONE? WHY SUBTRATCT, HOW DO WE KNOW WHICH JOB COMES FIRST?
+                        //if((laa >= startTW) && (arriveAt <= laa)){ //NB: OLD - arrive at is used here!
+                        if((laa >= startTW) && (currentTime <= laa)){ //NB: why is currentTime <= laa being checked here?
+                            //ip->mkMinD[job] = -1*ip->mkMinD[job]; // NB 17/02/2022: ARE THESE CORRECT? CHANGED IN THE PAPER
+                            //ip->mkMaxD[job] = -1*ip->mkMaxD[job];
+                            ip->mkMinD[job] = -1*ip->mkMaxD[job]; // New, swapped to match paper
+                            ip->mkMaxD[job] = -1*ip->mkMinD[job];
+                            jobAfter = -1;
+
+                        }
+                        else{
+                            jobAfter = 1; // 'job' is after otherJobDJ in the schedule.
+                        }
+                    }
+                    startTWMK = ip->timeMatrix[prevNurse][otherJobDJ] + ip->mkMinD[job];
+                    endTWMK = ip->timeMatrix[prevNurse][otherJobDJ] + ip->mkMaxD[job];
+                    considerDependency = 1; //NEW 17/02/2022
+                    otherNurseDJ = prevNurse; // NB 17/02/2022: NEED TO CHECK THESE LINES FROM laa ip-?TM[prevNurse][otherjobDJ]... to otherNurseDJ = prevNurse
+                    secondNurse = 1;
+                    break;
+                }
+            }
+        }// End dependent jobs
+
+        //2. Check if job is DS (double service job):
+        if(ip->doubleService[job] > 0){
+            for(int prevNurseInd = 0; prevNurseInd < ip->nNurses; ++prevNurseInd){
+                int prevNurse = ip->nurseOrder[prevNurseInd];
+                if(prevNurse == nursei){
+                    otherNurseDS = -1; //NEW 17/02/2022
+                    considerDoubleService = -1; //NEW 17/02/2022
+                    break;
+                }
+                if(ip->timeMatrix[prevNurse][job] > 0){
+                    startTWMK = ip->timeMatrix[prevNurse][job];
+                    endTWMK = ip->timeMatrix[prevNurse][job];
+                    considerDoubleService = 1; //NEW 17/02/2022
+                    otherNurseDS = prevNurse; //NEW 17/02/2022
+                    secondNurse = 1;
+                    break;
+                }
+            }
+        }// End double service jobs
+
+        //Sec: Checks for DJ and DS jobs
+        if(secondNurse > 0){
+            if(considerDependency > 0){ // DJ = True
+                if(currentTime > endTWMK && gapAllowed < 1){ //a(i,j) > t_{j'} + l_{j}^{(j')} and gapAllowed = False, current time later than latest allowed start time and no gaps allowed
+                    feasible = -1;
+                    break;
+                    //exit(-1);
+                }
+                else if(currentTime > endTWMK && gapAllowed > 0){ //a(i,j) > t_{j'} + l_{j}^{(j')} and gapAllowed = True, current time later than latest allowed start time but gaps allowed
+                    //if(endTWMK < ip->timeMatrix[otherNurseDJ][otherJobDJ]){ // t_{j'} + l_{j}^{(j')} < t_{j'}, gap too small, latest allowed start time is earlier than start time of other job
+                    if(jobAfter < 0){ // t_{j'} + l_{j}^{(j')} < t_{j'}, gap too small, latest allowed start time is earlier than start time of other job, this 'job' occurs before otherJobDJ in the schedule.
+                        feasible = -1;
+                        break;
+                        //exit(-1);
+                    }
+                }
+            }//End DJ checks
+            else if(considerDoubleService > 0){ // DS = True
+                if(currentTime > ip->timeMatrix[otherNurseDS][job]){ // a(i,j) > t_{j'}
+                    feasible = -1;
+                    break;
+                    //exit(-1);
+                }
+            }//End DS checks
+        }// End checks
 
 
+        // Sec: Main checks
+        /* Note: *timesArray([0]) = feasible, *(timesArray+1)([1]) = currentTime, *(timesArray+2)([2]) = startTime, *(timesArray+3)([3]) = w_ij, *(timesArray+4)([4]) = z_j
+         * *(timesArray+5)([5]) = \tilde{z}_j, *(timesArray+6)([6]) = shift f. */
+        if(numShifts == 1 || shift >= numShifts-1){ //1. if nurse only has one shift (i.e. whole day, no breaks), or if this current shift is the nurse's final shift of the day
+            feasible = 1;
+            if(secondNurse > 0){
+                if(considerDependency > 0){ // DJ
+                    if((jobAfter > 0 && gapAllowed < 1) || (jobAfter < 0)){
+                        double waitingTime = MaxNumDouble(0, (startTWMK - currentTime)); // startTWMK - cT or startTW - cT? (w_ij)
+                        double startTime = currentTime + waitingTime; // t_j
+                        double tardiness = MaxNumDouble(0, (currentTime - endTW)); // cT - endTWMK or cT - endTW? (z_j)
+                        //no gap tardiness allowed, leave it
+                        ip->timeMatrix[nursei][job] = startTime;
+                        ip->nurseWaitingMatrix[nursei][job] = waitingTime;
+                        ip->nurseWaitingTime[nursei] += waitingTime;
+                        ip->violatedTW[job] = tardiness;
+                    }
+                    else if(jobAfter > 0 && gapAllowed > 0){
+                        double waitingTime = MaxNumDouble(0, (startTWMK - currentTime)); // startTWMK - cT or startTW - cT? (w_ij)
+                        double startTime = currentTime + waitingTime; // t_j
+                        double tardiness = MaxNumDouble(0, (currentTime - endTW)); // cT - endTWMK or cT - endTW? (z_j)
+                        double gapTardiness = MaxNumDouble(0, (startTime - endTWMK)); // \tilde{z}_j
+                        ip->timeMatrix[nursei][job] = startTime;
+                        ip->nurseWaitingMatrix[nursei][job] = waitingTime;
+                        ip->nurseWaitingTime[nursei] += waitingTime;
+                        ip->violatedTW[job] = tardiness;
+                        ip->violatedTWMK[job] = gapTardiness;
+                    }
+                }
+                else if(considerDoubleService > 0){ // DS
+                    double waitingTime = MaxNumDouble(0, (ip->timeMatrix[otherNurseDS][job] - currentTime));
+                    double startTime = ip->timeMatrix[otherNurseDS][job]; // same start time as other nurse already set doing this job
+                    //don't set tardiness, it will override tardiness already set from otherNurseDS at 'job'.
+                    //no gap tardiness for double services.
+                    ip->timeMatrix[nursei][job] = startTime;
+                    ip->nurseWaitingMatrix[nursei][job] = waitingTime;
+                    ip->nurseWaitingTime[nursei] += waitingTime;
+                }
+            }
+            else{ //nursei is first nurse assessed or job is single/normal job
+                double waitingTime = MaxNumDouble(0, (startTW - currentTime)); //w_ij
+                double startTime = currentTime + waitingTime; // t_j
+                double tardiness = MaxNumDouble(0, (currentTime - endTW)); // z_j
+                ip->timeMatrix[nursei][job] = startTime;
+                ip->nurseWaitingMatrix[nursei][job] = waitingTime;
+                ip->nurseWaitingTime[nursei] += waitingTime;
+                ip->violatedTW[job] = tardiness;
+            }
+        }
+        else if(currentTime > ip->unavailMatrix[shift][1][nursei] && currentTime < ip->unavailMatrix[shift][2][nursei]){ //2. a(i,j) > v(pi_f^i) and a(i,j) < u(pi_f+1^i), i.e. arrival is between breaks
+            double tempCurrentTime = ip->unavailMatrix[shift][1][nursei]; // v \gets v(pi_f^i) in pseudocode
+            double* timesArray;
+            //timesArray = FindValidTime(ip, f, arriveAt, nursei, job, considerDependency, otherNurseDJ, otherJobDJ, considerDoubleService, otherNurseDS, startTWFVT, endTWFVT);
+            timesArray = FindValidTime(ip, shift, tempCurrentTime, nursei, job, considerDependency, otherNurseDJ, otherJobDJ, considerDoubleService, otherNurseDS, startTWMK, endTWMK);
+            if(*timesArray < 0){
+                feasible = -1;
+                break;
+                //exit(-1);
+            }
+            else{
+                feasible = 1;
+                currentTime = *(timesArray+1); //check
+                ip->timeMatrix[nursei][job] = *(timesArray+2);
+                if(*(timesArray+3) >=0 ){ // check that waiting time returned from FVT is > 0
+                    ip->nurseWaitingMatrix[nursei][job] = *(timesArray+3);
+                    ip->nurseWaitingTime[nursei] += *(timesArray+3);
+                }
+                if(*(timesArray+4) >=0){
+                    ip->violatedTW[job] = *(timesArray+4);
+                }
+                if(*(timesArray+5) >= 0){
+                    ip->violatedTWMK[job] = *(timesArray+5);
+                }
+                shift = (int)*(timesArray+6);
+            }
+        }
+        else if(MaxNumDouble(currentTime, startTW) + ip->jobTimeInfo[job][2] > ip->unavailMatrix[shift][1][nursei]){ //3. max(a(i,j), e_j) + s_j > v(pi_f^i), i.e. duration of job extended into break
+            //FVT
+            double* timesArray;
+            //timesArray = FindValidTime(ip, f, arriveAt, nursei, job, considerDependency, otherNurseDJ, otherJobDJ, considerDoubleService, otherNurseDS, startTWFVT, endTWFVT);
+            timesArray = FindValidTime(ip, shift, currentTime, nursei, job, considerDependency, otherNurseDJ, otherJobDJ, considerDoubleService, otherNurseDS, startTWMK, endTWMK);
+            if(*timesArray < 0){
+                feasible = -1;
+                break;
+                //exit(-1);
+            }
+            else{
+                feasible = 1;
+                currentTime = *(timesArray+1); // NB: CHECK THIS, IT WILL BE THE SAME AT THE START TIME T_J WHICH IS WRONG AS IT WILL MESS UP THE CALCULATION OF THE NEXT ARRIVAL TIME AT THE TOP OF THE LOOP.
+                ip->timeMatrix[nursei][job] = *(timesArray+2);
+                if(*(timesArray+3) >=0 ){ // check that waiting time returned from FVT is > 0
+                    ip->nurseWaitingMatrix[nursei][job] = *(timesArray+3);
+                    ip->nurseWaitingTime[nursei] += *(timesArray+3);
+                }
+                if(*(timesArray+4) >=0){
+                    ip->violatedTW[job] = *(timesArray+4);
+                }
+                if(*(timesArray+5) >= 0){
+                    ip->violatedTWMK[job] = *(timesArray+5);
+                }
+                shift = (int)*(timesArray+6);
+            }
+        }
+        else{ //4. Other
+            feasible = 1;
+            if(secondNurse > 0){
+                if(considerDependency > 0){ // DJ
+                    if((jobAfter > 0 && gapAllowed < 1) || (jobAfter < 0)){
+                        double waitingTime = MaxNumDouble(0, (startTWMK - currentTime)); // startTWMK - cT or startTW - cT? (w_ij)
+                        double startTime = currentTime + waitingTime; // t_j
+                        double tardiness = MaxNumDouble(0, (currentTime - endTW)); // cT - endTWMK or cT - endTW? (z_j)
+                        //no gap tardiness allowed, leave it
+                        ip->timeMatrix[nursei][job] = startTime;
+                        ip->nurseWaitingMatrix[nursei][job] = waitingTime;
+                        ip->nurseWaitingTime[nursei] += waitingTime;
+                        ip->violatedTW[job] = tardiness;
+                    }
+                    else if(jobAfter > 0 && gapAllowed > 0){
+                        double waitingTime = MaxNumDouble(0, (startTWMK - currentTime)); // startTWMK - cT or startTW - cT? (w_ij)
+                        double startTime = currentTime + waitingTime; // t_j
+                        double tardiness = MaxNumDouble(0, (currentTime - endTW)); // cT - endTWMK or cT - endTW? (z_j)
+                        double gapTardiness = MaxNumDouble(0, (startTime - endTWMK)); // \tilde{z}_j
+                        ip->timeMatrix[nursei][job] = startTime;
+                        ip->nurseWaitingMatrix[nursei][job] = waitingTime;
+                        ip->nurseWaitingTime[nursei] += waitingTime;
+                        ip->violatedTW[job] = tardiness;
+                        ip->violatedTWMK[job] = gapTardiness;
+                    }
+                }
+                else if(considerDoubleService > 0){ // DS
+                    double waitingTime = MaxNumDouble(0, (ip->timeMatrix[otherNurseDS][job] - currentTime));
+                    double startTime = ip->timeMatrix[otherNurseDS][job]; // same start time as other nurse already set doing this job
+                    //don't set tardiness, it will override tardiness already set from otherNurseDS at 'job'.
+                    //no gap tardiness for double services.
+                    ip->timeMatrix[nursei][job] = startTime;
+                    ip->nurseWaitingMatrix[nursei][job] = waitingTime;
+                    ip->nurseWaitingTime[nursei] += waitingTime;
+                }
+            }
+            else{ //nursei is first nurse assessed or job is single/normal job
+                double waitingTime = MaxNumDouble(0, (startTW - currentTime)); //w_ij
+                double startTime = currentTime + waitingTime; // t_j
+                double tardiness = MaxNumDouble(0, (currentTime - endTW)); // z_j
+                ip->timeMatrix[nursei][job] = startTime;
+                ip->nurseWaitingMatrix[nursei][job] = waitingTime;
+                ip->nurseWaitingTime[nursei] += waitingTime;
+                ip->violatedTW[job] = tardiness;
+            }
+        }// End Main checks
+
+        //get prevjob for next loop
+        prevJob = job;
 
     }// End for loop positions
 
+    if(prevJob > -1){ //if there was a job before, i.e. nursei's route isn't empty
+        if(ip->excludeNurseTravel == 0){ //If we are including the travel time back to the nurse's home from the last job
+            double travelTimeLast = TravelTimeToDepot(ip, nursei, prevJob); //returns ip->nurseTravelToDepot[nursei][prevJob].
+            ip->nurseTravelTime[nursei] += travelTimeLast;
+        }
+    }
 
 
 
-}
+}// End of CalculateJobTimes function.
 
 /*void GetOtherDSDJ(struct INSTANCE* ip, int job, ){
 
@@ -3030,10 +3301,10 @@ double* FindValidTime(struct INSTANCE* ip, int f, double currentTime, int curren
      * int startTW and int endTW are the start and end TWs for the 'job'.
      */
 
-    double timesArray[7];
+    static double timesArray[7];
     // feasible (0,1), current time a(i,j), start time t_j, waiting time w_ij (if any), tardiness z_j (if any), gap tardiness \tilde{z}_j (if any for DJ if gap allowed, algorithmOptions_data[12]), and current shift f.
     timesArray[0] = -1; // feasible (0, 1)
-    timesArray[1] = -1; // \tilde{a}(i,j)
+    timesArray[1] = -1; // currentTime \tilde{a}(i,j)
     timesArray[2] = -1; // start time t_j
     timesArray[3] = -1; // waiting time w_ij (if any)
     timesArray[4] = -1; // tardiness z_j (if any)
@@ -3104,12 +3375,13 @@ double* FindValidTime(struct INSTANCE* ip, int f, double currentTime, int curren
                         // FEASIBLE, SOLUTION FOUND
                         feasible = 1; // feasible [0]
                         double startTime = currentTime; // t_j = \tilde{a}(i,j), start time [2]
-                        double waitingTime = MaxNum(0, (startTime - originalArrivalTime)); // w_ij = t_j - a(i,j), waiting time [3]
-                        double tardiness = MaxNum(0, (startTime - ip->jobTimeInfo[job][1])); // z_j = t_j - l_j, ip->jobTimeInfo[job][1] = the end TW of 'job', tardiness [4]
-                        double gapTardiness = MaxNum(0, (startTime - endTWMK)); // \tilde{z}_j = t_j - l_j^{j'}, gap tardiness [5]
+                        double waitingTime = MaxNumDouble(0, (startTime - originalArrivalTime)); // w_ij = t_j - a(i,j), waiting time [3]
+                        double tardiness = MaxNumDouble(0, (startTime - ip->jobTimeInfo[job][1])); // z_j = t_j - l_j, ip->jobTimeInfo[job][1] = the end TW of 'job', tardiness [4]
+                        double gapTardiness = MaxNumDouble(0, (startTime - endTWMK)); // \tilde{z}_j = t_j - l_j^{j'}, gap tardiness [5]
                         int currentShift = f; //NB CHECK THIS, f = \tilde{f}, current shift [6], also int to double?
                         timesArray[0] = feasible; // feasible (0, 1)
-                        timesArray[1] = currentTime; // current time \tilde{a}(i,j)
+                        //timesArray[1] = currentTime; // current time \tilde{a}(i,j)
+                        timesArray[1] = originalArrivalTime; // current time \tilde{a}(i,j)
                         timesArray[2] = startTime; // start time t_j
                         timesArray[3] = waitingTime; // waiting time w_ij (if any)
                         timesArray[4] = tardiness; // tardiness z_j (if any)
@@ -3124,19 +3396,20 @@ double* FindValidTime(struct INSTANCE* ip, int f, double currentTime, int curren
                     return timesArray;
                 } // End if-else check of order of job and otherJobDJ in schedule
             }
-            else if(MaxNum(currentTime, startTWMK) + ip->jobTimeInfo[job][2] > endOfShift && endOfDay == 0){// cannot complete job without going into break period, and this shift is not the last shift.
+            else if(MaxNumDouble(currentTime, startTWMK) + ip->jobTimeInfo[job][2] > endOfShift && endOfDay == 0){// cannot complete job without going into break period, and this shift is not the last shift.
                 continue;
             }
             else{
                 // FEASIBLE, SOLUTION FOUND
                 feasible = 1; // feasible [0]
-                double startTime = MaxNum(currentTime, startTWMK); // t_j = \tilde{a}(i,j), start time [2]
-                double waitingTime = MaxNum(0, (startTime - originalArrivalTime)); // w_ij = t_j - a(i,j), waiting time [3]
-                double tardiness = MaxNum(0, (startTime - ip->jobTimeInfo[job][1])); // z_j = t_j - l_j, ip->jobTimeInfo[job][1] = the end TW of 'job', tardiness [4]
+                double startTime = MaxNumDouble(currentTime, startTWMK); // t_j = \tilde{a}(i,j), start time [2]
+                double waitingTime = MaxNumDouble(0, (startTime - originalArrivalTime)); // w_ij = t_j - a(i,j), waiting time [3]
+                double tardiness = MaxNumDouble(0, (startTime - ip->jobTimeInfo[job][1])); // z_j = t_j - l_j, ip->jobTimeInfo[job][1] = the end TW of 'job', tardiness [4]
                 // int gapTardiness = MaxNum(0, (startTime - endTWMK)); // \tilde{z}_j = t_j - l_j^{j'}, gap tardiness [5]
                 int currentShift = f; //NB CHECK THIS, f = \tilde{f}, current shift [6], also int to double?
                 timesArray[0] = feasible; // feasible (0, 1)
-                timesArray[1] = currentTime; // current time \tilde{a}(i,j)
+                //timesArray[1] = currentTime; // current time \tilde{a}(i,j)
+                timesArray[1] = originalArrivalTime; // current time \tilde{a}(i,j)
                 timesArray[2] = startTime; // start time t_j
                 timesArray[3] = waitingTime; // waiting time w_ij (if any)
                 timesArray[4] = tardiness; // tardiness z_j (if any)
@@ -3152,13 +3425,14 @@ double* FindValidTime(struct INSTANCE* ip, int f, double currentTime, int curren
             else{
                 //FEASIBLE, solution found.
                 feasible = 1; // feasible [0]
-                double startTime = MaxNum(currentTime, startTWMK); // t_j = \tilde{a}(i,j), start time [2]
-                double waitingTime = MaxNum(0, (startTime - originalArrivalTime)); // w_ij = t_j - a(i,j), waiting time [3]
-                double tardiness = MaxNum(0, (startTime - ip->jobTimeInfo[job][1])); // z_j = t_j - l_j, ip->jobTimeInfo[job][1] = the end TW of 'job', tardiness [4]
+                double startTime = MaxNumDouble(currentTime, startTWMK); // t_j = \tilde{a}(i,j), start time [2]
+                double waitingTime = MaxNumDouble(0, (startTime - originalArrivalTime)); // w_ij = t_j - a(i,j), waiting time [3]
+                double tardiness = MaxNumDouble(0, (startTime - ip->jobTimeInfo[job][1])); // z_j = t_j - l_j, ip->jobTimeInfo[job][1] = the end TW of 'job', tardiness [4]
                 // int gapTardiness = MaxNum(0, (startTime - endTWMK)); // \tilde{z}_j = t_j - l_j^{j'}, gap tardiness [5]
                 int currentShift = f; //NB CHECK THIS, f = \tilde{f}, current shift [6], also int to double?
                 timesArray[0] = feasible; // feasible (0, 1)
-                timesArray[1] = currentTime; // current time \tilde{a}(i,j)
+                //timesArray[1] = currentTime; // current time \tilde{a}(i,j)
+                timesArray[1] = originalArrivalTime; // current time \tilde{a}(i,j)
                 timesArray[2] = startTime; // start time t_j
                 timesArray[3] = waitingTime; // waiting time w_ij (if any)
                 timesArray[4] = tardiness; // tardiness z_j (if any)
@@ -3223,7 +3497,8 @@ void SetTimesFull(struct INSTANCE* ip){
     for(int j = 0; j < ip->nNurses; ++j){
         int nurse = ip->nurseOrder[j];
         // printf("Setting nurse time of: %d", nurse);
-        SetNurseTime(ip, nurse);
+        //SetNurseTime(ip, nurse);
+        CalculateJobTimes(ip, nurse); // new 24/02/2022, to replace SetNurseTime function.
     }
 } // End SetTimesFull function
 
@@ -3255,7 +3530,8 @@ void SetTimesFrom(struct INSTANCE* ip, int firstNurse){
             ip->violatedTWMK[jobdue] = 0; //"lateness" of jobdue is 0 (not late, set to start on time).
         }
 
-        SetNurseTime(ip, nurse); //Note that this set_nurse_time function also checks to make sure that nurse is being used.
+        //SetNurseTime(ip, nurse); //Note that this set_nurse_time function also checks to make sure that nurse is being used.
+        CalculateJobTimes(ip, nurse); // new 24/02/2022, to replace SetNurseTime function.
     }
 }
 
@@ -4714,6 +4990,10 @@ void PrintVector(int* array, size_t n){
     printf("]\n");
 }
 
-double MaxNum(double num1, double num2){
+double MaxNumDouble(double num1, double num2){
+    return (num1 > num2) ? num1 : num2;
+}
+
+int MaxNumInt(int num1, int num2){
     return (num1 > num2) ? num1 : num2;
 }

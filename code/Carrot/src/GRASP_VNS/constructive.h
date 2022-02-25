@@ -177,7 +177,8 @@ void TwoExchange(int* array, int i, int j);
 void RandomTwoExchange(int* array, size_t n, int* i, int* j);
 void Shuffle(int* array, size_t n); // From Ben Pfaff's Writings, see below
 void PrintVector(int* array, size_t n);
-double MaxNum(double num1, double num2);
+double MaxNumDouble(double num1, double num2);
+int MaxNumInt(int num1, int num2);
 
 
 // Not in constructive.c
