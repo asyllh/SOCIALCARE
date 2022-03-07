@@ -211,7 +211,8 @@ struct INSTANCE CopyInstance(struct INSTANCE* original_instance) {
 									.nurseWaitingMatrix = original_instance->nurseWaitingMatrix, //NB: NEW: 03/06/2021
 									.nurseTravelMatrix = original_instance->nurseTravelMatrix, //NB: NEW: 03/06/2021
                                     .totalServiceTime = original_instance->totalServiceTime, //NB NEW: 06/11/2021
-                                    .totalServiceTimeIncDS = original_instance->totalServiceTimeIncDS //NB NEW: 06/11/2021
+                                    .totalServiceTimeIncDS = original_instance->totalServiceTimeIncDS, //NB NEW: 06/11/2021
+                                    .arrivalTimes = original_instance->arrivalTimes // NB NEW 28/02/2022
 	};
 
 	if (LOCAL_VERBOSE > 5){
@@ -617,6 +618,23 @@ struct INSTANCE InstanceFromPython(int nJobs_data, int nNurses_data, int nSkills
         }
     }
 
+    // 31. double** arrivalTimes: nNurses x nJobs (set to all -1)
+    double** arrivalTimes;
+    nRows = nNurses;
+    nCols = nJobs;
+    arrivalTimes = malloc(nRows * sizeof(double*)); // Rows
+    for (int i = 0; i < nRows; i++){
+        arrivalTimes[i] = malloc(nCols*sizeof(double)); // Cols
+    }
+    for (int i = 0; i < nRows; ++i){
+        for(int j = 0; j < nCols; ++j){
+            arrivalTimes[i][j] = -1;
+        }
+    }
+    if (verbose_data > 5){
+        printf("Allocated arrivalTimes.\n");
+    }
+
     verbose_data = printAllAllocations;	// Return this to what it was
 
     struct INSTANCE inst = { .nJobs = nJobs,
@@ -658,7 +676,8 @@ struct INSTANCE InstanceFromPython(int nJobs_data, int nNurses_data, int nSkills
             .nurseWaitingMatrix = nurseWaitingMatrix, // NB: NEW: 03/06/2021
             .nurseTravelMatrix = nurseTravelMatrix, // NB: NEW: 03/06/2021
             .totalServiceTime = totalServiceTime, //NB: NEW: 06/11/2021
-            .totalServiceTimeIncDS = totalServiceTimeIncDS //NB NEW 06/11/2021
+            .totalServiceTimeIncDS = totalServiceTimeIncDS, //NB NEW 06/11/2021
+            .arrivalTimes = arrivalTimes // NB NEW 28/02/2022
     };
 
     return inst;

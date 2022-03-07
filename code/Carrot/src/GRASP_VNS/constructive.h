@@ -91,6 +91,7 @@ struct INSTANCE {
 	double** nurseTravelMatrix; //2D array, size nNurses x nJobs, contains travel time to each job that nurse is assigned. If nurse is not assigned job, or there is no travel time, then = 0
     double totalServiceTime; // New 06/11/2021, moving total service time here as it should be fixed rather than calculating it every time in Objective function
     double totalServiceTimeIncDS; // New 06/11/2021, totalServiceTime but also including double time for the double services; this will therefore be the total working time of all nurses.
+    double** arrivalTimes; //NEW 28/02/2022, size = nNurses x nJobs, keeps the original arrival time of nurse i at job j.
 	// int startTime;
 	// int ** jobTimeWindow;
 	// int * jobDuration;
@@ -155,8 +156,10 @@ void SetNurseTimeAitH(struct INSTANCE* ip, int nursej);
 void SetNurseTimeOld(struct INSTANCE* ip, int nursei);
 void SetNurseTime(struct INSTANCE* ip, int nursei);
 void CalculateJobTimes(struct INSTANCE* ip, int nursei);
-//void GetOtherDSDJ(struct INSTANCE* ip){
 double* FindValidTime(struct INSTANCE* ip, int f, double currentTime, int currentNurse, int job, int considerDependency, int otherNurseDJ, int otherJobDJ, int considerDoubleService, int otherNurseDS, double startTWMK, double endTWMK);
+void OriginalCalculateJobTimes(struct INSTANCE* ip, int nursei);
+//void GetOtherDSDJ(struct INSTANCE* ip){
+double* OriginalFindValidTime(struct INSTANCE* ip, int f, double currentTime, int currentNurse, int job, int considerDependency, int otherNurseDJ, int otherJobDJ, int considerDoubleService, int otherNurseDS, double startTWMK, double endTWMK);
 void SetTimesFull(struct INSTANCE* ip);
 void SetTimesFrom(struct INSTANCE* ip, int firstNurse);
 int SynchroniseJobi(struct INSTANCE* ip, int job, int nurse1, int nurse2);
@@ -179,6 +182,7 @@ void Shuffle(int* array, size_t n); // From Ben Pfaff's Writings, see below
 void PrintVector(int* array, size_t n);
 double MaxNumDouble(double num1, double num2);
 int MaxNumInt(int num1, int num2);
+void RemoveBreaksWaitingTime(struct INSTANCE* ip);
 
 
 // Not in constructive.c
