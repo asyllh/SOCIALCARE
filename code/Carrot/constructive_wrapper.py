@@ -30,8 +30,8 @@ def main():
     maxwaiting_coeff = -1
     quality_measure = 'default' # default = paper
     max_time_seconds = 60
-    create_html_website = False
-    create_python_plots = False
+    create_html_website = True
+    create_python_plots = True
     input_filename = r'C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/Carrot/data/abicare/2021.07.15 - UOS - Clients - Carers - Rota - Anonymised.xlsx'
     codepoint_directory = r'C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/Carrot/data/codepo_gb'
     date_selected = pd.Timestamp("2021-07-27")
@@ -45,6 +45,8 @@ def main():
     week_period8 = 8
     dayindex_2weeks = wc.calculate_cycle_day(planning_date, week_period2)
     dayindex_8weeks = wc.calculate_cycle_day(planning_date, week_period8)
+    print('dayindex_2weeks', dayindex_2weeks)
+    print('dayindex_8weeks', dayindex_8weeks)
 
     big_m = 10000000
     random_seed = np.random.randint(low=0, high=big_m) # Should random seed be added to tkinter box?
