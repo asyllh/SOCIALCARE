@@ -130,7 +130,7 @@ It is not uncommon in the literature to model the skills of the workforce as hie
 %----------------------------------------------------------------------------------%
 \subsection{Preferences}
 \label{sub:preferences}
-\noindent It is not uncommon in practice for district nurses to do their planning using preferences. These might arise from multiple reasons, such as a preserving continuity of care, gender preference, patients and nurses speaking the same language, or previous conflicts between a patient and a nurse. We model this with a preference function, $P: N\times J \rightarrow \mathbb{R}$, such that $P(i,j)$ represents the preference score of assigning job $i$ to nurse $j$. The function $P$ should assign a higher (positive) score to preferred patient-nurse assignments and a lower (negative) score to assignments that are better avoided. We give an indication on how to choose the specific values of the function in Section~\ref{subsub:adequateweights}.
+\noindent In practice it is often that district nurses take into account preferences during their planning. These might arise from multiple reasons, such as a preserving continuity of care, gender preference, patients and nurses speaking the same language, or previous conflicts between a patient and a nurse. We model this with a preference function, $P: N\times J \rightarrow \mathbb{R}$, such that $P(i,j)$ represents the preference score of assigning job $i$ to nurse $j$. The function $P$ should assign a higher (positive) score to preferred patient-nurse assignments and a lower (negative) score to assignments that are better avoided. We give an indication on how to choose the specific values of the function in Section~\ref{subsub:adequateweights}.
 
 %----------------------------------------------------------------------------------%
 \subsection{Travel Times}
@@ -192,7 +192,7 @@ Since some jobs have time windows or might need to be synchronised, waiting time
 The arrival time $a(i,j)$ of nurse $i$ at job $j \in r_i$ is calculated recursively as follows:
 \begin{subequations}
 	\begin{align}
-		a(i,k_0^i) &= 0, \label{eq:recursionarrivalbase}\\[3pt]
+		a(i,k_0^i) &= st(i), \label{eq:recursionarrivalbase}\\[3pt]
 		a(i,j) &= a(i,j-1) + w_{ij-1} + s_{j-1} + T_i(j-1, j). \label{eq:arrivaltime}
 	\end{align}
 \end{subequations}
@@ -217,7 +217,7 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
     \item Waiting for a second nurse $i'$ to arrive for a double service:
     \begin{equation}
         %w_{i j} \geq t_j - a(i',j) \quad \forall j \in DS \text{ such that } j \in r_{i} \cap r_{i'}. \label{eq:waiting2DS}
-       \chng{ w_{i j} \geq t_j - a(i',j') \text{ } \forall (j,j') \in DS \text{ such that } j \in r_{i} \text{ and } j' \in r_{i'}.} \label{eq:waiting2DS}
+       w_{i j} \geq t_j - a(i',j') \text{ } \forall (j,j') \in DS \text{ such that } j \in r_{i} \text{ and } j' \in r_{i'}. \label{eq:waiting2DS}
     \end{equation}
     \item Waiting for the minimum gap of a synchronised service. If the job $j$ depends on $j'$, then:
     \begin{equation}\label{eq:waiting3dependent}
@@ -226,19 +226,21 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 	\item Waiting time incurred due to breaks between shifts. This is discussed further in Section~\ref{sub:shiftwork}.
 \end{itemize}
 
-\noindent \chng{Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. Let $j_1, j_2 \subset J, j_1 \neq j_2$, be two jobs that have a dependency, where $j_1 \in r_{i_1}$ and $j_2 \in r_{i_2}$, and nurse $i_1$ appears earlier than nurse $i_2$ in the vector of nurse order, $\mathcal{O}$. Then, we enforce the following:} \correction{Does this still hold?}
+\noindent Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. Note that this implies that the order in which nurse routes appear in a solution may have an impact on the solution quality. To mitigate this effect, in Section~\ref{sec:dst} we describe strategies to search different orderings of nurses when solving the problem.
+
+%\noindent \chng{Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. Let $j_1, j_2 \subset J, j_1 \neq j_2$, be two jobs that have a dependency, where $j_1 \in r_{i_1}$ and $j_2 \in r_{i_2}$, and nurse $i_1$ appears earlier than nurse $i_2$ in the vector of nurse order, $\mathcal{O}$. Then, we enforce the following:} \correction{Does this still hold?}
 %  $i_1 < i_2$, \ie $j_1$ appears earlier in the vector $\mathcal{O}$ than $j_2$. Then, we enforce that:
-\begin{align}
-	w_{i_1 j_1} &= \max \{0, e_{j_1} - a(i_1,j_1)\}, \\ 
-		t_{j_1} &= \max \{ a(i_1,j_1), e_{j_1} \}.\label{eq:earliestpossiblestartassumption}
-\end{align}
+%\begin{align}
+%	w_{i_1 j_1} &= \max \{0, e_{j_1} - a(i_1,j_1)\}, \\ 
+%		t_{j_1} &= \max \{ a(i_1,j_1), e_{j_1} \}.\label{eq:earliestpossiblestartassumption}
+%\end{align}
 %\begin{equation}\label{eq:earliestpossiblestartassumption1}
 %    w_{i_1 j_1} = \max \{0, e_{j_1} - a(i_1,j_1)\},
 %\end{equation}
 %\begin{equation}\label{eq:earliestpossiblestartassumption2}
 %    t_{j_1} = \max \{ a(i_1,j_1), e_{j_1} \}.
 %\end{equation}
-\noindent Note that this implies that the order in which nurse routes appear in a solution may have an impact on the solution quality. To mitigate this effect, in Section~\ref{sec:dst} we describe strategies to search different orderings of nurses when solving the problem.
+%\noindent Note that this implies that the order in which nurse routes appear in a solution may have an impact on the solution quality. To mitigate this effect, in Section~\ref{sec:dst} we describe strategies to search different orderings of nurses when solving the problem.
 
 %----------------------------------------------------------------------------------%
 \subsection{Shift Work}
@@ -247,12 +249,12 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 \begin{equation}
 	ct(i) = \displaystyle\sum_{f=1}^{g_i} v(\pi_f^i) - u(\pi_f^i). \label{eq:contractedworkingtime}
 \end{equation}
-\noindent Clearly, if $g_i = 1$ for a nurse $i \in N$, then the nurse only has one shift; thus $ct(i) = en(i)-st(i)$. Given these shifts, we must ensure that jobs are assigned to nurses during their actual working time. This also involves considering two cases that may occur: \chng{Need to ref the figures.}
+\noindent Clearly, if $g_i = 1$ for a nurse $i \in N$, then the nurse only has one shift; thus $ct(i) = en(i)-st(i)$. Given these shifts, we must ensure that jobs are assigned to nurses during their actual working time. This also involves considering two cases that may occur:
 \begin{enumerate}[label={(\arabic*)}]
 	%\item A nurse $i$ is assigned a job $j$ with time window within the nurse's valid shift time, but the duration of $j$ results in the end time of $j$ extending into the nurse's break period. In this case, the waiting time incurred is from the arrival time of nurse $i$ at $j$ to the beginning of the nurse's next shift, and the start time for $j$ is moved forward to the start of the next shift. The tardiness is calculated as the time between the end of $j$'s time window, $l_j$, and the new start time of $j$.
 	%\item A nurse $i$ is assigned a job $j$ with time window within nurse $i$'s break period. In this case, the waiting time incurred is the entire break period, and the arrival time at $j$ is moved forward to the start of the next shift. Tardiness as calculated as above.
-	\chng{\item A nurse $i$ arrives at a job $j$ during a shift, but the duration of $j$ results in the end time of $j$ extending into the nurse's break period.}
-	\chng{\item A nurse $i$'s arrival time at job $j$ is determined to be during the nurse's unavailable time.}
+	\item A nurse $i$ arrives at a job $j$ during a shift, but the duration of $j$ results in the end time of $j$ extending into the nurse's break period.
+	\item A nurse $i$'s arrival time at job $j$ is determined to be during the nurse's unavailable time.
 \end{enumerate}
 \begin{figure}[h!]
 	\centering	
@@ -272,199 +274,134 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 	\caption{Examples of the alteration of a job $j$ depending on a nurse $i$'s shift times according to the scenarios above, when (a) the duration of $j$ extends past the end of $i$'s shift; and (b) the start time of $j$ occurs during a period of unavailable time.}
 	\label{fig:itemsaligned}
 \end{figure}
-%\correction{What happens if the next "available" slot is not enough for the job.}
-%\noindent In the event that the next available shift for a nurse $i$ is not long enough to perform job $j$, the job is moved forward again in the nurse's schedule.
-\noindent The \textsc{CalculateJobTimes} function in Algorithm \ref{alg:cjt} describes how start times, waiting times and tardiness are calculated for each nurse $i \in N$. For each job $j \in r_i$, the arrival time is evaluated using the arrival time, waiting time, service time and travel time of the previous job (lines 3--4). Line 6 covers the case where the duration of the current job $j$ extends into a break period, whilst line 12 considers the event when the arrival time of nurse $i$ at $j$ would be within a break period. In both of these cases, the function \textsc{FindValidTime} in Algorithm~\ref{alg:fvt} is called, which scans through nurse $i$'s day to find a suitable time in which $i$ can perform $j$ (lines 6 and 12). If $j$ cannot be feasibly scheduled into nurse $i$'s day, then no feasible solution exists and the algorithm terminates (lines 7--8 and lines 13--14). Otherwise, \textsc{FindValidTime} has successfully placed job $j$ into the schedule of nurse $i$, and returns the start time $t_j$, waiting time $w_{ij}$, tardiness $z_j$, and gap tardiness $\tilde{z}_j$ (if $j \in J'$ and gap tardiness is permitted) of job $j$, as well as the current shift $f$ of nurse $i$, and \textsc{CalculateJobTimes} continues on to the next job $j \in r_i$ (lines 9 and 15). There are two scenarios in which \textsc{FindValidTime} does not need to be called: (1) if nurse $i$ can feasibly perform job $j$ with the arrival time $a(i,j)$; and (2) if $f$ is the last shift of nurse $i$, i.e. $f = g_i$. In both instances, the algorithm simply calculates the starting time $t_j$, waiting time $w_{ij}$, and tardiness $z_j$ (lines 16--19).
 
-
-%\chng{The \textsc{CalculateJobTimes} function in \ref{alg:shiftwork} describes how start times, waiting times and tardiness are calculated for each nurse $i \in N$. For each job $j \in r_i$, the arrival time is evaluated using the arrival time, waiting time, service time and travel time of the previous job. Line 1 covers the case where nurse $i$'s day comprises just one shift, i.e. $g_i = 1$. Line 9 is for the case where the duration of the current job $j$ extends in to a break period, whilst Line 14 considers the event that the arrival time of nurse $i$ at job $j$ would be within a break. In both of these cases, the function \textsc{FindValidTime} is used. This function scans through the nurse's day to find the next available time period in which the nurse can feasibly perform the job $j$, and returns the start time of this period, $t_j$. If the job $j$ is a DS, then \textsc{FindValidTime} seeks a start time that is suitable for the current nurse $i$ and the second nurse on the job.}
+\noindent Both of these cases are illustrated in Figure~\ref{fig:itemsaligned}. The \textsc{CalculateJobTimes} (CJT) function in Algorithm~\ref{alg:cjt} describes how start times, waiting times, and tardiness are calculated for each nurse $i \in N$. For each job $j$ in nurse $i$'s route $r_i$, CJT obtains the arrival time $a(i,j)$ of nurse $i$ at job $j$ using the arrival time, waiting time, and service time of the previous job $j-1$ in the nurse's route, as well as the travel time from $j-1$ to the current job $j$ (lines 3--4). The function then determines whether the job is a linked service (i.e. a dependent job or a double service) and, if so, whether the other nurse $i'$ performing the linked job has already been assessed (lines 6--12). Then, CJT evaluates the current nurse-job assignment under four conditions. Firstly, if the nurse's day comprises just one shift -- that is, there are no breaks in the nurse's day -- then the function schedules job $j$ into nurse $i$'s day using the current arrival time $a(i,j)$ (lines 13--18). Secondly, if the nurse's day does consists of multiple shifts, and the proposed arrival time $a(i,j)$ occurs within a break period, then CJT calls upon the \textsc{FindValidTime} (FVT) function (see Algorithm~\ref{alg:fvt}) to find a suitable start time for job $j$ (lines 19--20). Note that as the proposed arrival time is during an invalid time period, the ``arrival time'' $a(i,j)_{\textup{temp}}$ sent to FVT is in fact the end of the current shift, $v(\pi_{f}^{i})$ (line 20). FVT is also called in the third case, where although the arrival time of the nurse at the job is during a valid shift, the duration of the job extends into the nurse's break period (lines 22--23). However, if the previous conditions do not hold, then nurse $i$ can perform job $j$ feasibly, and CJT schedules job $j$ into nurse $i$'s route (lines 24--29). The function returns a full schedule for nurse $i$.
 
 \begin{algorithm}[htbp!]
-\scriptsize
+% \tiny
 \caption{\textsc{CalculateJobTimes}$(i, r_i)$}
 \label{alg:cjt}
 \begin{algorithmic}[1]
-	\State feasible $\gets \False$
+	%\State feasible $\gets \False$
 	\State Let $f$ be the initial shift for nurse $i$
 	\State $a(i,k_{0}^i) \gets 0$
-%	\For{$j \gets 1 \To m_i$}
-	\For{$j \in r_i$}
+	\State $w_{ik_{0}^i} \gets 0$
+	\State $s_{k_{0}^i} \gets 0$
+%	\For{$j \in r_i$}
+	\ForEach{job $j$ in nurse $i$'s route $r_i$}
 		\State $a(i,j) \gets a(i, j-1) + w_{ij-1} + s_{j-1} + T_i(j-1, j)$
-		\State $i' \gets \Null$, $j' \gets \Null$
-		\State DJ $\gets \False$
-		\State DS $\gets \False$
-		\State secondN $\gets \False$
-		\If{$j \in J'$}
-			\State $j' \gets D(j)$ % D : J' -> DJ, returns other job in pair with job j
-			\State $i' \gets NJ(j')$ % NJ : J -> N, returns the nurse assigned to the job j
+		\State $i' \gets \Null$, $j' \gets \Null$, DJ $\gets \False$, DS $\gets \False$ %, secondN $\gets \False$
+		\If{$j \in J'$} % D : J' -> DJ, returns other job in pair with job j, NJ : J -> N, returns the nurse assigned to the job j
+			\State $j' \gets D(j)$, $i' \gets NJ(j')$
 			\If{$i$ appears later than $i'$ in $\mathcal{O}$}
-				\State secondN $\gets \True$
+				\If{$(j, j') \in DS$}
+					\State DS $\gets \True$
+				\Else \hspace{0.2mm} DJ $\gets \True$
+				\EndIf
+%				\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+				\State $[e_j^{(j')}, l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
 			\EndIf
-			\If{$(j, j') \in DS$}
-				\State DS $\gets \True$
-				\If{secondN $= \True \AAnd a(i,j) > t_{j'}$} %can also use l_j^(j'), latest ST allowed for j based on j'
-					\State feasible $\gets \False$
-					\Break
-				\EndIf % arrival later than latest start time
-			\Else 
-				\State $DJ \gets \True$
-				\If{secondN $= \True$} % This nurse is 2nd one to be assessed, other job has been done
-				%Need to find out if this job j is before or after j' in the schedule
-					\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
-					\If{$a(i,j) > t_{j'} + l_j^{(j')} \AAnd$gap $= \False$} % current time is later than latest allowed start based on start time of j' and no gap tard allowed
-						\State feasible $\gets \False$
-						\Break
-					\ElsIf{$a(i,j) > t_{j'} + l_{j}^{(j')} \AAnd$gap $= \True$}
-						\If{$t_{j'} + l_{j}^{(j')} < t_{j'}$} %job j occurs before job j', gap too small
-							\State feasible $\gets \False$
-							\Break
-						\EndIf
-					\EndIf
-				\EndIf % i appears later than i' in O
-			\EndIf %(j, j') in DS
 		\EndIf %if j in J'
-		\If{$a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f+1}^{i}) \AAnd f \neq g_i$}
-			\State $v \gets v(\pi_{f}^{i})$
-			\State feasible, $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i, j, f, v, i', j'$, DS, DJ, secondN)
-			\If{feasible $= \False$}
-				\Break
-			\Else \hspace{0.2mm} \textbf{continue}
-				%\Continue
-			\EndIf
-		\ElsIf{$\max\{a(i,j), e_j\} + s_j > v(\pi_{f}^{i}) \AAnd f \neq g_i$}
-			\State feasible, $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i, j, f, a(i,j), i', j'$, DS, DJ, secondN)
-			\If{feasible $= \False$}
-				\Break
-			\Else \hspace{0.2mm} \textbf{continue}
-				%\Continue
-			\EndIf
-		\Else
-			\State $w_{ij} \gets \max\{0, (e_j-a(i,j))\}$
-			\State $z_j \gets \max\{0, (a(i,j) - l_j)\}$
+		% 1. if nurse only has one shift
+		\If{nurse $i$ only has one shift, $g_i = 1$}
+			\State $w_{ij} \gets \max\{0, (e_j \chng{e_j^{(j')}} - a(i,j))\}$
 			\State $t_j \gets a(i,j) + w_{ij}$
+			\State $z_j \gets \max\{0, (t_j - l_j)\}$
+			\If{DJ $= \True \Or$DS $= \True$}
+				\State $\tilde{z}_j \gets \max\{0, (t_j - l_j^{(j')})\}$
+			\EndIf
+		% 2. Else nurse has multiple shifts, arrival is between shifts
+		\ElsIf{$a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f+1}^{i}) \AAnd f \neq g_i$}
+			\State $a(i,j)_{\textup{temp}}$ $\gets v(\pi_{f}^{i})$
+			\State $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i, j, f, a(i,j)_{\textup{temp}}, i', j'$, DS, DJ)
+		% 3. Else arrival is in valid shift but job extends into break
+		\ElsIf{$\max\{a(i,j), e_j\} + s_j > v(\pi_{f}^{i}) \AAnd f \neq g_i$}
+			\State $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i, j, f, a(i,j), i', j'$, DS, DJ)
+		% 4. Job can be performed feasibly, or it is the final shift of nursei 
+		\Else
+			\State $w_{ij} \gets \max\{0, (e_j \chng{e_j^{(j')}} - a(i,j))\}$
+			\State $t_j \gets a(i,j) + w_{ij}$
+			\State $z_j \gets \max\{0, (t_j - l_j)\}$
+			\If{DJ $= \True \Or$DS $= \True$}
+				\State $\tilde{z}_j \gets \max\{0, (t_j - l_j^{(j')})\}$
+			\EndIf
 		\EndIf
 	\EndFor
-	\Return either statement of infeasibility or feasible schedule for nurse $i$
+	\Return feasible schedule for nurse $i$
 \end{algorithmic}
 \end{algorithm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Explanation of FindValidTime function
+The \textsc{FindValidTime} (FVT) function shown in Algorithm~\ref{alg:fvt} is utilised when a nurse's day consists of multiple shifts. The main while loop of FVT involves progressing through each shift $\pi_{\tilde{f}}^i \in \Pi_i$ for the nurse $i$, and setting the current time $\tilde{a}(i,j)$ to the start of each shift $u(\pi_{\tilde{f}}^i)$ (line 7). Each loop comprises two parts, depending on whether or not the job $j$ is a linked service. In either case, if the duration of the job extends into the nurse's next break period, the function continues onto the next shift $\tilde{f}+1$, provided $\tilde{f}$ is not the last shift of the nurse's day (lines 9 and 18). Otherwise, a valid start time has been found for job $j$ (lines 10--16 and 19--25); FVT returns the starting time, waiting time, tardiness and current shift for job $j$ back to the CJT function (line 26).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{algorithm}[htbp!]
-\scriptsize
-\caption{\textsc{FindValidTime}($i, j, f, a(i,j), i', j'$, DS, DJ, secondN, gap)}
+% \scriptsize
+\caption{\textsc{FindValidTime}($i, j, f, a(i,j), i', j'$, DS, DJ)}
 \label{alg:fvt}
 \begin{algorithmic}[1]
 	\State feasible $\gets \False$
 	\State $t_j \gets \Null$, $w_{ij} \gets \Null$, $z_j \gets \Null$, $\tilde{z}_j \gets \Null$
 	\State $\tilde{f} \gets f$, $\tilde{a}(i,j) \gets a(i,j)$
 	\If{DJ $= \True \Or$DS $= \True$}
-		\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+%		\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+		\State $[e_j^{(j')}, l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
 	\EndIf
-%	\If{$j \in J'$}
-%		\State $j' \gets D(j)$ % D : J' -> DJ, returns other job in pair with job j
-%		\State $i' \gets NJ(j')$ % NJ : J -> N, returns the nurse assigned to the job j
-%		\If{$i$ appears later than $i'$ in $\mathcal{O}$}
-%			\State secondN $\gets \True$
-%		\EndIf
-%		\If{$(j, j') \in DS$}
-%			\State DS $\gets \True$
-%				\If{secondN $= \True \AAnd \tilde{a}(i,j) > t_{j'}$} %can also use l_j^(j'), latest ST allowed for j based on j'
-%					%\State valid $\gets \False$
-%					%\Return infeasible
-%					\Return feasible $\gets \False$
-%				\EndIf % arrival later than latest start time
-%		\Else 
-%			\State $DJ \gets \True$
-%			%\If{secondN $= \False$}
-%			%	\State original TWs are used
-%			\If{secondN $= \True$} % This nurse is the 2nd one to be assessed, other job has been done
-%				%Need to find out if this job j is before or after j' in the schedule
-%				%\State $[e_j^{(j')}, l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
-%				\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
-%				%\If{$\tilde{a}(i,j) > l_j^{(j')} \AAnd$gap $= \False$}
-%				\If{$\tilde{a}(i,j) > t_{j'} + l_j^{(j')} \AAnd$gap $= \False$} % current time is later than latest allowed start based on start time of j' and no gap tard allowed
-%					%\State valid $\gets \False$
-%					%\Return infeasible
-%					\Return feasible $\gets \False$
-%				\ElsIf{$\tilde{a}(i,j) > t_{j'} + l_{j}^{(j')} \AAnd$gap $= \True$}
-%					\If{$t_{j'} + l_{j}^{(j')} < t_{j'}$} %job j occurs before job j', gap too small
-%						\Return feasible $\gets \False$
-%					\EndIf
-%				\EndIf
-%			\EndIf % i appears later than i' in O
-%		\EndIf %(j, j') in DS
-%	\EndIf %if j in J'
-	%\While{$\Not$ valid}
 	\While{$\Not$ feasible}
-		\State $\tilde{f} \gets \tilde{f}+1$
-		\State $\tilde{a}(i,j) \gets u(\pi_{\tilde{f}}^{i})$
-		%\If{secondN $= \True \AAnd$(DJ $= \True \Or$DS $= \True$)}
-		\If{secondN $= \True$}
-			%\If{$\tilde{a}(i,j) > l_j^{(j')} \AAnd$gap $= \False$}
-			\If{$\tilde{a}(i,j) > t_{j'} + l_j^{(j')} \AAnd$gap $= \False$}
-				%\State valid $\gets \False$
-				%\Break
-				%\Return infeasible
-				\Return feasible $\gets \False$
-			%\ElsIf{$\tilde{a}(i,j) > l_j^{(j')} \AAnd$gap $= \True$}
-			\ElsIf{$\tilde{a}(i,j) > t_{j'} + l_j^{(j')} \AAnd$gap $= \True$}
-				\If{$t_{j'} + l_j^{(j')} > t_{j'}$} % job j occurs after job j', gap tardiness allowed
-					\If{$\tilde{a}(i,j) + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
-						\Continue
-					\Else
-						%\State valid $\gets \True$
-						\State feasible $\gets \True$
-						\State $t_j \gets \tilde{a}(i,j)$
-						\State $w_{ij} \gets t_j - a(i,j)$
-						\State $z_j \gets t_j - l_j$
-						%\State $\tilde{z}_j \gets t_j - l_j^{(j')}$
-						\State $\tilde{z}_j \gets t_j - (t_{j'} + l_j^{(j')})$
-						\State $f \gets \tilde{f}$
-					\EndIf
-				\Else \hspace{0.2mm} \textbf{return} feasible $\gets \False$ % gap tardiness allowed but job is before, so gap is smaller
-					%\State valid $\gets \False$
-					%\Break
-					%\Return infeasible
-				\EndIf
-			%\ElsIf{$\max\{\tilde{a}(i,j), e_j^{(j')}\} + s_j > v(\pi_{\tilde{f}}^i) \AAnd \tilde{f} \neq g_i$}
-			\ElsIf{$\max\{\tilde{a}(i,j), (t_{j'} + e_j^{(j')})\} + s_j > v(\pi_{\tilde{f}}^i) \AAnd \tilde{f} \neq g_i$}
+		\State $\tilde{f} \gets \tilde{f}+1$, $\tilde{a}(i,j) \gets u(\pi_{\tilde{f}}^{i})$
+		% A. nurse i is the second nurse being assessed, i.e. job is DJ or DS.
+%		\If{secondN $= \True$}
+		\If{DJ $= \True \Or$DS $= \True$}
+			% 1a. currentTime is LATER than latest allowed start time
+%			\If{$\tilde{a}(i,j) > l_j^{(j')}$}
+%				\If{$\tilde{a}(i,j) + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
+%					\Continue
+%				\Else
+%					\State feasible $\gets \True$
+%					\State $t_j \gets \tilde{a}(i,j)$
+%					\State $w_{ij} \gets \max\{0, (t_j - a(i,j))\}$
+%					\State $z_j \gets \max\{0, (t_j - l_j)\}$
+%					\State $\tilde{z}_j \gets \max\{0, (t_j - l_j^{(j')})\}$
+%					\State $f \gets \tilde{f}$
+%				\EndIf
+			% 2a. job cannot be performed feasibly in shift, extends into break
+%			\ElsIf{$\max\{\tilde{a}(i,j), e_j^{(j')}\} + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
+			\If{$\max\{\tilde{a}(i,j), e_j^{(j')}\} + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$} %\hspace{0.2mm}\textbf{continue}
 				\Continue
+			% 3a. nurse can perform job feasibly in shift OR shift \tilde{f} is the last shift of the day
 			\Else
-				%\State valid $\gets \True$
 				\State feasible $\gets \True$
 				\State $t_j \gets \tilde{a}(i,j)$
-				\State $w_{ij} \gets t_j - a(i,j)$
-				\State $z_j \gets t_j - l_j$
+				\State $w_{ij} \gets \max\{0, (t_j - a(i,j))\}$
+				\State $z_j \gets \max\{0, (t_j - l_j)\}$
+				\State $\tilde{z}_j \gets \max\{0, (t_j - l_j^{(j')})\}$
 				\State $f \gets \tilde{f}$
 			\EndIf
-		\ElsIf{secondN $= \False$}
-			\If{$\tilde{a}(i,j) + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
+		% End A. If secondN = True
+		% B. nurse i is the first nurse assessing DJ/DS OR job is not a DJ/DS
+		\Else
+			% 1b. job cannot be performed feasibly in shift, extends into break
+			\If{$\tilde{a}(i,j) + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$} %\hspace{0.2mm}\textbf{continue}
 				\Continue
+			% 2b. nurse can perform job feasibly in shift OR \tilde{f} is the last shift of the day
 			\Else
-				%\State valid $\gets \True$
 				\State feasible $\gets \True$
 				\State $t_j \gets \tilde{a}(i,j)$
-				\State $w_{ij} \gets t_j - a(i,j)$
-				\State $z_j \gets t_j - l_j$
+				\State $w_{ij} \gets \max\{0, (t_j - a(i,j))\}$
+				\State $z_j \gets \max\{0, (t_j - l_j)\}$
+				\State $\tilde{z}_j \gets 0$
 				\State $f \gets \tilde{f}$
 			\EndIf
 		\EndIf
 	\EndWhile
-	\Return statement of feasibility, starting time $t_j$, waiting time $w_{ij}$, tardiness $z_j$, gap tardiness $\tilde{z}_j$, and shift $f$
+	\Return starting time $t_j$, waiting time $w_{ij}$, tardiness $z_j$, gap tardiness $\tilde{z}_j$, and shift $f$
 \end{algorithmic}
 \end{algorithm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Explanation of FindValidTime function
-The \textsc{FindValidTime} function shown in Algorithm~\ref{alg:fvt} operates as follows: firstly, if $j$ is a dependent job or a double service, the algorithm obtains the paired job $j'$ and the nurse $i'$ assigned to $j'$ (lines 4--6). If the schedule for $i'$ has already been set, then $i$ is considered to be the ``second nurse'' (line 7). Then, if $j$ is a double service job and the current time $\tilde{a}(i,j)$ is after the start time set for $j'$, no feasible solution can be found and the algorithm terminates (lines 9--12). Likewise, if $j$ is a dependent job, and the current time $\tilde{a}(i,j)$ occurs after the latest allowed start time and no gap tardiness is permitted, the algorithm terminates with a statement of infeasibility (lines 13--18).
-
-The main while loop of \textsc{FindValidTime} involves progressing through each shift $\pi_{\tilde{f}}^i \in \Pi_i$ and setting the current time $\tilde{a}(i,j)$ to the start of each shift, $u_(\pi_{\tilde{f}}^{i})$ (lines 20--21). Each loop comprises two parts. If $i$ is the second nurse assessed, this implies that $j$ is a dependent job. The same condition from line 17 is checked, where $l_{j}^{(j')} = 0$ if $j$ is a double service, and again the algorithm terminates if the condition is not met. However, if gap tardiness is permitted, this implies that $j$ is not a double service (i.e. DJ $= \True$). The algorithm evaluates the order of the jobs $j$ and $j'$ and determines whether the job can be performed feasibly (lines 25--36). Otherwise, $\tilde{a}(i,j)$ occurs before the latest start time, and the usual checks are performed (lines 37--44). Finally, the same assessments occur if $j$ is a paired job and $i$ is the first nurse to be evaluated, or if $j$ is a single job (lines 45--53).
-
 For simplicity, we will consider all nurses' break periods as waiting time, so that the arrival time calculations $a(i,j)$ for nurses $i \in N$ at jobs $j \in J$ (see \eqref{eq:arrivaltime}) remain valid. Then, the waiting times will be corrected by removing all relevant breaks, as shown in \eqref{eq:waitingtimenurse}.
-
-
-%There may be cases where some nurses have multiple shifts in a single day, e.g. a morning shift and an evening shift; these nurses will not be available at all times during the day. Therefore, we must ensure that jobs are assigned to nurses during their actual working times. This also involves considering the case where although a nurse may be working and available at the time that a job starts, the duration of the job may extend into the nurse's unavailable time, i.e. the job ends after the nurse's shift ends. In these instances, the job must be moved forward in the nurse's schedule such that the job starts at the beginning of the nurse's next available shift, and tardiness will be incurred. For convenience, we denote by $ct(i)$ the actual contracted working time of nurse $i \in N$, where $ct(i) = en(i) - st(i)$ if nurse $i$'s day comprises a single shift starting at $en(i)$ and ending at $st(i)$, and $ct(i) < en(i) - st(i)$ if nurse $i$'s day consists of one or more shifts.
-
 
 
 %----------------------------------------------------------------------------------%
@@ -1210,6 +1147,204 @@ At the core of the DST is a GRASP algorithm with Path Relinking that is capable 
 \end{algorithmic}
 \end{algorithm}
 
+\begin{algorithm}[htbp!]
+\scriptsize
+\caption{\textsc{CalculateJobTimes}$(i, r_i)$}
+\label{alg:cjtprev}
+\begin{algorithmic}[1]
+\State feasible $\gets \False$
+\State Let $f$ be the initial shift for nurse $i$
+\State $a(i,k_{0}^i) \gets 0$
+%	\For{$j \gets 1 \To m_i$}
+\For{$j \in r_i$}
+\State $a(i,j) \gets a(i, j-1) + w_{ij-1} + s_{j-1} + T_i(j-1, j)$
+\State $i' \gets \Null$, $j' \gets \Null$
+\State DJ $\gets \False$
+\State DS $\gets \False$
+\State secondN $\gets \False$
+\If{$j \in J'$}
+\State $j' \gets D(j)$ % D : J' -> DJ, returns other job in pair with job j
+\State $i' \gets NJ(j')$ % NJ : J -> N, returns the nurse assigned to the job j
+\If{$i$ appears later than $i'$ in $\mathcal{O}$}
+\State secondN $\gets \True$
+\EndIf
+\If{$(j, j') \in DS$}
+\State DS $\gets \True$
+\If{secondN $= \True \AAnd a(i,j) > t_{j'}$} %can also use l_j^(j'), latest ST allowed for j based on j'
+\State feasible $\gets \False$
+\Break
+\EndIf % arrival later than latest start time
+\Else 
+\State $DJ \gets \True$
+\If{secondN $= \True$} % This nurse is 2nd one to be assessed, other job has been done
+%Need to find out if this job j is before or after j' in the schedule
+\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+\If{$a(i,j) > t_{j'} + l_j^{(j')} \AAnd$gap $= \False$} % current time is later than latest allowed start based on start time of j' and no gap tard allowed
+\State feasible $\gets \False$
+\Break
+\ElsIf{$a(i,j) > t_{j'} + l_{j}^{(j')} \AAnd$gap $= \True$}
+\If{$t_{j'} + l_{j}^{(j')} < t_{j'}$} %job j occurs before job j', gap too small
+\State feasible $\gets \False$
+\Break
+\EndIf
+\EndIf
+\EndIf
+\EndIf %(j, j') in DS
+\EndIf %if j in J'
+\If{$a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f+1}^{i}) \AAnd f \neq g_i$}
+\State $v \gets v(\pi_{f}^{i})$
+\State feasible, $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i, j, f, v, i', j'$, DS, DJ, secondN)
+\If{feasible $= \False$}
+\Break
+\Else \hspace{0.2mm} \textbf{continue}
+%\Continue
+\EndIf
+\ElsIf{$\max\{a(i,j), e_j\} + s_j > v(\pi_{f}^{i}) \AAnd f \neq g_i$}
+\State feasible, $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i, j, f, a(i,j), i', j'$, DS, DJ, secondN)
+\If{feasible $= \False$}
+\Break
+\Else \hspace{0.2mm} \textbf{continue}
+%\Continue
+\EndIf
+\Else
+\State $w_{ij} \gets \max\{0, (e_j-a(i,j))\}$
+\State $z_j \gets \max\{0, (a(i,j) - l_j)\}$
+\State $t_j \gets a(i,j) + w_{ij}$
+\EndIf
+\EndFor
+\Return either statement of infeasibility or feasible schedule for nurse $i$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp!]
+\scriptsize
+\caption{\textsc{CalculateJobTimes}$(i, r_i)$}
+\label{alg:cjt08032022}
+\begin{algorithmic}[1]
+\State feasible $\gets \False$
+\State Let $f$ be the initial shift for nurse $i$
+\State $a(i,k_{0}^i) \gets 0$
+\For{$j \in r_i$}
+\State $a(i,j) \gets a(i, j-1) + w_{ij-1} + s_{j-1} + T_i(j-1, j)$
+\State $i' \gets \Null$, $j' \gets \Null$
+\State DJ $\gets \False$, DS $\gets \False$, secondN $\gets \False$
+\If{$j \in J'$}
+\State $j' \gets D(j)$ % D : J' -> DJ, returns other job in pair with job j
+\State $i' \gets NJ(j')$ % NJ : J -> N, returns the nurse assigned to the job j
+\If{$i$ appears later than $i'$ in $\mathcal{O}$}
+\State secondN $\gets \True$
+\EndIf
+\If{$(j, j') \in DS$}
+\State DS $\gets \True$
+\Else 
+\State DJ $\gets \True$
+\If{secondN $= \True$} % This nurse is 2nd one to be assessed, other job has been done
+%Need to find out if this job j is before or after j' in the schedule
+\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+\EndIf
+\EndIf %(j, j') in DS
+\EndIf %if j in J'
+% 1. if nurse only has one shift
+\If{nurse $i$ only has one shift, $g_i = 1$}
+\State $w_{ij} \gets \max\{0, (e_j \chng{e_j^{(j')}} - a(i,j))\}$
+\State $t_j \gets a(i,j) + w_{ij}$
+\State $z_j \gets \max\{0, (t_j - l_j)\}$
+\If{DJ $= \True$}
+\State $\tilde{z}_j \gets \max\{0, (t_j - l_j^{(j')})\}$
+\EndIf
+% 2. Else nurse has multiple shifts, arrival is between shifts
+\ElsIf{$a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f+1}^{i}) \AAnd f \neq g_i$}
+\State $v \gets v(\pi_{f}^{i})$
+\State $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i, j, f, v, i', j'$, DS, DJ, secondN)
+% 3. Else arrival is in valid shift but job extends into break
+\ElsIf{$\max\{a(i,j), e_j\} + s_j > v(\pi_{f}^{i}) \AAnd f \neq g_i$}
+\State $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i, j, f, a(i,j), i', j'$, DS, DJ, secondN)
+% 4. Job can be performed feasibly, or it is the final shift of nursei 
+\Else
+\State $w_{ij} \gets \max\{0, (e_j \chng{e_j^{(j')}} - a(i,j))\}$
+\State $t_j \gets a(i,j) + w_{ij}$
+\State $z_j \gets \max\{0, (t_j - l_j)\}$
+\If{DJ $= \True$}
+\State $\tilde{z}_j \gets \max\{0, (t_j - l_j^{(j')})\}$
+\EndIf
+\EndIf
+\EndFor
+\Return feasible schedule for nurse $i$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp!]
+\scriptsize
+\caption{\textsc{FindValidTime}($i, j, f, a(i,j), i', j'$, DS, DJ, secondN, gap)}
+\label{alg:fvtprev}
+\begin{algorithmic}[1]
+\State feasible $\gets \False$
+\State $t_j \gets \Null$, $w_{ij} \gets \Null$, $z_j \gets \Null$, $\tilde{z}_j \gets \Null$
+\State $\tilde{f} \gets f$, $\tilde{a}(i,j) \gets a(i,j)$
+\If{DJ $= \True \Or$DS $= \True$}
+\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+\EndIf
+%\While{$\Not$ valid}
+\While{$\Not$ feasible}
+\State $\tilde{f} \gets \tilde{f}+1$
+\State $\tilde{a}(i,j) \gets u(\pi_{\tilde{f}}^{i})$
+%\If{secondN $= \True \AAnd$(DJ $= \True \Or$DS $= \True$)}
+\If{secondN $= \True$}
+%\If{$\tilde{a}(i,j) > l_j^{(j')} \AAnd$gap $= \False$}
+\If{$\tilde{a}(i,j) > t_{j'} + l_j^{(j')} \AAnd$gap $= \False$}
+%\State valid $\gets \False$
+%\Break
+%\Return infeasible
+\Return feasible $\gets \False$
+%\ElsIf{$\tilde{a}(i,j) > l_j^{(j')} \AAnd$gap $= \True$}
+\ElsIf{$\tilde{a}(i,j) > t_{j'} + l_j^{(j')} \AAnd$gap $= \True$}
+\If{$t_{j'} + l_j^{(j')} > t_{j'}$} % job j occurs after job j', gap tardiness allowed
+\If{$\tilde{a}(i,j) + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
+\Continue
+\Else
+%\State valid $\gets \True$
+\State feasible $\gets \True$
+\State $t_j \gets \tilde{a}(i,j)$
+\State $w_{ij} \gets t_j - a(i,j)$
+\State $z_j \gets t_j - l_j$
+%\State $\tilde{z}_j \gets t_j - l_j^{(j')}$
+\State $\tilde{z}_j \gets t_j - (t_{j'} + l_j^{(j')})$
+\State $f \gets \tilde{f}$
+\EndIf
+\Else \hspace{0.2mm} \textbf{return} feasible $\gets \False$ % gap tardiness allowed but job is before, so gap is smaller
+%\State valid $\gets \False$
+%\Break
+%\Return infeasible
+\EndIf
+%\ElsIf{$\max\{\tilde{a}(i,j), e_j^{(j')}\} + s_j > v(\pi_{\tilde{f}}^i) \AAnd \tilde{f} \neq g_i$}
+\ElsIf{$\max\{\tilde{a}(i,j), (t_{j'} + e_j^{(j')})\} + s_j > v(\pi_{\tilde{f}}^i) \AAnd \tilde{f} \neq g_i$}
+\Continue
+\Else
+%\State valid $\gets \True$
+\State feasible $\gets \True$
+\State $t_j \gets \tilde{a}(i,j)$
+\State $w_{ij} \gets t_j - a(i,j)$
+\State $z_j \gets t_j - l_j$
+\State $f \gets \tilde{f}$
+\EndIf
+\ElsIf{secondN $= \False$}
+\If{$\tilde{a}(i,j) + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
+\Continue
+\Else
+%\State valid $\gets \True$
+\State feasible $\gets \True$
+\State $t_j \gets \tilde{a}(i,j)$
+\State $w_{ij} \gets t_j - a(i,j)$
+\State $z_j \gets t_j - l_j$
+\State $f \gets \tilde{f}$
+\EndIf
+\EndIf
+\EndWhile
+\Return statement of feasibility, starting time $t_j$, waiting time $w_{ij}$, tardiness $z_j$, gap tardiness $\tilde{z}_j$, and shift $f$
+\end{algorithmic}
+\end{algorithm}
+
+
 \end{comment}
 
 %		\If{DS $= \True \AAnd$secondN $= \True$}
@@ -1229,5 +1364,31 @@ At the core of the DST is a GRASP algorithm with Path Relinking that is capable 
 %				\State valid $\gets \True$ etc...
 %			\EndIf
 %		\EndIf % End if DS/DJ is True
+
+
+%\If{$i$ appears later than $i'$ in $\mathcal{O}$}
+%\State secondN $\gets \True$
+%\EndIf
+%\If{$(j, j') \in DS$}
+%\State DS $\gets \True$
+%\Else 
+%\State DJ $\gets \True$
+%\If{secondN $= \True$} % This nurse is 2nd one to be assessed, other job has been done
+%%Need to find out if this job j is before or after j' in the schedule
+%\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+%\EndIf
+%\EndIf %(j, j') in DS
+
+%\noindent The \textsc{CalculateJobTimes} function in Algorithm \ref{alg:cjt} describes how start times, waiting times and tardiness are calculated for each nurse $i \in N$. For each job $j \in r_i$, the arrival time is evaluated using the arrival time, waiting time, service time and travel time of the previous job (lines 3--4). Line 6 covers the case where the duration of the current job $j$ extends into a break period, whilst line 12 considers the event when the arrival time of nurse $i$ at $j$ would be within a break period. In both of these cases, the function \textsc{FindValidTime} in Algorithm~\ref{alg:fvt} is called, which scans through nurse $i$'s day to find a suitable time in which $i$ can perform $j$ (lines 6 and 12). If $j$ cannot be feasibly scheduled into nurse $i$'s day, then no feasible solution exists and the algorithm terminates (lines 7--8 and lines 13--14). Otherwise, \textsc{FindValidTime} has successfully placed job $j$ into the schedule of nurse $i$, and returns the start time $t_j$, waiting time $w_{ij}$, tardiness $z_j$, and gap tardiness $\tilde{z}_j$ (if $j \in J'$ and gap tardiness is permitted) of job $j$, as well as the current shift $f$ of nurse $i$, and \textsc{CalculateJobTimes} continues on to the next job $j \in r_i$ (lines 9 and 15). There are two scenarios in which \textsc{FindValidTime} does not need to be called: (1) if nurse $i$ can feasibly perform job $j$ with the arrival time $a(i,j)$; and (2) if $f$ is the last shift of nurse $i$, i.e. $f = g_i$. In both instances, the algorithm simply calculates the starting time $t_j$, waiting time $w_{ij}$, and tardiness $z_j$ (lines 16--19).
+
+
+%\chng{The \textsc{CalculateJobTimes} function in \ref{alg:shiftwork} describes how start times, waiting times and tardiness are calculated for each nurse $i \in N$. For each job $j \in r_i$, the arrival time is evaluated using the arrival time, waiting time, service time and travel time of the previous job. Line 1 covers the case where nurse $i$'s day comprises just one shift, i.e. $g_i = 1$. Line 9 is for the case where the duration of the current job $j$ extends in to a break period, whilst Line 14 considers the event that the arrival time of nurse $i$ at job $j$ would be within a break. In both of these cases, the function \textsc{FindValidTime} is used. This function scans through the nurse's day to find the next available time period in which the nurse can feasibly perform the job $j$, and returns the start time of this period, $t_j$. If the job $j$ is a DS, then \textsc{FindValidTime} seeks a start time that is suitable for the current nurse $i$ and the second nurse on the job.}
+
+%Explanation of FindValidTime function
+%The \textsc{FindValidTime} function shown in Algorithm~\ref{alg:fvt} operates as follows: firstly, if $j$ is a dependent job or a double service, the algorithm obtains the paired job $j'$ and the nurse $i'$ assigned to $j'$ (lines 4--6). If the schedule for $i'$ has already been set, then $i$ is considered to be the ``second nurse'' (line 7). Then, if $j$ is a double service job and the current time $\tilde{a}(i,j)$ is after the start time set for $j'$, no feasible solution can be found and the algorithm terminates (lines 9--12). Likewise, if $j$ is a dependent job, and the current time $\tilde{a}(i,j)$ occurs after the latest allowed start time and no gap tardiness is permitted, the algorithm terminates with a statement of infeasibility (lines 13--18).
+
+%The main while loop of \textsc{FindValidTime} involves progressing through each shift $\pi_{\tilde{f}}^i \in \Pi_i$ and setting the current time $\tilde{a}(i,j)$ to the start of each shift, $u_(\pi_{\tilde{f}}^{i})$ (lines 20--21). Each loop comprises two parts. If $i$ is the second nurse assessed, this implies that $j$ is a dependent job. The same condition from line 17 is checked, where $l_{j}^{(j')} = 0$ if $j$ is a double service, and again the algorithm terminates if the condition is not met. However, if gap tardiness is permitted, this implies that $j$ is not a double service (i.e. DJ $= \True$). The algorithm evaluates the order of the jobs $j$ and $j'$ and determines whether the job can be performed feasibly (lines 25--36). Otherwise, $\tilde{a}(i,j)$ occurs before the latest start time, and the usual checks are performed (lines 37--44). Finally, the same assessments occur if $j$ is a paired job and $i$ is the first nurse to be evaluated, or if $j$ is a single job (lines 45--53).
+
+%There may be cases where some nurses have multiple shifts in a single day, e.g. a morning shift and an evening shift; these nurses will not be available at all times during the day. Therefore, we must ensure that jobs are assigned to nurses during their actual working times. This also involves considering the case where although a nurse may be working and available at the time that a job starts, the duration of the job may extend into the nurse's unavailable time, i.e. the job ends after the nurse's shift ends. In these instances, the job must be moved forward in the nurse's schedule such that the job starts at the beginning of the nurse's next available shift, and tardiness will be incurred. For convenience, we denote by $ct(i)$ the actual contracted working time of nurse $i \in N$, where $ct(i) = en(i) - st(i)$ if nurse $i$'s day comprises a single shift starting at $en(i)$ and ending at $st(i)$, and $ct(i) < en(i) - st(i)$ if nurse $i$'s day consists of one or more shifts.
 
 \end{document}
