@@ -50,15 +50,14 @@ struct INSTANCE {
 	double objWBQuality;
 	double objPaperQuality;
 	double objQuality;
-    double objMaxTravelTime; // NB new 16/11/2021
-    double objMaxWaitingTime; // NB new 16/11/2021
-    double objMaxDiffWorkload; // NB new 16/11/2021
+    double objMaxTravelTime;
+    double objMaxWaitingTime;
+    double objMaxDiffWorkload;
 	float totalPref; // Total preference score
 	int qualityMeasure; // Temp. Allow to choose (Mk, Ait h., etc.) Ideally we want a vector with weights! This should be set ONLY in "InstanceFromPython" (read_instance.c). The value is hardcoded at the moment.
 	float MAX_TIME_SECONDS; // Maximum time limit in seconds
 	int twInterval; // Time window interval
 	bool excludeNurseTravel; // True if excluding the nurse travel time from home to the first job when updating current time in 'set_nurse_time' function, else false.
-	// double **od_cost;
     int*** unavailMatrix; // 50 X 4 X nNurses 3d matrix, col[0] = unavailable shift number, col[1] = start of unavailable time, col[2] = end of unavailable time, col[3] = duration of unavailable time.
     int* nurseUnavail; // 1D array, size = nNurses, for each nurse contains the number of unavailable shifts.
 	int** nurseWorkingTimes; // UPDATED: 2D array, size = nNurses x 5. For each nurse i (row): column[0] = start time, column[1] = finish time, column[2] = length of day for nurse, 
@@ -92,11 +91,6 @@ struct INSTANCE {
     double totalServiceTime; // New 06/11/2021, moving total service time here as it should be fixed rather than calculating it every time in Objective function
     double totalServiceTimeIncDS; // New 06/11/2021, totalServiceTime but also including double time for the double services; this will therefore be the total working time of all nurses.
     double** arrivalTimes; //NEW 28/02/2022, size = nNurses x nJobs, keeps the original arrival time of nurse i at job j.
-	// int startTime;
-	// int ** jobTimeWindow;
-	// int * jobDuration;
-	// int **nurseSkilled;
-
 };
 
 MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, int verbose_data, float MAX_TIME_SECONDS, int twInterval_data, bool excludeNurseTravel_data,
@@ -107,10 +101,8 @@ MODULE_API int python_entry(int nJobs_data, int nNurses_data, int nSkills_data, 
 
 int MainWithOutput(struct INSTANCE* ip, double* odmat_pointer, int* solMatrixPointer, double* timeMatrixPointer, double* nurseWaitingTimePointer, double* nurseTravelTimePointer, double* violatedTWPointer,
                    double* nurseWaitingMatrixPointer, double* nurseTravelMatrixPointer, double* totalsArrayPointer);
-void SolMatrixToPythonFormat(struct INSTANCE* ip, int* solMatrixPointer);
 void SolnToPythomFormat(struct INSTANCE* ip, int* solMatrixPointer, double* timeMatrixPointer, double* nurseWaitingTimePointer, double* nurseTravelTimePointer, double* violatedTWPointer,
                         double* nurseWaitingMatrixPointer, double* nurseTravelMatrixPointer, double* totalsArrayPointer);
-void ConstructiveBasic(struct INSTANCE* ip);
 int CheckSkills(struct INSTANCE* ip, int job, int nurse);
 int CheckSkillsDSFirst(struct INSTANCE* ip, int job, int nursei);
 int CheckSkillsDS(struct INSTANCE* ip, int job, int nursei, int nursej);
@@ -120,18 +112,14 @@ int FurthestUnallocatedPointNurse(struct INSTANCE* ip, int* allocatedJobs, int n
 void PrintIntMatrix(int** matrix, int nRows, int nCols);
 void PrintIntMatrixOne(int* matrix, int nRows, int nCols);
 void PrintDoubleMatrixOne(double* matrix, int nRows, int nCols);
-void PrintDoubleMatrix(double** matrix, int nRows, int nCols);
 void PrintSolMatrix(struct INSTANCE* ip);
 void PrintAllNurseRoutes(struct INSTANCE* ip);
-void PrintTimeMatrix(struct INSTANCE* ip);
 double GetTravelTime(struct INSTANCE* ip, int i, int j);
 double TravelTimeFromDepot(struct INSTANCE* ip, int nurse, int job);
 double TravelTimeToDepot(struct INSTANCE* ip, int nurse, int job);
-double GetTravelTimeBNC(struct INSTANCE* ip, int nodei, int nodej);
 int ReportSolution(struct INSTANCE* ip);
 int SwapPoints(struct INSTANCE* ip, int ni, int nj, int pi, int pj);
 int RemoveJob(struct INSTANCE* ip, int job, int ni);
-int JobInsertionLast(struct INSTANCE* ip, int job, int ni);
 int BestJobInsertion(struct INSTANCE* ip, int job, int ni);
 int InsertJobAtPosition(struct INSTANCE* ip, int job, int ni, int posi);
 int BestSyncDoubleSwitch(struct INSTANCE* ip);
@@ -144,50 +132,32 @@ int NurseTwoExchange(struct INSTANCE* ip);
 int TwoOptMove(struct INSTANCE* ip, int ni, int pos1, int pos2);
 int FindSecondNurseDS(struct INSTANCE* ip, int job, int currentNurse);
 int SwitchNurse(struct INSTANCE* ip, int ni, int nj, int pi);
-int Repair(struct INSTANCE* ip, int ni);
 int GetJobCount(struct INSTANCE* ip, int ni);
 int GetNurseJobCount(struct INSTANCE* ip, int nurse);
 void SetAllNurseRoutes(struct INSTANCE* ip);
 void SetNurseRoute(struct INSTANCE* ip, int ni);
 void GetNurseRoute(struct INSTANCE* ip, int ni, int* nurseRoute);
-void PrintNurseRoute(struct INSTANCE* ip, int ni, int* nurseRoute);
-void OldSetNurseTime(struct INSTANCE* ip, int nursej);
-void SetNurseTimeAitH(struct INSTANCE* ip, int nursej);
-void SetNurseTimeOld(struct INSTANCE* ip, int nursei);
-void SetNurseTime(struct INSTANCE* ip, int nursei);
 void CalculateJobTimes(struct INSTANCE* ip, int nursei);
 double* FindValidTime(struct INSTANCE* ip, int f, double currentTime, int currentNurse, int job, int considerDependency, int otherNurseDJ, int otherJobDJ, int considerDoubleService, int otherNurseDS, double startTWMK, double endTWMK);
-void OriginalCalculateJobTimes(struct INSTANCE* ip, int nursei);
-//void GetOtherDSDJ(struct INSTANCE* ip){
 double* OriginalFindValidTime(struct INSTANCE* ip, int f, double currentTime, int currentNurse, int job, int considerDependency, int otherNurseDJ, int otherJobDJ, int considerDoubleService, int otherNurseDS, double startTWMK, double endTWMK);
 void SetTimesFull(struct INSTANCE* ip);
 void SetTimesFrom(struct INSTANCE* ip, int firstNurse);
 int SynchroniseJobi(struct INSTANCE* ip, int job, int nurse1, int nurse2);
-double SolutionQualityGlobal(struct INSTANCE* ip, int report);
 double SolutionQualityLight(struct INSTANCE* ip);
-double SolutionQualityOptimised(struct INSTANCE* ip, int n1, int n2);
 double SolutionQuality(struct INSTANCE* ip, int report);
-int SynchroniseJobs(struct INSTANCE* ip);
-// void MinsToTime(double time, int* hours, int* minutes, int* seconds);
 int* MinsToTime(double time);
-// double MinsToMinSecs(double time);
 int* MinsToMinSecs(double time);
-double Objective(struct INSTANCE* ip, int report);
 double ObjectiveNew(struct INSTANCE* ip, int report);
-double AlternativeQuality(struct INSTANCE* ip, int report);
 int RandomInteger(int min_val, int max_val);
 void TwoExchange(int* array, int i, int j);
 void RandomTwoExchange(int* array, size_t n, int* i, int* j);
 void Shuffle(int* array, size_t n); // From Ben Pfaff's Writings, see below
 void PrintVector(int* array, size_t n);
 double MaxNumDouble(double num1, double num2);
-int MaxNumInt(int num1, int num2);
 void RemoveBreaksWaitingTime(struct INSTANCE* ip);
 
 
 // Not in constructive.c
-void AccessNurseRoute(struct INSTANCE* ip, int ni, int* nurseRoute);
-int ScheduleQuality(struct INSTANCE* ip, int ni);
 void FreeInstanceMemory(struct INSTANCE* ip);
 void FreeInstanceCopy(struct INSTANCE* ip);
 

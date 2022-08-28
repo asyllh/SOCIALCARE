@@ -157,7 +157,8 @@ It is not uncommon in the literature to model the skills of the workforce as hie
     z_j = \max\{0, t_j - l_j\}. \label{eq:tardiness}
 \end{equation}
 
-\noindent Note that tardiness here refers only to the difference between the job start and its original time window. Jobs that have dependencies or require two nurses may be further restricted temporally. This can occur in practice, for example, in situations where a second dose of medication must be administered a few hours after the first dose. If two jobs $j_1$ and $j_2$ are dependent, this is modelled by imposing a second time window on $j_2$ that depends on the start time of $j_1$, $[t_{j_1} + e_{j_2}^{(j_1)}, t_{j_1} + l_{j_2}^{(j_1)}]$. Then, the same time window constraints hold:
+%This can occur in practice, for example, in situations where a second dose of medication must be administered a few hours after the first dose. If two jobs $j_1$ and $j_2$ are dependent, this is modelled by imposing a second time window on $j_2$ that depends on the start time of $j_1$, $[t_{j_1} + e_{j_2}^{(j_1)}, t_{j_1} + l_{j_2}^{(j_1)}]$. Then, the same time window constraints hold:
+\noindent Note that tardiness here refers only to the difference between the job start and its original time window. Jobs that have dependencies or require two nurses may be further restricted temporally. This can occur in practice, for example, in situations where a set period of time is required between two separate doses of medication administered to a patient. Let $j_1$ and $j_2$ be two dependent jobs. Then, we model the additional temporal restriction by imposing a second time window of $j_2$ that depends on the start time of $j_1$, $[t_{j_1} + e_{j_2}^{(j_1)}, t_{j_1} + l_{j_2}^{(j_1)}]$, where $e_{j_2}^{(j_1)}$ and $l_{j_2}^{(j_1)}$ are the minimum and maximum time gaps from the start time of $j_1$ to the start time of $j_2$. Then, the same time window constraints hold:
 \begin{subequations}
 	\begin{align}
 	t_{j_2} &\geq t_{j_1} + e^{(j_1)}_{j_2}, \label{eq:timewindow1}\\[3pt] % & \forall j \in J
@@ -226,7 +227,7 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 	\item Waiting time incurred due to breaks between shifts. This is discussed further in Section~\ref{sub:shiftwork}.
 \end{itemize}
 
-\noindent Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. Note that this implies that the order in which nurse routes appear in a solution may have an impact on the solution quality. To mitigate this effect, in Section~\ref{sec:dst} we describe strategies to search different orderings of nurses when solving the problem.
+\noindent Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. Note that for dependent jobs $(j_1, j_2) \in DJ$, the first nurse that is scheduled to do one of the two jobs sets the start time for that job, and therefore the other job acquires the additional time window. This implies that the order in which nurse routes appear in a solution may have an impact on the solution quality. To mitigate this effect, in Section~\ref{sec:dst} we describe strategies to search different orderings of nurses when solving the problem.
 
 %\noindent \chng{Furthermore, we assume that waiting times are never larger than strictly necessary. To achieve this, we consider that the starting times of jobs are fixed to their earliest possible time, based on the order in which they appear in the solution. Let $j_1, j_2 \subset J, j_1 \neq j_2$, be two jobs that have a dependency, where $j_1 \in r_{i_1}$ and $j_2 \in r_{i_2}$, and nurse $i_1$ appears earlier than nurse $i_2$ in the vector of nurse order, $\mathcal{O}$. Then, we enforce the following:} \correction{Does this still hold?}
 %  $i_1 < i_2$, \ie $j_1$ appears earlier in the vector $\mathcal{O}$ than $j_2$. Then, we enforce that:
@@ -298,18 +299,21 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 					\State DS $\gets \True$
 				\Else \hspace{0.2mm} DJ $\gets \True$
 				\EndIf
-%				\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
-				\State $[e_j^{(j')}, l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+				\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+%				\State $[e_j^{(j')}, l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
 			\EndIf
 		\EndIf %if j in J'
 		% 1. if nurse only has one shift
 		\If{nurse $i$ only has one shift, $g_i = 1$}
-			\State $w_{ij} \gets \max\{0, (e_j \chng{e_j^{(j')}} - a(i,j))\}$
-			\State $t_j \gets a(i,j) + w_{ij}$
-			\State $z_j \gets \max\{0, (t_j - l_j)\}$
-			\If{DJ $= \True \Or$DS $= \True$}
-				\State $\tilde{z}_j \gets \max\{0, (t_j - l_j^{(j')})\}$
+			\If{DJ $= \True \Or$DS $= \True$}			
+				\State $w_{ij} \gets \max\{0, ((t_{j'} + e_j^{(j')}) - a(i,j))\}$
+				\State $t_j \gets a(i,j) + w_{ij}$
+				\State $\tilde{z}_j \gets \max\{0, (t_j - (t_{j'} + l_j^{(j')}))\}$
+			\Else
+				\State $w_{ij} \gets \max\{0, (e_j - a(i,j))\}$
+				\State $t_j \gets a(i,j) + w_{ij}$
 			\EndIf
+			\State $z_j \gets \max\{0, (t_j - l_j)\}$
 		% 2. Else nurse has multiple shifts, arrival is between shifts
 		\ElsIf{$a(i,j) > v(\pi_{f}^{i}) \AAnd a(i,j) < u(\pi_{f+1}^{i}) \AAnd f \neq g_i$}
 			\State $a(i,j)_{\textup{temp}}$ $\gets v(\pi_{f}^{i})$
@@ -319,12 +323,15 @@ In practice, waiting times may occur for a variety of reasons. In order to maint
 			\State $t_j, w_{ij}, z_j, \tilde{z}_j, f \gets$ \textsc{FindValidTime}($i, j, f, a(i,j), i', j'$, DS, DJ)
 		% 4. Job can be performed feasibly, or it is the final shift of nursei 
 		\Else
-			\State $w_{ij} \gets \max\{0, (e_j \chng{e_j^{(j')}} - a(i,j))\}$
-			\State $t_j \gets a(i,j) + w_{ij}$
-			\State $z_j \gets \max\{0, (t_j - l_j)\}$
-			\If{DJ $= \True \Or$DS $= \True$}
-				\State $\tilde{z}_j \gets \max\{0, (t_j - l_j^{(j')})\}$
+			\If{DJ $= \True \Or$DS $= \True$}			
+				\State $w_{ij} \gets \max\{0, ((t_{j'} + e_j^{(j')}) - a(i,j))\}$
+				\State $t_j \gets a(i,j) + w_{ij}$
+				\State $\tilde{z}_j \gets \max\{0, (t_j - (t_{j'} + l_j^{(j')}))\}$
+			\Else
+				\State $w_{ij} \gets \max\{0, (e_j - a(i,j))\}$
+				\State $t_j \gets a(i,j) + w_{ij}$
 			\EndIf
+			\State $z_j \gets \max\{0, (t_j - l_j)\}$
 		\EndIf
 	\EndFor
 	\Return feasible schedule for nurse $i$
@@ -346,8 +353,8 @@ The \textsc{FindValidTime} (FVT) function shown in Algorithm~\ref{alg:fvt} is ut
 	\State $t_j \gets \Null$, $w_{ij} \gets \Null$, $z_j \gets \Null$, $\tilde{z}_j \gets \Null$
 	\State $\tilde{f} \gets f$, $\tilde{a}(i,j) \gets a(i,j)$
 	\If{DJ $= \True \Or$DS $= \True$}
-%		\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
-		\State $[e_j^{(j')}, l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+		\State $[t_{j'} + e_j^{(j')}, t_{j'} + l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
+%		\State $[e_j^{(j')}, l_j^{(j')}] \gets$ dependent time window, based on $t_{j'}$ set by $i'$
 	\EndIf
 	\While{$\Not$ feasible}
 		\State $\tilde{f} \gets \tilde{f}+1$, $\tilde{a}(i,j) \gets u(\pi_{\tilde{f}}^{i})$
@@ -368,7 +375,8 @@ The \textsc{FindValidTime} (FVT) function shown in Algorithm~\ref{alg:fvt} is ut
 %				\EndIf
 			% 2a. job cannot be performed feasibly in shift, extends into break
 %			\ElsIf{$\max\{\tilde{a}(i,j), e_j^{(j')}\} + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$}
-			\If{$\max\{\tilde{a}(i,j), e_j^{(j')}\} + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$} %\hspace{0.2mm}\textbf{continue}
+%			\If{$\max\{\tilde{a}(i,j), e_j^{(j')}\} + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$} %\hspace{0.2mm}\textbf{continue}
+			\If{$\max\{\tilde{a}(i,j), (t_{j'} + e_j^{(j')})\} + s_j > v(\pi_{\tilde{f}}^{i}) \AAnd \tilde{f} \neq g_i$} %\hspace{0.2mm}\textbf{continue}
 				\Continue
 			% 3a. nurse can perform job feasibly in shift OR shift \tilde{f} is the last shift of the day
 			\Else
@@ -376,7 +384,7 @@ The \textsc{FindValidTime} (FVT) function shown in Algorithm~\ref{alg:fvt} is ut
 				\State $t_j \gets \tilde{a}(i,j)$
 				\State $w_{ij} \gets \max\{0, (t_j - a(i,j))\}$
 				\State $z_j \gets \max\{0, (t_j - l_j)\}$
-				\State $\tilde{z}_j \gets \max\{0, (t_j - l_j^{(j')})\}$
+				\State $\tilde{z}_j \gets \max\{0, (t_j - (t_{j'} + l_j^{(j')}))\}$
 				\State $f \gets \tilde{f}$
 			\EndIf
 		% End A. If secondN = True

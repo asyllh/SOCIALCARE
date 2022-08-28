@@ -21,20 +21,20 @@ import tools_and_scripts.week_counter as wc
 def main():
     
     # Get user input variables using tkinter entry box:
-    # area, max_time_seconds, tw_interval, wb_coeff, maxtravel_coeff, maxwaiting_coeff, quality_measure, create_html_website, create_python_plots, codepoint_directory, input_filename, date_selected = tui.get_user_input_variables()
-    area = 'Hampshire'
-    tw_interval = 15
-    wb_balance = 1
-    wb_coeff = -1
-    maxtravel_coeff = -1
-    maxwaiting_coeff = -1
-    quality_measure = 'default' # default = paper
-    max_time_seconds = 60
-    create_html_website = True
-    create_python_plots = True
-    input_filename = r'C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/Carrot/data/abicare/2021.07.15 - UOS - Clients - Carers - Rota - Anonymised.xlsx'
-    codepoint_directory = r'C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/Carrot/data/codepo_gb'
-    date_selected = pd.Timestamp("2021-07-27")
+    area, max_time_seconds, tw_interval, wb_coeff, maxtravel_coeff, maxwaiting_coeff, quality_measure, create_html_website, create_python_plots, codepoint_directory, input_filename, date_selected = tui.get_user_input_variables()
+    # area = 'Hampshire'
+    # tw_interval = 15
+    # wb_balance = 1
+    # wb_coeff = -1
+    # maxtravel_coeff = -1
+    # maxwaiting_coeff = -1
+    # quality_measure = 'default' # default = paper
+    # max_time_seconds = 60
+    # create_html_website = True
+    # create_python_plots = True
+    # input_filename = r'C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/Carrot/data/abicare/2021.07.15 - UOS - Clients - Carers - Rota - Anonymised.xlsx'
+    # codepoint_directory = r'C:/Users/ah4c20/Asyl/PostDoc/SOCIALCARE/code/Carrot/data/codepo_gb'
+    # date_selected = pd.Timestamp("2021-07-27")
 
     # Convert date_selected from datetime_date to Timestamp
     planning_date = pd.Timestamp(date_selected)
