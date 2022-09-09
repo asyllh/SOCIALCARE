@@ -154,6 +154,7 @@ void RandomTwoExchange(int* array, size_t n, int* i, int* j);
 void Shuffle(int* array, size_t n); // From Ben Pfaff's Writings, see below
 void PrintVector(int* array, size_t n);
 double MaxNumDouble(double num1, double num2);
+double MinNumDouble(double num1, double num2);
 void RemoveBreaksWaitingTime(struct INSTANCE* ip);
 
 
